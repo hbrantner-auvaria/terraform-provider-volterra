@@ -22,7 +22,15 @@ resource "volterra_gcp_vpc_site" "example" {
 
   // One of the arguments from this list "block_all_services blocked_services default_blocked_services" must be set
 
-  default_blocked_services = true
+  blocked_services {
+    blocked_sevice {
+      // One of the arguments from this list "dns ssh web_user_interface" can be set
+
+      web_user_interface = true
+
+      network_type = "network_type"
+    }
+  }
 
   // One of the arguments from this list "cloud_credentials" must be set
 
@@ -44,59 +52,41 @@ resource "volterra_gcp_vpc_site" "example" {
 
   // One of the arguments from this list "ingress_egress_gw ingress_gw voltstack_cluster" must be set
 
-  ingress_egress_gw {
-    // One of the arguments from this list "dc_cluster_group_inside_vn dc_cluster_group_outside_vn no_dc_cluster_group" must be set
+  voltstack_cluster {
+    // One of the arguments from this list "dc_cluster_group no_dc_cluster_group" must be set
 
     no_dc_cluster_group = true
 
     // One of the arguments from this list "active_forward_proxy_policies forward_proxy_allow_all no_forward_proxy" must be set
 
     no_forward_proxy = true
-    gcp_certified_hw = "gcp-byol-multi-nic-voltmesh"
+    gcp_certified_hw = "gcp-byol-voltstack-combo"
     gcp_zone_names = ["us-west1-a, us-west1-b, us-west1-c"]
 
     // One of the arguments from this list "global_network_list no_global_network" must be set
 
     no_global_network = true
-    inside_network {
-      // One of the arguments from this list "existing_network new_network new_network_autogenerate" must be set
 
-      new_network {
-        name = "network1"
-      }
-    }
+    // One of the arguments from this list "k8s_cluster no_k8s_cluster" must be set
 
-    // One of the arguments from this list "inside_static_routes no_inside_static_routes" must be set
-
-    no_inside_static_routes = true
-    inside_subnet {
-      // One of the arguments from this list "existing_subnet new_subnet" must be set
-
-      existing_subnet {
-        subnet_name = "subnet1-in-network1"
-      }
-    }
+    no_k8s_cluster = true
 
     // One of the arguments from this list "active_enhanced_firewall_policies active_network_policies no_network_policy" must be set
 
     no_network_policy = true
     node_number = "1"
-    outside_network {
-      // One of the arguments from this list "existing_network new_network new_network_autogenerate" must be set
-
-      existing_network {
-        name = "network1"
-
-        // One of the arguments from this list "f5_orchestrated_routing manual_routing" can be set
-
-        f5_orchestrated_routing = true
-      }
-    }
 
     // One of the arguments from this list "no_outside_static_routes outside_static_routes" must be set
 
     no_outside_static_routes = true
-    outside_subnet {
+    site_local_network {
+      // One of the arguments from this list "existing_network new_network new_network_autogenerate" must be set
+
+      new_network_autogenerate {
+        autogenerate = true
+      }
+    }
+    site_local_subnet {
       // One of the arguments from this list "existing_subnet new_subnet" must be set
 
       new_subnet {
@@ -105,19 +95,14 @@ resource "volterra_gcp_vpc_site" "example" {
         subnet_name = "subnet1-in-network1"
       }
     }
-    performance_enhancement_mode {
-      // One of the arguments from this list "perf_mode_l3_enhanced perf_mode_l7_enhanced" must be set
-
-      perf_mode_l7_enhanced {
-        // One of the arguments from this list "jumbo_disabled jumbo_enabled" must be set
-
-        jumbo_disabled = true
-      }
-    }
 
     // One of the arguments from this list "sm_connection_public_ip sm_connection_pvt_ip" must be set
 
-    sm_connection_public_ip = true
+    sm_connection_pvt_ip = true
+
+    // One of the arguments from this list "default_storage storage_class_list" must be set
+
+    default_storage = true
   }
   ssh_key = ["ssh-rsa AAAAB..."]
 }

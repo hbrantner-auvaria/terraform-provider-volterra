@@ -389,6 +389,7 @@ func resourceVolterraBigipSiteRead(d *schema.ResourceData, meta interface{}) err
 		}
 		return fmt.Errorf("Error finding Volterra BigipSite %q: %s", d.Id(), err)
 	}
+
 	return setBigipSiteFields(client, d, resp)
 }
 
@@ -632,5 +633,11 @@ func resourceVolterraBigipSiteDelete(d *schema.ResourceData, meta interface{}) e
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_views_bigip_site.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_views_bigip_site.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting BigipSite: %w", err)
+	}
+	return nil
+
 }

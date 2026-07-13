@@ -190,11 +190,6 @@ func resourceVolterraZtnaApplication() *schema.Resource {
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
 
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
-
 																		"name": {
 																			Type:     schema.TypeString,
 																			Optional: true,
@@ -229,11 +224,6 @@ func resourceVolterraZtnaApplication() *schema.Resource {
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
 
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
-
 																		"name": {
 																			Type:     schema.TypeString,
 																			Optional: true,
@@ -266,11 +256,6 @@ func resourceVolterraZtnaApplication() *schema.Resource {
 																Required: true,
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
-
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
 
 																		"name": {
 																			Type:     schema.TypeString,
@@ -315,11 +300,6 @@ func resourceVolterraZtnaApplication() *schema.Resource {
 																Required: true,
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
-
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
 
 																		"name": {
 																			Type:     schema.TypeString,
@@ -370,11 +350,6 @@ func resourceVolterraZtnaApplication() *schema.Resource {
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
 
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
-
 																		"name": {
 																			Type:     schema.TypeString,
 																			Optional: true,
@@ -419,11 +394,6 @@ func resourceVolterraZtnaApplication() *schema.Resource {
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
 
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
-
 																		"name": {
 																			Type:     schema.TypeString,
 																			Optional: true,
@@ -446,11 +416,6 @@ func resourceVolterraZtnaApplication() *schema.Resource {
 																Required: true,
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
-
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
 
 																		"name": {
 																			Type:     schema.TypeString,
@@ -510,11 +475,6 @@ func resourceVolterraZtnaApplication() *schema.Resource {
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
 
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
-
 																		"name": {
 																			Type:     schema.TypeString,
 																			Optional: true,
@@ -553,11 +513,6 @@ func resourceVolterraZtnaApplication() *schema.Resource {
 																Required: true,
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
-
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
 
 																		"name": {
 																			Type:     schema.TypeString,
@@ -603,11 +558,6 @@ func resourceVolterraZtnaApplication() *schema.Resource {
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
 
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
-
 																		"name": {
 																			Type:     schema.TypeString,
 																			Optional: true,
@@ -630,11 +580,6 @@ func resourceVolterraZtnaApplication() *schema.Resource {
 																Required: true,
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
-
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
 
 																		"name": {
 																			Type:     schema.TypeString,
@@ -685,11 +630,6 @@ func resourceVolterraZtnaApplication() *schema.Resource {
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
 
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
-
 																		"name": {
 																			Type:     schema.TypeString,
 																			Optional: true,
@@ -725,11 +665,6 @@ func resourceVolterraZtnaApplication() *schema.Resource {
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
 
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
-
 																		"name": {
 																			Type:     schema.TypeString,
 																			Optional: true,
@@ -753,11 +688,6 @@ func resourceVolterraZtnaApplication() *schema.Resource {
 																Optional: true,
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
-
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
 
 																		"name": {
 																			Type:     schema.TypeString,
@@ -816,11 +746,6 @@ func resourceVolterraZtnaApplication() *schema.Resource {
 										Required: true,
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
-
-												"kind": {
-													Type:     schema.TypeString,
-													Computed: true,
-												},
 
 												"name": {
 													Type:     schema.TypeString,
@@ -1084,24 +1009,22 @@ func resourceVolterraZtnaApplicationCreate(d *schema.ResourceData, meta interfac
 													if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														publicIp := &ves_io_schema_views.ObjectRefType{}
-														choiceInt.AdvertiseOnPublic.PublicIp = publicIp
+														publicIpInt := &ves_io_schema_views.ObjectRefType{}
+														choiceInt.AdvertiseOnPublic.PublicIp = publicIpInt
+
 														for _, set := range sl {
 															if set != nil {
-																publicIpMapStrToI := set.(map[string]interface{})
-
-																if w, ok := publicIpMapStrToI["name"]; ok && !isIntfNil(w) {
-																	publicIp.Name = w.(string)
+																piMapToStrVal := set.(map[string]interface{})
+																if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	publicIpInt.Name = val.(string)
+																}
+																if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	publicIpInt.Namespace = val.(string)
 																}
 
-																if w, ok := publicIpMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	publicIp.Namespace = w.(string)
+																if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	publicIpInt.Tenant = val.(string)
 																}
-
-																if w, ok := publicIpMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	publicIp.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -1145,24 +1068,22 @@ func resourceVolterraZtnaApplicationCreate(d *schema.ResourceData, meta interfac
 													if v, ok := cs["site"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														site := &ves_io_schema_views.ObjectRefType{}
-														choiceInt.Site.Site = site
+														siteInt := &ves_io_schema_views.ObjectRefType{}
+														choiceInt.Site.Site = siteInt
+
 														for _, set := range sl {
 															if set != nil {
-																siteMapStrToI := set.(map[string]interface{})
-
-																if w, ok := siteMapStrToI["name"]; ok && !isIntfNil(w) {
-																	site.Name = w.(string)
+																sMapToStrVal := set.(map[string]interface{})
+																if val, ok := sMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	siteInt.Name = val.(string)
+																}
+																if val, ok := sMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	siteInt.Namespace = val.(string)
 																}
 
-																if w, ok := siteMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	site.Namespace = w.(string)
+																if val, ok := sMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	siteInt.Tenant = val.(string)
 																}
-
-																if w, ok := siteMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	site.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -1200,24 +1121,22 @@ func resourceVolterraZtnaApplicationCreate(d *schema.ResourceData, meta interfac
 													if v, ok := cs["segment"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														segment := &ves_io_schema_views.ObjectRefType{}
-														choiceInt.SiteSegment.Segment = segment
+														segmentInt := &ves_io_schema_views.ObjectRefType{}
+														choiceInt.SiteSegment.Segment = segmentInt
+
 														for _, set := range sl {
 															if set != nil {
-																segmentMapStrToI := set.(map[string]interface{})
-
-																if w, ok := segmentMapStrToI["name"]; ok && !isIntfNil(w) {
-																	segment.Name = w.(string)
+																sMapToStrVal := set.(map[string]interface{})
+																if val, ok := sMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	segmentInt.Name = val.(string)
+																}
+																if val, ok := sMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	segmentInt.Namespace = val.(string)
 																}
 
-																if w, ok := segmentMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	segment.Namespace = w.(string)
+																if val, ok := sMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	segmentInt.Tenant = val.(string)
 																}
-
-																if w, ok := segmentMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	segment.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -1226,24 +1145,22 @@ func resourceVolterraZtnaApplicationCreate(d *schema.ResourceData, meta interfac
 													if v, ok := cs["site"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														site := &ves_io_schema_views.ObjectRefType{}
-														choiceInt.SiteSegment.Site = site
+														siteInt := &ves_io_schema_views.ObjectRefType{}
+														choiceInt.SiteSegment.Site = siteInt
+
 														for _, set := range sl {
 															if set != nil {
-																siteMapStrToI := set.(map[string]interface{})
-
-																if w, ok := siteMapStrToI["name"]; ok && !isIntfNil(w) {
-																	site.Name = w.(string)
+																sMapToStrVal := set.(map[string]interface{})
+																if val, ok := sMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	siteInt.Name = val.(string)
+																}
+																if val, ok := sMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	siteInt.Namespace = val.(string)
 																}
 
-																if w, ok := siteMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	site.Namespace = w.(string)
+																if val, ok := sMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	siteInt.Tenant = val.(string)
 																}
-
-																if w, ok := siteMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	site.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -1319,24 +1236,22 @@ func resourceVolterraZtnaApplicationCreate(d *schema.ResourceData, meta interfac
 													if v, ok := cs["virtual_network"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														virtualNetwork := &ves_io_schema_views.ObjectRefType{}
-														choiceInt.VirtualNetwork.VirtualNetwork = virtualNetwork
+														virtualNetworkInt := &ves_io_schema_views.ObjectRefType{}
+														choiceInt.VirtualNetwork.VirtualNetwork = virtualNetworkInt
+
 														for _, set := range sl {
 															if set != nil {
-																virtualNetworkMapStrToI := set.(map[string]interface{})
-
-																if w, ok := virtualNetworkMapStrToI["name"]; ok && !isIntfNil(w) {
-																	virtualNetwork.Name = w.(string)
+																vnMapToStrVal := set.(map[string]interface{})
+																if val, ok := vnMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	virtualNetworkInt.Name = val.(string)
+																}
+																if val, ok := vnMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	virtualNetworkInt.Namespace = val.(string)
 																}
 
-																if w, ok := virtualNetworkMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	virtualNetwork.Namespace = w.(string)
+																if val, ok := vnMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	virtualNetworkInt.Tenant = val.(string)
 																}
-
-																if w, ok := virtualNetworkMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	virtualNetwork.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -1368,24 +1283,22 @@ func resourceVolterraZtnaApplicationCreate(d *schema.ResourceData, meta interfac
 													if v, ok := cs["virtual_site"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														virtualSite := &ves_io_schema_views.ObjectRefType{}
-														choiceInt.VirtualSite.VirtualSite = virtualSite
+														virtualSiteInt := &ves_io_schema_views.ObjectRefType{}
+														choiceInt.VirtualSite.VirtualSite = virtualSiteInt
+
 														for _, set := range sl {
 															if set != nil {
-																virtualSiteMapStrToI := set.(map[string]interface{})
-
-																if w, ok := virtualSiteMapStrToI["name"]; ok && !isIntfNil(w) {
-																	virtualSite.Name = w.(string)
+																vsMapToStrVal := set.(map[string]interface{})
+																if val, ok := vsMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	virtualSiteInt.Name = val.(string)
+																}
+																if val, ok := vsMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	virtualSiteInt.Namespace = val.(string)
 																}
 
-																if w, ok := virtualSiteMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	virtualSite.Namespace = w.(string)
+																if val, ok := vsMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	virtualSiteInt.Tenant = val.(string)
 																}
-
-																if w, ok := virtualSiteMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	virtualSite.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -1423,24 +1336,22 @@ func resourceVolterraZtnaApplicationCreate(d *schema.ResourceData, meta interfac
 													if v, ok := cs["segment"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														segment := &ves_io_schema_views.ObjectRefType{}
-														choiceInt.VirtualSiteSegment.Segment = segment
+														segmentInt := &ves_io_schema_views.ObjectRefType{}
+														choiceInt.VirtualSiteSegment.Segment = segmentInt
+
 														for _, set := range sl {
 															if set != nil {
-																segmentMapStrToI := set.(map[string]interface{})
-
-																if w, ok := segmentMapStrToI["name"]; ok && !isIntfNil(w) {
-																	segment.Name = w.(string)
+																sMapToStrVal := set.(map[string]interface{})
+																if val, ok := sMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	segmentInt.Name = val.(string)
+																}
+																if val, ok := sMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	segmentInt.Namespace = val.(string)
 																}
 
-																if w, ok := segmentMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	segment.Namespace = w.(string)
+																if val, ok := sMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	segmentInt.Tenant = val.(string)
 																}
-
-																if w, ok := segmentMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	segment.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -1449,24 +1360,22 @@ func resourceVolterraZtnaApplicationCreate(d *schema.ResourceData, meta interfac
 													if v, ok := cs["virtual_site"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														virtualSite := &ves_io_schema_views.ObjectRefType{}
-														choiceInt.VirtualSiteSegment.VirtualSite = virtualSite
+														virtualSiteInt := &ves_io_schema_views.ObjectRefType{}
+														choiceInt.VirtualSiteSegment.VirtualSite = virtualSiteInt
+
 														for _, set := range sl {
 															if set != nil {
-																virtualSiteMapStrToI := set.(map[string]interface{})
-
-																if w, ok := virtualSiteMapStrToI["name"]; ok && !isIntfNil(w) {
-																	virtualSite.Name = w.(string)
+																vsMapToStrVal := set.(map[string]interface{})
+																if val, ok := vsMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	virtualSiteInt.Name = val.(string)
+																}
+																if val, ok := vsMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	virtualSiteInt.Namespace = val.(string)
 																}
 
-																if w, ok := virtualSiteMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	virtualSite.Namespace = w.(string)
+																if val, ok := vsMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	virtualSiteInt.Tenant = val.(string)
 																}
-
-																if w, ok := virtualSiteMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	virtualSite.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -1510,24 +1419,22 @@ func resourceVolterraZtnaApplicationCreate(d *schema.ResourceData, meta interfac
 													if v, ok := cs["virtual_site"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														virtualSite := &ves_io_schema_views.ObjectRefType{}
-														choiceInt.VirtualSiteWithVip.VirtualSite = virtualSite
+														virtualSiteInt := &ves_io_schema_views.ObjectRefType{}
+														choiceInt.VirtualSiteWithVip.VirtualSite = virtualSiteInt
+
 														for _, set := range sl {
 															if set != nil {
-																virtualSiteMapStrToI := set.(map[string]interface{})
-
-																if w, ok := virtualSiteMapStrToI["name"]; ok && !isIntfNil(w) {
-																	virtualSite.Name = w.(string)
+																vsMapToStrVal := set.(map[string]interface{})
+																if val, ok := vsMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	virtualSiteInt.Name = val.(string)
+																}
+																if val, ok := vsMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	virtualSiteInt.Namespace = val.(string)
 																}
 
-																if w, ok := virtualSiteMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	virtualSite.Namespace = w.(string)
+																if val, ok := vsMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	virtualSiteInt.Tenant = val.(string)
 																}
-
-																if w, ok := virtualSiteMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	virtualSite.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -1688,24 +1595,22 @@ func resourceVolterraZtnaApplicationCreate(d *schema.ResourceData, meta interfac
 							if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
 
 								sl := v.([]interface{})
-								publicIp := &ves_io_schema_views.ObjectRefType{}
-								advertiseChoiceInt.AdvertiseOnPublic.PublicIp = publicIp
+								publicIpInt := &ves_io_schema_views.ObjectRefType{}
+								advertiseChoiceInt.AdvertiseOnPublic.PublicIp = publicIpInt
+
 								for _, set := range sl {
 									if set != nil {
-										publicIpMapStrToI := set.(map[string]interface{})
-
-										if w, ok := publicIpMapStrToI["name"]; ok && !isIntfNil(w) {
-											publicIp.Name = w.(string)
+										piMapToStrVal := set.(map[string]interface{})
+										if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+											publicIpInt.Name = val.(string)
+										}
+										if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											publicIpInt.Namespace = val.(string)
 										}
 
-										if w, ok := publicIpMapStrToI["namespace"]; ok && !isIntfNil(w) {
-											publicIp.Namespace = w.(string)
+										if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											publicIpInt.Tenant = val.(string)
 										}
-
-										if w, ok := publicIpMapStrToI["tenant"]; ok && !isIntfNil(w) {
-											publicIp.Tenant = w.(string)
-										}
-
 									}
 								}
 
@@ -1777,6 +1682,7 @@ func resourceVolterraZtnaApplicationRead(d *schema.ResourceData, meta interface{
 		}
 		return fmt.Errorf("Error finding Volterra ZtnaApplication %q: %s", d.Id(), err)
 	}
+
 	return setZtnaApplicationFields(client, d, resp)
 }
 
@@ -2014,24 +1920,22 @@ func resourceVolterraZtnaApplicationUpdate(d *schema.ResourceData, meta interfac
 													if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														publicIp := &ves_io_schema_views.ObjectRefType{}
-														choiceInt.AdvertiseOnPublic.PublicIp = publicIp
+														publicIpInt := &ves_io_schema_views.ObjectRefType{}
+														choiceInt.AdvertiseOnPublic.PublicIp = publicIpInt
+
 														for _, set := range sl {
 															if set != nil {
-																publicIpMapStrToI := set.(map[string]interface{})
-
-																if w, ok := publicIpMapStrToI["name"]; ok && !isIntfNil(w) {
-																	publicIp.Name = w.(string)
+																piMapToStrVal := set.(map[string]interface{})
+																if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	publicIpInt.Name = val.(string)
+																}
+																if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	publicIpInt.Namespace = val.(string)
 																}
 
-																if w, ok := publicIpMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	publicIp.Namespace = w.(string)
+																if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	publicIpInt.Tenant = val.(string)
 																}
-
-																if w, ok := publicIpMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	publicIp.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -2075,24 +1979,22 @@ func resourceVolterraZtnaApplicationUpdate(d *schema.ResourceData, meta interfac
 													if v, ok := cs["site"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														site := &ves_io_schema_views.ObjectRefType{}
-														choiceInt.Site.Site = site
+														siteInt := &ves_io_schema_views.ObjectRefType{}
+														choiceInt.Site.Site = siteInt
+
 														for _, set := range sl {
 															if set != nil {
-																siteMapStrToI := set.(map[string]interface{})
-
-																if w, ok := siteMapStrToI["name"]; ok && !isIntfNil(w) {
-																	site.Name = w.(string)
+																sMapToStrVal := set.(map[string]interface{})
+																if val, ok := sMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	siteInt.Name = val.(string)
+																}
+																if val, ok := sMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	siteInt.Namespace = val.(string)
 																}
 
-																if w, ok := siteMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	site.Namespace = w.(string)
+																if val, ok := sMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	siteInt.Tenant = val.(string)
 																}
-
-																if w, ok := siteMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	site.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -2130,24 +2032,22 @@ func resourceVolterraZtnaApplicationUpdate(d *schema.ResourceData, meta interfac
 													if v, ok := cs["segment"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														segment := &ves_io_schema_views.ObjectRefType{}
-														choiceInt.SiteSegment.Segment = segment
+														segmentInt := &ves_io_schema_views.ObjectRefType{}
+														choiceInt.SiteSegment.Segment = segmentInt
+
 														for _, set := range sl {
 															if set != nil {
-																segmentMapStrToI := set.(map[string]interface{})
-
-																if w, ok := segmentMapStrToI["name"]; ok && !isIntfNil(w) {
-																	segment.Name = w.(string)
+																sMapToStrVal := set.(map[string]interface{})
+																if val, ok := sMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	segmentInt.Name = val.(string)
+																}
+																if val, ok := sMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	segmentInt.Namespace = val.(string)
 																}
 
-																if w, ok := segmentMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	segment.Namespace = w.(string)
+																if val, ok := sMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	segmentInt.Tenant = val.(string)
 																}
-
-																if w, ok := segmentMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	segment.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -2156,24 +2056,22 @@ func resourceVolterraZtnaApplicationUpdate(d *schema.ResourceData, meta interfac
 													if v, ok := cs["site"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														site := &ves_io_schema_views.ObjectRefType{}
-														choiceInt.SiteSegment.Site = site
+														siteInt := &ves_io_schema_views.ObjectRefType{}
+														choiceInt.SiteSegment.Site = siteInt
+
 														for _, set := range sl {
 															if set != nil {
-																siteMapStrToI := set.(map[string]interface{})
-
-																if w, ok := siteMapStrToI["name"]; ok && !isIntfNil(w) {
-																	site.Name = w.(string)
+																sMapToStrVal := set.(map[string]interface{})
+																if val, ok := sMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	siteInt.Name = val.(string)
+																}
+																if val, ok := sMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	siteInt.Namespace = val.(string)
 																}
 
-																if w, ok := siteMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	site.Namespace = w.(string)
+																if val, ok := sMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	siteInt.Tenant = val.(string)
 																}
-
-																if w, ok := siteMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	site.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -2249,24 +2147,22 @@ func resourceVolterraZtnaApplicationUpdate(d *schema.ResourceData, meta interfac
 													if v, ok := cs["virtual_network"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														virtualNetwork := &ves_io_schema_views.ObjectRefType{}
-														choiceInt.VirtualNetwork.VirtualNetwork = virtualNetwork
+														virtualNetworkInt := &ves_io_schema_views.ObjectRefType{}
+														choiceInt.VirtualNetwork.VirtualNetwork = virtualNetworkInt
+
 														for _, set := range sl {
 															if set != nil {
-																virtualNetworkMapStrToI := set.(map[string]interface{})
-
-																if w, ok := virtualNetworkMapStrToI["name"]; ok && !isIntfNil(w) {
-																	virtualNetwork.Name = w.(string)
+																vnMapToStrVal := set.(map[string]interface{})
+																if val, ok := vnMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	virtualNetworkInt.Name = val.(string)
+																}
+																if val, ok := vnMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	virtualNetworkInt.Namespace = val.(string)
 																}
 
-																if w, ok := virtualNetworkMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	virtualNetwork.Namespace = w.(string)
+																if val, ok := vnMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	virtualNetworkInt.Tenant = val.(string)
 																}
-
-																if w, ok := virtualNetworkMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	virtualNetwork.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -2298,24 +2194,22 @@ func resourceVolterraZtnaApplicationUpdate(d *schema.ResourceData, meta interfac
 													if v, ok := cs["virtual_site"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														virtualSite := &ves_io_schema_views.ObjectRefType{}
-														choiceInt.VirtualSite.VirtualSite = virtualSite
+														virtualSiteInt := &ves_io_schema_views.ObjectRefType{}
+														choiceInt.VirtualSite.VirtualSite = virtualSiteInt
+
 														for _, set := range sl {
 															if set != nil {
-																virtualSiteMapStrToI := set.(map[string]interface{})
-
-																if w, ok := virtualSiteMapStrToI["name"]; ok && !isIntfNil(w) {
-																	virtualSite.Name = w.(string)
+																vsMapToStrVal := set.(map[string]interface{})
+																if val, ok := vsMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	virtualSiteInt.Name = val.(string)
+																}
+																if val, ok := vsMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	virtualSiteInt.Namespace = val.(string)
 																}
 
-																if w, ok := virtualSiteMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	virtualSite.Namespace = w.(string)
+																if val, ok := vsMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	virtualSiteInt.Tenant = val.(string)
 																}
-
-																if w, ok := virtualSiteMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	virtualSite.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -2353,24 +2247,22 @@ func resourceVolterraZtnaApplicationUpdate(d *schema.ResourceData, meta interfac
 													if v, ok := cs["segment"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														segment := &ves_io_schema_views.ObjectRefType{}
-														choiceInt.VirtualSiteSegment.Segment = segment
+														segmentInt := &ves_io_schema_views.ObjectRefType{}
+														choiceInt.VirtualSiteSegment.Segment = segmentInt
+
 														for _, set := range sl {
 															if set != nil {
-																segmentMapStrToI := set.(map[string]interface{})
-
-																if w, ok := segmentMapStrToI["name"]; ok && !isIntfNil(w) {
-																	segment.Name = w.(string)
+																sMapToStrVal := set.(map[string]interface{})
+																if val, ok := sMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	segmentInt.Name = val.(string)
+																}
+																if val, ok := sMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	segmentInt.Namespace = val.(string)
 																}
 
-																if w, ok := segmentMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	segment.Namespace = w.(string)
+																if val, ok := sMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	segmentInt.Tenant = val.(string)
 																}
-
-																if w, ok := segmentMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	segment.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -2379,24 +2271,22 @@ func resourceVolterraZtnaApplicationUpdate(d *schema.ResourceData, meta interfac
 													if v, ok := cs["virtual_site"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														virtualSite := &ves_io_schema_views.ObjectRefType{}
-														choiceInt.VirtualSiteSegment.VirtualSite = virtualSite
+														virtualSiteInt := &ves_io_schema_views.ObjectRefType{}
+														choiceInt.VirtualSiteSegment.VirtualSite = virtualSiteInt
+
 														for _, set := range sl {
 															if set != nil {
-																virtualSiteMapStrToI := set.(map[string]interface{})
-
-																if w, ok := virtualSiteMapStrToI["name"]; ok && !isIntfNil(w) {
-																	virtualSite.Name = w.(string)
+																vsMapToStrVal := set.(map[string]interface{})
+																if val, ok := vsMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	virtualSiteInt.Name = val.(string)
+																}
+																if val, ok := vsMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	virtualSiteInt.Namespace = val.(string)
 																}
 
-																if w, ok := virtualSiteMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	virtualSite.Namespace = w.(string)
+																if val, ok := vsMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	virtualSiteInt.Tenant = val.(string)
 																}
-
-																if w, ok := virtualSiteMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	virtualSite.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -2440,24 +2330,22 @@ func resourceVolterraZtnaApplicationUpdate(d *schema.ResourceData, meta interfac
 													if v, ok := cs["virtual_site"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														virtualSite := &ves_io_schema_views.ObjectRefType{}
-														choiceInt.VirtualSiteWithVip.VirtualSite = virtualSite
+														virtualSiteInt := &ves_io_schema_views.ObjectRefType{}
+														choiceInt.VirtualSiteWithVip.VirtualSite = virtualSiteInt
+
 														for _, set := range sl {
 															if set != nil {
-																virtualSiteMapStrToI := set.(map[string]interface{})
-
-																if w, ok := virtualSiteMapStrToI["name"]; ok && !isIntfNil(w) {
-																	virtualSite.Name = w.(string)
+																vsMapToStrVal := set.(map[string]interface{})
+																if val, ok := vsMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	virtualSiteInt.Name = val.(string)
+																}
+																if val, ok := vsMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	virtualSiteInt.Namespace = val.(string)
 																}
 
-																if w, ok := virtualSiteMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	virtualSite.Namespace = w.(string)
+																if val, ok := vsMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	virtualSiteInt.Tenant = val.(string)
 																}
-
-																if w, ok := virtualSiteMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	virtualSite.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -2618,24 +2506,22 @@ func resourceVolterraZtnaApplicationUpdate(d *schema.ResourceData, meta interfac
 							if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
 
 								sl := v.([]interface{})
-								publicIp := &ves_io_schema_views.ObjectRefType{}
-								advertiseChoiceInt.AdvertiseOnPublic.PublicIp = publicIp
+								publicIpInt := &ves_io_schema_views.ObjectRefType{}
+								advertiseChoiceInt.AdvertiseOnPublic.PublicIp = publicIpInt
+
 								for _, set := range sl {
 									if set != nil {
-										publicIpMapStrToI := set.(map[string]interface{})
-
-										if w, ok := publicIpMapStrToI["name"]; ok && !isIntfNil(w) {
-											publicIp.Name = w.(string)
+										piMapToStrVal := set.(map[string]interface{})
+										if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+											publicIpInt.Name = val.(string)
+										}
+										if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											publicIpInt.Namespace = val.(string)
 										}
 
-										if w, ok := publicIpMapStrToI["namespace"]; ok && !isIntfNil(w) {
-											publicIp.Namespace = w.(string)
+										if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											publicIpInt.Tenant = val.(string)
 										}
-
-										if w, ok := publicIpMapStrToI["tenant"]; ok && !isIntfNil(w) {
-											publicIp.Tenant = w.(string)
-										}
-
 									}
 								}
 
@@ -2710,5 +2596,11 @@ func resourceVolterraZtnaApplicationDelete(d *schema.ResourceData, meta interfac
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_ztna_application.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_ztna_application.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting ZtnaApplication: %w", err)
+	}
+	return nil
+
 }

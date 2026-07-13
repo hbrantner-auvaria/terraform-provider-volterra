@@ -732,6 +732,14 @@ func (v *ValidateCNAMEMember) NameValidationRuleHandler(rules map[string]string)
 
 	return validatorFn, nil
 }
+func (v *ValidateCNAMEMember) PriorityValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewUint32ValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for priority")
+	}
+
+	return validatorFn, nil
+}
 
 func (v *ValidateCNAMEMember) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
 	m, ok := pm.(*CNAMEMember)
@@ -761,6 +769,12 @@ func (v *ValidateCNAMEMember) Validate(ctx context.Context, pm interface{}, opts
 	if fv, exists := v.FldValidators["name"]; exists {
 		vOpts := append(opts, db.WithValidateField("name"))
 		if err := fv(ctx, m.GetName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["priority"]; exists {
+		vOpts := append(opts, db.WithValidateField("priority"))
+		if err := fv(ctx, m.GetPriority(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -818,6 +832,18 @@ var DefaultCNAMEMemberValidator = func() *ValidateCNAMEMember {
 		panic(errMsg)
 	}
 	v.FldValidators["name"] = vFn
+
+	vrhPriority := v.PriorityValidationRuleHandler
+	rulesPriority := map[string]string{
+		"ves.io.schema.rules.uint32.gte": "0",
+		"ves.io.schema.rules.uint32.lte": "255",
+	}
+	vFn, err = vrhPriority(rulesPriority)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for CNAMEMember.priority: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["priority"] = vFn
 
 	return v
 }()

@@ -401,6 +401,12 @@ func (v *ValidateColumn) Validate(ctx context.Context, pm interface{}, opts ...d
 			}
 		}
 	}
+	if fv, exists := v.FldValidators["hidden_conditions"]; exists {
+		vOpts := append(opts, db.WithValidateField("hidden_conditions"))
+		if err := fv(ctx, m.GetHiddenConditions(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["optional"]; exists {
 		vOpts := append(opts, db.WithValidateField("optional"))
 		if err := fv(ctx, m.GetOptional(), vOpts...); err != nil {
@@ -1979,6 +1985,15 @@ func (v *ValidateHiddenConditions) Validate(ctx context.Context, pm interface{},
 			}
 		}
 	}
+	if fv, exists := v.FldValidators["tenant_in"]; exists {
+		vOpts := append(opts, db.WithValidateField("tenant_in"))
+		for idx, item := range m.GetTenantIn() {
+			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
+			if err := fv(ctx, item, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
 	if fv, exists := v.FldValidators["value_at_path"]; exists {
 		vOpts := append(opts, db.WithValidateField("value_at_path"))
 		if err := fv(ctx, m.GetValueAtPath(), vOpts...); err != nil {
@@ -3032,6 +3047,12 @@ func (v *ValidateTile) Validate(ctx context.Context, pm interface{}, opts ...db.
 	if fv, exists := v.FldValidators["help"]; exists {
 		vOpts := append(opts, db.WithValidateField("help"))
 		if err := fv(ctx, m.GetHelp(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["hidden_conditions"]; exists {
+		vOpts := append(opts, db.WithValidateField("hidden_conditions"))
+		if err := fv(ctx, m.GetHiddenConditions(), vOpts...); err != nil {
 			return err
 		}
 	}

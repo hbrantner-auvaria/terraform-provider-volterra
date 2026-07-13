@@ -182,6 +182,7 @@ func resourceVolterraSegmentRead(d *schema.ResourceData, meta interface{}) error
 		}
 		return fmt.Errorf("Error finding Volterra Segment %q: %s", d.Id(), err)
 	}
+
 	return setSegmentFields(client, d, resp)
 }
 
@@ -311,5 +312,11 @@ func resourceVolterraSegmentDelete(d *schema.ResourceData, meta interface{}) err
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_segment.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_segment.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting Segment: %w", err)
+	}
+	return nil
+
 }

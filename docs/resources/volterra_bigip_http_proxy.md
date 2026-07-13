@@ -23,7 +23,7 @@ resource "volterra_bigip_http_proxy" "example" {
   ddos_profile {
     // One of the arguments from this list "disable_ddos_mitigation enable_ddos_mitigation" can be set
 
-    enable_ddos_mitigation = true
+    disable_ddos_mitigation = true
   }
 
   origin_pools {
@@ -81,12 +81,112 @@ resource "volterra_bigip_http_proxy" "example" {
 
     // One of the arguments from this list "http https https_auto_cert" must be set
 
-    http {
-      dns_volterra_managed = true
+    https {
+      add_hsts = true
+
+      coalescing_options {
+        // One of the arguments from this list "default_coalescing strict_coalescing" must be set
+
+        default_coalescing = true
+      }
+
+      connection_idle_timeout = "60000"
+
+      // One of the arguments from this list "default_loadbalancer non_default_loadbalancer" can be set
+
+      non_default_loadbalancer = true
+      header_transformation_type {
+        // One of the arguments from this list "default_header_transformation legacy_header_transformation preserve_case_header_transformation proper_case_header_transformation" must be set
+
+        legacy_header_transformation = true
+      }
+      http_protocol_options {
+        // One of the arguments from this list "http_protocol_enable_v1_only http_protocol_enable_v1_v2 http_protocol_enable_v2_only" must be set
+
+        http_protocol_enable_v1_only {
+          header_transformation {
+            // One of the arguments from this list "default_header_transformation legacy_header_transformation preserve_case_header_transformation proper_case_header_transformation" must be set
+
+            legacy_header_transformation = true
+          }
+        }
+      }
+      http_redirect = true
+
+      // One of the arguments from this list "disable_path_normalize enable_path_normalize" must be set
+
+      enable_path_normalize = true
 
       // One of the arguments from this list "port port_ranges" must be set
 
-      port = "80"
+      port = "443"
+
+      // One of the arguments from this list "append_server_name default_header pass_through server_name" can be set
+
+      append_server_name = "append_server_name"
+
+      // One of the arguments from this list "tls_cert_params tls_parameters" must be set
+
+      tls_parameters {
+        // One of the arguments from this list "no_mtls use_mtls" must be set
+
+        use_mtls {
+          client_certificate_optional = true
+
+          // One of the arguments from this list "crl no_crl" can be set
+
+          no_crl = true
+
+          // One of the arguments from this list "trusted_ca trusted_ca_url" must be set
+
+          trusted_ca_url = "trusted_ca_url"
+
+          // One of the arguments from this list "xfcc_disabled xfcc_options" can be set
+
+          xfcc_disabled = true
+        }
+
+        tls_certificates {
+          certificate_url = "value"
+
+          description = "Certificate used in production environment"
+
+          // One of the arguments from this list "custom_hash_algorithms disable_ocsp_stapling use_system_defaults" can be set
+
+          use_system_defaults {}
+          private_key {
+            blindfold_secret_info_internal {
+              decryption_provider = "value"
+
+              location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
+
+              store_provider = "value"
+            }
+
+            secret_encoding_type = "secret_encoding_type"
+
+            // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
+
+            vault_secret_info {
+              key = "key_pem"
+
+              location = "v1/data/vhost_key"
+
+              provider = "vault-vh-provider"
+
+              secret_encoding = "secret_encoding"
+
+              version = "1"
+            }
+          }
+        }
+
+        tls_config {
+          // One of the arguments from this list "custom_security default_security low_security medium_security" must be set
+
+          default_security = true
+        }
+      }
     }
   }
 }

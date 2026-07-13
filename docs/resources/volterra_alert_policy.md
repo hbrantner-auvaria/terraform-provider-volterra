@@ -37,9 +37,7 @@ resource "volterra_alert_policy" "example" {
     notification_parameters {
       // One of the arguments from this list "custom default individual ves_io_group" must be set
 
-      custom {
-        labels = ["value"]
-      }
+      default = true
 
       group_interval = "1m"
 
@@ -108,7 +106,7 @@ The routes are evaluated in the specified order and terminates on the first matc
 
 ###### One of the arguments from this list "alertname, alertname_regex, any, custom, group, severity" can be set
 
-`alertname` - (Optional) Matches the alertname of the alert (`String`). **Supported values**: SiteCustomerTunnelInterfaceDown, SitePhysicalInterfaceDown, TunnelsToCustomerSiteDown, ServiceServerError, ServiceClientError, ServiceHealthLow, ServiceUnavailable, ServiceServerErrorPerSourceSite, ServiceClientErrorPerSourceSite, ServiceEndpointHealthcheckFailure, SyntheticMonitorHealthCritical, MaliciousUserDetected, WAFTooManyAttacks, APISecurityTooManyAttacks, ServicePolicyTooManyAttacks, WAFTooManyMaliciousBots, BotDefenseTooManySecurityEvents, ThreatCampaign, VesClientSideDefenseSuspiciousDomain, VesClientSideDefenseSensitiveFieldRead, TLSAutomaticCertificateRenewalFailure, TLSAutomaticCertificateRenewalStillFailing, TLSAutomaticCertificateExpired, TLSCustomCertificateExpiring, TLSCustomCertificateExpiringSoon, TLSCustomCertificateExpired, L7DDoS, DNSZoneIgnoredDuplicateRecord, APISecurityUnUsedAPIDetected, APISecurityShadowAPIDetected, APISecuritySensitiveDataInResponseDetected, APISecurityRiskScoreHighDetected, RoutedDDoSAlertNotification, RoutedDDoSMitigationNotification.
+`alertname` - (Optional) Matches the alertname of the alert (`String`).
 
 `alertname_regex` - (Optional) Regular Expression match for the alertname (`String`).
 

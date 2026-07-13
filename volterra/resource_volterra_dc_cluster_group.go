@@ -59,6 +59,25 @@ func resourceVolterraDcClusterGroup() *schema.Resource {
 				Required: true,
 				ForceNew: true,
 			},
+
+			"type": {
+				Type:     schema.TypeList,
+				MaxItems: 1,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+
+						"data_plane_mesh": {
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+						"control_and_data_plane_mesh": {
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+					},
+				},
+			},
 		},
 	}
 }
@@ -116,6 +135,10 @@ func resourceVolterraDcClusterGroupCreate(d *schema.ResourceData, meta interface
 			v.(string)
 	}
 
+	if v, ok := d.GetOk("type"); ok && !isIntfNil(v) {
+		createSpec.Type = expandDcClusterGroupMeshType(v)
+	}
+
 	log.Printf("[DEBUG] Creating Volterra DcClusterGroup object with struct: %+v", createReq)
 
 	createDcClusterGroupResp, err := client.CreateObject(context.Background(), ves_io_schema_dc_cluster_group.ObjectType, createReq)
@@ -159,7 +182,52 @@ func setDcClusterGroupFields(client *APIClient, d *schema.ResourceData, resp ves
 
 	d.Set("namespace", metadata.GetNamespace())
 
+	spec := resp.GetObjSpec().(*ves_io_schema_dc_cluster_group.SpecType)
+	if spec != nil && spec.GetGcSpec() != nil {
+		d.Set("type", flattenDcClusterGroupMeshType(spec.GetGcSpec().GetType()))
+	}
+
 	return nil
+}
+
+func expandDcClusterGroupMeshType(v interface{}) *ves_io_schema_dc_cluster_group.DCClusterGroupMeshType {
+	sl := v.([]interface{})
+	if len(sl) == 0 || sl[0] == nil {
+		return nil
+	}
+	data := sl[0].(map[string]interface{})
+	meshType := &ves_io_schema_dc_cluster_group.DCClusterGroupMeshType{}
+
+	if v, ok := data["data_plane_mesh"]; ok && v.(bool) {
+		meshType.DcClusterGroupMeshChoice = &ves_io_schema_dc_cluster_group.DCClusterGroupMeshType_DataPlaneMesh{
+			DataPlaneMesh: &ves_io_schema.Empty{},
+		}
+	} else if v, ok := data["control_and_data_plane_mesh"]; ok && v.(bool) {
+		meshType.DcClusterGroupMeshChoice = &ves_io_schema_dc_cluster_group.DCClusterGroupMeshType_ControlAndDataPlaneMesh{
+			ControlAndDataPlaneMesh: &ves_io_schema.Empty{},
+		}
+	}
+
+	return meshType
+}
+
+func flattenDcClusterGroupMeshType(meshType *ves_io_schema_dc_cluster_group.DCClusterGroupMeshType) []interface{} {
+	if meshType == nil {
+		return nil
+	}
+	data := map[string]interface{}{
+		"data_plane_mesh":             false,
+		"control_and_data_plane_mesh": false,
+	}
+
+	switch meshType.GetDcClusterGroupMeshChoice().(type) {
+	case *ves_io_schema_dc_cluster_group.DCClusterGroupMeshType_DataPlaneMesh:
+		data["data_plane_mesh"] = true
+	case *ves_io_schema_dc_cluster_group.DCClusterGroupMeshType_ControlAndDataPlaneMesh:
+		data["control_and_data_plane_mesh"] = true
+	}
+
+	return []interface{}{data}
 }
 
 // resourceVolterraDcClusterGroupUpdate updates DcClusterGroup resource
@@ -212,6 +280,10 @@ func resourceVolterraDcClusterGroupUpdate(d *schema.ResourceData, meta interface
 	if v, ok := d.GetOk("namespace"); ok && !isIntfNil(v) {
 		updateMeta.Namespace =
 			v.(string)
+	}
+
+	if v, ok := d.GetOk("type"); ok && !isIntfNil(v) {
+		updateSpec.Type = expandDcClusterGroupMeshType(v)
 	}
 
 	log.Printf("[DEBUG] Updating Volterra DcClusterGroup obj with struct: %+v", updateReq)

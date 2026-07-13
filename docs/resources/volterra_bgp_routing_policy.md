@@ -24,14 +24,22 @@ resource "volterra_bgp_routing_policy" "example" {
     action {
       // One of the arguments from this list "allow as_path community deny local_preference metric" can be set
 
-      deny = true
+      community {
+        community = ["[65535:65281, 65535:65284]"]
+      }
     }
 
     match {
       // One of the arguments from this list "as_path community ip_prefixes" must be set
 
-      community {
-        community = ["[65535:65281, 65535:65284]"]
+      ip_prefixes {
+        prefixes {
+          ip_prefixes = "ip_prefixes"
+
+          // One of the arguments from this list "equal_or_longer_than exact_match longer_than" can be set
+
+          exact_match = true
+        }
       }
     }
   }

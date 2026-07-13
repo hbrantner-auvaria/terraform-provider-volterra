@@ -23,23 +23,23 @@ resource "volterra_dns_lb_pool" "example" {
 
   // One of the arguments from this list "a_pool aaaa_pool cname_pool mx_pool srv_pool" must be set
 
-  srv_pool {
+  a_pool {
+    // One of the arguments from this list "disable_health_check health_check" must be set
+
+    disable_health_check = true
+
     max_answers = "1"
 
     members {
-      final_translation = true
+      disable = true
+
+      ip_endpoint = "8.8.8.8"
 
       name = "web server 1"
-
-      port = "10"
 
       priority = "10"
 
       ratio = "10"
-
-      target = "my.example.com"
-
-      weight = "10"
     }
   }
 
@@ -120,13 +120,15 @@ x-required.
 
 x-required.
 
-`domain` - (Required) x-required (`String`).
+`domain` - (Required) Specifies the fully qualified domain name. (`String`).
 
 `final_translation` - (Optional) If this flag is true, the CNAME record will not be translated further. (`Bool`).
 
 `name` - (Optional) Pool member name (`String`).
 
-`ratio` - (Optional) Ratio (`Int`).
+`priority` - (Optional) Used if the pool’s load balancing mode is set to Priority. Determines the order in which traffic is routed to pool members. The lower the number, the higher the priority, making those members active while higher-numbered members act as backups. (`Int`).
+
+`ratio` - (Optional) Used if the pool’s load balancing mode is set to Ratio-Member (`Int`).
 
 ### Health Check Choice Disable Health Check
 

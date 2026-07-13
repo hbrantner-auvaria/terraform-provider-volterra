@@ -46,10 +46,16 @@ resource "volterra_cloud_link" "example" {
 
           // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
 
-          clear_secret_info {
-            provider = "box-provider"
+          vault_secret_info {
+            key = "key_pem"
 
-            url = "string:///U2VjcmV0SW5mb3JtYXRpb24="
+            location = "v1/data/vhost_key"
+
+            provider = "vault-vh-provider"
+
+            secret_encoding = "secret_encoding"
+
+            version = "1"
           }
         }
 
@@ -84,7 +90,7 @@ resource "volterra_cloud_link" "example" {
 
         // One of the arguments from this list "system_generated_name user_assigned_name" can be set
 
-        user_assigned_name = "user_assigned_name"
+        system_generated_name = true
         tags = {
           "key1" = "value1"
         }

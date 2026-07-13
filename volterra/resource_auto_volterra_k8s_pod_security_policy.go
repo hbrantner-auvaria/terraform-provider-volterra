@@ -1285,6 +1285,7 @@ func resourceVolterraK8SPodSecurityPolicyRead(d *schema.ResourceData, meta inter
 		}
 		return fmt.Errorf("Error finding Volterra K8SPodSecurityPolicy %q: %s", d.Id(), err)
 	}
+
 	return setK8SPodSecurityPolicyFields(client, d, resp)
 }
 
@@ -2070,5 +2071,11 @@ func resourceVolterraK8SPodSecurityPolicyDelete(d *schema.ResourceData, meta int
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_k8s_pod_security_policy.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_k8s_pod_security_policy.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting K8SPodSecurityPolicy: %w", err)
+	}
+	return nil
+
 }

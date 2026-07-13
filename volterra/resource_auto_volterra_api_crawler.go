@@ -547,6 +547,7 @@ func resourceVolterraApiCrawlerRead(d *schema.ResourceData, meta interface{}) er
 		}
 		return fmt.Errorf("Error finding Volterra ApiCrawler %q: %s", d.Id(), err)
 	}
+
 	return setApiCrawlerFields(client, d, resp)
 }
 
@@ -869,5 +870,11 @@ func resourceVolterraApiCrawlerDelete(d *schema.ResourceData, meta interface{}) 
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_api_sec_api_crawler.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_api_sec_api_crawler.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting ApiCrawler: %w", err)
+	}
+	return nil
+
 }

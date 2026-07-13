@@ -2278,7 +2278,7 @@ var APISwaggerJSON string = `{
                         "ves.io.schema.rules.repeated.unique": "true"
                     }
                 },
-                "traffic_policies": {
+                "pmf_traffic_policies": {
                     "type": "array",
                     "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.unique: true\n",
                     "maxItems": 32,
@@ -2464,7 +2464,7 @@ var APISwaggerJSON string = `{
                         "ves.io.schema.rules.repeated.unique": "true"
                     }
                 },
-                "traffic_policies": {
+                "pmf_traffic_policies": {
                     "type": "array",
                     "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.unique: true\n",
                     "maxItems": 32,
@@ -2484,12 +2484,40 @@ var APISwaggerJSON string = `{
                 }
             }
         },
-        "application_profilesHTTPProfileType": {
+        "application_profilesHTTP3ProfileType": {
             "type": "object",
-            "title": "HTTP",
-            "x-displayname": "HTTP profiles",
-            "x-ves-proto-message": "ves.io.schema.bigcne.application_profiles.HTTPProfileType",
+            "title": "HTTP/3",
+            "x-displayname": "HTTP/3 profiles",
+            "x-ves-proto-message": "ves.io.schema.bigcne.application_profiles.HTTP3ProfileType",
             "properties": {
+                "client_ssl_profile": {
+                    "type": "array",
+                    "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "title": "Client SSL Profile",
+                    "maxItems": 32,
+                    "items": {
+                        "$ref": "#/definitions/schemaObjectRefType"
+                    },
+                    "x-displayname": "Client SSL Profile",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.repeated.max_items": "32",
+                        "ves.io.schema.rules.repeated.unique": "true"
+                    }
+                },
+                "http3_profile": {
+                    "type": "array",
+                    "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "title": "HTTP/3 Profile",
+                    "maxItems": 1,
+                    "items": {
+                        "$ref": "#/definitions/schemaObjectRefType"
+                    },
+                    "x-displayname": "HTTP/3 Profile",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.repeated.max_items": "1",
+                        "ves.io.schema.rules.repeated.unique": "true"
+                    }
+                },
                 "http_client_profile": {
                     "type": "array",
                     "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
@@ -2518,21 +2546,49 @@ var APISwaggerJSON string = `{
                         "ves.io.schema.rules.repeated.unique": "true"
                     }
                 },
-                "stream_profile": {
+                "quic_profile": {
                     "type": "array",
                     "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
-                    "title": "Stream Profile",
+                    "title": "QUIC Profile",
                     "maxItems": 1,
                     "items": {
                         "$ref": "#/definitions/schemaObjectRefType"
                     },
-                    "x-displayname": "Stream Profile",
+                    "x-displayname": "QUIC Profile",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.repeated.max_items": "1",
                         "ves.io.schema.rules.repeated.unique": "true"
                     }
                 },
-                "tcp_client_profile": {
+                "server_ssl_profile": {
+                    "type": "array",
+                    "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "title": "Server SSL Profile",
+                    "maxItems": 32,
+                    "items": {
+                        "$ref": "#/definitions/schemaObjectRefType"
+                    },
+                    "x-displayname": "Server SSL Profile",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.repeated.max_items": "32",
+                        "ves.io.schema.rules.repeated.unique": "true"
+                    }
+                },
+                "tcp_server_profile": {
+                    "type": "array",
+                    "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "title": "TCP Profile (Server)",
+                    "maxItems": 1,
+                    "items": {
+                        "$ref": "#/definitions/schemaObjectRefType"
+                    },
+                    "x-displayname": "TCP Profile (Server)",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.repeated.max_items": "1",
+                        "ves.io.schema.rules.repeated.unique": "true"
+                    }
+                },
+                "udp_client_profile": {
                     "type": "array",
                     "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "Protocol Profile (Client)",
@@ -2546,7 +2602,7 @@ var APISwaggerJSON string = `{
                         "ves.io.schema.rules.repeated.unique": "true"
                     }
                 },
-                "tcp_server_profile": {
+                "udp_server_profile": {
                     "type": "array",
                     "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "Protocol Profile (Server)",
@@ -2559,43 +2615,57 @@ var APISwaggerJSON string = `{
                         "ves.io.schema.rules.repeated.max_items": "1",
                         "ves.io.schema.rules.repeated.unique": "true"
                     }
-                },
-                "websocket_client_profile": {
-                    "type": "array",
-                    "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
-                    "title": "WebSocket Profile Client",
-                    "maxItems": 1,
-                    "items": {
-                        "$ref": "#/definitions/schemaObjectRefType"
-                    },
-                    "x-displayname": "WebSocket Profile Client",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.repeated.max_items": "1",
-                        "ves.io.schema.rules.repeated.unique": "true"
-                    }
-                },
-                "websocket_server_profile": {
-                    "type": "array",
-                    "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
-                    "title": "WebSocket Profile Server",
-                    "maxItems": 1,
-                    "items": {
-                        "$ref": "#/definitions/schemaObjectRefType"
-                    },
-                    "x-displayname": "WebSocket Profile Server",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.repeated.max_items": "1",
-                        "ves.io.schema.rules.repeated.unique": "true"
-                    }
                 }
             }
         },
-        "application_profilesHTTPSProfileType": {
+        "application_profilesHTTPProfileType": {
             "type": "object",
-            "title": "HTTPS",
-            "x-displayname": "HTTPS profiles",
-            "x-ves-proto-message": "ves.io.schema.bigcne.application_profiles.HTTPSProfileType",
+            "title": "HTTP",
+            "x-displayname": "HTTP profiles",
+            "x-ves-proto-message": "ves.io.schema.bigcne.application_profiles.HTTPProfileType",
             "properties": {
+                "client_ssl_profile": {
+                    "type": "array",
+                    "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "title": "Client SSL Profile",
+                    "maxItems": 32,
+                    "items": {
+                        "$ref": "#/definitions/schemaObjectRefType"
+                    },
+                    "x-displayname": "Client SSL Profile",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.repeated.max_items": "32",
+                        "ves.io.schema.rules.repeated.unique": "true"
+                    }
+                },
+                "http2_client_profile": {
+                    "type": "array",
+                    "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "title": "HTTP/2 Profile Client",
+                    "maxItems": 1,
+                    "items": {
+                        "$ref": "#/definitions/schemaObjectRefType"
+                    },
+                    "x-displayname": "HTTP/2 Profile Client",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.repeated.max_items": "1",
+                        "ves.io.schema.rules.repeated.unique": "true"
+                    }
+                },
+                "http2_server_profile": {
+                    "type": "array",
+                    "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "title": "HTTP/2 Profile Server",
+                    "maxItems": 1,
+                    "items": {
+                        "$ref": "#/definitions/schemaObjectRefType"
+                    },
+                    "x-displayname": "HTTP/2 Profile Server",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.repeated.max_items": "1",
+                        "ves.io.schema.rules.repeated.unique": "true"
+                    }
+                },
                 "http_client_profile": {
                     "type": "array",
                     "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
@@ -2621,6 +2691,34 @@ var APISwaggerJSON string = `{
                     "x-displayname": "HTTP Profile (Server)",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.repeated.max_items": "1",
+                        "ves.io.schema.rules.repeated.unique": "true"
+                    }
+                },
+                "ocsp_profile": {
+                    "type": "array",
+                    "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "title": "OCSP Profile",
+                    "maxItems": 1,
+                    "items": {
+                        "$ref": "#/definitions/schemaObjectRefType"
+                    },
+                    "x-displayname": "OCSP Profile",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.repeated.max_items": "1",
+                        "ves.io.schema.rules.repeated.unique": "true"
+                    }
+                },
+                "server_ssl_profile": {
+                    "type": "array",
+                    "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "title": "Server SSL Profile",
+                    "maxItems": 32,
+                    "items": {
+                        "$ref": "#/definitions/schemaObjectRefType"
+                    },
+                    "x-displayname": "Server SSL Profile",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.repeated.max_items": "32",
                         "ves.io.schema.rules.repeated.unique": "true"
                     }
                 },
@@ -2868,7 +2966,7 @@ var APISwaggerJSON string = `{
                         "ves.io.schema.rules.repeated.unique": "true"
                     }
                 },
-                "traffic_policies": {
+                "pmf_traffic_policies": {
                     "type": "array",
                     "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.unique: true\n",
                     "maxItems": 32,
@@ -2894,6 +2992,44 @@ var APISwaggerJSON string = `{
             "x-displayname": "TCP profiles",
             "x-ves-proto-message": "ves.io.schema.bigcne.application_profiles.TCPProfileType",
             "properties": {
+                "client_ssl_profile": {
+                    "type": "array",
+                    "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "title": "Client SSL Profile",
+                    "items": {
+                        "$ref": "#/definitions/schemaObjectRefType"
+                    },
+                    "x-displayname": "Client SSL Profile",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.repeated.unique": "true"
+                    }
+                },
+                "ocsp_profile": {
+                    "type": "array",
+                    "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "title": "OCSP Profile",
+                    "maxItems": 1,
+                    "items": {
+                        "$ref": "#/definitions/schemaObjectRefType"
+                    },
+                    "x-displayname": "OCSP Profile",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.repeated.max_items": "1",
+                        "ves.io.schema.rules.repeated.unique": "true"
+                    }
+                },
+                "server_ssl_profile": {
+                    "type": "array",
+                    "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "title": "Server SSL Profile",
+                    "items": {
+                        "$ref": "#/definitions/schemaObjectRefType"
+                    },
+                    "x-displayname": "Server SSL Profile",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.repeated.unique": "true"
+                    }
+                },
                 "tcp_client_profile": {
                     "type": "array",
                     "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
@@ -2926,12 +3062,39 @@ var APISwaggerJSON string = `{
         },
         "application_profilesUDPProfileType": {
             "type": "object",
-            "description": "These options will be enhanced in future MR",
             "title": "UDP",
             "x-displayname": "UDP profiles",
             "x-ves-proto-message": "ves.io.schema.bigcne.application_profiles.UDPProfileType",
             "properties": {
-                "tcp_client_profile": {
+                "client_ssl_profile": {
+                    "type": "array",
+                    "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "title": "Client SSL Profile",
+                    "maxItems": 32,
+                    "items": {
+                        "$ref": "#/definitions/schemaObjectRefType"
+                    },
+                    "x-displayname": "Client SSL Profile",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.repeated.max_items": "32",
+                        "ves.io.schema.rules.repeated.unique": "true"
+                    }
+                },
+                "server_ssl_profile": {
+                    "type": "array",
+                    "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "title": "Server SSL Profile",
+                    "maxItems": 32,
+                    "items": {
+                        "$ref": "#/definitions/schemaObjectRefType"
+                    },
+                    "x-displayname": "Server SSL Profile",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.repeated.max_items": "32",
+                        "ves.io.schema.rules.repeated.unique": "true"
+                    }
+                },
+                "udp_client_profile": {
                     "type": "array",
                     "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "Protocol Profile (Client)",
@@ -2945,7 +3108,7 @@ var APISwaggerJSON string = `{
                         "ves.io.schema.rules.repeated.unique": "true"
                     }
                 },
-                "tcp_server_profile": {
+                "udp_server_profile": {
                     "type": "array",
                     "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "Protocol Profile (Server)",
@@ -2966,7 +3129,7 @@ var APISwaggerJSON string = `{
             "description": "Specifies configuration related to virtual server",
             "title": "VirtualServerType",
             "x-displayname": "Virtual Server",
-            "x-ves-oneof-field-virtual_server_type": "[\"http\",\"https\",\"tcp\",\"udp\"]",
+            "x-ves-oneof-field-virtual_server_type": "[\"http\",\"http3\",\"https\",\"tcp\",\"udp\"]",
             "x-ves-proto-message": "ves.io.schema.bigcne.application_profiles.VirtualServerType",
             "properties": {
                 "address_translation": {
@@ -3094,15 +3257,21 @@ var APISwaggerJSON string = `{
                     }
                 },
                 "http": {
-                    "description": "Exclusive with [https tcp udp]\n",
+                    "description": "Exclusive with [http3 https tcp udp]\n",
                     "title": "HTTP",
                     "$ref": "#/definitions/application_profilesHTTPProfileType",
                     "x-displayname": "HTTP"
                 },
+                "http3": {
+                    "description": "Exclusive with [http https tcp udp]\n",
+                    "title": "HTTP3",
+                    "$ref": "#/definitions/application_profilesHTTP3ProfileType",
+                    "x-displayname": "HTTP3"
+                },
                 "https": {
-                    "description": "Exclusive with [http tcp udp]\n",
+                    "description": "Exclusive with [http http3 tcp udp]\n",
                     "title": "HTTPS",
-                    "$ref": "#/definitions/application_profilesHTTPSProfileType",
+                    "$ref": "#/definitions/application_profilesHTTPProfileType",
                     "x-displayname": "HTTPS"
                 },
                 "immediate_action_on_service_down": {
@@ -3172,13 +3341,13 @@ var APISwaggerJSON string = `{
                     }
                 },
                 "tcp": {
-                    "description": "Exclusive with [http https udp]\n",
+                    "description": "Exclusive with [http http3 https udp]\n",
                     "title": "TCP",
                     "$ref": "#/definitions/application_profilesTCPProfileType",
                     "x-displayname": "TCP"
                 },
                 "udp": {
-                    "description": "Exclusive with [http https tcp]\n",
+                    "description": "Exclusive with [http http3 https tcp]\n",
                     "title": "UDP",
                     "$ref": "#/definitions/application_profilesUDPProfileType",
                     "x-displayname": "UDP"

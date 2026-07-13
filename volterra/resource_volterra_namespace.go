@@ -126,6 +126,12 @@ func resourceVolterraNamespaceCreate(d *schema.ResourceData, meta interface{}) e
 	createNamespaceResp := callRsp.ProtoMsg.(*ves_io_schema_namespace.CreateResponse)
 	d.SetId(createNamespaceResp.GetSystemMetadata().Uid)
 	d.Set("uid", createNamespaceResp.GetSystemMetadata().Uid)
+
+	// Wait for pending initializers to complete before reading the object.
+	if err = waitForPendingInitializersNamespace(d, meta); err != nil {
+		return fmt.Errorf("error waiting for pending initializers: %w", err)
+	}
+
 	return resourceVolterraNamespaceRead(d, meta)
 }
 
@@ -225,4 +231,61 @@ func resourceVolterraNamespaceDelete(d *schema.ResourceData, meta interface{}) e
 	// needed for eywa to sync with akar
 	time.Sleep(5 * time.Millisecond)
 	return err
+}
+
+// waitForPendingInitializersNamespace waits for pending initializers of a Volterra Namespace resource to complete.
+// It polls the resource GET API with exponential backoff, up to a maximum number of retries.
+// When the GET API returns the resource with no pending initializers, the operation is complete.
+// If initializers are still pending after all retries, it logs a warning and continues.
+//
+// Parameters:
+//   - d: Terraform resource data containing the Namespace name.
+//   - meta: Provider meta, expected to be an *APIClient.
+//
+// Returns:
+//   - error: nil if initializers complete or timeout is reached (non-blocking).
+func waitForPendingInitializersNamespace(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*APIClient)
+	name := d.Get("name").(string)
+
+	const (
+		maxRetries     = 30
+		initialBackoff = 100 * time.Millisecond
+		maxBackoff     = 2 * time.Second
+	)
+
+	backoff := initialBackoff
+
+	for attempt := 0; attempt <= maxRetries; attempt++ {
+		time.Sleep(backoff)
+
+		resp, err := client.GetObject(context.Background(), ves_io_schema_namespace.ObjectType, "", name)
+		if err != nil {
+			if strings.Contains(err.Error(), "status code 404") {
+				log.Printf("[WARNING] Namespace %s disappeared while waiting for initializers", name)
+				return nil
+			}
+			log.Printf("[WARNING] Error checking initializers for Namespace %q: %v", name, err)
+			return nil
+		}
+
+		pending := resp.GetObjPendingInitializers()
+		if len(pending) == 0 {
+			return nil
+		}
+
+		if attempt == maxRetries {
+			log.Printf("[WARNING] Namespace %s initializers still pending after max retries, proceeding", name)
+			return nil
+		}
+
+		log.Printf("[DEBUG] Namespace %s initializers pending. Retrying in %s...", name, backoff)
+
+		backoff *= 2
+		if backoff > maxBackoff {
+			backoff = maxBackoff
+		}
+	}
+
+	return nil
 }

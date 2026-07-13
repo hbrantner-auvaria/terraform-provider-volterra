@@ -1628,6 +1628,128 @@ var CustomAPISwaggerJSON string = `{
         }
     },
     "definitions": {
+        "discovered_serviceAwsPortInfo": {
+            "type": "object",
+            "description": "Information about a discovered port of a service",
+            "title": "AWS Port Information",
+            "x-displayname": "Port Information",
+            "x-ves-proto-message": "ves.io.schema.discovered_service.AwsPortInfo",
+            "properties": {
+                "port": {
+                    "type": "integer",
+                    "description": " Port number on which the service is exposed\n\nExample: - \"8080\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.uint32.gte: 1\n  ves.io.schema.rules.uint32.lte: 65535\n",
+                    "title": "Port",
+                    "format": "int64",
+                    "x-displayname": "Port Number",
+                    "x-ves-example": "8080",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.uint32.gte": "1",
+                        "ves.io.schema.rules.uint32.lte": "65535"
+                    }
+                },
+                "protocol": {
+                    "type": "string",
+                    "description": " Protocol for the exposed service\n\nExample: - \"TCP\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.in: [\\\"TCP\\\",\\\"UDP\\\"]\n",
+                    "title": "Protocol",
+                    "x-displayname": "Protocol",
+                    "x-ves-example": "TCP",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.string.in": "[\\\"TCP\\\",\\\"UDP\\\"]"
+                    }
+                }
+            }
+        },
+        "discovered_serviceAwsService": {
+            "type": "object",
+            "description": "Service detailed discovered from AWS",
+            "title": "AWS Service",
+            "x-displayname": "AWS Service",
+            "x-ves-proto-message": "ves.io.schema.discovered_service.AwsService",
+            "properties": {
+                "discovery_cloud_object": {
+                    "description": " Discovery Cloud Object associated with this discovered service",
+                    "title": "Discovery Cloud Object",
+                    "$ref": "#/definitions/schemaviewsObjectRefType",
+                    "x-displayname": "Discovery Cloud Object"
+                },
+                "endpoint_address": {
+                    "type": "string",
+                    "description": " Endpoint address of discovered service, may be DNS name or IP address\n\nExample: - \"my-service.example.amazonaws.com\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "title": "Endpoint Address",
+                    "x-displayname": "Endpoint Address",
+                    "x-ves-example": "my-service.example.amazonaws.com",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true"
+                    }
+                },
+                "name": {
+                    "type": "string",
+                    "description": " Name of discovered service\n\nExample: - \"myservice\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "title": "Service Name",
+                    "x-displayname": "Service",
+                    "x-ves-example": "myservice",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true"
+                    }
+                },
+                "ports": {
+                    "type": "array",
+                    "description": " Ports of discovered service",
+                    "title": "Ports",
+                    "items": {
+                        "$ref": "#/definitions/discovered_serviceAwsPortInfo"
+                    },
+                    "x-displayname": "Ports"
+                },
+                "region": {
+                    "type": "string",
+                    "description": " Region of discovered service\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "title": "Region",
+                    "x-displayname": "Region",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true"
+                    }
+                },
+                "subnet_id": {
+                    "type": "string",
+                    "description": " Subnet ID of discovered service\n\nExample: - \"subnet-01234567890abcdef\"-",
+                    "title": "Subnet ID",
+                    "x-displayname": "Subnet ID",
+                    "x-ves-example": "subnet-01234567890abcdef"
+                },
+                "type": {
+                    "description": " Type of discovered service\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "title": "Type",
+                    "$ref": "#/definitions/discovery_cloudAwsServiceType",
+                    "x-displayname": "Type",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true"
+                    }
+                },
+                "vpc_id": {
+                    "type": "string",
+                    "description": " ID of VPC to discover from\n\nExample: - \"vpc-12345678901234567\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.max_len: 64\n  ves.io.schema.rules.string.pattern: ^(vpc-)([a-z0-9]{8}|[a-z0-9]{17})$\n",
+                    "title": "VPC ID",
+                    "maxLength": 64,
+                    "x-displayname": "VPC ID",
+                    "x-ves-example": "vpc-12345678901234567",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.string.max_len": "64",
+                        "ves.io.schema.rules.string.pattern": "^(vpc-)([a-z0-9]{8}|[a-z0-9]{17})$"
+                    }
+                }
+            }
+        },
         "discovered_serviceConsulService": {
             "type": "object",
             "description": "Service details discovered from Consul.",
@@ -1853,12 +1975,25 @@ var CustomAPISwaggerJSON string = `{
             "description": "HTTP LB Request Parameters",
             "title": "HTTP LB Request",
             "x-displayname": "HTTP(s) LB Request",
-            "x-ves-displayorder": "1,2,9,6",
+            "x-ves-displayorder": "1,2,9,6,13",
             "x-ves-oneof-field-advertise_choice": "[]",
+            "x-ves-oneof-field-caching": "[\"default_caching_disable\",\"default_caching_enable\"]",
             "x-ves-oneof-field-loadbalancer_type": "[\"http\",\"https\",\"https_auto_cert\"]",
             "x-ves-oneof-field-server_validation_choice": "[\"skip_server_verification\",\"trusted_ca\"]",
             "x-ves-proto-message": "ves.io.schema.discovered_service.HTTPLBRequest",
             "properties": {
+                "default_caching_disable": {
+                    "description": "Exclusive with [default_caching_enable]\n",
+                    "title": "Disable CDN",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Disable"
+                },
+                "default_caching_enable": {
+                    "description": "Exclusive with [default_caching_disable]\n Caching Policies for the CDN.",
+                    "title": "Enable CDN",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Caching Policies"
+                },
                 "domain": {
                     "type": "string",
                     "description": "\nExample: - \"www.foo.com\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.vh_domain: true\n",
@@ -2492,7 +2627,7 @@ var CustomAPISwaggerJSON string = `{
                     "description": " Port number on which the virtual-server is exposed\n\nExample: - \"8080\"-\n\nValidation Rules:\n  ves.io.schema.rules.uint32.gte: 1\n  ves.io.schema.rules.uint32.lte: 65535\n",
                     "title": "Port",
                     "format": "int64",
-                    "x-displayname": "Port number",
+                    "x-displayname": "Port Number",
                     "x-ves-example": "8080",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.uint32.gte": "1",
@@ -2630,6 +2765,25 @@ var CustomAPISwaggerJSON string = `{
                     }
                 }
             }
+        },
+        "discovery_cloudAwsServiceType": {
+            "type": "string",
+            "description": "Specifies the type of AWS service\n\nInvalid type of AWS service\nElastic cloud compute (EC2) instance\nAuto scaling group\nTarget group\nLambda function\nVirtual private cloud (VPC) endpoint\nNetwork load balancer (NLB)\nApplication load balancer (ALB)\nGateway load balancer (Gateway LB)",
+            "title": "AwsServiceType",
+            "enum": [
+                "INVALID_AWS_SERVICE",
+                "EC2",
+                "AUTO_SCALING_GROUP",
+                "TARGET_GROUP",
+                "LAMBDA_FUNCTION",
+                "VPC_ENDPOINT",
+                "NETWORK_LOAD_BALANCER",
+                "APPLICATION_LOAD_BALANCER",
+                "GATEWAY_LOAD_BALANCER"
+            ],
+            "default": "INVALID_AWS_SERVICE",
+            "x-displayname": "Service Type",
+            "x-ves-proto-enum": "ves.io.schema.discovery_cloud.AwsServiceType"
         },
         "ioschemaEmpty": {
             "type": "object",
@@ -3146,12 +3300,17 @@ var CustomAPISwaggerJSON string = `{
             "description": "Get Discovered Service Object.",
             "title": "Get Discovered Service Object",
             "x-displayname": "Get Discovered Service Object",
-            "x-ves-oneof-field-service_type": "[\"consul_service\",\"k8s_service\",\"n1_discovered_server\",\"third_party\",\"virtual_server\"]",
+            "x-ves-oneof-field-service_type": "[\"aws_service\",\"consul_service\",\"k8s_service\",\"n1_discovered_server\",\"third_party\",\"virtual_server\"]",
             "x-ves-oneof-field-visibility_action_choice": "[\"visibility_disabled\",\"visibility_enabled\"]",
             "x-ves-proto-message": "ves.io.schema.discovered_service.GetSpecType",
             "properties": {
+                "aws_service": {
+                    "description": "Exclusive with [consul_service k8s_service n1_discovered_server third_party virtual_server]\n Details of discovered AWS Service",
+                    "$ref": "#/definitions/discovered_serviceAwsService",
+                    "x-displayname": "AWS Service"
+                },
                 "consul_service": {
-                    "description": "Exclusive with [k8s_service n1_discovered_server third_party virtual_server]\n Details of Consul Service discovered by Discovery Service",
+                    "description": "Exclusive with [aws_service k8s_service n1_discovered_server third_party virtual_server]\n Details of discovered Consul Service",
                     "$ref": "#/definitions/discovered_serviceConsulService",
                     "x-displayname": "Consul Service"
                 },
@@ -3164,12 +3323,12 @@ var CustomAPISwaggerJSON string = `{
                     "x-displayname": "HTTP Load Balancers"
                 },
                 "k8s_service": {
-                    "description": "Exclusive with [consul_service n1_discovered_server third_party virtual_server]\n Details of K8s Service discovered by Discovery Service",
+                    "description": "Exclusive with [aws_service consul_service n1_discovered_server third_party virtual_server]\n Details of discovered K8s Service",
                     "$ref": "#/definitions/discovered_serviceK8sService",
                     "x-displayname": "K8s Service"
                 },
                 "n1_discovered_server": {
-                    "description": "Exclusive with [consul_service k8s_service third_party virtual_server]\n Details of NGINX Server discovered by NGINX Discovery Service",
+                    "description": "Exclusive with [aws_service consul_service k8s_service third_party virtual_server]\n Details of discovered NGINX Server",
                     "$ref": "#/definitions/discovered_serviceNginxOneDiscoveredServer",
                     "x-displayname": "NGINX One Discovered Server"
                 },
@@ -3182,12 +3341,12 @@ var CustomAPISwaggerJSON string = `{
                     "x-displayname": "TCP Load Balancers"
                 },
                 "third_party": {
-                    "description": "Exclusive with [consul_service k8s_service n1_discovered_server virtual_server]\n Configure third party log source applications to send logs to your XC environment. Define application names and allowed IP ranges using CIDR notation.\n See Tech Docs for details setup instructions.",
+                    "description": "Exclusive with [aws_service consul_service k8s_service n1_discovered_server virtual_server]\n Configure third party log source applications to send logs to your XC environment. Define application names and allowed IP ranges using CIDR notation.\n See Tech Docs for details setup instructions.",
                     "$ref": "#/definitions/discovered_serviceThirdPartyApplicationDiscovery",
                     "x-displayname": "Discovery"
                 },
                 "virtual_server": {
-                    "description": "Exclusive with [consul_service k8s_service n1_discovered_server third_party]\n Details of virtual server discovered by Discovery Service",
+                    "description": "Exclusive with [aws_service consul_service k8s_service n1_discovered_server third_party]\n Details of discovered virtual server",
                     "$ref": "#/definitions/discovered_serviceVirtualServer",
                     "x-displayname": "Virtual Server"
                 },

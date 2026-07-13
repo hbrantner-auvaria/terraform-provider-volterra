@@ -80,6 +80,165 @@ func resourceVolterraApiDiscovery() *schema.Resource {
 					},
 				},
 			},
+
+			"user_defined_api_discovery_policy": {
+
+				Type:     schema.TypeList,
+				MaxItems: 1,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+
+						"exclusive": {
+
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"archive": {
+
+										Type:     schema.TypeBool,
+										Optional: true,
+									},
+
+									"ignore": {
+
+										Type:     schema.TypeBool,
+										Optional: true,
+									},
+								},
+							},
+						},
+
+						"inclusive": {
+
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+
+						"discovery_rules": {
+
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"labels": {
+										Type:     schema.TypeMap,
+										Optional: true,
+									},
+
+									"metadata": {
+
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"description": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+
+												"disable": {
+													Type:       schema.TypeBool,
+													Optional:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
+												},
+
+												"name": {
+													Type:     schema.TypeString,
+													Required: true,
+												},
+											},
+										},
+									},
+
+									"rule_properties": {
+
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"http_header_criteria": {
+
+													Type:     schema.TypeList,
+													MaxItems: 1,
+													Optional: true,
+													Elem: &schema.Resource{
+														Schema: map[string]*schema.Schema{
+
+															"field_name": {
+																Type:     schema.TypeString,
+																Required: true,
+															},
+
+															"location": {
+																Type:     schema.TypeString,
+																Optional: true,
+															},
+
+															"match_type": {
+																Type:     schema.TypeString,
+																Optional: true,
+															},
+
+															"value": {
+																Type:     schema.TypeString,
+																Required: true,
+															},
+														},
+													},
+												},
+
+												"pattern": {
+
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+
+												"exclusion": {
+
+													Type:     schema.TypeList,
+													MaxItems: 1,
+													Optional: true,
+													Elem: &schema.Resource{
+														Schema: map[string]*schema.Schema{
+
+															"archive": {
+
+																Type:     schema.TypeBool,
+																Optional: true,
+															},
+
+															"ignore": {
+
+																Type:     schema.TypeBool,
+																Optional: true,
+															},
+														},
+													},
+												},
+
+												"inclusion": {
+
+													Type:     schema.TypeBool,
+													Optional: true,
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
 		},
 	}
 }
@@ -163,6 +322,252 @@ func resourceVolterraApiDiscoveryCreate(d *schema.ResourceData, meta interface{}
 
 	}
 
+	//user_defined_api_discovery_policy
+	if v, ok := d.GetOk("user_defined_api_discovery_policy"); ok && !isIntfNil(v) {
+
+		sl := v.([]interface{})
+		userDefinedApiDiscoveryPolicy := &ves_io_schema_api_sec_api_discovery.UserDefinedApiDiscoveryPolicy{}
+		createSpec.UserDefinedApiDiscoveryPolicy = userDefinedApiDiscoveryPolicy
+		for _, set := range sl {
+			if set != nil {
+				userDefinedApiDiscoveryPolicyMapStrToI := set.(map[string]interface{})
+
+				defaultBehaviorChoiceTypeFound := false
+
+				if v, ok := userDefinedApiDiscoveryPolicyMapStrToI["exclusive"]; ok && !isIntfNil(v) && !defaultBehaviorChoiceTypeFound {
+
+					defaultBehaviorChoiceTypeFound = true
+					defaultBehaviorChoiceInt := &ves_io_schema_api_sec_api_discovery.UserDefinedApiDiscoveryPolicy_Exclusive{}
+					defaultBehaviorChoiceInt.Exclusive = &ves_io_schema_api_sec_api_discovery.ExclusionConfig{}
+					userDefinedApiDiscoveryPolicy.DefaultBehaviorChoice = defaultBehaviorChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							actionChoiceTypeFound := false
+
+							if v, ok := cs["archive"]; ok && !isIntfNil(v) && !actionChoiceTypeFound {
+
+								actionChoiceTypeFound = true
+
+								if v.(bool) {
+									actionChoiceInt := &ves_io_schema_api_sec_api_discovery.ExclusionConfig_Archive{}
+									actionChoiceInt.Archive = &ves_io_schema.Empty{}
+									defaultBehaviorChoiceInt.Exclusive.ActionChoice = actionChoiceInt
+								}
+
+							}
+
+							if v, ok := cs["ignore"]; ok && !isIntfNil(v) && !actionChoiceTypeFound {
+
+								actionChoiceTypeFound = true
+
+								if v.(bool) {
+									actionChoiceInt := &ves_io_schema_api_sec_api_discovery.ExclusionConfig_Ignore{}
+									actionChoiceInt.Ignore = &ves_io_schema.Empty{}
+									defaultBehaviorChoiceInt.Exclusive.ActionChoice = actionChoiceInt
+								}
+
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := userDefinedApiDiscoveryPolicyMapStrToI["inclusive"]; ok && !isIntfNil(v) && !defaultBehaviorChoiceTypeFound {
+
+					defaultBehaviorChoiceTypeFound = true
+
+					if v.(bool) {
+						defaultBehaviorChoiceInt := &ves_io_schema_api_sec_api_discovery.UserDefinedApiDiscoveryPolicy_Inclusive{}
+						defaultBehaviorChoiceInt.Inclusive = &ves_io_schema.Empty{}
+						userDefinedApiDiscoveryPolicy.DefaultBehaviorChoice = defaultBehaviorChoiceInt
+					}
+
+				}
+
+				if v, ok := userDefinedApiDiscoveryPolicyMapStrToI["discovery_rules"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					discoveryRules := make([]*ves_io_schema_api_sec_api_discovery.DiscoveryRule, len(sl))
+					userDefinedApiDiscoveryPolicy.DiscoveryRules = discoveryRules
+					for i, set := range sl {
+						if set != nil {
+							discoveryRules[i] = &ves_io_schema_api_sec_api_discovery.DiscoveryRule{}
+							discoveryRulesMapStrToI := set.(map[string]interface{})
+
+							if w, ok := discoveryRulesMapStrToI["labels"]; ok && !isIntfNil(w) {
+								ms := map[string]string{}
+								for k, v := range w.(map[string]interface{}) {
+									ms[k] = v.(string)
+								}
+								discoveryRules[i].Labels = ms
+							}
+
+							if v, ok := discoveryRulesMapStrToI["metadata"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								metadata := &ves_io_schema.MessageMetaType{}
+								discoveryRules[i].Metadata = metadata
+								for _, set := range sl {
+									if set != nil {
+										metadataMapStrToI := set.(map[string]interface{})
+
+										if w, ok := metadataMapStrToI["description"]; ok && !isIntfNil(w) {
+											metadata.Description = w.(string)
+										}
+
+										if w, ok := metadataMapStrToI["disable"]; ok && !isIntfNil(w) {
+											metadata.Disable = w.(bool)
+										}
+
+										if w, ok := metadataMapStrToI["name"]; ok && !isIntfNil(w) {
+											metadata.Name = w.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := discoveryRulesMapStrToI["rule_properties"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								ruleProperties := &ves_io_schema_api_sec_api_discovery.RuleProperties{}
+								discoveryRules[i].RuleProperties = ruleProperties
+								for _, set := range sl {
+									if set != nil {
+										rulePropertiesMapStrToI := set.(map[string]interface{})
+
+										criteriaTypeFound := false
+
+										if v, ok := rulePropertiesMapStrToI["http_header_criteria"]; ok && !isIntfNil(v) && !criteriaTypeFound {
+
+											criteriaTypeFound = true
+											criteriaInt := &ves_io_schema_api_sec_api_discovery.RuleProperties_HttpHeaderCriteria{}
+											criteriaInt.HttpHeaderCriteria = &ves_io_schema_api_sec_api_discovery.HTTPHeaderCriteria{}
+											ruleProperties.Criteria = criteriaInt
+
+											sl := v.([]interface{})
+											for _, set := range sl {
+												if set != nil {
+													cs := set.(map[string]interface{})
+
+													if v, ok := cs["field_name"]; ok && !isIntfNil(v) {
+
+														criteriaInt.HttpHeaderCriteria.FieldName = v.(string)
+
+													}
+
+													if v, ok := cs["location"]; ok && !isIntfNil(v) {
+
+														criteriaInt.HttpHeaderCriteria.Location = ves_io_schema_api_sec_api_discovery.RuleLocation(ves_io_schema_api_sec_api_discovery.RuleLocation_value[v.(string)])
+
+													}
+
+													if v, ok := cs["match_type"]; ok && !isIntfNil(v) {
+
+														criteriaInt.HttpHeaderCriteria.MatchType = ves_io_schema_api_sec_api_discovery.MatchType(ves_io_schema_api_sec_api_discovery.MatchType_value[v.(string)])
+
+													}
+
+													if v, ok := cs["value"]; ok && !isIntfNil(v) {
+
+														criteriaInt.HttpHeaderCriteria.Value = v.(string)
+
+													}
+
+												}
+											}
+
+										}
+
+										if v, ok := rulePropertiesMapStrToI["pattern"]; ok && !isIntfNil(v) && !criteriaTypeFound {
+
+											criteriaTypeFound = true
+											criteriaInt := &ves_io_schema_api_sec_api_discovery.RuleProperties_Pattern{}
+
+											ruleProperties.Criteria = criteriaInt
+
+											criteriaInt.Pattern = v.(string)
+
+										}
+
+										ruleTypeChoiceTypeFound := false
+
+										if v, ok := rulePropertiesMapStrToI["exclusion"]; ok && !isIntfNil(v) && !ruleTypeChoiceTypeFound {
+
+											ruleTypeChoiceTypeFound = true
+											ruleTypeChoiceInt := &ves_io_schema_api_sec_api_discovery.RuleProperties_Exclusion{}
+											ruleTypeChoiceInt.Exclusion = &ves_io_schema_api_sec_api_discovery.ExclusionConfig{}
+											ruleProperties.RuleTypeChoice = ruleTypeChoiceInt
+
+											sl := v.([]interface{})
+											for _, set := range sl {
+												if set != nil {
+													cs := set.(map[string]interface{})
+
+													actionChoiceTypeFound := false
+
+													if v, ok := cs["archive"]; ok && !isIntfNil(v) && !actionChoiceTypeFound {
+
+														actionChoiceTypeFound = true
+
+														if v.(bool) {
+															actionChoiceInt := &ves_io_schema_api_sec_api_discovery.ExclusionConfig_Archive{}
+															actionChoiceInt.Archive = &ves_io_schema.Empty{}
+															ruleTypeChoiceInt.Exclusion.ActionChoice = actionChoiceInt
+														}
+
+													}
+
+													if v, ok := cs["ignore"]; ok && !isIntfNil(v) && !actionChoiceTypeFound {
+
+														actionChoiceTypeFound = true
+
+														if v.(bool) {
+															actionChoiceInt := &ves_io_schema_api_sec_api_discovery.ExclusionConfig_Ignore{}
+															actionChoiceInt.Ignore = &ves_io_schema.Empty{}
+															ruleTypeChoiceInt.Exclusion.ActionChoice = actionChoiceInt
+														}
+
+													}
+
+												}
+											}
+
+										}
+
+										if v, ok := rulePropertiesMapStrToI["inclusion"]; ok && !isIntfNil(v) && !ruleTypeChoiceTypeFound {
+
+											ruleTypeChoiceTypeFound = true
+
+											if v.(bool) {
+												ruleTypeChoiceInt := &ves_io_schema_api_sec_api_discovery.RuleProperties_Inclusion{}
+												ruleTypeChoiceInt.Inclusion = &ves_io_schema.Empty{}
+												ruleProperties.RuleTypeChoice = ruleTypeChoiceInt
+											}
+
+										}
+
+									}
+								}
+
+							}
+
+						}
+					}
+
+				}
+
+			}
+		}
+
+	}
+
 	log.Printf("[DEBUG] Creating Volterra ApiDiscovery object with struct: %+v", createReq)
 
 	createApiDiscoveryResp, err := client.CreateObject(context.Background(), ves_io_schema_api_sec_api_discovery.ObjectType, createReq)
@@ -188,6 +593,7 @@ func resourceVolterraApiDiscoveryRead(d *schema.ResourceData, meta interface{}) 
 		}
 		return fmt.Errorf("Error finding Volterra ApiDiscovery %q: %s", d.Id(), err)
 	}
+
 	return setApiDiscoveryFields(client, d, resp)
 }
 
@@ -287,6 +693,251 @@ func resourceVolterraApiDiscoveryUpdate(d *schema.ResourceData, meta interface{}
 
 	}
 
+	if v, ok := d.GetOk("user_defined_api_discovery_policy"); ok && !isIntfNil(v) {
+
+		sl := v.([]interface{})
+		userDefinedApiDiscoveryPolicy := &ves_io_schema_api_sec_api_discovery.UserDefinedApiDiscoveryPolicy{}
+		updateSpec.UserDefinedApiDiscoveryPolicy = userDefinedApiDiscoveryPolicy
+		for _, set := range sl {
+			if set != nil {
+				userDefinedApiDiscoveryPolicyMapStrToI := set.(map[string]interface{})
+
+				defaultBehaviorChoiceTypeFound := false
+
+				if v, ok := userDefinedApiDiscoveryPolicyMapStrToI["exclusive"]; ok && !isIntfNil(v) && !defaultBehaviorChoiceTypeFound {
+
+					defaultBehaviorChoiceTypeFound = true
+					defaultBehaviorChoiceInt := &ves_io_schema_api_sec_api_discovery.UserDefinedApiDiscoveryPolicy_Exclusive{}
+					defaultBehaviorChoiceInt.Exclusive = &ves_io_schema_api_sec_api_discovery.ExclusionConfig{}
+					userDefinedApiDiscoveryPolicy.DefaultBehaviorChoice = defaultBehaviorChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							actionChoiceTypeFound := false
+
+							if v, ok := cs["archive"]; ok && !isIntfNil(v) && !actionChoiceTypeFound {
+
+								actionChoiceTypeFound = true
+
+								if v.(bool) {
+									actionChoiceInt := &ves_io_schema_api_sec_api_discovery.ExclusionConfig_Archive{}
+									actionChoiceInt.Archive = &ves_io_schema.Empty{}
+									defaultBehaviorChoiceInt.Exclusive.ActionChoice = actionChoiceInt
+								}
+
+							}
+
+							if v, ok := cs["ignore"]; ok && !isIntfNil(v) && !actionChoiceTypeFound {
+
+								actionChoiceTypeFound = true
+
+								if v.(bool) {
+									actionChoiceInt := &ves_io_schema_api_sec_api_discovery.ExclusionConfig_Ignore{}
+									actionChoiceInt.Ignore = &ves_io_schema.Empty{}
+									defaultBehaviorChoiceInt.Exclusive.ActionChoice = actionChoiceInt
+								}
+
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := userDefinedApiDiscoveryPolicyMapStrToI["inclusive"]; ok && !isIntfNil(v) && !defaultBehaviorChoiceTypeFound {
+
+					defaultBehaviorChoiceTypeFound = true
+
+					if v.(bool) {
+						defaultBehaviorChoiceInt := &ves_io_schema_api_sec_api_discovery.UserDefinedApiDiscoveryPolicy_Inclusive{}
+						defaultBehaviorChoiceInt.Inclusive = &ves_io_schema.Empty{}
+						userDefinedApiDiscoveryPolicy.DefaultBehaviorChoice = defaultBehaviorChoiceInt
+					}
+
+				}
+
+				if v, ok := userDefinedApiDiscoveryPolicyMapStrToI["discovery_rules"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					discoveryRules := make([]*ves_io_schema_api_sec_api_discovery.DiscoveryRule, len(sl))
+					userDefinedApiDiscoveryPolicy.DiscoveryRules = discoveryRules
+					for i, set := range sl {
+						if set != nil {
+							discoveryRules[i] = &ves_io_schema_api_sec_api_discovery.DiscoveryRule{}
+							discoveryRulesMapStrToI := set.(map[string]interface{})
+
+							if w, ok := discoveryRulesMapStrToI["labels"]; ok && !isIntfNil(w) {
+								ms := map[string]string{}
+								for k, v := range w.(map[string]interface{}) {
+									ms[k] = v.(string)
+								}
+								discoveryRules[i].Labels = ms
+							}
+
+							if v, ok := discoveryRulesMapStrToI["metadata"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								metadata := &ves_io_schema.MessageMetaType{}
+								discoveryRules[i].Metadata = metadata
+								for _, set := range sl {
+									if set != nil {
+										metadataMapStrToI := set.(map[string]interface{})
+
+										if w, ok := metadataMapStrToI["description"]; ok && !isIntfNil(w) {
+											metadata.Description = w.(string)
+										}
+
+										if w, ok := metadataMapStrToI["disable"]; ok && !isIntfNil(w) {
+											metadata.Disable = w.(bool)
+										}
+
+										if w, ok := metadataMapStrToI["name"]; ok && !isIntfNil(w) {
+											metadata.Name = w.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := discoveryRulesMapStrToI["rule_properties"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								ruleProperties := &ves_io_schema_api_sec_api_discovery.RuleProperties{}
+								discoveryRules[i].RuleProperties = ruleProperties
+								for _, set := range sl {
+									if set != nil {
+										rulePropertiesMapStrToI := set.(map[string]interface{})
+
+										criteriaTypeFound := false
+
+										if v, ok := rulePropertiesMapStrToI["http_header_criteria"]; ok && !isIntfNil(v) && !criteriaTypeFound {
+
+											criteriaTypeFound = true
+											criteriaInt := &ves_io_schema_api_sec_api_discovery.RuleProperties_HttpHeaderCriteria{}
+											criteriaInt.HttpHeaderCriteria = &ves_io_schema_api_sec_api_discovery.HTTPHeaderCriteria{}
+											ruleProperties.Criteria = criteriaInt
+
+											sl := v.([]interface{})
+											for _, set := range sl {
+												if set != nil {
+													cs := set.(map[string]interface{})
+
+													if v, ok := cs["field_name"]; ok && !isIntfNil(v) {
+
+														criteriaInt.HttpHeaderCriteria.FieldName = v.(string)
+
+													}
+
+													if v, ok := cs["location"]; ok && !isIntfNil(v) {
+
+														criteriaInt.HttpHeaderCriteria.Location = ves_io_schema_api_sec_api_discovery.RuleLocation(ves_io_schema_api_sec_api_discovery.RuleLocation_value[v.(string)])
+
+													}
+
+													if v, ok := cs["match_type"]; ok && !isIntfNil(v) {
+
+														criteriaInt.HttpHeaderCriteria.MatchType = ves_io_schema_api_sec_api_discovery.MatchType(ves_io_schema_api_sec_api_discovery.MatchType_value[v.(string)])
+
+													}
+
+													if v, ok := cs["value"]; ok && !isIntfNil(v) {
+
+														criteriaInt.HttpHeaderCriteria.Value = v.(string)
+
+													}
+
+												}
+											}
+
+										}
+
+										if v, ok := rulePropertiesMapStrToI["pattern"]; ok && !isIntfNil(v) && !criteriaTypeFound {
+
+											criteriaTypeFound = true
+											criteriaInt := &ves_io_schema_api_sec_api_discovery.RuleProperties_Pattern{}
+
+											ruleProperties.Criteria = criteriaInt
+
+											criteriaInt.Pattern = v.(string)
+
+										}
+
+										ruleTypeChoiceTypeFound := false
+
+										if v, ok := rulePropertiesMapStrToI["exclusion"]; ok && !isIntfNil(v) && !ruleTypeChoiceTypeFound {
+
+											ruleTypeChoiceTypeFound = true
+											ruleTypeChoiceInt := &ves_io_schema_api_sec_api_discovery.RuleProperties_Exclusion{}
+											ruleTypeChoiceInt.Exclusion = &ves_io_schema_api_sec_api_discovery.ExclusionConfig{}
+											ruleProperties.RuleTypeChoice = ruleTypeChoiceInt
+
+											sl := v.([]interface{})
+											for _, set := range sl {
+												if set != nil {
+													cs := set.(map[string]interface{})
+
+													actionChoiceTypeFound := false
+
+													if v, ok := cs["archive"]; ok && !isIntfNil(v) && !actionChoiceTypeFound {
+
+														actionChoiceTypeFound = true
+
+														if v.(bool) {
+															actionChoiceInt := &ves_io_schema_api_sec_api_discovery.ExclusionConfig_Archive{}
+															actionChoiceInt.Archive = &ves_io_schema.Empty{}
+															ruleTypeChoiceInt.Exclusion.ActionChoice = actionChoiceInt
+														}
+
+													}
+
+													if v, ok := cs["ignore"]; ok && !isIntfNil(v) && !actionChoiceTypeFound {
+
+														actionChoiceTypeFound = true
+
+														if v.(bool) {
+															actionChoiceInt := &ves_io_schema_api_sec_api_discovery.ExclusionConfig_Ignore{}
+															actionChoiceInt.Ignore = &ves_io_schema.Empty{}
+															ruleTypeChoiceInt.Exclusion.ActionChoice = actionChoiceInt
+														}
+
+													}
+
+												}
+											}
+
+										}
+
+										if v, ok := rulePropertiesMapStrToI["inclusion"]; ok && !isIntfNil(v) && !ruleTypeChoiceTypeFound {
+
+											ruleTypeChoiceTypeFound = true
+
+											if v.(bool) {
+												ruleTypeChoiceInt := &ves_io_schema_api_sec_api_discovery.RuleProperties_Inclusion{}
+												ruleTypeChoiceInt.Inclusion = &ves_io_schema.Empty{}
+												ruleProperties.RuleTypeChoice = ruleTypeChoiceInt
+											}
+
+										}
+
+									}
+								}
+
+							}
+
+						}
+					}
+
+				}
+
+			}
+		}
+
+	}
+
 	log.Printf("[DEBUG] Updating Volterra ApiDiscovery obj with struct: %+v", updateReq)
 
 	err := client.ReplaceObject(context.Background(), ves_io_schema_api_sec_api_discovery.ObjectType, updateReq)
@@ -316,5 +967,11 @@ func resourceVolterraApiDiscoveryDelete(d *schema.ResourceData, meta interface{}
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_api_sec_api_discovery.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_api_sec_api_discovery.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting ApiDiscovery: %w", err)
+	}
+	return nil
+
 }

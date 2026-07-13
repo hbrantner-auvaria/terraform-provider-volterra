@@ -473,11 +473,6 @@ func (m *CreateSpecType) GetDRefInfo() ([]db.DRefInfo, error) {
 	} else {
 		drInfos = append(drInfos, fdrInfos...)
 	}
-	if fdrInfos, err := m.GetDomainChoiceDRefInfo(); err != nil {
-		return nil, errors.Wrap(err, "GetDomainChoiceDRefInfo() FAILED")
-	} else {
-		drInfos = append(drInfos, fdrInfos...)
-	}
 	if fdrInfos, err := m.GetFallbackPersistenceProfileChoiceDRefInfo(); err != nil {
 		return nil, errors.Wrap(err, "GetFallbackPersistenceProfileChoiceDRefInfo() FAILED")
 	} else {
@@ -495,6 +490,11 @@ func (m *CreateSpecType) GetDRefInfo() ([]db.DRefInfo, error) {
 	}
 	if fdrInfos, err := m.GetRequestLoggingProfileChoiceDRefInfo(); err != nil {
 		return nil, errors.Wrap(err, "GetRequestLoggingProfileChoiceDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetStatisticsProfileChoiceDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetStatisticsProfileChoiceDRefInfo() FAILED")
 	} else {
 		drInfos = append(drInfos, fdrInfos...)
 	}
@@ -646,29 +646,6 @@ func (m *CreateSpecType) GetDefaultPoolChoiceDBEntries(ctx context.Context, d db
 	}
 
 	return entries, nil
-}
-
-// GetDRefInfo for the field's type
-func (m *CreateSpecType) GetDomainChoiceDRefInfo() ([]db.DRefInfo, error) {
-	if m.GetDomainChoice() == nil {
-		return nil, nil
-	}
-	switch m.GetDomainChoice().(type) {
-	case *CreateSpecType_Managed:
-		drInfos, err := m.GetManaged().GetDRefInfo()
-		if err != nil {
-			return nil, errors.Wrap(err, "GetManaged().GetDRefInfo() FAILED")
-		}
-		for i := range drInfos {
-			dri := &drInfos[i]
-			dri.DRField = "managed." + dri.DRField
-		}
-		return drInfos, err
-	case *CreateSpecType_NotManaged:
-		return nil, nil
-	default:
-		return nil, nil
-	}
 }
 
 func (m *CreateSpecType) GetFallbackPersistenceProfileChoiceDRefInfo() ([]db.DRefInfo, error) {
@@ -888,6 +865,64 @@ func (m *CreateSpecType) GetRequestLoggingProfileChoiceDBEntries(ctx context.Con
 	return entries, nil
 }
 
+func (m *CreateSpecType) GetStatisticsProfileChoiceDRefInfo() ([]db.DRefInfo, error) {
+	switch m.GetStatisticsProfileChoice().(type) {
+	case *CreateSpecType_StatisticsProfileNone:
+		return nil, nil
+	case *CreateSpecType_StatisticsProfile:
+		vref := m.GetStatisticsProfile()
+		if vref == nil {
+			return nil, nil
+		}
+		vdRef := db.NewDirectRefForView(vref)
+		vdRef.SetKind("statistics_profile.Object")
+		dri := db.DRefInfo{
+			RefdType:   "statistics_profile.Object",
+			RefdTenant: vref.Tenant,
+			RefdNS:     vref.Namespace,
+			RefdName:   vref.Name,
+			DRField:    "statistics_profile",
+			Ref:        vdRef,
+		}
+		return []db.DRefInfo{dri}, nil
+	default:
+		return nil, nil
+	}
+}
+
+// GetStatisticsProfileChoiceDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *CreateSpecType) GetStatisticsProfileChoiceDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+
+	switch m.GetStatisticsProfileChoice().(type) {
+	case *CreateSpecType_StatisticsProfileNone:
+	case *CreateSpecType_StatisticsProfile:
+		refdType, err := d.TypeForEntryKind("", "", "statistics_profile.Object")
+		if err != nil {
+			return nil, errors.Wrap(err, "Cannot find type for kind: statistics_profile")
+		}
+		vref := m.GetStatisticsProfile()
+		if vref == nil {
+			return nil, nil
+		}
+		ref := &ves_io_schema.ObjectRefType{
+			Kind:      "statistics_profile.Object",
+			Tenant:    vref.Tenant,
+			Namespace: vref.Namespace,
+			Name:      vref.Name,
+		}
+		refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+		if err != nil {
+			return nil, errors.Wrap(err, "Getting referred entry")
+		}
+		if refdEnt != nil {
+			entries = append(entries, refdEnt)
+		}
+	}
+
+	return entries, nil
+}
+
 func (m *CreateSpecType) GetTrafficPoliciesDRefInfo() ([]db.DRefInfo, error) {
 	refs := m.GetTrafficPolicies()
 	if len(refs) == 0 {
@@ -991,7 +1026,15 @@ func (m *CreateSpecType) GetVirtualServerTypeDRefInfo() ([]db.DRefInfo, error) {
 	}
 	switch m.GetVirtualServerType().(type) {
 	case *CreateSpecType_Https:
-		return nil, nil
+		drInfos, err := m.GetHttps().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetHttps().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "https." + dri.DRField
+		}
+		return drInfos, err
 	case *CreateSpecType_Http:
 		drInfos, err := m.GetHttp().GetDRefInfo()
 		if err != nil {
@@ -1003,9 +1046,35 @@ func (m *CreateSpecType) GetVirtualServerTypeDRefInfo() ([]db.DRefInfo, error) {
 		}
 		return drInfos, err
 	case *CreateSpecType_Tcp:
-		return nil, nil
+		drInfos, err := m.GetTcp().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetTcp().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "tcp." + dri.DRField
+		}
+		return drInfos, err
 	case *CreateSpecType_Udp:
-		return nil, nil
+		drInfos, err := m.GetUdp().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetUdp().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "udp." + dri.DRField
+		}
+		return drInfos, err
+	case *CreateSpecType_Http3:
+		drInfos, err := m.GetHttp3().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetHttp3().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "http3." + dri.DRField
+		}
+		return drInfos, err
 	default:
 		return nil, nil
 	}
@@ -1015,11 +1084,44 @@ type ValidateCreateSpecType struct {
 	FldValidators map[string]db.ValidatorFunc
 }
 
-func (v *ValidateCreateSpecType) DomainChoiceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
-	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
+func (v *ValidateCreateSpecType) DomainsValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepStringItemRules(rules)
+	itemValFn, err := db.NewStringValidationRuleHandler(itemRules)
 	if err != nil {
-		return nil, errors.Wrap(err, "ValidationRuleHandler for domain_choice")
+		return nil, errors.Wrap(err, "Item ValidationRuleHandler for domains")
 	}
+	itemsValidatorFn := func(ctx context.Context, elems []string, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for domains")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]string)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []string, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal := fmt.Sprintf("%v", elem)
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated domains")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items domains")
+		}
+		return nil
+	}
+
 	return validatorFn, nil
 }
 func (v *ValidateCreateSpecType) TrafficPoliciesValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
@@ -1158,39 +1260,10 @@ func (v *ValidateCreateSpecType) Validate(ctx context.Context, pm interface{}, o
 			}
 		}
 	}
-
-	if fv, exists := v.FldValidators["domain_choice"]; exists {
-		val := m.GetDomainChoice()
-		vOpts := append(opts,
-			db.WithValidateField("domain_choice"),
-		)
-		if err := fv(ctx, val, vOpts...); err != nil {
+	if fv, exists := v.FldValidators["domains"]; exists {
+		vOpts := append(opts, db.WithValidateField("domains"))
+		if err := fv(ctx, m.GetDomains(), vOpts...); err != nil {
 			return err
-		}
-	}
-
-	switch m.GetDomainChoice().(type) {
-	case *CreateSpecType_Managed:
-		if fv, exists := v.FldValidators["domain_choice.managed"]; exists {
-			val := m.GetDomainChoice().(*CreateSpecType_Managed).Managed
-			vOpts := append(opts,
-				db.WithValidateField("domain_choice"),
-				db.WithValidateField("managed"),
-			)
-			if err := fv(ctx, val, vOpts...); err != nil {
-				return err
-			}
-		}
-	case *CreateSpecType_NotManaged:
-		if fv, exists := v.FldValidators["domain_choice.not_managed"]; exists {
-			val := m.GetDomainChoice().(*CreateSpecType_NotManaged).NotManaged
-			vOpts := append(opts,
-				db.WithValidateField("domain_choice"),
-				db.WithValidateField("not_managed"),
-			)
-			if err := fv(ctx, val, vOpts...); err != nil {
-				return err
-			}
 		}
 	}
 
@@ -1231,6 +1304,12 @@ func (v *ValidateCreateSpecType) Validate(ctx context.Context, pm interface{}, o
 			if err := fv(ctx, item, vOpts...); err != nil {
 				return err
 			}
+		}
+	}
+	if fv, exists := v.FldValidators["json"]; exists {
+		vOpts := append(opts, db.WithValidateField("json"))
+		if err := fv(ctx, m.GetJson(), vOpts...); err != nil {
+			return err
 		}
 	}
 
@@ -1289,10 +1368,41 @@ func (v *ValidateCreateSpecType) Validate(ctx context.Context, pm interface{}, o
 			}
 		}
 	}
+	if fv, exists := v.FldValidators["sse"]; exists {
+		vOpts := append(opts, db.WithValidateField("sse"))
+		if err := fv(ctx, m.GetSse(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["state"]; exists {
 		vOpts := append(opts, db.WithValidateField("state"))
 		if err := fv(ctx, m.GetState(), vOpts...); err != nil {
 			return err
+		}
+	}
+
+	switch m.GetStatisticsProfileChoice().(type) {
+	case *CreateSpecType_StatisticsProfileNone:
+		if fv, exists := v.FldValidators["statistics_profile_choice.statistics_profile_none"]; exists {
+			val := m.GetStatisticsProfileChoice().(*CreateSpecType_StatisticsProfileNone).StatisticsProfileNone
+			vOpts := append(opts,
+				db.WithValidateField("statistics_profile_choice"),
+				db.WithValidateField("statistics_profile_none"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *CreateSpecType_StatisticsProfile:
+		if fv, exists := v.FldValidators["statistics_profile_choice.statistics_profile"]; exists {
+			val := m.GetStatisticsProfileChoice().(*CreateSpecType_StatisticsProfile).StatisticsProfile
+			vOpts := append(opts,
+				db.WithValidateField("statistics_profile_choice"),
+				db.WithValidateField("statistics_profile"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
 		}
 	}
 	if fv, exists := v.FldValidators["traffic_policies"]; exists {
@@ -1362,6 +1472,17 @@ func (v *ValidateCreateSpecType) Validate(ctx context.Context, pm interface{}, o
 				return err
 			}
 		}
+	case *CreateSpecType_Http3:
+		if fv, exists := v.FldValidators["virtual_server_type.http3"]; exists {
+			val := m.GetVirtualServerType().(*CreateSpecType_Http3).Http3
+			vOpts := append(opts,
+				db.WithValidateField("virtual_server_type"),
+				db.WithValidateField("http3"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 	if fv, exists := v.FldValidators["vs_score"]; exists {
 		vOpts := append(opts, db.WithValidateField("vs_score"))
@@ -1382,16 +1503,23 @@ var DefaultCreateSpecTypeValidator = func() *ValidateCreateSpecType {
 	_, _ = err, vFn
 	vFnMap := map[string]db.ValidatorFunc{}
 	_ = vFnMap
-	vrhDomainChoice := v.DomainChoiceValidationRuleHandler
-	rulesDomainChoice := map[string]string{
-		"ves.io.schema.rules.message.required_oneof": "true",
+
+	vrhDomains := v.DomainsValidationRuleHandler
+	rulesDomains := map[string]string{
+		"ves.io.schema.rules.message.required":                "true",
+		"ves.io.schema.rules.repeated.items.string.max_len":   "256",
+		"ves.io.schema.rules.repeated.items.string.min_len":   "1",
+		"ves.io.schema.rules.repeated.items.string.vh_domain": "true",
+		"ves.io.schema.rules.repeated.max_items":              "32",
+		"ves.io.schema.rules.repeated.min_items":              "1",
+		"ves.io.schema.rules.repeated.unique":                 "true",
 	}
-	vFn, err = vrhDomainChoice(rulesDomainChoice)
+	vFn, err = vrhDomains(rulesDomains)
 	if err != nil {
-		errMsg := fmt.Sprintf("ValidationRuleHandler for CreateSpecType.domain_choice: %s", err)
+		errMsg := fmt.Sprintf("ValidationRuleHandler for CreateSpecType.domains: %s", err)
 		panic(errMsg)
 	}
-	v.FldValidators["domain_choice"] = vFn
+	v.FldValidators["domains"] = vFn
 
 	vrhTrafficPolicies := v.TrafficPoliciesValidationRuleHandler
 	rulesTrafficPolicies := map[string]string{
@@ -1417,15 +1545,15 @@ var DefaultCreateSpecTypeValidator = func() *ValidateCreateSpecType {
 	v.FldValidators["vs_score"] = vFn
 	v.FldValidators["default_persistence_profile_choice.default_persistence_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["default_pool_choice.default_pool"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
-	v.FldValidators["domain_choice.managed"] = DomainsManagedByF5XCValidator().Validate
-	v.FldValidators["domain_choice.not_managed"] = NotManagedDomainsTypeValidator().Validate
 	v.FldValidators["fallback_persistence_profile_choice.fallback_persistence_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["last_hop_pool_choice.last_hop_pool"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["request_logging_profile_choice.request_logging_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
-	v.FldValidators["virtual_server_type.https"] = ServicesValidator().Validate
+	v.FldValidators["statistics_profile_choice.statistics_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
+	v.FldValidators["virtual_server_type.https"] = HTTPServicesValidator().Validate
 	v.FldValidators["virtual_server_type.http"] = HTTPServicesValidator().Validate
-	v.FldValidators["virtual_server_type.tcp"] = ServicesValidator().Validate
-	v.FldValidators["virtual_server_type.udp"] = ServicesValidator().Validate
+	v.FldValidators["virtual_server_type.tcp"] = TCPServicesValidator().Validate
+	v.FldValidators["virtual_server_type.udp"] = UDPServicesValidator().Validate
+	v.FldValidators["virtual_server_type.http3"] = HTTP3ServicesValidator().Validate
 	v.FldValidators["connection_limit_options"] = ConnectionLimitsTypeValidator().Validate
 	v.FldValidators["virtual_addresses"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["clone_pool_options"] = ClonePoolTypeValidator().Validate
@@ -1665,11 +1793,6 @@ func (m *GetSpecType) GetDRefInfo() ([]db.DRefInfo, error) {
 	} else {
 		drInfos = append(drInfos, fdrInfos...)
 	}
-	if fdrInfos, err := m.GetDomainChoiceDRefInfo(); err != nil {
-		return nil, errors.Wrap(err, "GetDomainChoiceDRefInfo() FAILED")
-	} else {
-		drInfos = append(drInfos, fdrInfos...)
-	}
 	if fdrInfos, err := m.GetFallbackPersistenceProfileChoiceDRefInfo(); err != nil {
 		return nil, errors.Wrap(err, "GetFallbackPersistenceProfileChoiceDRefInfo() FAILED")
 	} else {
@@ -1687,6 +1810,11 @@ func (m *GetSpecType) GetDRefInfo() ([]db.DRefInfo, error) {
 	}
 	if fdrInfos, err := m.GetRequestLoggingProfileChoiceDRefInfo(); err != nil {
 		return nil, errors.Wrap(err, "GetRequestLoggingProfileChoiceDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetStatisticsProfileChoiceDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetStatisticsProfileChoiceDRefInfo() FAILED")
 	} else {
 		drInfos = append(drInfos, fdrInfos...)
 	}
@@ -1838,29 +1966,6 @@ func (m *GetSpecType) GetDefaultPoolChoiceDBEntries(ctx context.Context, d db.In
 	}
 
 	return entries, nil
-}
-
-// GetDRefInfo for the field's type
-func (m *GetSpecType) GetDomainChoiceDRefInfo() ([]db.DRefInfo, error) {
-	if m.GetDomainChoice() == nil {
-		return nil, nil
-	}
-	switch m.GetDomainChoice().(type) {
-	case *GetSpecType_Managed:
-		drInfos, err := m.GetManaged().GetDRefInfo()
-		if err != nil {
-			return nil, errors.Wrap(err, "GetManaged().GetDRefInfo() FAILED")
-		}
-		for i := range drInfos {
-			dri := &drInfos[i]
-			dri.DRField = "managed." + dri.DRField
-		}
-		return drInfos, err
-	case *GetSpecType_NotManaged:
-		return nil, nil
-	default:
-		return nil, nil
-	}
 }
 
 func (m *GetSpecType) GetFallbackPersistenceProfileChoiceDRefInfo() ([]db.DRefInfo, error) {
@@ -2080,6 +2185,64 @@ func (m *GetSpecType) GetRequestLoggingProfileChoiceDBEntries(ctx context.Contex
 	return entries, nil
 }
 
+func (m *GetSpecType) GetStatisticsProfileChoiceDRefInfo() ([]db.DRefInfo, error) {
+	switch m.GetStatisticsProfileChoice().(type) {
+	case *GetSpecType_StatisticsProfileNone:
+		return nil, nil
+	case *GetSpecType_StatisticsProfile:
+		vref := m.GetStatisticsProfile()
+		if vref == nil {
+			return nil, nil
+		}
+		vdRef := db.NewDirectRefForView(vref)
+		vdRef.SetKind("statistics_profile.Object")
+		dri := db.DRefInfo{
+			RefdType:   "statistics_profile.Object",
+			RefdTenant: vref.Tenant,
+			RefdNS:     vref.Namespace,
+			RefdName:   vref.Name,
+			DRField:    "statistics_profile",
+			Ref:        vdRef,
+		}
+		return []db.DRefInfo{dri}, nil
+	default:
+		return nil, nil
+	}
+}
+
+// GetStatisticsProfileChoiceDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *GetSpecType) GetStatisticsProfileChoiceDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+
+	switch m.GetStatisticsProfileChoice().(type) {
+	case *GetSpecType_StatisticsProfileNone:
+	case *GetSpecType_StatisticsProfile:
+		refdType, err := d.TypeForEntryKind("", "", "statistics_profile.Object")
+		if err != nil {
+			return nil, errors.Wrap(err, "Cannot find type for kind: statistics_profile")
+		}
+		vref := m.GetStatisticsProfile()
+		if vref == nil {
+			return nil, nil
+		}
+		ref := &ves_io_schema.ObjectRefType{
+			Kind:      "statistics_profile.Object",
+			Tenant:    vref.Tenant,
+			Namespace: vref.Namespace,
+			Name:      vref.Name,
+		}
+		refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+		if err != nil {
+			return nil, errors.Wrap(err, "Getting referred entry")
+		}
+		if refdEnt != nil {
+			entries = append(entries, refdEnt)
+		}
+	}
+
+	return entries, nil
+}
+
 func (m *GetSpecType) GetTrafficPoliciesDRefInfo() ([]db.DRefInfo, error) {
 	refs := m.GetTrafficPolicies()
 	if len(refs) == 0 {
@@ -2183,7 +2346,15 @@ func (m *GetSpecType) GetVirtualServerTypeDRefInfo() ([]db.DRefInfo, error) {
 	}
 	switch m.GetVirtualServerType().(type) {
 	case *GetSpecType_Https:
-		return nil, nil
+		drInfos, err := m.GetHttps().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetHttps().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "https." + dri.DRField
+		}
+		return drInfos, err
 	case *GetSpecType_Http:
 		drInfos, err := m.GetHttp().GetDRefInfo()
 		if err != nil {
@@ -2195,9 +2366,35 @@ func (m *GetSpecType) GetVirtualServerTypeDRefInfo() ([]db.DRefInfo, error) {
 		}
 		return drInfos, err
 	case *GetSpecType_Tcp:
-		return nil, nil
+		drInfos, err := m.GetTcp().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetTcp().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "tcp." + dri.DRField
+		}
+		return drInfos, err
 	case *GetSpecType_Udp:
-		return nil, nil
+		drInfos, err := m.GetUdp().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetUdp().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "udp." + dri.DRField
+		}
+		return drInfos, err
+	case *GetSpecType_Http3:
+		drInfos, err := m.GetHttp3().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetHttp3().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "http3." + dri.DRField
+		}
+		return drInfos, err
 	default:
 		return nil, nil
 	}
@@ -2207,11 +2404,44 @@ type ValidateGetSpecType struct {
 	FldValidators map[string]db.ValidatorFunc
 }
 
-func (v *ValidateGetSpecType) DomainChoiceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
-	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
+func (v *ValidateGetSpecType) DomainsValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepStringItemRules(rules)
+	itemValFn, err := db.NewStringValidationRuleHandler(itemRules)
 	if err != nil {
-		return nil, errors.Wrap(err, "ValidationRuleHandler for domain_choice")
+		return nil, errors.Wrap(err, "Item ValidationRuleHandler for domains")
 	}
+	itemsValidatorFn := func(ctx context.Context, elems []string, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for domains")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]string)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []string, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal := fmt.Sprintf("%v", elem)
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated domains")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items domains")
+		}
+		return nil
+	}
+
 	return validatorFn, nil
 }
 func (v *ValidateGetSpecType) TrafficPoliciesValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
@@ -2350,39 +2580,10 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 			}
 		}
 	}
-
-	if fv, exists := v.FldValidators["domain_choice"]; exists {
-		val := m.GetDomainChoice()
-		vOpts := append(opts,
-			db.WithValidateField("domain_choice"),
-		)
-		if err := fv(ctx, val, vOpts...); err != nil {
+	if fv, exists := v.FldValidators["domains"]; exists {
+		vOpts := append(opts, db.WithValidateField("domains"))
+		if err := fv(ctx, m.GetDomains(), vOpts...); err != nil {
 			return err
-		}
-	}
-
-	switch m.GetDomainChoice().(type) {
-	case *GetSpecType_Managed:
-		if fv, exists := v.FldValidators["domain_choice.managed"]; exists {
-			val := m.GetDomainChoice().(*GetSpecType_Managed).Managed
-			vOpts := append(opts,
-				db.WithValidateField("domain_choice"),
-				db.WithValidateField("managed"),
-			)
-			if err := fv(ctx, val, vOpts...); err != nil {
-				return err
-			}
-		}
-	case *GetSpecType_NotManaged:
-		if fv, exists := v.FldValidators["domain_choice.not_managed"]; exists {
-			val := m.GetDomainChoice().(*GetSpecType_NotManaged).NotManaged
-			vOpts := append(opts,
-				db.WithValidateField("domain_choice"),
-				db.WithValidateField("not_managed"),
-			)
-			if err := fv(ctx, val, vOpts...); err != nil {
-				return err
-			}
 		}
 	}
 
@@ -2423,6 +2624,12 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 			if err := fv(ctx, item, vOpts...); err != nil {
 				return err
 			}
+		}
+	}
+	if fv, exists := v.FldValidators["json"]; exists {
+		vOpts := append(opts, db.WithValidateField("json"))
+		if err := fv(ctx, m.GetJson(), vOpts...); err != nil {
+			return err
 		}
 	}
 
@@ -2481,10 +2688,41 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 			}
 		}
 	}
+	if fv, exists := v.FldValidators["sse"]; exists {
+		vOpts := append(opts, db.WithValidateField("sse"))
+		if err := fv(ctx, m.GetSse(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["state"]; exists {
 		vOpts := append(opts, db.WithValidateField("state"))
 		if err := fv(ctx, m.GetState(), vOpts...); err != nil {
 			return err
+		}
+	}
+
+	switch m.GetStatisticsProfileChoice().(type) {
+	case *GetSpecType_StatisticsProfileNone:
+		if fv, exists := v.FldValidators["statistics_profile_choice.statistics_profile_none"]; exists {
+			val := m.GetStatisticsProfileChoice().(*GetSpecType_StatisticsProfileNone).StatisticsProfileNone
+			vOpts := append(opts,
+				db.WithValidateField("statistics_profile_choice"),
+				db.WithValidateField("statistics_profile_none"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *GetSpecType_StatisticsProfile:
+		if fv, exists := v.FldValidators["statistics_profile_choice.statistics_profile"]; exists {
+			val := m.GetStatisticsProfileChoice().(*GetSpecType_StatisticsProfile).StatisticsProfile
+			vOpts := append(opts,
+				db.WithValidateField("statistics_profile_choice"),
+				db.WithValidateField("statistics_profile"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
 		}
 	}
 	if fv, exists := v.FldValidators["traffic_policies"]; exists {
@@ -2554,6 +2792,17 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 				return err
 			}
 		}
+	case *GetSpecType_Http3:
+		if fv, exists := v.FldValidators["virtual_server_type.http3"]; exists {
+			val := m.GetVirtualServerType().(*GetSpecType_Http3).Http3
+			vOpts := append(opts,
+				db.WithValidateField("virtual_server_type"),
+				db.WithValidateField("http3"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 	if fv, exists := v.FldValidators["vs_score"]; exists {
 		vOpts := append(opts, db.WithValidateField("vs_score"))
@@ -2574,16 +2823,23 @@ var DefaultGetSpecTypeValidator = func() *ValidateGetSpecType {
 	_, _ = err, vFn
 	vFnMap := map[string]db.ValidatorFunc{}
 	_ = vFnMap
-	vrhDomainChoice := v.DomainChoiceValidationRuleHandler
-	rulesDomainChoice := map[string]string{
-		"ves.io.schema.rules.message.required_oneof": "true",
+
+	vrhDomains := v.DomainsValidationRuleHandler
+	rulesDomains := map[string]string{
+		"ves.io.schema.rules.message.required":                "true",
+		"ves.io.schema.rules.repeated.items.string.max_len":   "256",
+		"ves.io.schema.rules.repeated.items.string.min_len":   "1",
+		"ves.io.schema.rules.repeated.items.string.vh_domain": "true",
+		"ves.io.schema.rules.repeated.max_items":              "32",
+		"ves.io.schema.rules.repeated.min_items":              "1",
+		"ves.io.schema.rules.repeated.unique":                 "true",
 	}
-	vFn, err = vrhDomainChoice(rulesDomainChoice)
+	vFn, err = vrhDomains(rulesDomains)
 	if err != nil {
-		errMsg := fmt.Sprintf("ValidationRuleHandler for GetSpecType.domain_choice: %s", err)
+		errMsg := fmt.Sprintf("ValidationRuleHandler for GetSpecType.domains: %s", err)
 		panic(errMsg)
 	}
-	v.FldValidators["domain_choice"] = vFn
+	v.FldValidators["domains"] = vFn
 
 	vrhTrafficPolicies := v.TrafficPoliciesValidationRuleHandler
 	rulesTrafficPolicies := map[string]string{
@@ -2609,15 +2865,15 @@ var DefaultGetSpecTypeValidator = func() *ValidateGetSpecType {
 	v.FldValidators["vs_score"] = vFn
 	v.FldValidators["default_persistence_profile_choice.default_persistence_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["default_pool_choice.default_pool"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
-	v.FldValidators["domain_choice.managed"] = DomainsManagedByF5XCValidator().Validate
-	v.FldValidators["domain_choice.not_managed"] = NotManagedDomainsTypeValidator().Validate
 	v.FldValidators["fallback_persistence_profile_choice.fallback_persistence_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["last_hop_pool_choice.last_hop_pool"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["request_logging_profile_choice.request_logging_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
-	v.FldValidators["virtual_server_type.https"] = ServicesValidator().Validate
+	v.FldValidators["statistics_profile_choice.statistics_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
+	v.FldValidators["virtual_server_type.https"] = HTTPServicesValidator().Validate
 	v.FldValidators["virtual_server_type.http"] = HTTPServicesValidator().Validate
-	v.FldValidators["virtual_server_type.tcp"] = ServicesValidator().Validate
-	v.FldValidators["virtual_server_type.udp"] = ServicesValidator().Validate
+	v.FldValidators["virtual_server_type.tcp"] = TCPServicesValidator().Validate
+	v.FldValidators["virtual_server_type.udp"] = UDPServicesValidator().Validate
+	v.FldValidators["virtual_server_type.http3"] = HTTP3ServicesValidator().Validate
 	v.FldValidators["connection_limit_options"] = ConnectionLimitsTypeValidator().Validate
 	v.FldValidators["virtual_addresses"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["clone_pool_options"] = ClonePoolTypeValidator().Validate
@@ -3318,7 +3574,15 @@ func (m *GlobalSpecType) GetVirtualServerTypeDRefInfo() ([]db.DRefInfo, error) {
 	}
 	switch m.GetVirtualServerType().(type) {
 	case *GlobalSpecType_Https:
-		return nil, nil
+		drInfos, err := m.GetHttps().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetHttps().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "https." + dri.DRField
+		}
+		return drInfos, err
 	case *GlobalSpecType_Http:
 		drInfos, err := m.GetHttp().GetDRefInfo()
 		if err != nil {
@@ -3330,9 +3594,35 @@ func (m *GlobalSpecType) GetVirtualServerTypeDRefInfo() ([]db.DRefInfo, error) {
 		}
 		return drInfos, err
 	case *GlobalSpecType_Tcp:
-		return nil, nil
+		drInfos, err := m.GetTcp().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetTcp().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "tcp." + dri.DRField
+		}
+		return drInfos, err
 	case *GlobalSpecType_Udp:
-		return nil, nil
+		drInfos, err := m.GetUdp().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetUdp().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "udp." + dri.DRField
+		}
+		return drInfos, err
+	case *GlobalSpecType_Http3:
+		drInfos, err := m.GetHttp3().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetHttp3().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "http3." + dri.DRField
+		}
+		return drInfos, err
 	default:
 		return nil, nil
 	}
@@ -3347,6 +3637,46 @@ func (v *ValidateGlobalSpecType) DomainChoiceValidationRuleHandler(rules map[str
 	if err != nil {
 		return nil, errors.Wrap(err, "ValidationRuleHandler for domain_choice")
 	}
+	return validatorFn, nil
+}
+func (v *ValidateGlobalSpecType) DomainsValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepStringItemRules(rules)
+	itemValFn, err := db.NewStringValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Item ValidationRuleHandler for domains")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []string, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for domains")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]string)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []string, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal := fmt.Sprintf("%v", elem)
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated domains")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items domains")
+		}
+		return nil
+	}
+
 	return validatorFn, nil
 }
 func (v *ValidateGlobalSpecType) TrafficPoliciesValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
@@ -3520,6 +3850,12 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 			}
 		}
 	}
+	if fv, exists := v.FldValidators["domains"]; exists {
+		vOpts := append(opts, db.WithValidateField("domains"))
+		if err := fv(ctx, m.GetDomains(), vOpts...); err != nil {
+			return err
+		}
+	}
 
 	switch m.GetFallbackPersistenceProfileChoice().(type) {
 	case *GlobalSpecType_FallbackPersistenceProfileNone:
@@ -3558,6 +3894,12 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 			if err := fv(ctx, item, vOpts...); err != nil {
 				return err
 			}
+		}
+	}
+	if fv, exists := v.FldValidators["json"]; exists {
+		vOpts := append(opts, db.WithValidateField("json"))
+		if err := fv(ctx, m.GetJson(), vOpts...); err != nil {
+			return err
 		}
 	}
 
@@ -3614,6 +3956,12 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 			if err := fv(ctx, val, vOpts...); err != nil {
 				return err
 			}
+		}
+	}
+	if fv, exists := v.FldValidators["sse"]; exists {
+		vOpts := append(opts, db.WithValidateField("sse"))
+		if err := fv(ctx, m.GetSse(), vOpts...); err != nil {
+			return err
 		}
 	}
 	if fv, exists := v.FldValidators["state"]; exists {
@@ -3720,6 +4068,17 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 				return err
 			}
 		}
+	case *GlobalSpecType_Http3:
+		if fv, exists := v.FldValidators["virtual_server_type.http3"]; exists {
+			val := m.GetVirtualServerType().(*GlobalSpecType_Http3).Http3
+			vOpts := append(opts,
+				db.WithValidateField("virtual_server_type"),
+				db.WithValidateField("http3"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 	if fv, exists := v.FldValidators["vs_score"]; exists {
 		vOpts := append(opts, db.WithValidateField("vs_score"))
@@ -3751,6 +4110,23 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 	}
 	v.FldValidators["domain_choice"] = vFn
 
+	vrhDomains := v.DomainsValidationRuleHandler
+	rulesDomains := map[string]string{
+		"ves.io.schema.rules.message.required":                "true",
+		"ves.io.schema.rules.repeated.items.string.max_len":   "256",
+		"ves.io.schema.rules.repeated.items.string.min_len":   "1",
+		"ves.io.schema.rules.repeated.items.string.vh_domain": "true",
+		"ves.io.schema.rules.repeated.max_items":              "32",
+		"ves.io.schema.rules.repeated.min_items":              "1",
+		"ves.io.schema.rules.repeated.unique":                 "true",
+	}
+	vFn, err = vrhDomains(rulesDomains)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for GlobalSpecType.domains: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["domains"] = vFn
+
 	vrhTrafficPolicies := v.TrafficPoliciesValidationRuleHandler
 	rulesTrafficPolicies := map[string]string{
 		"ves.io.schema.rules.repeated.max_items": "32",
@@ -3781,10 +4157,11 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 	v.FldValidators["last_hop_pool_choice.last_hop_pool"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["request_logging_profile_choice.request_logging_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["statistics_profile_choice.statistics_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
-	v.FldValidators["virtual_server_type.https"] = ServicesValidator().Validate
+	v.FldValidators["virtual_server_type.https"] = HTTPServicesValidator().Validate
 	v.FldValidators["virtual_server_type.http"] = HTTPServicesValidator().Validate
-	v.FldValidators["virtual_server_type.tcp"] = ServicesValidator().Validate
-	v.FldValidators["virtual_server_type.udp"] = ServicesValidator().Validate
+	v.FldValidators["virtual_server_type.tcp"] = TCPServicesValidator().Validate
+	v.FldValidators["virtual_server_type.udp"] = UDPServicesValidator().Validate
+	v.FldValidators["virtual_server_type.http3"] = HTTP3ServicesValidator().Validate
 	v.FldValidators["connection_limit_options"] = ConnectionLimitsTypeValidator().Validate
 	v.FldValidators["virtual_addresses"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["clone_pool_options"] = ClonePoolTypeValidator().Validate
@@ -3799,15 +4176,15 @@ func GlobalSpecTypeValidator() db.Validator {
 
 // augmented methods on protoc/std generated struct
 
-func (m *HTTPProfileType) ToJSON() (string, error) {
+func (m *HTTP3DefaultServerSelection) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
 
-func (m *HTTPProfileType) ToYAML() (string, error) {
+func (m *HTTP3DefaultServerSelection) ToYAML() (string, error) {
 	return codec.ToYAML(m)
 }
 
-func (m *HTTPProfileType) DeepCopy() *HTTPProfileType {
+func (m *HTTP3DefaultServerSelection) DeepCopy() *HTTP3DefaultServerSelection {
 	if m == nil {
 		return nil
 	}
@@ -3815,7 +4192,7 @@ func (m *HTTPProfileType) DeepCopy() *HTTPProfileType {
 	if err != nil {
 		return nil
 	}
-	c := &HTTPProfileType{}
+	c := &HTTP3DefaultServerSelection{}
 	err = c.Unmarshal(ser)
 	if err != nil {
 		return nil
@@ -3823,87 +4200,47 @@ func (m *HTTPProfileType) DeepCopy() *HTTPProfileType {
 	return c
 }
 
-func (m *HTTPProfileType) DeepCopyProto() proto.Message {
+func (m *HTTP3DefaultServerSelection) DeepCopyProto() proto.Message {
 	if m == nil {
 		return nil
 	}
 	return m.DeepCopy()
 }
 
-func (m *HTTPProfileType) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
-	return HTTPProfileTypeValidator().Validate(ctx, m, opts...)
+func (m *HTTP3DefaultServerSelection) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return HTTP3DefaultServerSelectionValidator().Validate(ctx, m, opts...)
 }
 
-func (m *HTTPProfileType) GetDRefInfo() ([]db.DRefInfo, error) {
+func (m *HTTP3DefaultServerSelection) GetDRefInfo() ([]db.DRefInfo, error) {
 	if m == nil {
 		return nil, nil
 	}
 
 	var drInfos []db.DRefInfo
-	if fdrInfos, err := m.GetClientProfileDRefInfo(); err != nil {
-		return nil, errors.Wrap(err, "GetClientProfileDRefInfo() FAILED")
+	if fdrInfos, err := m.GetHttpServerProfileChoiceDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetHttpServerProfileChoiceDRefInfo() FAILED")
 	} else {
 		drInfos = append(drInfos, fdrInfos...)
 	}
-	if fdrInfos, err := m.GetHttpServerProfileChoiceDRefInfo(); err != nil {
-		return nil, errors.Wrap(err, "GetHttpServerProfileChoiceDRefInfo() FAILED")
+	if fdrInfos, err := m.GetSslServerProfilesDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetSslServerProfilesDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetTcpServerProfileDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetTcpServerProfileDRefInfo() FAILED")
 	} else {
 		drInfos = append(drInfos, fdrInfos...)
 	}
 	return drInfos, nil
 }
 
-func (m *HTTPProfileType) GetClientProfileDRefInfo() ([]db.DRefInfo, error) {
-	vref := m.GetClientProfile()
-	if vref == nil {
-		return nil, nil
-	}
-	vdRef := db.NewDirectRefForView(vref)
-	vdRef.SetKind("http_profile.Object")
-	dri := db.DRefInfo{
-		RefdType:   "http_profile.Object",
-		RefdTenant: vref.Tenant,
-		RefdNS:     vref.Namespace,
-		RefdName:   vref.Name,
-		DRField:    "client_profile",
-		Ref:        vdRef,
-	}
-	return []db.DRefInfo{dri}, nil
-}
-
-// GetClientProfileDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
-func (m *HTTPProfileType) GetClientProfileDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
-	var entries []db.Entry
-	refdType, err := d.TypeForEntryKind("", "", "http_profile.Object")
-	if err != nil {
-		return nil, errors.Wrap(err, "Cannot find type for kind: http_profile")
-	}
-	vref := m.GetClientProfile()
-	if vref == nil {
-		return nil, nil
-	}
-	ref := &ves_io_schema.ObjectRefType{
-		Kind:      "http_profile.Object",
-		Tenant:    vref.Tenant,
-		Namespace: vref.Namespace,
-		Name:      vref.Name,
-	}
-	refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
-	if err != nil {
-		return nil, errors.Wrap(err, "Getting referred entry")
-	}
-	if refdEnt != nil {
-		entries = append(entries, refdEnt)
-	}
-	return entries, nil
-}
-
-func (m *HTTPProfileType) GetHttpServerProfileChoiceDRefInfo() ([]db.DRefInfo, error) {
+func (m *HTTP3DefaultServerSelection) GetHttpServerProfileChoiceDRefInfo() ([]db.DRefInfo, error) {
 	switch m.GetHttpServerProfileChoice().(type) {
-	case *HTTPProfileType_ServerProfileSameAsClient:
+	case *HTTP3DefaultServerSelection_HttpServerProfileSameAsClient:
 		return nil, nil
-	case *HTTPProfileType_ServerProfile:
-		vref := m.GetServerProfile()
+	case *HTTP3DefaultServerSelection_HttpServerProfile:
+		vref := m.GetHttpServerProfile()
 		if vref == nil {
 			return nil, nil
 		}
@@ -3914,7 +4251,7 @@ func (m *HTTPProfileType) GetHttpServerProfileChoiceDRefInfo() ([]db.DRefInfo, e
 			RefdTenant: vref.Tenant,
 			RefdNS:     vref.Namespace,
 			RefdName:   vref.Name,
-			DRField:    "server_profile",
+			DRField:    "http_server_profile",
 			Ref:        vdRef,
 		}
 		return []db.DRefInfo{dri}, nil
@@ -3924,17 +4261,17 @@ func (m *HTTPProfileType) GetHttpServerProfileChoiceDRefInfo() ([]db.DRefInfo, e
 }
 
 // GetHttpServerProfileChoiceDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
-func (m *HTTPProfileType) GetHttpServerProfileChoiceDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+func (m *HTTP3DefaultServerSelection) GetHttpServerProfileChoiceDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
 	var entries []db.Entry
 
 	switch m.GetHttpServerProfileChoice().(type) {
-	case *HTTPProfileType_ServerProfileSameAsClient:
-	case *HTTPProfileType_ServerProfile:
+	case *HTTP3DefaultServerSelection_HttpServerProfileSameAsClient:
+	case *HTTP3DefaultServerSelection_HttpServerProfile:
 		refdType, err := d.TypeForEntryKind("", "", "http_profile.Object")
 		if err != nil {
 			return nil, errors.Wrap(err, "Cannot find type for kind: http_profile")
 		}
-		vref := m.GetServerProfile()
+		vref := m.GetHttpServerProfile()
 		if vref == nil {
 			return nil, nil
 		}
@@ -3956,14 +4293,112 @@ func (m *HTTPProfileType) GetHttpServerProfileChoiceDBEntries(ctx context.Contex
 	return entries, nil
 }
 
-type ValidateHTTPProfileType struct {
+func (m *HTTP3DefaultServerSelection) GetSslServerProfilesDRefInfo() ([]db.DRefInfo, error) {
+	vrefs := m.GetSslServerProfiles()
+	if len(vrefs) == 0 {
+		return nil, nil
+	}
+	drInfos := make([]db.DRefInfo, 0, len(vrefs))
+	for i, vref := range vrefs {
+		if vref == nil {
+			return nil, fmt.Errorf("HTTP3DefaultServerSelection.ssl_server_profiles[%d] has a nil value", i)
+		}
+		vdRef := db.NewDirectRefForView(vref)
+		vdRef.SetKind("ssl_server_profile.Object")
+		// resolve kind to type if needed at DBObject.GetDRefInfo()
+		drInfos = append(drInfos, db.DRefInfo{
+			RefdType:   "ssl_server_profile.Object",
+			RefdTenant: vref.Tenant,
+			RefdNS:     vref.Namespace,
+			RefdName:   vref.Name,
+			DRField:    "ssl_server_profiles",
+			Ref:        vdRef,
+		})
+	}
+	return drInfos, nil
+}
+
+// GetSslServerProfilesDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *HTTP3DefaultServerSelection) GetSslServerProfilesDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "ssl_server_profile.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: ssl_server_profile")
+	}
+	for i, vref := range m.GetSslServerProfiles() {
+		if vref == nil {
+			return nil, fmt.Errorf("HTTP3DefaultServerSelection.ssl_server_profiles[%d] has a nil value", i)
+		}
+		ref := &ves_io_schema.ObjectRefType{
+			Kind:      "ssl_server_profile.Object",
+			Tenant:    vref.Tenant,
+			Namespace: vref.Namespace,
+			Name:      vref.Name,
+		}
+		refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+		if err != nil {
+			return nil, errors.Wrap(err, "Getting referred entry")
+		}
+		if refdEnt != nil {
+			entries = append(entries, refdEnt)
+		}
+	}
+	return entries, nil
+}
+
+func (m *HTTP3DefaultServerSelection) GetTcpServerProfileDRefInfo() ([]db.DRefInfo, error) {
+	vref := m.GetTcpServerProfile()
+	if vref == nil {
+		return nil, nil
+	}
+	vdRef := db.NewDirectRefForView(vref)
+	vdRef.SetKind("tcp_profile.Object")
+	dri := db.DRefInfo{
+		RefdType:   "tcp_profile.Object",
+		RefdTenant: vref.Tenant,
+		RefdNS:     vref.Namespace,
+		RefdName:   vref.Name,
+		DRField:    "tcp_server_profile",
+		Ref:        vdRef,
+	}
+	return []db.DRefInfo{dri}, nil
+}
+
+// GetTcpServerProfileDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *HTTP3DefaultServerSelection) GetTcpServerProfileDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "tcp_profile.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: tcp_profile")
+	}
+	vref := m.GetTcpServerProfile()
+	if vref == nil {
+		return nil, nil
+	}
+	ref := &ves_io_schema.ObjectRefType{
+		Kind:      "tcp_profile.Object",
+		Tenant:    vref.Tenant,
+		Namespace: vref.Namespace,
+		Name:      vref.Name,
+	}
+	refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+	if err != nil {
+		return nil, errors.Wrap(err, "Getting referred entry")
+	}
+	if refdEnt != nil {
+		entries = append(entries, refdEnt)
+	}
+	return entries, nil
+}
+
+type ValidateHTTP3DefaultServerSelection struct {
 	FldValidators map[string]db.ValidatorFunc
 }
 
-func (v *ValidateHTTPProfileType) ClientProfileValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+func (v *ValidateHTTP3DefaultServerSelection) TcpServerProfileValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
 	reqdValidatorFn, err := db.NewMessageValidationRuleHandler(rules)
 	if err != nil {
-		return nil, errors.Wrap(err, "MessageValidationRuleHandler for client_profile")
+		return nil, errors.Wrap(err, "MessageValidationRuleHandler for tcp_server_profile")
 	}
 	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
 		if err := reqdValidatorFn(ctx, val, opts...); err != nil {
@@ -3977,45 +4412,1284 @@ func (v *ValidateHTTPProfileType) ClientProfileValidationRuleHandler(rules map[s
 
 	return validatorFn, nil
 }
+func (v *ValidateHTTP3DefaultServerSelection) SslServerProfilesValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepMessageItemRules(rules)
+	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Message ValidationRuleHandler for ssl_server_profiles")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []*ves_io_schema_views.ObjectRefType, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+			if err := ves_io_schema_views.ObjectRefTypeValidator().Validate(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for ssl_server_profiles")
+	}
 
-func (v *ValidateHTTPProfileType) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
-	m, ok := pm.(*HTTPProfileType)
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]*ves_io_schema_views.ObjectRefType)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []*ves_io_schema_views.ObjectRefType, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
+			if err != nil {
+				return errors.Wrapf(err, "Converting %v to JSON", elem)
+			}
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated ssl_server_profiles")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items ssl_server_profiles")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateHTTP3DefaultServerSelection) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*HTTP3DefaultServerSelection)
 	if !ok {
 		switch t := pm.(type) {
 		case nil:
 			return nil
 		default:
-			return fmt.Errorf("Expected type *HTTPProfileType got type %s", t)
+			return fmt.Errorf("Expected type *HTTP3DefaultServerSelection got type %s", t)
 		}
 	}
 	if m == nil {
 		return nil
 	}
-	if fv, exists := v.FldValidators["client_profile"]; exists {
-		vOpts := append(opts, db.WithValidateField("client_profile"))
-		if err := fv(ctx, m.GetClientProfile(), vOpts...); err != nil {
-			return err
-		}
-	}
 
 	switch m.GetHttpServerProfileChoice().(type) {
-	case *HTTPProfileType_ServerProfileSameAsClient:
-		if fv, exists := v.FldValidators["http_server_profile_choice.server_profile_same_as_client"]; exists {
-			val := m.GetHttpServerProfileChoice().(*HTTPProfileType_ServerProfileSameAsClient).ServerProfileSameAsClient
+	case *HTTP3DefaultServerSelection_HttpServerProfileSameAsClient:
+		if fv, exists := v.FldValidators["http_server_profile_choice.http_server_profile_same_as_client"]; exists {
+			val := m.GetHttpServerProfileChoice().(*HTTP3DefaultServerSelection_HttpServerProfileSameAsClient).HttpServerProfileSameAsClient
 			vOpts := append(opts,
 				db.WithValidateField("http_server_profile_choice"),
-				db.WithValidateField("server_profile_same_as_client"),
+				db.WithValidateField("http_server_profile_same_as_client"),
 			)
 			if err := fv(ctx, val, vOpts...); err != nil {
 				return err
 			}
 		}
-	case *HTTPProfileType_ServerProfile:
-		if fv, exists := v.FldValidators["http_server_profile_choice.server_profile"]; exists {
-			val := m.GetHttpServerProfileChoice().(*HTTPProfileType_ServerProfile).ServerProfile
+	case *HTTP3DefaultServerSelection_HttpServerProfile:
+		if fv, exists := v.FldValidators["http_server_profile_choice.http_server_profile"]; exists {
+			val := m.GetHttpServerProfileChoice().(*HTTP3DefaultServerSelection_HttpServerProfile).HttpServerProfile
 			vOpts := append(opts,
 				db.WithValidateField("http_server_profile_choice"),
-				db.WithValidateField("server_profile"),
+				db.WithValidateField("http_server_profile"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	if fv, exists := v.FldValidators["ssl_server_profiles"]; exists {
+		vOpts := append(opts, db.WithValidateField("ssl_server_profiles"))
+		if err := fv(ctx, m.GetSslServerProfiles(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["tcp_server_profile"]; exists {
+		vOpts := append(opts, db.WithValidateField("tcp_server_profile"))
+		if err := fv(ctx, m.GetTcpServerProfile(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultHTTP3DefaultServerSelectionValidator = func() *ValidateHTTP3DefaultServerSelection {
+	v := &ValidateHTTP3DefaultServerSelection{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhTcpServerProfile := v.TcpServerProfileValidationRuleHandler
+	rulesTcpServerProfile := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhTcpServerProfile(rulesTcpServerProfile)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for HTTP3DefaultServerSelection.tcp_server_profile: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["tcp_server_profile"] = vFn
+
+	vrhSslServerProfiles := v.SslServerProfilesValidationRuleHandler
+	rulesSslServerProfiles := map[string]string{
+		"ves.io.schema.rules.repeated.max_items": "32",
+		"ves.io.schema.rules.repeated.unique":    "true",
+	}
+	vFn, err = vrhSslServerProfiles(rulesSslServerProfiles)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for HTTP3DefaultServerSelection.ssl_server_profiles: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["ssl_server_profiles"] = vFn
+	v.FldValidators["http_server_profile_choice.http_server_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
+
+	return v
+}()
+
+func HTTP3DefaultServerSelectionValidator() db.Validator {
+	return DefaultHTTP3DefaultServerSelectionValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *HTTP3Services) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *HTTP3Services) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *HTTP3Services) DeepCopy() *HTTP3Services {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &HTTP3Services{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *HTTP3Services) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *HTTP3Services) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return HTTP3ServicesValidator().Validate(ctx, m, opts...)
+}
+
+func (m *HTTP3Services) GetDRefInfo() ([]db.DRefInfo, error) {
+	if m == nil {
+		return nil, nil
+	}
+
+	var drInfos []db.DRefInfo
+	if fdrInfos, err := m.GetHttp3ClientProfileDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetHttp3ClientProfileDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetHttpClientProfileDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetHttpClientProfileDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetProtocolClientProfileDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetProtocolClientProfileDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetQuicProfileChoiceDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetQuicProfileChoiceDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetServerAppTypeChoiceDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetServerAppTypeChoiceDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetSslClientProfilesDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetSslClientProfilesDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	return drInfos, nil
+}
+
+func (m *HTTP3Services) GetHttp3ClientProfileDRefInfo() ([]db.DRefInfo, error) {
+	vref := m.GetHttp3ClientProfile()
+	if vref == nil {
+		return nil, nil
+	}
+	vdRef := db.NewDirectRefForView(vref)
+	vdRef.SetKind("http3_profile.Object")
+	dri := db.DRefInfo{
+		RefdType:   "http3_profile.Object",
+		RefdTenant: vref.Tenant,
+		RefdNS:     vref.Namespace,
+		RefdName:   vref.Name,
+		DRField:    "http3_client_profile",
+		Ref:        vdRef,
+	}
+	return []db.DRefInfo{dri}, nil
+}
+
+// GetHttp3ClientProfileDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *HTTP3Services) GetHttp3ClientProfileDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "http3_profile.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: http3_profile")
+	}
+	vref := m.GetHttp3ClientProfile()
+	if vref == nil {
+		return nil, nil
+	}
+	ref := &ves_io_schema.ObjectRefType{
+		Kind:      "http3_profile.Object",
+		Tenant:    vref.Tenant,
+		Namespace: vref.Namespace,
+		Name:      vref.Name,
+	}
+	refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+	if err != nil {
+		return nil, errors.Wrap(err, "Getting referred entry")
+	}
+	if refdEnt != nil {
+		entries = append(entries, refdEnt)
+	}
+	return entries, nil
+}
+
+func (m *HTTP3Services) GetHttpClientProfileDRefInfo() ([]db.DRefInfo, error) {
+	vref := m.GetHttpClientProfile()
+	if vref == nil {
+		return nil, nil
+	}
+	vdRef := db.NewDirectRefForView(vref)
+	vdRef.SetKind("http_profile.Object")
+	dri := db.DRefInfo{
+		RefdType:   "http_profile.Object",
+		RefdTenant: vref.Tenant,
+		RefdNS:     vref.Namespace,
+		RefdName:   vref.Name,
+		DRField:    "http_client_profile",
+		Ref:        vdRef,
+	}
+	return []db.DRefInfo{dri}, nil
+}
+
+// GetHttpClientProfileDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *HTTP3Services) GetHttpClientProfileDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "http_profile.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: http_profile")
+	}
+	vref := m.GetHttpClientProfile()
+	if vref == nil {
+		return nil, nil
+	}
+	ref := &ves_io_schema.ObjectRefType{
+		Kind:      "http_profile.Object",
+		Tenant:    vref.Tenant,
+		Namespace: vref.Namespace,
+		Name:      vref.Name,
+	}
+	refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+	if err != nil {
+		return nil, errors.Wrap(err, "Getting referred entry")
+	}
+	if refdEnt != nil {
+		entries = append(entries, refdEnt)
+	}
+	return entries, nil
+}
+
+func (m *HTTP3Services) GetProtocolClientProfileDRefInfo() ([]db.DRefInfo, error) {
+	vref := m.GetProtocolClientProfile()
+	if vref == nil {
+		return nil, nil
+	}
+	vdRef := db.NewDirectRefForView(vref)
+	vdRef.SetKind("udp_profile.Object")
+	dri := db.DRefInfo{
+		RefdType:   "udp_profile.Object",
+		RefdTenant: vref.Tenant,
+		RefdNS:     vref.Namespace,
+		RefdName:   vref.Name,
+		DRField:    "protocol_client_profile",
+		Ref:        vdRef,
+	}
+	return []db.DRefInfo{dri}, nil
+}
+
+// GetProtocolClientProfileDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *HTTP3Services) GetProtocolClientProfileDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "udp_profile.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: udp_profile")
+	}
+	vref := m.GetProtocolClientProfile()
+	if vref == nil {
+		return nil, nil
+	}
+	ref := &ves_io_schema.ObjectRefType{
+		Kind:      "udp_profile.Object",
+		Tenant:    vref.Tenant,
+		Namespace: vref.Namespace,
+		Name:      vref.Name,
+	}
+	refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+	if err != nil {
+		return nil, errors.Wrap(err, "Getting referred entry")
+	}
+	if refdEnt != nil {
+		entries = append(entries, refdEnt)
+	}
+	return entries, nil
+}
+
+func (m *HTTP3Services) GetQuicProfileChoiceDRefInfo() ([]db.DRefInfo, error) {
+	switch m.GetQuicProfileChoice().(type) {
+	case *HTTP3Services_QuicClientProfileNone:
+		return nil, nil
+	case *HTTP3Services_QuicClientProfile:
+		vref := m.GetQuicClientProfile()
+		if vref == nil {
+			return nil, nil
+		}
+		vdRef := db.NewDirectRefForView(vref)
+		vdRef.SetKind("quic_profile.Object")
+		dri := db.DRefInfo{
+			RefdType:   "quic_profile.Object",
+			RefdTenant: vref.Tenant,
+			RefdNS:     vref.Namespace,
+			RefdName:   vref.Name,
+			DRField:    "quic_client_profile",
+			Ref:        vdRef,
+		}
+		return []db.DRefInfo{dri}, nil
+	default:
+		return nil, nil
+	}
+}
+
+// GetQuicProfileChoiceDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *HTTP3Services) GetQuicProfileChoiceDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+
+	switch m.GetQuicProfileChoice().(type) {
+	case *HTTP3Services_QuicClientProfileNone:
+	case *HTTP3Services_QuicClientProfile:
+		refdType, err := d.TypeForEntryKind("", "", "quic_profile.Object")
+		if err != nil {
+			return nil, errors.Wrap(err, "Cannot find type for kind: quic_profile")
+		}
+		vref := m.GetQuicClientProfile()
+		if vref == nil {
+			return nil, nil
+		}
+		ref := &ves_io_schema.ObjectRefType{
+			Kind:      "quic_profile.Object",
+			Tenant:    vref.Tenant,
+			Namespace: vref.Namespace,
+			Name:      vref.Name,
+		}
+		refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+		if err != nil {
+			return nil, errors.Wrap(err, "Getting referred entry")
+		}
+		if refdEnt != nil {
+			entries = append(entries, refdEnt)
+		}
+	}
+
+	return entries, nil
+}
+
+// GetDRefInfo for the field's type
+func (m *HTTP3Services) GetServerAppTypeChoiceDRefInfo() ([]db.DRefInfo, error) {
+	if m.GetServerAppTypeChoice() == nil {
+		return nil, nil
+	}
+	switch m.GetServerAppTypeChoice().(type) {
+	case *HTTP3Services_ServerAppTypeDefault:
+		drInfos, err := m.GetServerAppTypeDefault().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetServerAppTypeDefault().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "server_app_type_default." + dri.DRField
+		}
+		return drInfos, err
+	default:
+		return nil, nil
+	}
+}
+
+func (m *HTTP3Services) GetSslClientProfilesDRefInfo() ([]db.DRefInfo, error) {
+	vrefs := m.GetSslClientProfiles()
+	if len(vrefs) == 0 {
+		return nil, nil
+	}
+	drInfos := make([]db.DRefInfo, 0, len(vrefs))
+	for i, vref := range vrefs {
+		if vref == nil {
+			return nil, fmt.Errorf("HTTP3Services.ssl_client_profiles[%d] has a nil value", i)
+		}
+		vdRef := db.NewDirectRefForView(vref)
+		vdRef.SetKind("ssl_client_profile.Object")
+		// resolve kind to type if needed at DBObject.GetDRefInfo()
+		drInfos = append(drInfos, db.DRefInfo{
+			RefdType:   "ssl_client_profile.Object",
+			RefdTenant: vref.Tenant,
+			RefdNS:     vref.Namespace,
+			RefdName:   vref.Name,
+			DRField:    "ssl_client_profiles",
+			Ref:        vdRef,
+		})
+	}
+	return drInfos, nil
+}
+
+// GetSslClientProfilesDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *HTTP3Services) GetSslClientProfilesDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "ssl_client_profile.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: ssl_client_profile")
+	}
+	for i, vref := range m.GetSslClientProfiles() {
+		if vref == nil {
+			return nil, fmt.Errorf("HTTP3Services.ssl_client_profiles[%d] has a nil value", i)
+		}
+		ref := &ves_io_schema.ObjectRefType{
+			Kind:      "ssl_client_profile.Object",
+			Tenant:    vref.Tenant,
+			Namespace: vref.Namespace,
+			Name:      vref.Name,
+		}
+		refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+		if err != nil {
+			return nil, errors.Wrap(err, "Getting referred entry")
+		}
+		if refdEnt != nil {
+			entries = append(entries, refdEnt)
+		}
+	}
+	return entries, nil
+}
+
+type ValidateHTTP3Services struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateHTTP3Services) ServicesValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepMessageItemRules(rules)
+	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Message ValidationRuleHandler for services")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []*ServiceType, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+			if err := ServiceTypeValidator().Validate(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for services")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]*ServiceType)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []*ServiceType, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
+			if err != nil {
+				return errors.Wrapf(err, "Converting %v to JSON", elem)
+			}
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated services")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items services")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateHTTP3Services) ProtocolClientProfileValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	reqdValidatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "MessageValidationRuleHandler for protocol_client_profile")
+	}
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		if err := reqdValidatorFn(ctx, val, opts...); err != nil {
+			return err
+		}
+		if err := ves_io_schema_views.ObjectRefTypeValidator().Validate(ctx, val, opts...); err != nil {
+			return err
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateHTTP3Services) SslClientProfilesValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepMessageItemRules(rules)
+	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Message ValidationRuleHandler for ssl_client_profiles")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []*ves_io_schema_views.ObjectRefType, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+			if err := ves_io_schema_views.ObjectRefTypeValidator().Validate(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for ssl_client_profiles")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]*ves_io_schema_views.ObjectRefType)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []*ves_io_schema_views.ObjectRefType, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
+			if err != nil {
+				return errors.Wrapf(err, "Converting %v to JSON", elem)
+			}
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated ssl_client_profiles")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items ssl_client_profiles")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateHTTP3Services) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*HTTP3Services)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *HTTP3Services got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["http3_client_profile"]; exists {
+		vOpts := append(opts, db.WithValidateField("http3_client_profile"))
+		if err := fv(ctx, m.GetHttp3ClientProfile(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["http_client_profile"]; exists {
+		vOpts := append(opts, db.WithValidateField("http_client_profile"))
+		if err := fv(ctx, m.GetHttpClientProfile(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["protocol_client_profile"]; exists {
+		vOpts := append(opts, db.WithValidateField("protocol_client_profile"))
+		if err := fv(ctx, m.GetProtocolClientProfile(), vOpts...); err != nil {
+			return err
+		}
+	}
+
+	switch m.GetQuicProfileChoice().(type) {
+	case *HTTP3Services_QuicClientProfileNone:
+		if fv, exists := v.FldValidators["quic_profile_choice.quic_client_profile_none"]; exists {
+			val := m.GetQuicProfileChoice().(*HTTP3Services_QuicClientProfileNone).QuicClientProfileNone
+			vOpts := append(opts,
+				db.WithValidateField("quic_profile_choice"),
+				db.WithValidateField("quic_client_profile_none"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *HTTP3Services_QuicClientProfile:
+		if fv, exists := v.FldValidators["quic_profile_choice.quic_client_profile"]; exists {
+			val := m.GetQuicProfileChoice().(*HTTP3Services_QuicClientProfile).QuicClientProfile
+			vOpts := append(opts,
+				db.WithValidateField("quic_profile_choice"),
+				db.WithValidateField("quic_client_profile"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+
+	switch m.GetServerAppTypeChoice().(type) {
+	case *HTTP3Services_ServerAppTypeDefault:
+		if fv, exists := v.FldValidators["server_app_type_choice.server_app_type_default"]; exists {
+			val := m.GetServerAppTypeChoice().(*HTTP3Services_ServerAppTypeDefault).ServerAppTypeDefault
+			vOpts := append(opts,
+				db.WithValidateField("server_app_type_choice"),
+				db.WithValidateField("server_app_type_default"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	if fv, exists := v.FldValidators["services"]; exists {
+		vOpts := append(opts, db.WithValidateField("services"))
+		if err := fv(ctx, m.GetServices(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["ssl_client_profiles"]; exists {
+		vOpts := append(opts, db.WithValidateField("ssl_client_profiles"))
+		if err := fv(ctx, m.GetSslClientProfiles(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultHTTP3ServicesValidator = func() *ValidateHTTP3Services {
+	v := &ValidateHTTP3Services{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhServices := v.ServicesValidationRuleHandler
+	rulesServices := map[string]string{
+		"ves.io.schema.rules.repeated.max_items": "128",
+		"ves.io.schema.rules.repeated.unique":    "true",
+	}
+	vFn, err = vrhServices(rulesServices)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for HTTP3Services.services: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["services"] = vFn
+
+	vrhProtocolClientProfile := v.ProtocolClientProfileValidationRuleHandler
+	rulesProtocolClientProfile := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhProtocolClientProfile(rulesProtocolClientProfile)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for HTTP3Services.protocol_client_profile: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["protocol_client_profile"] = vFn
+
+	vrhSslClientProfiles := v.SslClientProfilesValidationRuleHandler
+	rulesSslClientProfiles := map[string]string{
+		"ves.io.schema.rules.repeated.max_items": "32",
+		"ves.io.schema.rules.repeated.unique":    "true",
+	}
+	vFn, err = vrhSslClientProfiles(rulesSslClientProfiles)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for HTTP3Services.ssl_client_profiles: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["ssl_client_profiles"] = vFn
+	v.FldValidators["quic_profile_choice.quic_client_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
+	v.FldValidators["server_app_type_choice.server_app_type_default"] = HTTP3DefaultServerSelectionValidator().Validate
+	v.FldValidators["http_client_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
+	v.FldValidators["http3_client_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
+
+	return v
+}()
+
+func HTTP3ServicesValidator() db.Validator {
+	return DefaultHTTP3ServicesValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *HTTPDefaultServerSelection) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *HTTPDefaultServerSelection) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *HTTPDefaultServerSelection) DeepCopy() *HTTPDefaultServerSelection {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &HTTPDefaultServerSelection{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *HTTPDefaultServerSelection) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *HTTPDefaultServerSelection) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return HTTPDefaultServerSelectionValidator().Validate(ctx, m, opts...)
+}
+
+func (m *HTTPDefaultServerSelection) GetDRefInfo() ([]db.DRefInfo, error) {
+	if m == nil {
+		return nil, nil
+	}
+
+	var drInfos []db.DRefInfo
+	if fdrInfos, err := m.GetHttp2ServerProfileChoiceDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetHttp2ServerProfileChoiceDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetHttpServerProfileChoiceDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetHttpServerProfileChoiceDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetProtocolServerProfileChoiceDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetProtocolServerProfileChoiceDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetSslServerProfilesDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetSslServerProfilesDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetWebsocketServerProfileChoiceDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetWebsocketServerProfileChoiceDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	return drInfos, nil
+}
+
+func (m *HTTPDefaultServerSelection) GetHttp2ServerProfileChoiceDRefInfo() ([]db.DRefInfo, error) {
+	switch m.GetHttp2ServerProfileChoice().(type) {
+	case *HTTPDefaultServerSelection_Http2ServerProfileNone:
+		return nil, nil
+	case *HTTPDefaultServerSelection_Http2ServerProfile:
+		vref := m.GetHttp2ServerProfile()
+		if vref == nil {
+			return nil, nil
+		}
+		vdRef := db.NewDirectRefForView(vref)
+		vdRef.SetKind("http2_profile.Object")
+		dri := db.DRefInfo{
+			RefdType:   "http2_profile.Object",
+			RefdTenant: vref.Tenant,
+			RefdNS:     vref.Namespace,
+			RefdName:   vref.Name,
+			DRField:    "http2_server_profile",
+			Ref:        vdRef,
+		}
+		return []db.DRefInfo{dri}, nil
+	default:
+		return nil, nil
+	}
+}
+
+// GetHttp2ServerProfileChoiceDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *HTTPDefaultServerSelection) GetHttp2ServerProfileChoiceDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+
+	switch m.GetHttp2ServerProfileChoice().(type) {
+	case *HTTPDefaultServerSelection_Http2ServerProfileNone:
+	case *HTTPDefaultServerSelection_Http2ServerProfile:
+		refdType, err := d.TypeForEntryKind("", "", "http2_profile.Object")
+		if err != nil {
+			return nil, errors.Wrap(err, "Cannot find type for kind: http2_profile")
+		}
+		vref := m.GetHttp2ServerProfile()
+		if vref == nil {
+			return nil, nil
+		}
+		ref := &ves_io_schema.ObjectRefType{
+			Kind:      "http2_profile.Object",
+			Tenant:    vref.Tenant,
+			Namespace: vref.Namespace,
+			Name:      vref.Name,
+		}
+		refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+		if err != nil {
+			return nil, errors.Wrap(err, "Getting referred entry")
+		}
+		if refdEnt != nil {
+			entries = append(entries, refdEnt)
+		}
+	}
+
+	return entries, nil
+}
+
+func (m *HTTPDefaultServerSelection) GetHttpServerProfileChoiceDRefInfo() ([]db.DRefInfo, error) {
+	switch m.GetHttpServerProfileChoice().(type) {
+	case *HTTPDefaultServerSelection_HttpServerProfileSameAsClient:
+		return nil, nil
+	case *HTTPDefaultServerSelection_HttpServerProfile:
+		vref := m.GetHttpServerProfile()
+		if vref == nil {
+			return nil, nil
+		}
+		vdRef := db.NewDirectRefForView(vref)
+		vdRef.SetKind("http_profile.Object")
+		dri := db.DRefInfo{
+			RefdType:   "http_profile.Object",
+			RefdTenant: vref.Tenant,
+			RefdNS:     vref.Namespace,
+			RefdName:   vref.Name,
+			DRField:    "http_server_profile",
+			Ref:        vdRef,
+		}
+		return []db.DRefInfo{dri}, nil
+	default:
+		return nil, nil
+	}
+}
+
+// GetHttpServerProfileChoiceDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *HTTPDefaultServerSelection) GetHttpServerProfileChoiceDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+
+	switch m.GetHttpServerProfileChoice().(type) {
+	case *HTTPDefaultServerSelection_HttpServerProfileSameAsClient:
+	case *HTTPDefaultServerSelection_HttpServerProfile:
+		refdType, err := d.TypeForEntryKind("", "", "http_profile.Object")
+		if err != nil {
+			return nil, errors.Wrap(err, "Cannot find type for kind: http_profile")
+		}
+		vref := m.GetHttpServerProfile()
+		if vref == nil {
+			return nil, nil
+		}
+		ref := &ves_io_schema.ObjectRefType{
+			Kind:      "http_profile.Object",
+			Tenant:    vref.Tenant,
+			Namespace: vref.Namespace,
+			Name:      vref.Name,
+		}
+		refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+		if err != nil {
+			return nil, errors.Wrap(err, "Getting referred entry")
+		}
+		if refdEnt != nil {
+			entries = append(entries, refdEnt)
+		}
+	}
+
+	return entries, nil
+}
+
+func (m *HTTPDefaultServerSelection) GetProtocolServerProfileChoiceDRefInfo() ([]db.DRefInfo, error) {
+	switch m.GetProtocolServerProfileChoice().(type) {
+	case *HTTPDefaultServerSelection_ProtocolServerProfileSameAsClient:
+		return nil, nil
+	case *HTTPDefaultServerSelection_ProtocolServerProfile:
+		vref := m.GetProtocolServerProfile()
+		if vref == nil {
+			return nil, nil
+		}
+		vdRef := db.NewDirectRefForView(vref)
+		vdRef.SetKind("tcp_profile.Object")
+		dri := db.DRefInfo{
+			RefdType:   "tcp_profile.Object",
+			RefdTenant: vref.Tenant,
+			RefdNS:     vref.Namespace,
+			RefdName:   vref.Name,
+			DRField:    "protocol_server_profile",
+			Ref:        vdRef,
+		}
+		return []db.DRefInfo{dri}, nil
+	default:
+		return nil, nil
+	}
+}
+
+// GetProtocolServerProfileChoiceDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *HTTPDefaultServerSelection) GetProtocolServerProfileChoiceDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+
+	switch m.GetProtocolServerProfileChoice().(type) {
+	case *HTTPDefaultServerSelection_ProtocolServerProfileSameAsClient:
+	case *HTTPDefaultServerSelection_ProtocolServerProfile:
+		refdType, err := d.TypeForEntryKind("", "", "tcp_profile.Object")
+		if err != nil {
+			return nil, errors.Wrap(err, "Cannot find type for kind: tcp_profile")
+		}
+		vref := m.GetProtocolServerProfile()
+		if vref == nil {
+			return nil, nil
+		}
+		ref := &ves_io_schema.ObjectRefType{
+			Kind:      "tcp_profile.Object",
+			Tenant:    vref.Tenant,
+			Namespace: vref.Namespace,
+			Name:      vref.Name,
+		}
+		refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+		if err != nil {
+			return nil, errors.Wrap(err, "Getting referred entry")
+		}
+		if refdEnt != nil {
+			entries = append(entries, refdEnt)
+		}
+	}
+
+	return entries, nil
+}
+
+func (m *HTTPDefaultServerSelection) GetSslServerProfilesDRefInfo() ([]db.DRefInfo, error) {
+	vrefs := m.GetSslServerProfiles()
+	if len(vrefs) == 0 {
+		return nil, nil
+	}
+	drInfos := make([]db.DRefInfo, 0, len(vrefs))
+	for i, vref := range vrefs {
+		if vref == nil {
+			return nil, fmt.Errorf("HTTPDefaultServerSelection.ssl_server_profiles[%d] has a nil value", i)
+		}
+		vdRef := db.NewDirectRefForView(vref)
+		vdRef.SetKind("ssl_server_profile.Object")
+		// resolve kind to type if needed at DBObject.GetDRefInfo()
+		drInfos = append(drInfos, db.DRefInfo{
+			RefdType:   "ssl_server_profile.Object",
+			RefdTenant: vref.Tenant,
+			RefdNS:     vref.Namespace,
+			RefdName:   vref.Name,
+			DRField:    "ssl_server_profiles",
+			Ref:        vdRef,
+		})
+	}
+	return drInfos, nil
+}
+
+// GetSslServerProfilesDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *HTTPDefaultServerSelection) GetSslServerProfilesDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "ssl_server_profile.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: ssl_server_profile")
+	}
+	for i, vref := range m.GetSslServerProfiles() {
+		if vref == nil {
+			return nil, fmt.Errorf("HTTPDefaultServerSelection.ssl_server_profiles[%d] has a nil value", i)
+		}
+		ref := &ves_io_schema.ObjectRefType{
+			Kind:      "ssl_server_profile.Object",
+			Tenant:    vref.Tenant,
+			Namespace: vref.Namespace,
+			Name:      vref.Name,
+		}
+		refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+		if err != nil {
+			return nil, errors.Wrap(err, "Getting referred entry")
+		}
+		if refdEnt != nil {
+			entries = append(entries, refdEnt)
+		}
+	}
+	return entries, nil
+}
+
+func (m *HTTPDefaultServerSelection) GetWebsocketServerProfileChoiceDRefInfo() ([]db.DRefInfo, error) {
+	switch m.GetWebsocketServerProfileChoice().(type) {
+	case *HTTPDefaultServerSelection_WebsocketServerProfileSameAsClient:
+		return nil, nil
+	case *HTTPDefaultServerSelection_WebsocketServerProfile:
+		vref := m.GetWebsocketServerProfile()
+		if vref == nil {
+			return nil, nil
+		}
+		vdRef := db.NewDirectRefForView(vref)
+		vdRef.SetKind("websocket_profile.Object")
+		dri := db.DRefInfo{
+			RefdType:   "websocket_profile.Object",
+			RefdTenant: vref.Tenant,
+			RefdNS:     vref.Namespace,
+			RefdName:   vref.Name,
+			DRField:    "websocket_server_profile",
+			Ref:        vdRef,
+		}
+		return []db.DRefInfo{dri}, nil
+	default:
+		return nil, nil
+	}
+}
+
+// GetWebsocketServerProfileChoiceDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *HTTPDefaultServerSelection) GetWebsocketServerProfileChoiceDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+
+	switch m.GetWebsocketServerProfileChoice().(type) {
+	case *HTTPDefaultServerSelection_WebsocketServerProfileSameAsClient:
+	case *HTTPDefaultServerSelection_WebsocketServerProfile:
+		refdType, err := d.TypeForEntryKind("", "", "websocket_profile.Object")
+		if err != nil {
+			return nil, errors.Wrap(err, "Cannot find type for kind: websocket_profile")
+		}
+		vref := m.GetWebsocketServerProfile()
+		if vref == nil {
+			return nil, nil
+		}
+		ref := &ves_io_schema.ObjectRefType{
+			Kind:      "websocket_profile.Object",
+			Tenant:    vref.Tenant,
+			Namespace: vref.Namespace,
+			Name:      vref.Name,
+		}
+		refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+		if err != nil {
+			return nil, errors.Wrap(err, "Getting referred entry")
+		}
+		if refdEnt != nil {
+			entries = append(entries, refdEnt)
+		}
+	}
+
+	return entries, nil
+}
+
+type ValidateHTTPDefaultServerSelection struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateHTTPDefaultServerSelection) ProtocolServerProfileChoiceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for protocol_server_profile_choice")
+	}
+	return validatorFn, nil
+}
+func (v *ValidateHTTPDefaultServerSelection) SslServerProfilesValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepMessageItemRules(rules)
+	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Message ValidationRuleHandler for ssl_server_profiles")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []*ves_io_schema_views.ObjectRefType, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+			if err := ves_io_schema_views.ObjectRefTypeValidator().Validate(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for ssl_server_profiles")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]*ves_io_schema_views.ObjectRefType)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []*ves_io_schema_views.ObjectRefType, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
+			if err != nil {
+				return errors.Wrapf(err, "Converting %v to JSON", elem)
+			}
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated ssl_server_profiles")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items ssl_server_profiles")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateHTTPDefaultServerSelection) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*HTTPDefaultServerSelection)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *HTTPDefaultServerSelection got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+
+	switch m.GetHttp2ServerProfileChoice().(type) {
+	case *HTTPDefaultServerSelection_Http2ServerProfileNone:
+		if fv, exists := v.FldValidators["http2_server_profile_choice.http2_server_profile_none"]; exists {
+			val := m.GetHttp2ServerProfileChoice().(*HTTPDefaultServerSelection_Http2ServerProfileNone).Http2ServerProfileNone
+			vOpts := append(opts,
+				db.WithValidateField("http2_server_profile_choice"),
+				db.WithValidateField("http2_server_profile_none"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *HTTPDefaultServerSelection_Http2ServerProfile:
+		if fv, exists := v.FldValidators["http2_server_profile_choice.http2_server_profile"]; exists {
+			val := m.GetHttp2ServerProfileChoice().(*HTTPDefaultServerSelection_Http2ServerProfile).Http2ServerProfile
+			vOpts := append(opts,
+				db.WithValidateField("http2_server_profile_choice"),
+				db.WithValidateField("http2_server_profile"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+
+	switch m.GetHttpServerProfileChoice().(type) {
+	case *HTTPDefaultServerSelection_HttpServerProfileSameAsClient:
+		if fv, exists := v.FldValidators["http_server_profile_choice.http_server_profile_same_as_client"]; exists {
+			val := m.GetHttpServerProfileChoice().(*HTTPDefaultServerSelection_HttpServerProfileSameAsClient).HttpServerProfileSameAsClient
+			vOpts := append(opts,
+				db.WithValidateField("http_server_profile_choice"),
+				db.WithValidateField("http_server_profile_same_as_client"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *HTTPDefaultServerSelection_HttpServerProfile:
+		if fv, exists := v.FldValidators["http_server_profile_choice.http_server_profile"]; exists {
+			val := m.GetHttpServerProfileChoice().(*HTTPDefaultServerSelection_HttpServerProfile).HttpServerProfile
+			vOpts := append(opts,
+				db.WithValidateField("http_server_profile_choice"),
+				db.WithValidateField("http_server_profile"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+
+	if fv, exists := v.FldValidators["protocol_server_profile_choice"]; exists {
+		val := m.GetProtocolServerProfileChoice()
+		vOpts := append(opts,
+			db.WithValidateField("protocol_server_profile_choice"),
+		)
+		if err := fv(ctx, val, vOpts...); err != nil {
+			return err
+		}
+	}
+
+	switch m.GetProtocolServerProfileChoice().(type) {
+	case *HTTPDefaultServerSelection_ProtocolServerProfileSameAsClient:
+		if fv, exists := v.FldValidators["protocol_server_profile_choice.protocol_server_profile_same_as_client"]; exists {
+			val := m.GetProtocolServerProfileChoice().(*HTTPDefaultServerSelection_ProtocolServerProfileSameAsClient).ProtocolServerProfileSameAsClient
+			vOpts := append(opts,
+				db.WithValidateField("protocol_server_profile_choice"),
+				db.WithValidateField("protocol_server_profile_same_as_client"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *HTTPDefaultServerSelection_ProtocolServerProfile:
+		if fv, exists := v.FldValidators["protocol_server_profile_choice.protocol_server_profile"]; exists {
+			val := m.GetProtocolServerProfileChoice().(*HTTPDefaultServerSelection_ProtocolServerProfile).ProtocolServerProfile
+			vOpts := append(opts,
+				db.WithValidateField("protocol_server_profile_choice"),
+				db.WithValidateField("protocol_server_profile"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	if fv, exists := v.FldValidators["ssl_server_profiles"]; exists {
+		vOpts := append(opts, db.WithValidateField("ssl_server_profiles"))
+		if err := fv(ctx, m.GetSslServerProfiles(), vOpts...); err != nil {
+			return err
+		}
+	}
+
+	switch m.GetWebsocketServerProfileChoice().(type) {
+	case *HTTPDefaultServerSelection_WebsocketServerProfileSameAsClient:
+		if fv, exists := v.FldValidators["websocket_server_profile_choice.websocket_server_profile_same_as_client"]; exists {
+			val := m.GetWebsocketServerProfileChoice().(*HTTPDefaultServerSelection_WebsocketServerProfileSameAsClient).WebsocketServerProfileSameAsClient
+			vOpts := append(opts,
+				db.WithValidateField("websocket_server_profile_choice"),
+				db.WithValidateField("websocket_server_profile_same_as_client"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *HTTPDefaultServerSelection_WebsocketServerProfile:
+		if fv, exists := v.FldValidators["websocket_server_profile_choice.websocket_server_profile"]; exists {
+			val := m.GetWebsocketServerProfileChoice().(*HTTPDefaultServerSelection_WebsocketServerProfile).WebsocketServerProfile
+			vOpts := append(opts,
+				db.WithValidateField("websocket_server_profile_choice"),
+				db.WithValidateField("websocket_server_profile"),
 			)
 			if err := fv(ctx, val, vOpts...); err != nil {
 				return err
@@ -4026,8 +5700,8 @@ func (v *ValidateHTTPProfileType) Validate(ctx context.Context, pm interface{}, 
 }
 
 // Well-known symbol for default validator implementation
-var DefaultHTTPProfileTypeValidator = func() *ValidateHTTPProfileType {
-	v := &ValidateHTTPProfileType{FldValidators: map[string]db.ValidatorFunc{}}
+var DefaultHTTPDefaultServerSelectionValidator = func() *ValidateHTTPDefaultServerSelection {
+	v := &ValidateHTTPDefaultServerSelection{FldValidators: map[string]db.ValidatorFunc{}}
 	var (
 		err error
 		vFn db.ValidatorFunc
@@ -4035,24 +5709,38 @@ var DefaultHTTPProfileTypeValidator = func() *ValidateHTTPProfileType {
 	_, _ = err, vFn
 	vFnMap := map[string]db.ValidatorFunc{}
 	_ = vFnMap
-
-	vrhClientProfile := v.ClientProfileValidationRuleHandler
-	rulesClientProfile := map[string]string{
-		"ves.io.schema.rules.message.required": "true",
+	vrhProtocolServerProfileChoice := v.ProtocolServerProfileChoiceValidationRuleHandler
+	rulesProtocolServerProfileChoice := map[string]string{
+		"ves.io.schema.rules.message.required_oneof": "true",
 	}
-	vFn, err = vrhClientProfile(rulesClientProfile)
+	vFn, err = vrhProtocolServerProfileChoice(rulesProtocolServerProfileChoice)
 	if err != nil {
-		errMsg := fmt.Sprintf("ValidationRuleHandler for HTTPProfileType.client_profile: %s", err)
+		errMsg := fmt.Sprintf("ValidationRuleHandler for HTTPDefaultServerSelection.protocol_server_profile_choice: %s", err)
 		panic(errMsg)
 	}
-	v.FldValidators["client_profile"] = vFn
-	v.FldValidators["http_server_profile_choice.server_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
+	v.FldValidators["protocol_server_profile_choice"] = vFn
+
+	vrhSslServerProfiles := v.SslServerProfilesValidationRuleHandler
+	rulesSslServerProfiles := map[string]string{
+		"ves.io.schema.rules.repeated.max_items": "32",
+		"ves.io.schema.rules.repeated.unique":    "true",
+	}
+	vFn, err = vrhSslServerProfiles(rulesSslServerProfiles)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for HTTPDefaultServerSelection.ssl_server_profiles: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["ssl_server_profiles"] = vFn
+	v.FldValidators["http2_server_profile_choice.http2_server_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
+	v.FldValidators["http_server_profile_choice.http_server_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
+	v.FldValidators["protocol_server_profile_choice.protocol_server_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
+	v.FldValidators["websocket_server_profile_choice.websocket_server_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 
 	return v
 }()
 
-func HTTPProfileTypeValidator() db.Validator {
-	return DefaultHTTPProfileTypeValidator
+func HTTPDefaultServerSelectionValidator() db.Validator {
+	return DefaultHTTPDefaultServerSelectionValidator
 }
 
 // augmented methods on protoc/std generated struct
@@ -4103,8 +5791,33 @@ func (m *HTTPServices) GetDRefInfo() ([]db.DRefInfo, error) {
 	} else {
 		drInfos = append(drInfos, fdrInfos...)
 	}
-	if fdrInfos, err := m.GetHttpProfilesDRefInfo(); err != nil {
-		return nil, errors.Wrap(err, "GetHttpProfilesDRefInfo() FAILED")
+	if fdrInfos, err := m.GetHttp2ClientProfileChoiceDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetHttp2ClientProfileChoiceDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetHttpClientProfileDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetHttpClientProfileDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetOcspProfileChoiceDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetOcspProfileChoiceDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetProtocolClientProfileDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetProtocolClientProfileDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetServerAppTypeChoiceDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetServerAppTypeChoiceDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetSslClientProfilesDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetSslClientProfilesDRefInfo() FAILED")
 	} else {
 		drInfos = append(drInfos, fdrInfos...)
 	}
@@ -4113,13 +5826,8 @@ func (m *HTTPServices) GetDRefInfo() ([]db.DRefInfo, error) {
 	} else {
 		drInfos = append(drInfos, fdrInfos...)
 	}
-	if fdrInfos, err := m.GetTcpProfilesDRefInfo(); err != nil {
-		return nil, errors.Wrap(err, "GetTcpProfilesDRefInfo() FAILED")
-	} else {
-		drInfos = append(drInfos, fdrInfos...)
-	}
-	if fdrInfos, err := m.GetWebsocketProfilesDRefInfo(); err != nil {
-		return nil, errors.Wrap(err, "GetWebsocketProfilesDRefInfo() FAILED")
+	if fdrInfos, err := m.GetWebsocketClientProfileChoiceDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetWebsocketClientProfileChoiceDRefInfo() FAILED")
 	} else {
 		drInfos = append(drInfos, fdrInfos...)
 	}
@@ -4184,20 +5892,284 @@ func (m *HTTPServices) GetFixProfileChoiceDBEntries(ctx context.Context, d db.In
 	return entries, nil
 }
 
-// GetDRefInfo for the field's type
-func (m *HTTPServices) GetHttpProfilesDRefInfo() ([]db.DRefInfo, error) {
-	if m.GetHttpProfiles() == nil {
+func (m *HTTPServices) GetHttp2ClientProfileChoiceDRefInfo() ([]db.DRefInfo, error) {
+	switch m.GetHttp2ClientProfileChoice().(type) {
+	case *HTTPServices_Http2ClientProfileNone:
+		return nil, nil
+	case *HTTPServices_Http2ClientProfile:
+		vref := m.GetHttp2ClientProfile()
+		if vref == nil {
+			return nil, nil
+		}
+		vdRef := db.NewDirectRefForView(vref)
+		vdRef.SetKind("http2_profile.Object")
+		dri := db.DRefInfo{
+			RefdType:   "http2_profile.Object",
+			RefdTenant: vref.Tenant,
+			RefdNS:     vref.Namespace,
+			RefdName:   vref.Name,
+			DRField:    "http2_client_profile",
+			Ref:        vdRef,
+		}
+		return []db.DRefInfo{dri}, nil
+	default:
 		return nil, nil
 	}
-	drInfos, err := m.GetHttpProfiles().GetDRefInfo()
+}
+
+// GetHttp2ClientProfileChoiceDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *HTTPServices) GetHttp2ClientProfileChoiceDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+
+	switch m.GetHttp2ClientProfileChoice().(type) {
+	case *HTTPServices_Http2ClientProfileNone:
+	case *HTTPServices_Http2ClientProfile:
+		refdType, err := d.TypeForEntryKind("", "", "http2_profile.Object")
+		if err != nil {
+			return nil, errors.Wrap(err, "Cannot find type for kind: http2_profile")
+		}
+		vref := m.GetHttp2ClientProfile()
+		if vref == nil {
+			return nil, nil
+		}
+		ref := &ves_io_schema.ObjectRefType{
+			Kind:      "http2_profile.Object",
+			Tenant:    vref.Tenant,
+			Namespace: vref.Namespace,
+			Name:      vref.Name,
+		}
+		refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+		if err != nil {
+			return nil, errors.Wrap(err, "Getting referred entry")
+		}
+		if refdEnt != nil {
+			entries = append(entries, refdEnt)
+		}
+	}
+
+	return entries, nil
+}
+
+func (m *HTTPServices) GetHttpClientProfileDRefInfo() ([]db.DRefInfo, error) {
+	vref := m.GetHttpClientProfile()
+	if vref == nil {
+		return nil, nil
+	}
+	vdRef := db.NewDirectRefForView(vref)
+	vdRef.SetKind("http_profile.Object")
+	dri := db.DRefInfo{
+		RefdType:   "http_profile.Object",
+		RefdTenant: vref.Tenant,
+		RefdNS:     vref.Namespace,
+		RefdName:   vref.Name,
+		DRField:    "http_client_profile",
+		Ref:        vdRef,
+	}
+	return []db.DRefInfo{dri}, nil
+}
+
+// GetHttpClientProfileDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *HTTPServices) GetHttpClientProfileDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "http_profile.Object")
 	if err != nil {
-		return nil, errors.Wrap(err, "GetHttpProfiles().GetDRefInfo() FAILED")
+		return nil, errors.Wrap(err, "Cannot find type for kind: http_profile")
 	}
-	for i := range drInfos {
-		dri := &drInfos[i]
-		dri.DRField = "http_profiles." + dri.DRField
+	vref := m.GetHttpClientProfile()
+	if vref == nil {
+		return nil, nil
 	}
-	return drInfos, err
+	ref := &ves_io_schema.ObjectRefType{
+		Kind:      "http_profile.Object",
+		Tenant:    vref.Tenant,
+		Namespace: vref.Namespace,
+		Name:      vref.Name,
+	}
+	refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+	if err != nil {
+		return nil, errors.Wrap(err, "Getting referred entry")
+	}
+	if refdEnt != nil {
+		entries = append(entries, refdEnt)
+	}
+	return entries, nil
+}
+
+func (m *HTTPServices) GetOcspProfileChoiceDRefInfo() ([]db.DRefInfo, error) {
+	switch m.GetOcspProfileChoice().(type) {
+	case *HTTPServices_OcspProfileNone:
+		return nil, nil
+	case *HTTPServices_OcspProfile:
+		vref := m.GetOcspProfile()
+		if vref == nil {
+			return nil, nil
+		}
+		vdRef := db.NewDirectRefForView(vref)
+		vdRef.SetKind("ocsp_profile.Object")
+		dri := db.DRefInfo{
+			RefdType:   "ocsp_profile.Object",
+			RefdTenant: vref.Tenant,
+			RefdNS:     vref.Namespace,
+			RefdName:   vref.Name,
+			DRField:    "ocsp_profile",
+			Ref:        vdRef,
+		}
+		return []db.DRefInfo{dri}, nil
+	default:
+		return nil, nil
+	}
+}
+
+// GetOcspProfileChoiceDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *HTTPServices) GetOcspProfileChoiceDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+
+	switch m.GetOcspProfileChoice().(type) {
+	case *HTTPServices_OcspProfileNone:
+	case *HTTPServices_OcspProfile:
+		refdType, err := d.TypeForEntryKind("", "", "ocsp_profile.Object")
+		if err != nil {
+			return nil, errors.Wrap(err, "Cannot find type for kind: ocsp_profile")
+		}
+		vref := m.GetOcspProfile()
+		if vref == nil {
+			return nil, nil
+		}
+		ref := &ves_io_schema.ObjectRefType{
+			Kind:      "ocsp_profile.Object",
+			Tenant:    vref.Tenant,
+			Namespace: vref.Namespace,
+			Name:      vref.Name,
+		}
+		refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+		if err != nil {
+			return nil, errors.Wrap(err, "Getting referred entry")
+		}
+		if refdEnt != nil {
+			entries = append(entries, refdEnt)
+		}
+	}
+
+	return entries, nil
+}
+
+func (m *HTTPServices) GetProtocolClientProfileDRefInfo() ([]db.DRefInfo, error) {
+	vref := m.GetProtocolClientProfile()
+	if vref == nil {
+		return nil, nil
+	}
+	vdRef := db.NewDirectRefForView(vref)
+	vdRef.SetKind("tcp_profile.Object")
+	dri := db.DRefInfo{
+		RefdType:   "tcp_profile.Object",
+		RefdTenant: vref.Tenant,
+		RefdNS:     vref.Namespace,
+		RefdName:   vref.Name,
+		DRField:    "protocol_client_profile",
+		Ref:        vdRef,
+	}
+	return []db.DRefInfo{dri}, nil
+}
+
+// GetProtocolClientProfileDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *HTTPServices) GetProtocolClientProfileDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "tcp_profile.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: tcp_profile")
+	}
+	vref := m.GetProtocolClientProfile()
+	if vref == nil {
+		return nil, nil
+	}
+	ref := &ves_io_schema.ObjectRefType{
+		Kind:      "tcp_profile.Object",
+		Tenant:    vref.Tenant,
+		Namespace: vref.Namespace,
+		Name:      vref.Name,
+	}
+	refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+	if err != nil {
+		return nil, errors.Wrap(err, "Getting referred entry")
+	}
+	if refdEnt != nil {
+		entries = append(entries, refdEnt)
+	}
+	return entries, nil
+}
+
+// GetDRefInfo for the field's type
+func (m *HTTPServices) GetServerAppTypeChoiceDRefInfo() ([]db.DRefInfo, error) {
+	if m.GetServerAppTypeChoice() == nil {
+		return nil, nil
+	}
+	switch m.GetServerAppTypeChoice().(type) {
+	case *HTTPServices_ServerAppTypeSameAsClient:
+		drInfos, err := m.GetServerAppTypeSameAsClient().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetServerAppTypeSameAsClient().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "server_app_type_same_as_client." + dri.DRField
+		}
+		return drInfos, err
+	default:
+		return nil, nil
+	}
+}
+
+func (m *HTTPServices) GetSslClientProfilesDRefInfo() ([]db.DRefInfo, error) {
+	vrefs := m.GetSslClientProfiles()
+	if len(vrefs) == 0 {
+		return nil, nil
+	}
+	drInfos := make([]db.DRefInfo, 0, len(vrefs))
+	for i, vref := range vrefs {
+		if vref == nil {
+			return nil, fmt.Errorf("HTTPServices.ssl_client_profiles[%d] has a nil value", i)
+		}
+		vdRef := db.NewDirectRefForView(vref)
+		vdRef.SetKind("ssl_client_profile.Object")
+		// resolve kind to type if needed at DBObject.GetDRefInfo()
+		drInfos = append(drInfos, db.DRefInfo{
+			RefdType:   "ssl_client_profile.Object",
+			RefdTenant: vref.Tenant,
+			RefdNS:     vref.Namespace,
+			RefdName:   vref.Name,
+			DRField:    "ssl_client_profiles",
+			Ref:        vdRef,
+		})
+	}
+	return drInfos, nil
+}
+
+// GetSslClientProfilesDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *HTTPServices) GetSslClientProfilesDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "ssl_client_profile.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: ssl_client_profile")
+	}
+	for i, vref := range m.GetSslClientProfiles() {
+		if vref == nil {
+			return nil, fmt.Errorf("HTTPServices.ssl_client_profiles[%d] has a nil value", i)
+		}
+		ref := &ves_io_schema.ObjectRefType{
+			Kind:      "ssl_client_profile.Object",
+			Tenant:    vref.Tenant,
+			Namespace: vref.Namespace,
+			Name:      vref.Name,
+		}
+		refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+		if err != nil {
+			return nil, errors.Wrap(err, "Getting referred entry")
+		}
+		if refdEnt != nil {
+			entries = append(entries, refdEnt)
+		}
+	}
+	return entries, nil
 }
 
 func (m *HTTPServices) GetStreamProfileChoiceDRefInfo() ([]db.DRefInfo, error) {
@@ -4258,36 +6230,62 @@ func (m *HTTPServices) GetStreamProfileChoiceDBEntries(ctx context.Context, d db
 	return entries, nil
 }
 
-// GetDRefInfo for the field's type
-func (m *HTTPServices) GetTcpProfilesDRefInfo() ([]db.DRefInfo, error) {
-	if m.GetTcpProfiles() == nil {
+func (m *HTTPServices) GetWebsocketClientProfileChoiceDRefInfo() ([]db.DRefInfo, error) {
+	switch m.GetWebsocketClientProfileChoice().(type) {
+	case *HTTPServices_WebsocketClientProfileNone:
+		return nil, nil
+	case *HTTPServices_WebsocketClientProfile:
+		vref := m.GetWebsocketClientProfile()
+		if vref == nil {
+			return nil, nil
+		}
+		vdRef := db.NewDirectRefForView(vref)
+		vdRef.SetKind("websocket_profile.Object")
+		dri := db.DRefInfo{
+			RefdType:   "websocket_profile.Object",
+			RefdTenant: vref.Tenant,
+			RefdNS:     vref.Namespace,
+			RefdName:   vref.Name,
+			DRField:    "websocket_client_profile",
+			Ref:        vdRef,
+		}
+		return []db.DRefInfo{dri}, nil
+	default:
 		return nil, nil
 	}
-	drInfos, err := m.GetTcpProfiles().GetDRefInfo()
-	if err != nil {
-		return nil, errors.Wrap(err, "GetTcpProfiles().GetDRefInfo() FAILED")
-	}
-	for i := range drInfos {
-		dri := &drInfos[i]
-		dri.DRField = "tcp_profiles." + dri.DRField
-	}
-	return drInfos, err
 }
 
-// GetDRefInfo for the field's type
-func (m *HTTPServices) GetWebsocketProfilesDRefInfo() ([]db.DRefInfo, error) {
-	if m.GetWebsocketProfiles() == nil {
-		return nil, nil
+// GetWebsocketClientProfileChoiceDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *HTTPServices) GetWebsocketClientProfileChoiceDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+
+	switch m.GetWebsocketClientProfileChoice().(type) {
+	case *HTTPServices_WebsocketClientProfileNone:
+	case *HTTPServices_WebsocketClientProfile:
+		refdType, err := d.TypeForEntryKind("", "", "websocket_profile.Object")
+		if err != nil {
+			return nil, errors.Wrap(err, "Cannot find type for kind: websocket_profile")
+		}
+		vref := m.GetWebsocketClientProfile()
+		if vref == nil {
+			return nil, nil
+		}
+		ref := &ves_io_schema.ObjectRefType{
+			Kind:      "websocket_profile.Object",
+			Tenant:    vref.Tenant,
+			Namespace: vref.Namespace,
+			Name:      vref.Name,
+		}
+		refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+		if err != nil {
+			return nil, errors.Wrap(err, "Getting referred entry")
+		}
+		if refdEnt != nil {
+			entries = append(entries, refdEnt)
+		}
 	}
-	drInfos, err := m.GetWebsocketProfiles().GetDRefInfo()
-	if err != nil {
-		return nil, errors.Wrap(err, "GetWebsocketProfiles().GetDRefInfo() FAILED")
-	}
-	for i := range drInfos {
-		dri := &drInfos[i]
-		dri.DRField = "websocket_profiles." + dri.DRField
-	}
-	return drInfos, err
+
+	return entries, nil
 }
 
 type ValidateHTTPServices struct {
@@ -4340,6 +6338,86 @@ func (v *ValidateHTTPServices) ServicesValidationRuleHandler(rules map[string]st
 
 	return validatorFn, nil
 }
+func (v *ValidateHTTPServices) ProtocolClientProfileValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	reqdValidatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "MessageValidationRuleHandler for protocol_client_profile")
+	}
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		if err := reqdValidatorFn(ctx, val, opts...); err != nil {
+			return err
+		}
+		if err := ves_io_schema_views.ObjectRefTypeValidator().Validate(ctx, val, opts...); err != nil {
+			return err
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateHTTPServices) SslClientProfilesValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepMessageItemRules(rules)
+	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Message ValidationRuleHandler for ssl_client_profiles")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []*ves_io_schema_views.ObjectRefType, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+			if err := ves_io_schema_views.ObjectRefTypeValidator().Validate(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for ssl_client_profiles")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]*ves_io_schema_views.ObjectRefType)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []*ves_io_schema_views.ObjectRefType, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
+			if err != nil {
+				return errors.Wrapf(err, "Converting %v to JSON", elem)
+			}
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated ssl_client_profiles")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items ssl_client_profiles")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateHTTPServices) HttpClientProfileValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	reqdValidatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "MessageValidationRuleHandler for http_client_profile")
+	}
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		if err := reqdValidatorFn(ctx, val, opts...); err != nil {
+			return err
+		}
+		if err := ves_io_schema_views.ObjectRefTypeValidator().Validate(ctx, val, opts...); err != nil {
+			return err
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
 
 func (v *ValidateHTTPServices) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
 	m, ok := pm.(*HTTPServices)
@@ -4379,15 +6457,91 @@ func (v *ValidateHTTPServices) Validate(ctx context.Context, pm interface{}, opt
 			}
 		}
 	}
-	if fv, exists := v.FldValidators["http_profiles"]; exists {
-		vOpts := append(opts, db.WithValidateField("http_profiles"))
-		if err := fv(ctx, m.GetHttpProfiles(), vOpts...); err != nil {
+
+	switch m.GetHttp2ClientProfileChoice().(type) {
+	case *HTTPServices_Http2ClientProfileNone:
+		if fv, exists := v.FldValidators["http2_client_profile_choice.http2_client_profile_none"]; exists {
+			val := m.GetHttp2ClientProfileChoice().(*HTTPServices_Http2ClientProfileNone).Http2ClientProfileNone
+			vOpts := append(opts,
+				db.WithValidateField("http2_client_profile_choice"),
+				db.WithValidateField("http2_client_profile_none"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *HTTPServices_Http2ClientProfile:
+		if fv, exists := v.FldValidators["http2_client_profile_choice.http2_client_profile"]; exists {
+			val := m.GetHttp2ClientProfileChoice().(*HTTPServices_Http2ClientProfile).Http2ClientProfile
+			vOpts := append(opts,
+				db.WithValidateField("http2_client_profile_choice"),
+				db.WithValidateField("http2_client_profile"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	if fv, exists := v.FldValidators["http_client_profile"]; exists {
+		vOpts := append(opts, db.WithValidateField("http_client_profile"))
+		if err := fv(ctx, m.GetHttpClientProfile(), vOpts...); err != nil {
 			return err
+		}
+	}
+
+	switch m.GetOcspProfileChoice().(type) {
+	case *HTTPServices_OcspProfileNone:
+		if fv, exists := v.FldValidators["ocsp_profile_choice.ocsp_profile_none"]; exists {
+			val := m.GetOcspProfileChoice().(*HTTPServices_OcspProfileNone).OcspProfileNone
+			vOpts := append(opts,
+				db.WithValidateField("ocsp_profile_choice"),
+				db.WithValidateField("ocsp_profile_none"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *HTTPServices_OcspProfile:
+		if fv, exists := v.FldValidators["ocsp_profile_choice.ocsp_profile"]; exists {
+			val := m.GetOcspProfileChoice().(*HTTPServices_OcspProfile).OcspProfile
+			vOpts := append(opts,
+				db.WithValidateField("ocsp_profile_choice"),
+				db.WithValidateField("ocsp_profile"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	if fv, exists := v.FldValidators["protocol_client_profile"]; exists {
+		vOpts := append(opts, db.WithValidateField("protocol_client_profile"))
+		if err := fv(ctx, m.GetProtocolClientProfile(), vOpts...); err != nil {
+			return err
+		}
+	}
+
+	switch m.GetServerAppTypeChoice().(type) {
+	case *HTTPServices_ServerAppTypeSameAsClient:
+		if fv, exists := v.FldValidators["server_app_type_choice.server_app_type_same_as_client"]; exists {
+			val := m.GetServerAppTypeChoice().(*HTTPServices_ServerAppTypeSameAsClient).ServerAppTypeSameAsClient
+			vOpts := append(opts,
+				db.WithValidateField("server_app_type_choice"),
+				db.WithValidateField("server_app_type_same_as_client"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
 		}
 	}
 	if fv, exists := v.FldValidators["services"]; exists {
 		vOpts := append(opts, db.WithValidateField("services"))
 		if err := fv(ctx, m.GetServices(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["ssl_client_profiles"]; exists {
+		vOpts := append(opts, db.WithValidateField("ssl_client_profiles"))
+		if err := fv(ctx, m.GetSslClientProfiles(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -4416,16 +6570,29 @@ func (v *ValidateHTTPServices) Validate(ctx context.Context, pm interface{}, opt
 			}
 		}
 	}
-	if fv, exists := v.FldValidators["tcp_profiles"]; exists {
-		vOpts := append(opts, db.WithValidateField("tcp_profiles"))
-		if err := fv(ctx, m.GetTcpProfiles(), vOpts...); err != nil {
-			return err
+
+	switch m.GetWebsocketClientProfileChoice().(type) {
+	case *HTTPServices_WebsocketClientProfileNone:
+		if fv, exists := v.FldValidators["websocket_client_profile_choice.websocket_client_profile_none"]; exists {
+			val := m.GetWebsocketClientProfileChoice().(*HTTPServices_WebsocketClientProfileNone).WebsocketClientProfileNone
+			vOpts := append(opts,
+				db.WithValidateField("websocket_client_profile_choice"),
+				db.WithValidateField("websocket_client_profile_none"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
 		}
-	}
-	if fv, exists := v.FldValidators["websocket_profiles"]; exists {
-		vOpts := append(opts, db.WithValidateField("websocket_profiles"))
-		if err := fv(ctx, m.GetWebsocketProfiles(), vOpts...); err != nil {
-			return err
+	case *HTTPServices_WebsocketClientProfile:
+		if fv, exists := v.FldValidators["websocket_client_profile_choice.websocket_client_profile"]; exists {
+			val := m.GetWebsocketClientProfileChoice().(*HTTPServices_WebsocketClientProfile).WebsocketClientProfile
+			vOpts := append(opts,
+				db.WithValidateField("websocket_client_profile_choice"),
+				db.WithValidateField("websocket_client_profile"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
 		}
 	}
 	return nil
@@ -4453,11 +6620,46 @@ var DefaultHTTPServicesValidator = func() *ValidateHTTPServices {
 		panic(errMsg)
 	}
 	v.FldValidators["services"] = vFn
+
+	vrhProtocolClientProfile := v.ProtocolClientProfileValidationRuleHandler
+	rulesProtocolClientProfile := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhProtocolClientProfile(rulesProtocolClientProfile)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for HTTPServices.protocol_client_profile: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["protocol_client_profile"] = vFn
+
+	vrhSslClientProfiles := v.SslClientProfilesValidationRuleHandler
+	rulesSslClientProfiles := map[string]string{
+		"ves.io.schema.rules.repeated.max_items": "32",
+		"ves.io.schema.rules.repeated.unique":    "true",
+	}
+	vFn, err = vrhSslClientProfiles(rulesSslClientProfiles)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for HTTPServices.ssl_client_profiles: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["ssl_client_profiles"] = vFn
+
+	vrhHttpClientProfile := v.HttpClientProfileValidationRuleHandler
+	rulesHttpClientProfile := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhHttpClientProfile(rulesHttpClientProfile)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for HTTPServices.http_client_profile: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["http_client_profile"] = vFn
 	v.FldValidators["fix_profile_choice.fix_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
+	v.FldValidators["http2_client_profile_choice.http2_client_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
+	v.FldValidators["ocsp_profile_choice.ocsp_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
+	v.FldValidators["server_app_type_choice.server_app_type_same_as_client"] = HTTPDefaultServerSelectionValidator().Validate
 	v.FldValidators["stream_profile_choice.stream_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
-	v.FldValidators["tcp_profiles"] = TCPProfileTypeValidator().Validate
-	v.FldValidators["http_profiles"] = HTTPProfileTypeValidator().Validate
-	v.FldValidators["websocket_profiles"] = WebsocketProfileTypeValidator().Validate
+	v.FldValidators["websocket_client_profile_choice.websocket_client_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 
 	return v
 }()
@@ -4851,11 +7053,6 @@ func (m *ReplaceSpecType) GetDRefInfo() ([]db.DRefInfo, error) {
 	} else {
 		drInfos = append(drInfos, fdrInfos...)
 	}
-	if fdrInfos, err := m.GetDomainChoiceDRefInfo(); err != nil {
-		return nil, errors.Wrap(err, "GetDomainChoiceDRefInfo() FAILED")
-	} else {
-		drInfos = append(drInfos, fdrInfos...)
-	}
 	if fdrInfos, err := m.GetFallbackPersistenceProfileChoiceDRefInfo(); err != nil {
 		return nil, errors.Wrap(err, "GetFallbackPersistenceProfileChoiceDRefInfo() FAILED")
 	} else {
@@ -4873,6 +7070,11 @@ func (m *ReplaceSpecType) GetDRefInfo() ([]db.DRefInfo, error) {
 	}
 	if fdrInfos, err := m.GetRequestLoggingProfileChoiceDRefInfo(); err != nil {
 		return nil, errors.Wrap(err, "GetRequestLoggingProfileChoiceDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetStatisticsProfileChoiceDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetStatisticsProfileChoiceDRefInfo() FAILED")
 	} else {
 		drInfos = append(drInfos, fdrInfos...)
 	}
@@ -5024,29 +7226,6 @@ func (m *ReplaceSpecType) GetDefaultPoolChoiceDBEntries(ctx context.Context, d d
 	}
 
 	return entries, nil
-}
-
-// GetDRefInfo for the field's type
-func (m *ReplaceSpecType) GetDomainChoiceDRefInfo() ([]db.DRefInfo, error) {
-	if m.GetDomainChoice() == nil {
-		return nil, nil
-	}
-	switch m.GetDomainChoice().(type) {
-	case *ReplaceSpecType_Managed:
-		drInfos, err := m.GetManaged().GetDRefInfo()
-		if err != nil {
-			return nil, errors.Wrap(err, "GetManaged().GetDRefInfo() FAILED")
-		}
-		for i := range drInfos {
-			dri := &drInfos[i]
-			dri.DRField = "managed." + dri.DRField
-		}
-		return drInfos, err
-	case *ReplaceSpecType_NotManaged:
-		return nil, nil
-	default:
-		return nil, nil
-	}
 }
 
 func (m *ReplaceSpecType) GetFallbackPersistenceProfileChoiceDRefInfo() ([]db.DRefInfo, error) {
@@ -5266,6 +7445,64 @@ func (m *ReplaceSpecType) GetRequestLoggingProfileChoiceDBEntries(ctx context.Co
 	return entries, nil
 }
 
+func (m *ReplaceSpecType) GetStatisticsProfileChoiceDRefInfo() ([]db.DRefInfo, error) {
+	switch m.GetStatisticsProfileChoice().(type) {
+	case *ReplaceSpecType_StatisticsProfileNone:
+		return nil, nil
+	case *ReplaceSpecType_StatisticsProfile:
+		vref := m.GetStatisticsProfile()
+		if vref == nil {
+			return nil, nil
+		}
+		vdRef := db.NewDirectRefForView(vref)
+		vdRef.SetKind("statistics_profile.Object")
+		dri := db.DRefInfo{
+			RefdType:   "statistics_profile.Object",
+			RefdTenant: vref.Tenant,
+			RefdNS:     vref.Namespace,
+			RefdName:   vref.Name,
+			DRField:    "statistics_profile",
+			Ref:        vdRef,
+		}
+		return []db.DRefInfo{dri}, nil
+	default:
+		return nil, nil
+	}
+}
+
+// GetStatisticsProfileChoiceDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *ReplaceSpecType) GetStatisticsProfileChoiceDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+
+	switch m.GetStatisticsProfileChoice().(type) {
+	case *ReplaceSpecType_StatisticsProfileNone:
+	case *ReplaceSpecType_StatisticsProfile:
+		refdType, err := d.TypeForEntryKind("", "", "statistics_profile.Object")
+		if err != nil {
+			return nil, errors.Wrap(err, "Cannot find type for kind: statistics_profile")
+		}
+		vref := m.GetStatisticsProfile()
+		if vref == nil {
+			return nil, nil
+		}
+		ref := &ves_io_schema.ObjectRefType{
+			Kind:      "statistics_profile.Object",
+			Tenant:    vref.Tenant,
+			Namespace: vref.Namespace,
+			Name:      vref.Name,
+		}
+		refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+		if err != nil {
+			return nil, errors.Wrap(err, "Getting referred entry")
+		}
+		if refdEnt != nil {
+			entries = append(entries, refdEnt)
+		}
+	}
+
+	return entries, nil
+}
+
 func (m *ReplaceSpecType) GetTrafficPoliciesDRefInfo() ([]db.DRefInfo, error) {
 	refs := m.GetTrafficPolicies()
 	if len(refs) == 0 {
@@ -5369,7 +7606,15 @@ func (m *ReplaceSpecType) GetVirtualServerTypeDRefInfo() ([]db.DRefInfo, error) 
 	}
 	switch m.GetVirtualServerType().(type) {
 	case *ReplaceSpecType_Https:
-		return nil, nil
+		drInfos, err := m.GetHttps().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetHttps().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "https." + dri.DRField
+		}
+		return drInfos, err
 	case *ReplaceSpecType_Http:
 		drInfos, err := m.GetHttp().GetDRefInfo()
 		if err != nil {
@@ -5381,9 +7626,35 @@ func (m *ReplaceSpecType) GetVirtualServerTypeDRefInfo() ([]db.DRefInfo, error) 
 		}
 		return drInfos, err
 	case *ReplaceSpecType_Tcp:
-		return nil, nil
+		drInfos, err := m.GetTcp().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetTcp().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "tcp." + dri.DRField
+		}
+		return drInfos, err
 	case *ReplaceSpecType_Udp:
-		return nil, nil
+		drInfos, err := m.GetUdp().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetUdp().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "udp." + dri.DRField
+		}
+		return drInfos, err
+	case *ReplaceSpecType_Http3:
+		drInfos, err := m.GetHttp3().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetHttp3().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "http3." + dri.DRField
+		}
+		return drInfos, err
 	default:
 		return nil, nil
 	}
@@ -5393,11 +7664,44 @@ type ValidateReplaceSpecType struct {
 	FldValidators map[string]db.ValidatorFunc
 }
 
-func (v *ValidateReplaceSpecType) DomainChoiceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
-	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
+func (v *ValidateReplaceSpecType) DomainsValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepStringItemRules(rules)
+	itemValFn, err := db.NewStringValidationRuleHandler(itemRules)
 	if err != nil {
-		return nil, errors.Wrap(err, "ValidationRuleHandler for domain_choice")
+		return nil, errors.Wrap(err, "Item ValidationRuleHandler for domains")
 	}
+	itemsValidatorFn := func(ctx context.Context, elems []string, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for domains")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]string)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []string, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal := fmt.Sprintf("%v", elem)
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated domains")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items domains")
+		}
+		return nil
+	}
+
 	return validatorFn, nil
 }
 func (v *ValidateReplaceSpecType) TrafficPoliciesValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
@@ -5536,39 +7840,10 @@ func (v *ValidateReplaceSpecType) Validate(ctx context.Context, pm interface{}, 
 			}
 		}
 	}
-
-	if fv, exists := v.FldValidators["domain_choice"]; exists {
-		val := m.GetDomainChoice()
-		vOpts := append(opts,
-			db.WithValidateField("domain_choice"),
-		)
-		if err := fv(ctx, val, vOpts...); err != nil {
+	if fv, exists := v.FldValidators["domains"]; exists {
+		vOpts := append(opts, db.WithValidateField("domains"))
+		if err := fv(ctx, m.GetDomains(), vOpts...); err != nil {
 			return err
-		}
-	}
-
-	switch m.GetDomainChoice().(type) {
-	case *ReplaceSpecType_Managed:
-		if fv, exists := v.FldValidators["domain_choice.managed"]; exists {
-			val := m.GetDomainChoice().(*ReplaceSpecType_Managed).Managed
-			vOpts := append(opts,
-				db.WithValidateField("domain_choice"),
-				db.WithValidateField("managed"),
-			)
-			if err := fv(ctx, val, vOpts...); err != nil {
-				return err
-			}
-		}
-	case *ReplaceSpecType_NotManaged:
-		if fv, exists := v.FldValidators["domain_choice.not_managed"]; exists {
-			val := m.GetDomainChoice().(*ReplaceSpecType_NotManaged).NotManaged
-			vOpts := append(opts,
-				db.WithValidateField("domain_choice"),
-				db.WithValidateField("not_managed"),
-			)
-			if err := fv(ctx, val, vOpts...); err != nil {
-				return err
-			}
 		}
 	}
 
@@ -5609,6 +7884,12 @@ func (v *ValidateReplaceSpecType) Validate(ctx context.Context, pm interface{}, 
 			if err := fv(ctx, item, vOpts...); err != nil {
 				return err
 			}
+		}
+	}
+	if fv, exists := v.FldValidators["json"]; exists {
+		vOpts := append(opts, db.WithValidateField("json"))
+		if err := fv(ctx, m.GetJson(), vOpts...); err != nil {
+			return err
 		}
 	}
 
@@ -5667,10 +7948,41 @@ func (v *ValidateReplaceSpecType) Validate(ctx context.Context, pm interface{}, 
 			}
 		}
 	}
+	if fv, exists := v.FldValidators["sse"]; exists {
+		vOpts := append(opts, db.WithValidateField("sse"))
+		if err := fv(ctx, m.GetSse(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["state"]; exists {
 		vOpts := append(opts, db.WithValidateField("state"))
 		if err := fv(ctx, m.GetState(), vOpts...); err != nil {
 			return err
+		}
+	}
+
+	switch m.GetStatisticsProfileChoice().(type) {
+	case *ReplaceSpecType_StatisticsProfileNone:
+		if fv, exists := v.FldValidators["statistics_profile_choice.statistics_profile_none"]; exists {
+			val := m.GetStatisticsProfileChoice().(*ReplaceSpecType_StatisticsProfileNone).StatisticsProfileNone
+			vOpts := append(opts,
+				db.WithValidateField("statistics_profile_choice"),
+				db.WithValidateField("statistics_profile_none"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *ReplaceSpecType_StatisticsProfile:
+		if fv, exists := v.FldValidators["statistics_profile_choice.statistics_profile"]; exists {
+			val := m.GetStatisticsProfileChoice().(*ReplaceSpecType_StatisticsProfile).StatisticsProfile
+			vOpts := append(opts,
+				db.WithValidateField("statistics_profile_choice"),
+				db.WithValidateField("statistics_profile"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
 		}
 	}
 	if fv, exists := v.FldValidators["traffic_policies"]; exists {
@@ -5740,6 +8052,17 @@ func (v *ValidateReplaceSpecType) Validate(ctx context.Context, pm interface{}, 
 				return err
 			}
 		}
+	case *ReplaceSpecType_Http3:
+		if fv, exists := v.FldValidators["virtual_server_type.http3"]; exists {
+			val := m.GetVirtualServerType().(*ReplaceSpecType_Http3).Http3
+			vOpts := append(opts,
+				db.WithValidateField("virtual_server_type"),
+				db.WithValidateField("http3"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 	if fv, exists := v.FldValidators["vs_score"]; exists {
 		vOpts := append(opts, db.WithValidateField("vs_score"))
@@ -5760,16 +8083,23 @@ var DefaultReplaceSpecTypeValidator = func() *ValidateReplaceSpecType {
 	_, _ = err, vFn
 	vFnMap := map[string]db.ValidatorFunc{}
 	_ = vFnMap
-	vrhDomainChoice := v.DomainChoiceValidationRuleHandler
-	rulesDomainChoice := map[string]string{
-		"ves.io.schema.rules.message.required_oneof": "true",
+
+	vrhDomains := v.DomainsValidationRuleHandler
+	rulesDomains := map[string]string{
+		"ves.io.schema.rules.message.required":                "true",
+		"ves.io.schema.rules.repeated.items.string.max_len":   "256",
+		"ves.io.schema.rules.repeated.items.string.min_len":   "1",
+		"ves.io.schema.rules.repeated.items.string.vh_domain": "true",
+		"ves.io.schema.rules.repeated.max_items":              "32",
+		"ves.io.schema.rules.repeated.min_items":              "1",
+		"ves.io.schema.rules.repeated.unique":                 "true",
 	}
-	vFn, err = vrhDomainChoice(rulesDomainChoice)
+	vFn, err = vrhDomains(rulesDomains)
 	if err != nil {
-		errMsg := fmt.Sprintf("ValidationRuleHandler for ReplaceSpecType.domain_choice: %s", err)
+		errMsg := fmt.Sprintf("ValidationRuleHandler for ReplaceSpecType.domains: %s", err)
 		panic(errMsg)
 	}
-	v.FldValidators["domain_choice"] = vFn
+	v.FldValidators["domains"] = vFn
 
 	vrhTrafficPolicies := v.TrafficPoliciesValidationRuleHandler
 	rulesTrafficPolicies := map[string]string{
@@ -5795,15 +8125,15 @@ var DefaultReplaceSpecTypeValidator = func() *ValidateReplaceSpecType {
 	v.FldValidators["vs_score"] = vFn
 	v.FldValidators["default_persistence_profile_choice.default_persistence_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["default_pool_choice.default_pool"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
-	v.FldValidators["domain_choice.managed"] = DomainsManagedByF5XCValidator().Validate
-	v.FldValidators["domain_choice.not_managed"] = NotManagedDomainsTypeValidator().Validate
 	v.FldValidators["fallback_persistence_profile_choice.fallback_persistence_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["last_hop_pool_choice.last_hop_pool"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["request_logging_profile_choice.request_logging_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
-	v.FldValidators["virtual_server_type.https"] = ServicesValidator().Validate
+	v.FldValidators["statistics_profile_choice.statistics_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
+	v.FldValidators["virtual_server_type.https"] = HTTPServicesValidator().Validate
 	v.FldValidators["virtual_server_type.http"] = HTTPServicesValidator().Validate
-	v.FldValidators["virtual_server_type.tcp"] = ServicesValidator().Validate
-	v.FldValidators["virtual_server_type.udp"] = ServicesValidator().Validate
+	v.FldValidators["virtual_server_type.tcp"] = TCPServicesValidator().Validate
+	v.FldValidators["virtual_server_type.udp"] = UDPServicesValidator().Validate
+	v.FldValidators["virtual_server_type.http3"] = HTTP3ServicesValidator().Validate
 	v.FldValidators["connection_limit_options"] = ConnectionLimitsTypeValidator().Validate
 	v.FldValidators["virtual_addresses"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["clone_pool_options"] = ClonePoolTypeValidator().Validate
@@ -6095,15 +8425,15 @@ func ServicesValidator() db.Validator {
 
 // augmented methods on protoc/std generated struct
 
-func (m *TCPProfileType) ToJSON() (string, error) {
+func (m *TCPDefaultServerSelection) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
 
-func (m *TCPProfileType) ToYAML() (string, error) {
+func (m *TCPDefaultServerSelection) ToYAML() (string, error) {
 	return codec.ToYAML(m)
 }
 
-func (m *TCPProfileType) DeepCopy() *TCPProfileType {
+func (m *TCPDefaultServerSelection) DeepCopy() *TCPDefaultServerSelection {
 	if m == nil {
 		return nil
 	}
@@ -6111,7 +8441,7 @@ func (m *TCPProfileType) DeepCopy() *TCPProfileType {
 	if err != nil {
 		return nil
 	}
-	c := &TCPProfileType{}
+	c := &TCPDefaultServerSelection{}
 	err = c.Unmarshal(ser)
 	if err != nil {
 		return nil
@@ -6119,25 +8449,25 @@ func (m *TCPProfileType) DeepCopy() *TCPProfileType {
 	return c
 }
 
-func (m *TCPProfileType) DeepCopyProto() proto.Message {
+func (m *TCPDefaultServerSelection) DeepCopyProto() proto.Message {
 	if m == nil {
 		return nil
 	}
 	return m.DeepCopy()
 }
 
-func (m *TCPProfileType) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
-	return TCPProfileTypeValidator().Validate(ctx, m, opts...)
+func (m *TCPDefaultServerSelection) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return TCPDefaultServerSelectionValidator().Validate(ctx, m, opts...)
 }
 
-func (m *TCPProfileType) GetDRefInfo() ([]db.DRefInfo, error) {
+func (m *TCPDefaultServerSelection) GetDRefInfo() ([]db.DRefInfo, error) {
 	if m == nil {
 		return nil, nil
 	}
 
 	var drInfos []db.DRefInfo
-	if fdrInfos, err := m.GetClientProfileDRefInfo(); err != nil {
-		return nil, errors.Wrap(err, "GetClientProfileDRefInfo() FAILED")
+	if fdrInfos, err := m.GetSslServerProfilesDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetSslServerProfilesDRefInfo() FAILED")
 	} else {
 		drInfos = append(drInfos, fdrInfos...)
 	}
@@ -6149,57 +8479,65 @@ func (m *TCPProfileType) GetDRefInfo() ([]db.DRefInfo, error) {
 	return drInfos, nil
 }
 
-func (m *TCPProfileType) GetClientProfileDRefInfo() ([]db.DRefInfo, error) {
-	vref := m.GetClientProfile()
-	if vref == nil {
+func (m *TCPDefaultServerSelection) GetSslServerProfilesDRefInfo() ([]db.DRefInfo, error) {
+	vrefs := m.GetSslServerProfiles()
+	if len(vrefs) == 0 {
 		return nil, nil
 	}
-	vdRef := db.NewDirectRefForView(vref)
-	vdRef.SetKind("tcp_profile.Object")
-	dri := db.DRefInfo{
-		RefdType:   "tcp_profile.Object",
-		RefdTenant: vref.Tenant,
-		RefdNS:     vref.Namespace,
-		RefdName:   vref.Name,
-		DRField:    "client_profile",
-		Ref:        vdRef,
+	drInfos := make([]db.DRefInfo, 0, len(vrefs))
+	for i, vref := range vrefs {
+		if vref == nil {
+			return nil, fmt.Errorf("TCPDefaultServerSelection.ssl_server_profiles[%d] has a nil value", i)
+		}
+		vdRef := db.NewDirectRefForView(vref)
+		vdRef.SetKind("ssl_server_profile.Object")
+		// resolve kind to type if needed at DBObject.GetDRefInfo()
+		drInfos = append(drInfos, db.DRefInfo{
+			RefdType:   "ssl_server_profile.Object",
+			RefdTenant: vref.Tenant,
+			RefdNS:     vref.Namespace,
+			RefdName:   vref.Name,
+			DRField:    "ssl_server_profiles",
+			Ref:        vdRef,
+		})
 	}
-	return []db.DRefInfo{dri}, nil
+	return drInfos, nil
 }
 
-// GetClientProfileDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
-func (m *TCPProfileType) GetClientProfileDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+// GetSslServerProfilesDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *TCPDefaultServerSelection) GetSslServerProfilesDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
 	var entries []db.Entry
-	refdType, err := d.TypeForEntryKind("", "", "tcp_profile.Object")
+	refdType, err := d.TypeForEntryKind("", "", "ssl_server_profile.Object")
 	if err != nil {
-		return nil, errors.Wrap(err, "Cannot find type for kind: tcp_profile")
+		return nil, errors.Wrap(err, "Cannot find type for kind: ssl_server_profile")
 	}
-	vref := m.GetClientProfile()
-	if vref == nil {
-		return nil, nil
-	}
-	ref := &ves_io_schema.ObjectRefType{
-		Kind:      "tcp_profile.Object",
-		Tenant:    vref.Tenant,
-		Namespace: vref.Namespace,
-		Name:      vref.Name,
-	}
-	refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
-	if err != nil {
-		return nil, errors.Wrap(err, "Getting referred entry")
-	}
-	if refdEnt != nil {
-		entries = append(entries, refdEnt)
+	for i, vref := range m.GetSslServerProfiles() {
+		if vref == nil {
+			return nil, fmt.Errorf("TCPDefaultServerSelection.ssl_server_profiles[%d] has a nil value", i)
+		}
+		ref := &ves_io_schema.ObjectRefType{
+			Kind:      "ssl_server_profile.Object",
+			Tenant:    vref.Tenant,
+			Namespace: vref.Namespace,
+			Name:      vref.Name,
+		}
+		refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+		if err != nil {
+			return nil, errors.Wrap(err, "Getting referred entry")
+		}
+		if refdEnt != nil {
+			entries = append(entries, refdEnt)
+		}
 	}
 	return entries, nil
 }
 
-func (m *TCPProfileType) GetTcpServerProfileChoiceDRefInfo() ([]db.DRefInfo, error) {
+func (m *TCPDefaultServerSelection) GetTcpServerProfileChoiceDRefInfo() ([]db.DRefInfo, error) {
 	switch m.GetTcpServerProfileChoice().(type) {
-	case *TCPProfileType_ServerProfileSameAsClient:
+	case *TCPDefaultServerSelection_TcpServerProfileUseClient:
 		return nil, nil
-	case *TCPProfileType_ServerProfile:
-		vref := m.GetServerProfile()
+	case *TCPDefaultServerSelection_TcpServerProfile:
+		vref := m.GetTcpServerProfile()
 		if vref == nil {
 			return nil, nil
 		}
@@ -6210,7 +8548,7 @@ func (m *TCPProfileType) GetTcpServerProfileChoiceDRefInfo() ([]db.DRefInfo, err
 			RefdTenant: vref.Tenant,
 			RefdNS:     vref.Namespace,
 			RefdName:   vref.Name,
-			DRField:    "server_profile",
+			DRField:    "tcp_server_profile",
 			Ref:        vdRef,
 		}
 		return []db.DRefInfo{dri}, nil
@@ -6220,17 +8558,17 @@ func (m *TCPProfileType) GetTcpServerProfileChoiceDRefInfo() ([]db.DRefInfo, err
 }
 
 // GetTcpServerProfileChoiceDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
-func (m *TCPProfileType) GetTcpServerProfileChoiceDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+func (m *TCPDefaultServerSelection) GetTcpServerProfileChoiceDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
 	var entries []db.Entry
 
 	switch m.GetTcpServerProfileChoice().(type) {
-	case *TCPProfileType_ServerProfileSameAsClient:
-	case *TCPProfileType_ServerProfile:
+	case *TCPDefaultServerSelection_TcpServerProfileUseClient:
+	case *TCPDefaultServerSelection_TcpServerProfile:
 		refdType, err := d.TypeForEntryKind("", "", "tcp_profile.Object")
 		if err != nil {
 			return nil, errors.Wrap(err, "Cannot find type for kind: tcp_profile")
 		}
-		vref := m.GetServerProfile()
+		vref := m.GetTcpServerProfile()
 		if vref == nil {
 			return nil, nil
 		}
@@ -6252,14 +8590,396 @@ func (m *TCPProfileType) GetTcpServerProfileChoiceDBEntries(ctx context.Context,
 	return entries, nil
 }
 
-type ValidateTCPProfileType struct {
+type ValidateTCPDefaultServerSelection struct {
 	FldValidators map[string]db.ValidatorFunc
 }
 
-func (v *ValidateTCPProfileType) ClientProfileValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+func (v *ValidateTCPDefaultServerSelection) TcpServerProfileChoiceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for tcp_server_profile_choice")
+	}
+	return validatorFn, nil
+}
+func (v *ValidateTCPDefaultServerSelection) SslServerProfilesValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepMessageItemRules(rules)
+	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Message ValidationRuleHandler for ssl_server_profiles")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []*ves_io_schema_views.ObjectRefType, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+			if err := ves_io_schema_views.ObjectRefTypeValidator().Validate(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for ssl_server_profiles")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]*ves_io_schema_views.ObjectRefType)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []*ves_io_schema_views.ObjectRefType, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
+			if err != nil {
+				return errors.Wrapf(err, "Converting %v to JSON", elem)
+			}
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated ssl_server_profiles")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items ssl_server_profiles")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateTCPDefaultServerSelection) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*TCPDefaultServerSelection)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *TCPDefaultServerSelection got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["ssl_server_profiles"]; exists {
+		vOpts := append(opts, db.WithValidateField("ssl_server_profiles"))
+		if err := fv(ctx, m.GetSslServerProfiles(), vOpts...); err != nil {
+			return err
+		}
+	}
+
+	if fv, exists := v.FldValidators["tcp_server_profile_choice"]; exists {
+		val := m.GetTcpServerProfileChoice()
+		vOpts := append(opts,
+			db.WithValidateField("tcp_server_profile_choice"),
+		)
+		if err := fv(ctx, val, vOpts...); err != nil {
+			return err
+		}
+	}
+
+	switch m.GetTcpServerProfileChoice().(type) {
+	case *TCPDefaultServerSelection_TcpServerProfileUseClient:
+		if fv, exists := v.FldValidators["tcp_server_profile_choice.tcp_server_profile_use_client"]; exists {
+			val := m.GetTcpServerProfileChoice().(*TCPDefaultServerSelection_TcpServerProfileUseClient).TcpServerProfileUseClient
+			vOpts := append(opts,
+				db.WithValidateField("tcp_server_profile_choice"),
+				db.WithValidateField("tcp_server_profile_use_client"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *TCPDefaultServerSelection_TcpServerProfile:
+		if fv, exists := v.FldValidators["tcp_server_profile_choice.tcp_server_profile"]; exists {
+			val := m.GetTcpServerProfileChoice().(*TCPDefaultServerSelection_TcpServerProfile).TcpServerProfile
+			vOpts := append(opts,
+				db.WithValidateField("tcp_server_profile_choice"),
+				db.WithValidateField("tcp_server_profile"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultTCPDefaultServerSelectionValidator = func() *ValidateTCPDefaultServerSelection {
+	v := &ValidateTCPDefaultServerSelection{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+	vrhTcpServerProfileChoice := v.TcpServerProfileChoiceValidationRuleHandler
+	rulesTcpServerProfileChoice := map[string]string{
+		"ves.io.schema.rules.message.required_oneof": "true",
+	}
+	vFn, err = vrhTcpServerProfileChoice(rulesTcpServerProfileChoice)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for TCPDefaultServerSelection.tcp_server_profile_choice: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["tcp_server_profile_choice"] = vFn
+
+	vrhSslServerProfiles := v.SslServerProfilesValidationRuleHandler
+	rulesSslServerProfiles := map[string]string{
+		"ves.io.schema.rules.repeated.max_items": "32",
+		"ves.io.schema.rules.repeated.unique":    "true",
+	}
+	vFn, err = vrhSslServerProfiles(rulesSslServerProfiles)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for TCPDefaultServerSelection.ssl_server_profiles: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["ssl_server_profiles"] = vFn
+	v.FldValidators["tcp_server_profile_choice.tcp_server_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
+
+	return v
+}()
+
+func TCPDefaultServerSelectionValidator() db.Validator {
+	return DefaultTCPDefaultServerSelectionValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *TCPServices) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *TCPServices) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *TCPServices) DeepCopy() *TCPServices {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &TCPServices{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *TCPServices) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *TCPServices) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return TCPServicesValidator().Validate(ctx, m, opts...)
+}
+
+func (m *TCPServices) GetDRefInfo() ([]db.DRefInfo, error) {
+	if m == nil {
+		return nil, nil
+	}
+
+	var drInfos []db.DRefInfo
+	if fdrInfos, err := m.GetProtocolClientProfileDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetProtocolClientProfileDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetServerAppTypeChoiceDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetServerAppTypeChoiceDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetSslClientProfilesDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetSslClientProfilesDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	return drInfos, nil
+}
+
+func (m *TCPServices) GetProtocolClientProfileDRefInfo() ([]db.DRefInfo, error) {
+	vref := m.GetProtocolClientProfile()
+	if vref == nil {
+		return nil, nil
+	}
+	vdRef := db.NewDirectRefForView(vref)
+	vdRef.SetKind("tcp_profile.Object")
+	dri := db.DRefInfo{
+		RefdType:   "tcp_profile.Object",
+		RefdTenant: vref.Tenant,
+		RefdNS:     vref.Namespace,
+		RefdName:   vref.Name,
+		DRField:    "protocol_client_profile",
+		Ref:        vdRef,
+	}
+	return []db.DRefInfo{dri}, nil
+}
+
+// GetProtocolClientProfileDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *TCPServices) GetProtocolClientProfileDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "tcp_profile.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: tcp_profile")
+	}
+	vref := m.GetProtocolClientProfile()
+	if vref == nil {
+		return nil, nil
+	}
+	ref := &ves_io_schema.ObjectRefType{
+		Kind:      "tcp_profile.Object",
+		Tenant:    vref.Tenant,
+		Namespace: vref.Namespace,
+		Name:      vref.Name,
+	}
+	refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+	if err != nil {
+		return nil, errors.Wrap(err, "Getting referred entry")
+	}
+	if refdEnt != nil {
+		entries = append(entries, refdEnt)
+	}
+	return entries, nil
+}
+
+// GetDRefInfo for the field's type
+func (m *TCPServices) GetServerAppTypeChoiceDRefInfo() ([]db.DRefInfo, error) {
+	if m.GetServerAppTypeChoice() == nil {
+		return nil, nil
+	}
+	switch m.GetServerAppTypeChoice().(type) {
+	case *TCPServices_ServerAppTypeSameAsClient:
+		drInfos, err := m.GetServerAppTypeSameAsClient().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetServerAppTypeSameAsClient().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "server_app_type_same_as_client." + dri.DRField
+		}
+		return drInfos, err
+	default:
+		return nil, nil
+	}
+}
+
+func (m *TCPServices) GetSslClientProfilesDRefInfo() ([]db.DRefInfo, error) {
+	vrefs := m.GetSslClientProfiles()
+	if len(vrefs) == 0 {
+		return nil, nil
+	}
+	drInfos := make([]db.DRefInfo, 0, len(vrefs))
+	for i, vref := range vrefs {
+		if vref == nil {
+			return nil, fmt.Errorf("TCPServices.ssl_client_profiles[%d] has a nil value", i)
+		}
+		vdRef := db.NewDirectRefForView(vref)
+		vdRef.SetKind("ssl_client_profile.Object")
+		// resolve kind to type if needed at DBObject.GetDRefInfo()
+		drInfos = append(drInfos, db.DRefInfo{
+			RefdType:   "ssl_client_profile.Object",
+			RefdTenant: vref.Tenant,
+			RefdNS:     vref.Namespace,
+			RefdName:   vref.Name,
+			DRField:    "ssl_client_profiles",
+			Ref:        vdRef,
+		})
+	}
+	return drInfos, nil
+}
+
+// GetSslClientProfilesDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *TCPServices) GetSslClientProfilesDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "ssl_client_profile.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: ssl_client_profile")
+	}
+	for i, vref := range m.GetSslClientProfiles() {
+		if vref == nil {
+			return nil, fmt.Errorf("TCPServices.ssl_client_profiles[%d] has a nil value", i)
+		}
+		ref := &ves_io_schema.ObjectRefType{
+			Kind:      "ssl_client_profile.Object",
+			Tenant:    vref.Tenant,
+			Namespace: vref.Namespace,
+			Name:      vref.Name,
+		}
+		refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+		if err != nil {
+			return nil, errors.Wrap(err, "Getting referred entry")
+		}
+		if refdEnt != nil {
+			entries = append(entries, refdEnt)
+		}
+	}
+	return entries, nil
+}
+
+type ValidateTCPServices struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateTCPServices) ServicesValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepMessageItemRules(rules)
+	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Message ValidationRuleHandler for services")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []*ServiceType, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+			if err := ServiceTypeValidator().Validate(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for services")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]*ServiceType)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []*ServiceType, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
+			if err != nil {
+				return errors.Wrapf(err, "Converting %v to JSON", elem)
+			}
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated services")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items services")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateTCPServices) ProtocolClientProfileValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
 	reqdValidatorFn, err := db.NewMessageValidationRuleHandler(rules)
 	if err != nil {
-		return nil, errors.Wrap(err, "MessageValidationRuleHandler for client_profile")
+		return nil, errors.Wrap(err, "MessageValidationRuleHandler for protocol_client_profile")
 	}
 	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
 		if err := reqdValidatorFn(ctx, val, opts...); err != nil {
@@ -6273,57 +8993,104 @@ func (v *ValidateTCPProfileType) ClientProfileValidationRuleHandler(rules map[st
 
 	return validatorFn, nil
 }
+func (v *ValidateTCPServices) SslClientProfilesValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepMessageItemRules(rules)
+	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Message ValidationRuleHandler for ssl_client_profiles")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []*ves_io_schema_views.ObjectRefType, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+			if err := ves_io_schema_views.ObjectRefTypeValidator().Validate(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for ssl_client_profiles")
+	}
 
-func (v *ValidateTCPProfileType) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
-	m, ok := pm.(*TCPProfileType)
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]*ves_io_schema_views.ObjectRefType)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []*ves_io_schema_views.ObjectRefType, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
+			if err != nil {
+				return errors.Wrapf(err, "Converting %v to JSON", elem)
+			}
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated ssl_client_profiles")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items ssl_client_profiles")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateTCPServices) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*TCPServices)
 	if !ok {
 		switch t := pm.(type) {
 		case nil:
 			return nil
 		default:
-			return fmt.Errorf("Expected type *TCPProfileType got type %s", t)
+			return fmt.Errorf("Expected type *TCPServices got type %s", t)
 		}
 	}
 	if m == nil {
 		return nil
 	}
-	if fv, exists := v.FldValidators["client_profile"]; exists {
-		vOpts := append(opts, db.WithValidateField("client_profile"))
-		if err := fv(ctx, m.GetClientProfile(), vOpts...); err != nil {
+	if fv, exists := v.FldValidators["protocol_client_profile"]; exists {
+		vOpts := append(opts, db.WithValidateField("protocol_client_profile"))
+		if err := fv(ctx, m.GetProtocolClientProfile(), vOpts...); err != nil {
 			return err
 		}
 	}
 
-	switch m.GetTcpServerProfileChoice().(type) {
-	case *TCPProfileType_ServerProfileSameAsClient:
-		if fv, exists := v.FldValidators["tcp_server_profile_choice.server_profile_same_as_client"]; exists {
-			val := m.GetTcpServerProfileChoice().(*TCPProfileType_ServerProfileSameAsClient).ServerProfileSameAsClient
+	switch m.GetServerAppTypeChoice().(type) {
+	case *TCPServices_ServerAppTypeSameAsClient:
+		if fv, exists := v.FldValidators["server_app_type_choice.server_app_type_same_as_client"]; exists {
+			val := m.GetServerAppTypeChoice().(*TCPServices_ServerAppTypeSameAsClient).ServerAppTypeSameAsClient
 			vOpts := append(opts,
-				db.WithValidateField("tcp_server_profile_choice"),
-				db.WithValidateField("server_profile_same_as_client"),
+				db.WithValidateField("server_app_type_choice"),
+				db.WithValidateField("server_app_type_same_as_client"),
 			)
 			if err := fv(ctx, val, vOpts...); err != nil {
 				return err
 			}
 		}
-	case *TCPProfileType_ServerProfile:
-		if fv, exists := v.FldValidators["tcp_server_profile_choice.server_profile"]; exists {
-			val := m.GetTcpServerProfileChoice().(*TCPProfileType_ServerProfile).ServerProfile
-			vOpts := append(opts,
-				db.WithValidateField("tcp_server_profile_choice"),
-				db.WithValidateField("server_profile"),
-			)
-			if err := fv(ctx, val, vOpts...); err != nil {
-				return err
-			}
+	}
+	if fv, exists := v.FldValidators["services"]; exists {
+		vOpts := append(opts, db.WithValidateField("services"))
+		if err := fv(ctx, m.GetServices(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["ssl_client_profiles"]; exists {
+		vOpts := append(opts, db.WithValidateField("ssl_client_profiles"))
+		if err := fv(ctx, m.GetSslClientProfiles(), vOpts...); err != nil {
+			return err
 		}
 	}
 	return nil
 }
 
 // Well-known symbol for default validator implementation
-var DefaultTCPProfileTypeValidator = func() *ValidateTCPProfileType {
-	v := &ValidateTCPProfileType{FldValidators: map[string]db.ValidatorFunc{}}
+var DefaultTCPServicesValidator = func() *ValidateTCPServices {
+	v := &ValidateTCPServices{FldValidators: map[string]db.ValidatorFunc{}}
 	var (
 		err error
 		vFn db.ValidatorFunc
@@ -6332,23 +9099,47 @@ var DefaultTCPProfileTypeValidator = func() *ValidateTCPProfileType {
 	vFnMap := map[string]db.ValidatorFunc{}
 	_ = vFnMap
 
-	vrhClientProfile := v.ClientProfileValidationRuleHandler
-	rulesClientProfile := map[string]string{
-		"ves.io.schema.rules.message.required": "true",
+	vrhServices := v.ServicesValidationRuleHandler
+	rulesServices := map[string]string{
+		"ves.io.schema.rules.repeated.max_items": "128",
+		"ves.io.schema.rules.repeated.unique":    "true",
 	}
-	vFn, err = vrhClientProfile(rulesClientProfile)
+	vFn, err = vrhServices(rulesServices)
 	if err != nil {
-		errMsg := fmt.Sprintf("ValidationRuleHandler for TCPProfileType.client_profile: %s", err)
+		errMsg := fmt.Sprintf("ValidationRuleHandler for TCPServices.services: %s", err)
 		panic(errMsg)
 	}
-	v.FldValidators["client_profile"] = vFn
-	v.FldValidators["tcp_server_profile_choice.server_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
+	v.FldValidators["services"] = vFn
+
+	vrhProtocolClientProfile := v.ProtocolClientProfileValidationRuleHandler
+	rulesProtocolClientProfile := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhProtocolClientProfile(rulesProtocolClientProfile)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for TCPServices.protocol_client_profile: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["protocol_client_profile"] = vFn
+
+	vrhSslClientProfiles := v.SslClientProfilesValidationRuleHandler
+	rulesSslClientProfiles := map[string]string{
+		"ves.io.schema.rules.repeated.max_items": "32",
+		"ves.io.schema.rules.repeated.unique":    "true",
+	}
+	vFn, err = vrhSslClientProfiles(rulesSslClientProfiles)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for TCPServices.ssl_client_profiles: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["ssl_client_profiles"] = vFn
+	v.FldValidators["server_app_type_choice.server_app_type_same_as_client"] = TCPDefaultServerSelectionValidator().Validate
 
 	return v
 }()
 
-func TCPProfileTypeValidator() db.Validator {
-	return DefaultTCPProfileTypeValidator
+func TCPServicesValidator() db.Validator {
+	return DefaultTCPServicesValidator
 }
 
 // augmented methods on protoc/std generated struct
@@ -6439,15 +9230,15 @@ func TranslationTypeValidator() db.Validator {
 
 // augmented methods on protoc/std generated struct
 
-func (m *WebsocketProfileType) ToJSON() (string, error) {
+func (m *UDPDefaultServerSelection) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
 
-func (m *WebsocketProfileType) ToYAML() (string, error) {
+func (m *UDPDefaultServerSelection) ToYAML() (string, error) {
 	return codec.ToYAML(m)
 }
 
-func (m *WebsocketProfileType) DeepCopy() *WebsocketProfileType {
+func (m *UDPDefaultServerSelection) DeepCopy() *UDPDefaultServerSelection {
 	if m == nil {
 		return nil
 	}
@@ -6455,7 +9246,7 @@ func (m *WebsocketProfileType) DeepCopy() *WebsocketProfileType {
 	if err != nil {
 		return nil
 	}
-	c := &WebsocketProfileType{}
+	c := &UDPDefaultServerSelection{}
 	err = c.Unmarshal(ser)
 	if err != nil {
 		return nil
@@ -6463,53 +9254,106 @@ func (m *WebsocketProfileType) DeepCopy() *WebsocketProfileType {
 	return c
 }
 
-func (m *WebsocketProfileType) DeepCopyProto() proto.Message {
+func (m *UDPDefaultServerSelection) DeepCopyProto() proto.Message {
 	if m == nil {
 		return nil
 	}
 	return m.DeepCopy()
 }
 
-func (m *WebsocketProfileType) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
-	return WebsocketProfileTypeValidator().Validate(ctx, m, opts...)
+func (m *UDPDefaultServerSelection) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return UDPDefaultServerSelectionValidator().Validate(ctx, m, opts...)
 }
 
-func (m *WebsocketProfileType) GetDRefInfo() ([]db.DRefInfo, error) {
+func (m *UDPDefaultServerSelection) GetDRefInfo() ([]db.DRefInfo, error) {
 	if m == nil {
 		return nil, nil
 	}
 
 	var drInfos []db.DRefInfo
-	if fdrInfos, err := m.GetWebsocketClientProfileChoiceDRefInfo(); err != nil {
-		return nil, errors.Wrap(err, "GetWebsocketClientProfileChoiceDRefInfo() FAILED")
+	if fdrInfos, err := m.GetSslServerProfilesDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetSslServerProfilesDRefInfo() FAILED")
 	} else {
 		drInfos = append(drInfos, fdrInfos...)
 	}
-	if fdrInfos, err := m.GetWebsocketServerProfileChoiceDRefInfo(); err != nil {
-		return nil, errors.Wrap(err, "GetWebsocketServerProfileChoiceDRefInfo() FAILED")
+	if fdrInfos, err := m.GetUdpServerProfileChoiceDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetUdpServerProfileChoiceDRefInfo() FAILED")
 	} else {
 		drInfos = append(drInfos, fdrInfos...)
 	}
 	return drInfos, nil
 }
 
-func (m *WebsocketProfileType) GetWebsocketClientProfileChoiceDRefInfo() ([]db.DRefInfo, error) {
-	switch m.GetWebsocketClientProfileChoice().(type) {
-	case *WebsocketProfileType_ClientProfileNone:
+func (m *UDPDefaultServerSelection) GetSslServerProfilesDRefInfo() ([]db.DRefInfo, error) {
+	vrefs := m.GetSslServerProfiles()
+	if len(vrefs) == 0 {
 		return nil, nil
-	case *WebsocketProfileType_ClientProfile:
-		vref := m.GetClientProfile()
+	}
+	drInfos := make([]db.DRefInfo, 0, len(vrefs))
+	for i, vref := range vrefs {
+		if vref == nil {
+			return nil, fmt.Errorf("UDPDefaultServerSelection.ssl_server_profiles[%d] has a nil value", i)
+		}
+		vdRef := db.NewDirectRefForView(vref)
+		vdRef.SetKind("ssl_server_profile.Object")
+		// resolve kind to type if needed at DBObject.GetDRefInfo()
+		drInfos = append(drInfos, db.DRefInfo{
+			RefdType:   "ssl_server_profile.Object",
+			RefdTenant: vref.Tenant,
+			RefdNS:     vref.Namespace,
+			RefdName:   vref.Name,
+			DRField:    "ssl_server_profiles",
+			Ref:        vdRef,
+		})
+	}
+	return drInfos, nil
+}
+
+// GetSslServerProfilesDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *UDPDefaultServerSelection) GetSslServerProfilesDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "ssl_server_profile.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: ssl_server_profile")
+	}
+	for i, vref := range m.GetSslServerProfiles() {
+		if vref == nil {
+			return nil, fmt.Errorf("UDPDefaultServerSelection.ssl_server_profiles[%d] has a nil value", i)
+		}
+		ref := &ves_io_schema.ObjectRefType{
+			Kind:      "ssl_server_profile.Object",
+			Tenant:    vref.Tenant,
+			Namespace: vref.Namespace,
+			Name:      vref.Name,
+		}
+		refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+		if err != nil {
+			return nil, errors.Wrap(err, "Getting referred entry")
+		}
+		if refdEnt != nil {
+			entries = append(entries, refdEnt)
+		}
+	}
+	return entries, nil
+}
+
+func (m *UDPDefaultServerSelection) GetUdpServerProfileChoiceDRefInfo() ([]db.DRefInfo, error) {
+	switch m.GetUdpServerProfileChoice().(type) {
+	case *UDPDefaultServerSelection_UdpServerProfileUseClient:
+		return nil, nil
+	case *UDPDefaultServerSelection_UdpServerProfile:
+		vref := m.GetUdpServerProfile()
 		if vref == nil {
 			return nil, nil
 		}
 		vdRef := db.NewDirectRefForView(vref)
-		vdRef.SetKind("websocket_profile.Object")
+		vdRef.SetKind("udp_profile.Object")
 		dri := db.DRefInfo{
-			RefdType:   "websocket_profile.Object",
+			RefdType:   "udp_profile.Object",
 			RefdTenant: vref.Tenant,
 			RefdNS:     vref.Namespace,
 			RefdName:   vref.Name,
-			DRField:    "client_profile",
+			DRField:    "udp_server_profile",
 			Ref:        vdRef,
 		}
 		return []db.DRefInfo{dri}, nil
@@ -6518,23 +9362,23 @@ func (m *WebsocketProfileType) GetWebsocketClientProfileChoiceDRefInfo() ([]db.D
 	}
 }
 
-// GetWebsocketClientProfileChoiceDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
-func (m *WebsocketProfileType) GetWebsocketClientProfileChoiceDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+// GetUdpServerProfileChoiceDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *UDPDefaultServerSelection) GetUdpServerProfileChoiceDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
 	var entries []db.Entry
 
-	switch m.GetWebsocketClientProfileChoice().(type) {
-	case *WebsocketProfileType_ClientProfileNone:
-	case *WebsocketProfileType_ClientProfile:
-		refdType, err := d.TypeForEntryKind("", "", "websocket_profile.Object")
+	switch m.GetUdpServerProfileChoice().(type) {
+	case *UDPDefaultServerSelection_UdpServerProfileUseClient:
+	case *UDPDefaultServerSelection_UdpServerProfile:
+		refdType, err := d.TypeForEntryKind("", "", "udp_profile.Object")
 		if err != nil {
-			return nil, errors.Wrap(err, "Cannot find type for kind: websocket_profile")
+			return nil, errors.Wrap(err, "Cannot find type for kind: udp_profile")
 		}
-		vref := m.GetClientProfile()
+		vref := m.GetUdpServerProfile()
 		if vref == nil {
 			return nil, nil
 		}
 		ref := &ves_io_schema.ObjectRefType{
-			Kind:      "websocket_profile.Object",
+			Kind:      "udp_profile.Object",
 			Tenant:    vref.Tenant,
 			Namespace: vref.Namespace,
 			Name:      vref.Name,
@@ -6551,125 +9395,112 @@ func (m *WebsocketProfileType) GetWebsocketClientProfileChoiceDBEntries(ctx cont
 	return entries, nil
 }
 
-func (m *WebsocketProfileType) GetWebsocketServerProfileChoiceDRefInfo() ([]db.DRefInfo, error) {
-	switch m.GetWebsocketServerProfileChoice().(type) {
-	case *WebsocketProfileType_ServerProfileSameAsClient:
-		return nil, nil
-	case *WebsocketProfileType_ServerProfile:
-		vref := m.GetServerProfile()
-		if vref == nil {
-			return nil, nil
-		}
-		vdRef := db.NewDirectRefForView(vref)
-		vdRef.SetKind("websocket_profile.Object")
-		dri := db.DRefInfo{
-			RefdType:   "websocket_profile.Object",
-			RefdTenant: vref.Tenant,
-			RefdNS:     vref.Namespace,
-			RefdName:   vref.Name,
-			DRField:    "server_profile",
-			Ref:        vdRef,
-		}
-		return []db.DRefInfo{dri}, nil
-	default:
-		return nil, nil
-	}
-}
-
-// GetWebsocketServerProfileChoiceDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
-func (m *WebsocketProfileType) GetWebsocketServerProfileChoiceDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
-	var entries []db.Entry
-
-	switch m.GetWebsocketServerProfileChoice().(type) {
-	case *WebsocketProfileType_ServerProfileSameAsClient:
-	case *WebsocketProfileType_ServerProfile:
-		refdType, err := d.TypeForEntryKind("", "", "websocket_profile.Object")
-		if err != nil {
-			return nil, errors.Wrap(err, "Cannot find type for kind: websocket_profile")
-		}
-		vref := m.GetServerProfile()
-		if vref == nil {
-			return nil, nil
-		}
-		ref := &ves_io_schema.ObjectRefType{
-			Kind:      "websocket_profile.Object",
-			Tenant:    vref.Tenant,
-			Namespace: vref.Namespace,
-			Name:      vref.Name,
-		}
-		refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
-		if err != nil {
-			return nil, errors.Wrap(err, "Getting referred entry")
-		}
-		if refdEnt != nil {
-			entries = append(entries, refdEnt)
-		}
-	}
-
-	return entries, nil
-}
-
-type ValidateWebsocketProfileType struct {
+type ValidateUDPDefaultServerSelection struct {
 	FldValidators map[string]db.ValidatorFunc
 }
 
-func (v *ValidateWebsocketProfileType) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
-	m, ok := pm.(*WebsocketProfileType)
+func (v *ValidateUDPDefaultServerSelection) UdpServerProfileChoiceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for udp_server_profile_choice")
+	}
+	return validatorFn, nil
+}
+func (v *ValidateUDPDefaultServerSelection) SslServerProfilesValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepMessageItemRules(rules)
+	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Message ValidationRuleHandler for ssl_server_profiles")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []*ves_io_schema_views.ObjectRefType, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+			if err := ves_io_schema_views.ObjectRefTypeValidator().Validate(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for ssl_server_profiles")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]*ves_io_schema_views.ObjectRefType)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []*ves_io_schema_views.ObjectRefType, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
+			if err != nil {
+				return errors.Wrapf(err, "Converting %v to JSON", elem)
+			}
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated ssl_server_profiles")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items ssl_server_profiles")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateUDPDefaultServerSelection) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*UDPDefaultServerSelection)
 	if !ok {
 		switch t := pm.(type) {
 		case nil:
 			return nil
 		default:
-			return fmt.Errorf("Expected type *WebsocketProfileType got type %s", t)
+			return fmt.Errorf("Expected type *UDPDefaultServerSelection got type %s", t)
 		}
 	}
 	if m == nil {
 		return nil
 	}
-
-	switch m.GetWebsocketClientProfileChoice().(type) {
-	case *WebsocketProfileType_ClientProfileNone:
-		if fv, exists := v.FldValidators["websocket_client_profile_choice.client_profile_none"]; exists {
-			val := m.GetWebsocketClientProfileChoice().(*WebsocketProfileType_ClientProfileNone).ClientProfileNone
-			vOpts := append(opts,
-				db.WithValidateField("websocket_client_profile_choice"),
-				db.WithValidateField("client_profile_none"),
-			)
-			if err := fv(ctx, val, vOpts...); err != nil {
-				return err
-			}
-		}
-	case *WebsocketProfileType_ClientProfile:
-		if fv, exists := v.FldValidators["websocket_client_profile_choice.client_profile"]; exists {
-			val := m.GetWebsocketClientProfileChoice().(*WebsocketProfileType_ClientProfile).ClientProfile
-			vOpts := append(opts,
-				db.WithValidateField("websocket_client_profile_choice"),
-				db.WithValidateField("client_profile"),
-			)
-			if err := fv(ctx, val, vOpts...); err != nil {
-				return err
-			}
+	if fv, exists := v.FldValidators["ssl_server_profiles"]; exists {
+		vOpts := append(opts, db.WithValidateField("ssl_server_profiles"))
+		if err := fv(ctx, m.GetSslServerProfiles(), vOpts...); err != nil {
+			return err
 		}
 	}
 
-	switch m.GetWebsocketServerProfileChoice().(type) {
-	case *WebsocketProfileType_ServerProfileSameAsClient:
-		if fv, exists := v.FldValidators["websocket_server_profile_choice.server_profile_same_as_client"]; exists {
-			val := m.GetWebsocketServerProfileChoice().(*WebsocketProfileType_ServerProfileSameAsClient).ServerProfileSameAsClient
+	if fv, exists := v.FldValidators["udp_server_profile_choice"]; exists {
+		val := m.GetUdpServerProfileChoice()
+		vOpts := append(opts,
+			db.WithValidateField("udp_server_profile_choice"),
+		)
+		if err := fv(ctx, val, vOpts...); err != nil {
+			return err
+		}
+	}
+
+	switch m.GetUdpServerProfileChoice().(type) {
+	case *UDPDefaultServerSelection_UdpServerProfileUseClient:
+		if fv, exists := v.FldValidators["udp_server_profile_choice.udp_server_profile_use_client"]; exists {
+			val := m.GetUdpServerProfileChoice().(*UDPDefaultServerSelection_UdpServerProfileUseClient).UdpServerProfileUseClient
 			vOpts := append(opts,
-				db.WithValidateField("websocket_server_profile_choice"),
-				db.WithValidateField("server_profile_same_as_client"),
+				db.WithValidateField("udp_server_profile_choice"),
+				db.WithValidateField("udp_server_profile_use_client"),
 			)
 			if err := fv(ctx, val, vOpts...); err != nil {
 				return err
 			}
 		}
-	case *WebsocketProfileType_ServerProfile:
-		if fv, exists := v.FldValidators["websocket_server_profile_choice.server_profile"]; exists {
-			val := m.GetWebsocketServerProfileChoice().(*WebsocketProfileType_ServerProfile).ServerProfile
+	case *UDPDefaultServerSelection_UdpServerProfile:
+		if fv, exists := v.FldValidators["udp_server_profile_choice.udp_server_profile"]; exists {
+			val := m.GetUdpServerProfileChoice().(*UDPDefaultServerSelection_UdpServerProfile).UdpServerProfile
 			vOpts := append(opts,
-				db.WithValidateField("websocket_server_profile_choice"),
-				db.WithValidateField("server_profile"),
+				db.WithValidateField("udp_server_profile_choice"),
+				db.WithValidateField("udp_server_profile"),
 			)
 			if err := fv(ctx, val, vOpts...); err != nil {
 				return err
@@ -6680,16 +9511,440 @@ func (v *ValidateWebsocketProfileType) Validate(ctx context.Context, pm interfac
 }
 
 // Well-known symbol for default validator implementation
-var DefaultWebsocketProfileTypeValidator = func() *ValidateWebsocketProfileType {
-	v := &ValidateWebsocketProfileType{FldValidators: map[string]db.ValidatorFunc{}}
-	v.FldValidators["websocket_client_profile_choice.client_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
-	v.FldValidators["websocket_server_profile_choice.server_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
+var DefaultUDPDefaultServerSelectionValidator = func() *ValidateUDPDefaultServerSelection {
+	v := &ValidateUDPDefaultServerSelection{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+	vrhUdpServerProfileChoice := v.UdpServerProfileChoiceValidationRuleHandler
+	rulesUdpServerProfileChoice := map[string]string{
+		"ves.io.schema.rules.message.required_oneof": "true",
+	}
+	vFn, err = vrhUdpServerProfileChoice(rulesUdpServerProfileChoice)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for UDPDefaultServerSelection.udp_server_profile_choice: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["udp_server_profile_choice"] = vFn
+
+	vrhSslServerProfiles := v.SslServerProfilesValidationRuleHandler
+	rulesSslServerProfiles := map[string]string{
+		"ves.io.schema.rules.repeated.max_items": "32",
+		"ves.io.schema.rules.repeated.unique":    "true",
+	}
+	vFn, err = vrhSslServerProfiles(rulesSslServerProfiles)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for UDPDefaultServerSelection.ssl_server_profiles: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["ssl_server_profiles"] = vFn
+	v.FldValidators["udp_server_profile_choice.udp_server_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 
 	return v
 }()
 
-func WebsocketProfileTypeValidator() db.Validator {
-	return DefaultWebsocketProfileTypeValidator
+func UDPDefaultServerSelectionValidator() db.Validator {
+	return DefaultUDPDefaultServerSelectionValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *UDPServices) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *UDPServices) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *UDPServices) DeepCopy() *UDPServices {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &UDPServices{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *UDPServices) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *UDPServices) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return UDPServicesValidator().Validate(ctx, m, opts...)
+}
+
+func (m *UDPServices) GetDRefInfo() ([]db.DRefInfo, error) {
+	if m == nil {
+		return nil, nil
+	}
+
+	var drInfos []db.DRefInfo
+	if fdrInfos, err := m.GetProtocolClientProfileDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetProtocolClientProfileDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetServerAppTypeChoiceDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetServerAppTypeChoiceDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetSslClientProfilesDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetSslClientProfilesDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	return drInfos, nil
+}
+
+func (m *UDPServices) GetProtocolClientProfileDRefInfo() ([]db.DRefInfo, error) {
+	vref := m.GetProtocolClientProfile()
+	if vref == nil {
+		return nil, nil
+	}
+	vdRef := db.NewDirectRefForView(vref)
+	vdRef.SetKind("udp_profile.Object")
+	dri := db.DRefInfo{
+		RefdType:   "udp_profile.Object",
+		RefdTenant: vref.Tenant,
+		RefdNS:     vref.Namespace,
+		RefdName:   vref.Name,
+		DRField:    "protocol_client_profile",
+		Ref:        vdRef,
+	}
+	return []db.DRefInfo{dri}, nil
+}
+
+// GetProtocolClientProfileDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *UDPServices) GetProtocolClientProfileDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "udp_profile.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: udp_profile")
+	}
+	vref := m.GetProtocolClientProfile()
+	if vref == nil {
+		return nil, nil
+	}
+	ref := &ves_io_schema.ObjectRefType{
+		Kind:      "udp_profile.Object",
+		Tenant:    vref.Tenant,
+		Namespace: vref.Namespace,
+		Name:      vref.Name,
+	}
+	refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+	if err != nil {
+		return nil, errors.Wrap(err, "Getting referred entry")
+	}
+	if refdEnt != nil {
+		entries = append(entries, refdEnt)
+	}
+	return entries, nil
+}
+
+// GetDRefInfo for the field's type
+func (m *UDPServices) GetServerAppTypeChoiceDRefInfo() ([]db.DRefInfo, error) {
+	if m.GetServerAppTypeChoice() == nil {
+		return nil, nil
+	}
+	switch m.GetServerAppTypeChoice().(type) {
+	case *UDPServices_ServerAppTypeSameAsClient:
+		drInfos, err := m.GetServerAppTypeSameAsClient().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetServerAppTypeSameAsClient().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "server_app_type_same_as_client." + dri.DRField
+		}
+		return drInfos, err
+	default:
+		return nil, nil
+	}
+}
+
+func (m *UDPServices) GetSslClientProfilesDRefInfo() ([]db.DRefInfo, error) {
+	vrefs := m.GetSslClientProfiles()
+	if len(vrefs) == 0 {
+		return nil, nil
+	}
+	drInfos := make([]db.DRefInfo, 0, len(vrefs))
+	for i, vref := range vrefs {
+		if vref == nil {
+			return nil, fmt.Errorf("UDPServices.ssl_client_profiles[%d] has a nil value", i)
+		}
+		vdRef := db.NewDirectRefForView(vref)
+		vdRef.SetKind("ssl_client_profile.Object")
+		// resolve kind to type if needed at DBObject.GetDRefInfo()
+		drInfos = append(drInfos, db.DRefInfo{
+			RefdType:   "ssl_client_profile.Object",
+			RefdTenant: vref.Tenant,
+			RefdNS:     vref.Namespace,
+			RefdName:   vref.Name,
+			DRField:    "ssl_client_profiles",
+			Ref:        vdRef,
+		})
+	}
+	return drInfos, nil
+}
+
+// GetSslClientProfilesDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *UDPServices) GetSslClientProfilesDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "ssl_client_profile.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: ssl_client_profile")
+	}
+	for i, vref := range m.GetSslClientProfiles() {
+		if vref == nil {
+			return nil, fmt.Errorf("UDPServices.ssl_client_profiles[%d] has a nil value", i)
+		}
+		ref := &ves_io_schema.ObjectRefType{
+			Kind:      "ssl_client_profile.Object",
+			Tenant:    vref.Tenant,
+			Namespace: vref.Namespace,
+			Name:      vref.Name,
+		}
+		refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+		if err != nil {
+			return nil, errors.Wrap(err, "Getting referred entry")
+		}
+		if refdEnt != nil {
+			entries = append(entries, refdEnt)
+		}
+	}
+	return entries, nil
+}
+
+type ValidateUDPServices struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateUDPServices) ServicesValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepMessageItemRules(rules)
+	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Message ValidationRuleHandler for services")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []*ServiceType, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+			if err := ServiceTypeValidator().Validate(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for services")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]*ServiceType)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []*ServiceType, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
+			if err != nil {
+				return errors.Wrapf(err, "Converting %v to JSON", elem)
+			}
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated services")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items services")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateUDPServices) ProtocolClientProfileValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	reqdValidatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "MessageValidationRuleHandler for protocol_client_profile")
+	}
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		if err := reqdValidatorFn(ctx, val, opts...); err != nil {
+			return err
+		}
+		if err := ves_io_schema_views.ObjectRefTypeValidator().Validate(ctx, val, opts...); err != nil {
+			return err
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateUDPServices) SslClientProfilesValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepMessageItemRules(rules)
+	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Message ValidationRuleHandler for ssl_client_profiles")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []*ves_io_schema_views.ObjectRefType, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+			if err := ves_io_schema_views.ObjectRefTypeValidator().Validate(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for ssl_client_profiles")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]*ves_io_schema_views.ObjectRefType)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []*ves_io_schema_views.ObjectRefType, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
+			if err != nil {
+				return errors.Wrapf(err, "Converting %v to JSON", elem)
+			}
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated ssl_client_profiles")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items ssl_client_profiles")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateUDPServices) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*UDPServices)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *UDPServices got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["protocol_client_profile"]; exists {
+		vOpts := append(opts, db.WithValidateField("protocol_client_profile"))
+		if err := fv(ctx, m.GetProtocolClientProfile(), vOpts...); err != nil {
+			return err
+		}
+	}
+
+	switch m.GetServerAppTypeChoice().(type) {
+	case *UDPServices_ServerAppTypeSameAsClient:
+		if fv, exists := v.FldValidators["server_app_type_choice.server_app_type_same_as_client"]; exists {
+			val := m.GetServerAppTypeChoice().(*UDPServices_ServerAppTypeSameAsClient).ServerAppTypeSameAsClient
+			vOpts := append(opts,
+				db.WithValidateField("server_app_type_choice"),
+				db.WithValidateField("server_app_type_same_as_client"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	if fv, exists := v.FldValidators["services"]; exists {
+		vOpts := append(opts, db.WithValidateField("services"))
+		if err := fv(ctx, m.GetServices(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["ssl_client_profiles"]; exists {
+		vOpts := append(opts, db.WithValidateField("ssl_client_profiles"))
+		if err := fv(ctx, m.GetSslClientProfiles(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultUDPServicesValidator = func() *ValidateUDPServices {
+	v := &ValidateUDPServices{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhServices := v.ServicesValidationRuleHandler
+	rulesServices := map[string]string{
+		"ves.io.schema.rules.repeated.max_items": "128",
+		"ves.io.schema.rules.repeated.unique":    "true",
+	}
+	vFn, err = vrhServices(rulesServices)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for UDPServices.services: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["services"] = vFn
+
+	vrhProtocolClientProfile := v.ProtocolClientProfileValidationRuleHandler
+	rulesProtocolClientProfile := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhProtocolClientProfile(rulesProtocolClientProfile)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for UDPServices.protocol_client_profile: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["protocol_client_profile"] = vFn
+
+	vrhSslClientProfiles := v.SslClientProfilesValidationRuleHandler
+	rulesSslClientProfiles := map[string]string{
+		"ves.io.schema.rules.repeated.max_items": "32",
+		"ves.io.schema.rules.repeated.unique":    "true",
+	}
+	vFn, err = vrhSslClientProfiles(rulesSslClientProfiles)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for UDPServices.ssl_client_profiles: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["ssl_client_profiles"] = vFn
+	v.FldValidators["server_app_type_choice.server_app_type_same_as_client"] = UDPDefaultServerSelectionValidator().Validate
+
+	return v
+}()
+
+func UDPServicesValidator() db.Validator {
+	return DefaultUDPServicesValidator
 }
 
 // create setters in CreateSpecType from GlobalSpecType for oneof fields
@@ -6755,41 +10010,6 @@ func (r *CreateSpecType) GetDefaultPoolChoiceFromGlobalSpecType(o *GlobalSpecTyp
 
 	case *GlobalSpecType_DefaultPoolNone:
 		r.DefaultPoolChoice = &CreateSpecType_DefaultPoolNone{DefaultPoolNone: of.DefaultPoolNone}
-
-	default:
-		return fmt.Errorf("Unknown oneof field %T", of)
-	}
-	return nil
-}
-
-// create setters in CreateSpecType from GlobalSpecType for oneof fields
-func (r *CreateSpecType) SetDomainChoiceToGlobalSpecType(o *GlobalSpecType) error {
-	switch of := r.DomainChoice.(type) {
-	case nil:
-		o.DomainChoice = nil
-
-	case *CreateSpecType_Managed:
-		o.DomainChoice = &GlobalSpecType_Managed{Managed: of.Managed}
-
-	case *CreateSpecType_NotManaged:
-		o.DomainChoice = &GlobalSpecType_NotManaged{NotManaged: of.NotManaged}
-
-	default:
-		return fmt.Errorf("Unknown oneof field %T", of)
-	}
-	return nil
-}
-
-func (r *CreateSpecType) GetDomainChoiceFromGlobalSpecType(o *GlobalSpecType) error {
-	switch of := o.DomainChoice.(type) {
-	case nil:
-		r.DomainChoice = nil
-
-	case *GlobalSpecType_Managed:
-		r.DomainChoice = &CreateSpecType_Managed{Managed: of.Managed}
-
-	case *GlobalSpecType_NotManaged:
-		r.DomainChoice = &CreateSpecType_NotManaged{NotManaged: of.NotManaged}
 
 	default:
 		return fmt.Errorf("Unknown oneof field %T", of)
@@ -6903,6 +10123,41 @@ func (r *CreateSpecType) GetRequestLoggingProfileChoiceFromGlobalSpecType(o *Glo
 }
 
 // create setters in CreateSpecType from GlobalSpecType for oneof fields
+func (r *CreateSpecType) SetStatisticsProfileChoiceToGlobalSpecType(o *GlobalSpecType) error {
+	switch of := r.StatisticsProfileChoice.(type) {
+	case nil:
+		o.StatisticsProfileChoice = nil
+
+	case *CreateSpecType_StatisticsProfile:
+		o.StatisticsProfileChoice = &GlobalSpecType_StatisticsProfile{StatisticsProfile: of.StatisticsProfile}
+
+	case *CreateSpecType_StatisticsProfileNone:
+		o.StatisticsProfileChoice = &GlobalSpecType_StatisticsProfileNone{StatisticsProfileNone: of.StatisticsProfileNone}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+func (r *CreateSpecType) GetStatisticsProfileChoiceFromGlobalSpecType(o *GlobalSpecType) error {
+	switch of := o.StatisticsProfileChoice.(type) {
+	case nil:
+		r.StatisticsProfileChoice = nil
+
+	case *GlobalSpecType_StatisticsProfile:
+		r.StatisticsProfileChoice = &CreateSpecType_StatisticsProfile{StatisticsProfile: of.StatisticsProfile}
+
+	case *GlobalSpecType_StatisticsProfileNone:
+		r.StatisticsProfileChoice = &CreateSpecType_StatisticsProfileNone{StatisticsProfileNone: of.StatisticsProfileNone}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+// create setters in CreateSpecType from GlobalSpecType for oneof fields
 func (r *CreateSpecType) SetVirtualServerTypeToGlobalSpecType(o *GlobalSpecType) error {
 	switch of := r.VirtualServerType.(type) {
 	case nil:
@@ -6910,6 +10165,9 @@ func (r *CreateSpecType) SetVirtualServerTypeToGlobalSpecType(o *GlobalSpecType)
 
 	case *CreateSpecType_Http:
 		o.VirtualServerType = &GlobalSpecType_Http{Http: of.Http}
+
+	case *CreateSpecType_Http3:
+		o.VirtualServerType = &GlobalSpecType_Http3{Http3: of.Http3}
 
 	case *CreateSpecType_Https:
 		o.VirtualServerType = &GlobalSpecType_Https{Https: of.Https}
@@ -6933,6 +10191,9 @@ func (r *CreateSpecType) GetVirtualServerTypeFromGlobalSpecType(o *GlobalSpecTyp
 
 	case *GlobalSpecType_Http:
 		r.VirtualServerType = &CreateSpecType_Http{Http: of.Http}
+
+	case *GlobalSpecType_Http3:
+		r.VirtualServerType = &CreateSpecType_Http3{Http3: of.Http3}
 
 	case *GlobalSpecType_Https:
 		r.VirtualServerType = &CreateSpecType_Https{Https: of.Https}
@@ -6958,14 +10219,17 @@ func (m *CreateSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool
 	m.ConnectionLimitOptions = f.GetConnectionLimitOptions()
 	m.GetDefaultPersistenceProfileChoiceFromGlobalSpecType(f)
 	m.GetDefaultPoolChoiceFromGlobalSpecType(f)
-	m.GetDomainChoiceFromGlobalSpecType(f)
+	m.Domains = f.GetDomains()
 	m.GetFallbackPersistenceProfileChoiceFromGlobalSpecType(f)
 	m.ImmediateActionOnServiceDown = f.GetImmediateActionOnServiceDown()
 	m.Irules = f.GetIrules()
+	m.Json = f.GetJson()
 	m.GetLastHopPoolChoiceFromGlobalSpecType(f)
 	m.Nat64 = f.GetNat64()
 	m.GetRequestLoggingProfileChoiceFromGlobalSpecType(f)
+	m.Sse = f.GetSse()
 	m.State = f.GetState()
+	m.GetStatisticsProfileChoiceFromGlobalSpecType(f)
 	m.TrafficPolicies = f.GetTrafficPolicies()
 	m.Translations = f.GetTranslations()
 	m.VirtualAddresses = f.GetVirtualAddresses()
@@ -6993,14 +10257,17 @@ func (m *CreateSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) 
 	f.ConnectionLimitOptions = m1.ConnectionLimitOptions
 	m1.SetDefaultPersistenceProfileChoiceToGlobalSpecType(f)
 	m1.SetDefaultPoolChoiceToGlobalSpecType(f)
-	m1.SetDomainChoiceToGlobalSpecType(f)
+	f.Domains = m1.Domains
 	m1.SetFallbackPersistenceProfileChoiceToGlobalSpecType(f)
 	f.ImmediateActionOnServiceDown = m1.ImmediateActionOnServiceDown
 	f.Irules = m1.Irules
+	f.Json = m1.Json
 	m1.SetLastHopPoolChoiceToGlobalSpecType(f)
 	f.Nat64 = m1.Nat64
 	m1.SetRequestLoggingProfileChoiceToGlobalSpecType(f)
+	f.Sse = m1.Sse
 	f.State = m1.State
+	m1.SetStatisticsProfileChoiceToGlobalSpecType(f)
 	f.TrafficPolicies = m1.TrafficPolicies
 	f.Translations = m1.Translations
 	f.VirtualAddresses = m1.VirtualAddresses
@@ -7079,41 +10346,6 @@ func (r *GetSpecType) GetDefaultPoolChoiceFromGlobalSpecType(o *GlobalSpecType) 
 
 	case *GlobalSpecType_DefaultPoolNone:
 		r.DefaultPoolChoice = &GetSpecType_DefaultPoolNone{DefaultPoolNone: of.DefaultPoolNone}
-
-	default:
-		return fmt.Errorf("Unknown oneof field %T", of)
-	}
-	return nil
-}
-
-// create setters in GetSpecType from GlobalSpecType for oneof fields
-func (r *GetSpecType) SetDomainChoiceToGlobalSpecType(o *GlobalSpecType) error {
-	switch of := r.DomainChoice.(type) {
-	case nil:
-		o.DomainChoice = nil
-
-	case *GetSpecType_Managed:
-		o.DomainChoice = &GlobalSpecType_Managed{Managed: of.Managed}
-
-	case *GetSpecType_NotManaged:
-		o.DomainChoice = &GlobalSpecType_NotManaged{NotManaged: of.NotManaged}
-
-	default:
-		return fmt.Errorf("Unknown oneof field %T", of)
-	}
-	return nil
-}
-
-func (r *GetSpecType) GetDomainChoiceFromGlobalSpecType(o *GlobalSpecType) error {
-	switch of := o.DomainChoice.(type) {
-	case nil:
-		r.DomainChoice = nil
-
-	case *GlobalSpecType_Managed:
-		r.DomainChoice = &GetSpecType_Managed{Managed: of.Managed}
-
-	case *GlobalSpecType_NotManaged:
-		r.DomainChoice = &GetSpecType_NotManaged{NotManaged: of.NotManaged}
 
 	default:
 		return fmt.Errorf("Unknown oneof field %T", of)
@@ -7227,6 +10459,41 @@ func (r *GetSpecType) GetRequestLoggingProfileChoiceFromGlobalSpecType(o *Global
 }
 
 // create setters in GetSpecType from GlobalSpecType for oneof fields
+func (r *GetSpecType) SetStatisticsProfileChoiceToGlobalSpecType(o *GlobalSpecType) error {
+	switch of := r.StatisticsProfileChoice.(type) {
+	case nil:
+		o.StatisticsProfileChoice = nil
+
+	case *GetSpecType_StatisticsProfile:
+		o.StatisticsProfileChoice = &GlobalSpecType_StatisticsProfile{StatisticsProfile: of.StatisticsProfile}
+
+	case *GetSpecType_StatisticsProfileNone:
+		o.StatisticsProfileChoice = &GlobalSpecType_StatisticsProfileNone{StatisticsProfileNone: of.StatisticsProfileNone}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+func (r *GetSpecType) GetStatisticsProfileChoiceFromGlobalSpecType(o *GlobalSpecType) error {
+	switch of := o.StatisticsProfileChoice.(type) {
+	case nil:
+		r.StatisticsProfileChoice = nil
+
+	case *GlobalSpecType_StatisticsProfile:
+		r.StatisticsProfileChoice = &GetSpecType_StatisticsProfile{StatisticsProfile: of.StatisticsProfile}
+
+	case *GlobalSpecType_StatisticsProfileNone:
+		r.StatisticsProfileChoice = &GetSpecType_StatisticsProfileNone{StatisticsProfileNone: of.StatisticsProfileNone}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+// create setters in GetSpecType from GlobalSpecType for oneof fields
 func (r *GetSpecType) SetVirtualServerTypeToGlobalSpecType(o *GlobalSpecType) error {
 	switch of := r.VirtualServerType.(type) {
 	case nil:
@@ -7234,6 +10501,9 @@ func (r *GetSpecType) SetVirtualServerTypeToGlobalSpecType(o *GlobalSpecType) er
 
 	case *GetSpecType_Http:
 		o.VirtualServerType = &GlobalSpecType_Http{Http: of.Http}
+
+	case *GetSpecType_Http3:
+		o.VirtualServerType = &GlobalSpecType_Http3{Http3: of.Http3}
 
 	case *GetSpecType_Https:
 		o.VirtualServerType = &GlobalSpecType_Https{Https: of.Https}
@@ -7257,6 +10527,9 @@ func (r *GetSpecType) GetVirtualServerTypeFromGlobalSpecType(o *GlobalSpecType) 
 
 	case *GlobalSpecType_Http:
 		r.VirtualServerType = &GetSpecType_Http{Http: of.Http}
+
+	case *GlobalSpecType_Http3:
+		r.VirtualServerType = &GetSpecType_Http3{Http3: of.Http3}
 
 	case *GlobalSpecType_Https:
 		r.VirtualServerType = &GetSpecType_Https{Https: of.Https}
@@ -7282,14 +10555,17 @@ func (m *GetSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	m.ConnectionLimitOptions = f.GetConnectionLimitOptions()
 	m.GetDefaultPersistenceProfileChoiceFromGlobalSpecType(f)
 	m.GetDefaultPoolChoiceFromGlobalSpecType(f)
-	m.GetDomainChoiceFromGlobalSpecType(f)
+	m.Domains = f.GetDomains()
 	m.GetFallbackPersistenceProfileChoiceFromGlobalSpecType(f)
 	m.ImmediateActionOnServiceDown = f.GetImmediateActionOnServiceDown()
 	m.Irules = f.GetIrules()
+	m.Json = f.GetJson()
 	m.GetLastHopPoolChoiceFromGlobalSpecType(f)
 	m.Nat64 = f.GetNat64()
 	m.GetRequestLoggingProfileChoiceFromGlobalSpecType(f)
+	m.Sse = f.GetSse()
 	m.State = f.GetState()
+	m.GetStatisticsProfileChoiceFromGlobalSpecType(f)
 	m.TrafficPolicies = f.GetTrafficPolicies()
 	m.Translations = f.GetTranslations()
 	m.VirtualAddresses = f.GetVirtualAddresses()
@@ -7317,14 +10593,17 @@ func (m *GetSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	f.ConnectionLimitOptions = m1.ConnectionLimitOptions
 	m1.SetDefaultPersistenceProfileChoiceToGlobalSpecType(f)
 	m1.SetDefaultPoolChoiceToGlobalSpecType(f)
-	m1.SetDomainChoiceToGlobalSpecType(f)
+	f.Domains = m1.Domains
 	m1.SetFallbackPersistenceProfileChoiceToGlobalSpecType(f)
 	f.ImmediateActionOnServiceDown = m1.ImmediateActionOnServiceDown
 	f.Irules = m1.Irules
+	f.Json = m1.Json
 	m1.SetLastHopPoolChoiceToGlobalSpecType(f)
 	f.Nat64 = m1.Nat64
 	m1.SetRequestLoggingProfileChoiceToGlobalSpecType(f)
+	f.Sse = m1.Sse
 	f.State = m1.State
+	m1.SetStatisticsProfileChoiceToGlobalSpecType(f)
 	f.TrafficPolicies = m1.TrafficPolicies
 	f.Translations = m1.Translations
 	f.VirtualAddresses = m1.VirtualAddresses
@@ -7403,41 +10682,6 @@ func (r *ReplaceSpecType) GetDefaultPoolChoiceFromGlobalSpecType(o *GlobalSpecTy
 
 	case *GlobalSpecType_DefaultPoolNone:
 		r.DefaultPoolChoice = &ReplaceSpecType_DefaultPoolNone{DefaultPoolNone: of.DefaultPoolNone}
-
-	default:
-		return fmt.Errorf("Unknown oneof field %T", of)
-	}
-	return nil
-}
-
-// create setters in ReplaceSpecType from GlobalSpecType for oneof fields
-func (r *ReplaceSpecType) SetDomainChoiceToGlobalSpecType(o *GlobalSpecType) error {
-	switch of := r.DomainChoice.(type) {
-	case nil:
-		o.DomainChoice = nil
-
-	case *ReplaceSpecType_Managed:
-		o.DomainChoice = &GlobalSpecType_Managed{Managed: of.Managed}
-
-	case *ReplaceSpecType_NotManaged:
-		o.DomainChoice = &GlobalSpecType_NotManaged{NotManaged: of.NotManaged}
-
-	default:
-		return fmt.Errorf("Unknown oneof field %T", of)
-	}
-	return nil
-}
-
-func (r *ReplaceSpecType) GetDomainChoiceFromGlobalSpecType(o *GlobalSpecType) error {
-	switch of := o.DomainChoice.(type) {
-	case nil:
-		r.DomainChoice = nil
-
-	case *GlobalSpecType_Managed:
-		r.DomainChoice = &ReplaceSpecType_Managed{Managed: of.Managed}
-
-	case *GlobalSpecType_NotManaged:
-		r.DomainChoice = &ReplaceSpecType_NotManaged{NotManaged: of.NotManaged}
 
 	default:
 		return fmt.Errorf("Unknown oneof field %T", of)
@@ -7551,6 +10795,41 @@ func (r *ReplaceSpecType) GetRequestLoggingProfileChoiceFromGlobalSpecType(o *Gl
 }
 
 // create setters in ReplaceSpecType from GlobalSpecType for oneof fields
+func (r *ReplaceSpecType) SetStatisticsProfileChoiceToGlobalSpecType(o *GlobalSpecType) error {
+	switch of := r.StatisticsProfileChoice.(type) {
+	case nil:
+		o.StatisticsProfileChoice = nil
+
+	case *ReplaceSpecType_StatisticsProfile:
+		o.StatisticsProfileChoice = &GlobalSpecType_StatisticsProfile{StatisticsProfile: of.StatisticsProfile}
+
+	case *ReplaceSpecType_StatisticsProfileNone:
+		o.StatisticsProfileChoice = &GlobalSpecType_StatisticsProfileNone{StatisticsProfileNone: of.StatisticsProfileNone}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+func (r *ReplaceSpecType) GetStatisticsProfileChoiceFromGlobalSpecType(o *GlobalSpecType) error {
+	switch of := o.StatisticsProfileChoice.(type) {
+	case nil:
+		r.StatisticsProfileChoice = nil
+
+	case *GlobalSpecType_StatisticsProfile:
+		r.StatisticsProfileChoice = &ReplaceSpecType_StatisticsProfile{StatisticsProfile: of.StatisticsProfile}
+
+	case *GlobalSpecType_StatisticsProfileNone:
+		r.StatisticsProfileChoice = &ReplaceSpecType_StatisticsProfileNone{StatisticsProfileNone: of.StatisticsProfileNone}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+// create setters in ReplaceSpecType from GlobalSpecType for oneof fields
 func (r *ReplaceSpecType) SetVirtualServerTypeToGlobalSpecType(o *GlobalSpecType) error {
 	switch of := r.VirtualServerType.(type) {
 	case nil:
@@ -7558,6 +10837,9 @@ func (r *ReplaceSpecType) SetVirtualServerTypeToGlobalSpecType(o *GlobalSpecType
 
 	case *ReplaceSpecType_Http:
 		o.VirtualServerType = &GlobalSpecType_Http{Http: of.Http}
+
+	case *ReplaceSpecType_Http3:
+		o.VirtualServerType = &GlobalSpecType_Http3{Http3: of.Http3}
 
 	case *ReplaceSpecType_Https:
 		o.VirtualServerType = &GlobalSpecType_Https{Https: of.Https}
@@ -7581,6 +10863,9 @@ func (r *ReplaceSpecType) GetVirtualServerTypeFromGlobalSpecType(o *GlobalSpecTy
 
 	case *GlobalSpecType_Http:
 		r.VirtualServerType = &ReplaceSpecType_Http{Http: of.Http}
+
+	case *GlobalSpecType_Http3:
+		r.VirtualServerType = &ReplaceSpecType_Http3{Http3: of.Http3}
 
 	case *GlobalSpecType_Https:
 		r.VirtualServerType = &ReplaceSpecType_Https{Https: of.Https}
@@ -7606,14 +10891,17 @@ func (m *ReplaceSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy boo
 	m.ConnectionLimitOptions = f.GetConnectionLimitOptions()
 	m.GetDefaultPersistenceProfileChoiceFromGlobalSpecType(f)
 	m.GetDefaultPoolChoiceFromGlobalSpecType(f)
-	m.GetDomainChoiceFromGlobalSpecType(f)
+	m.Domains = f.GetDomains()
 	m.GetFallbackPersistenceProfileChoiceFromGlobalSpecType(f)
 	m.ImmediateActionOnServiceDown = f.GetImmediateActionOnServiceDown()
 	m.Irules = f.GetIrules()
+	m.Json = f.GetJson()
 	m.GetLastHopPoolChoiceFromGlobalSpecType(f)
 	m.Nat64 = f.GetNat64()
 	m.GetRequestLoggingProfileChoiceFromGlobalSpecType(f)
+	m.Sse = f.GetSse()
 	m.State = f.GetState()
+	m.GetStatisticsProfileChoiceFromGlobalSpecType(f)
 	m.TrafficPolicies = f.GetTrafficPolicies()
 	m.Translations = f.GetTranslations()
 	m.VirtualAddresses = f.GetVirtualAddresses()
@@ -7641,14 +10929,17 @@ func (m *ReplaceSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool)
 	f.ConnectionLimitOptions = m1.ConnectionLimitOptions
 	m1.SetDefaultPersistenceProfileChoiceToGlobalSpecType(f)
 	m1.SetDefaultPoolChoiceToGlobalSpecType(f)
-	m1.SetDomainChoiceToGlobalSpecType(f)
+	f.Domains = m1.Domains
 	m1.SetFallbackPersistenceProfileChoiceToGlobalSpecType(f)
 	f.ImmediateActionOnServiceDown = m1.ImmediateActionOnServiceDown
 	f.Irules = m1.Irules
+	f.Json = m1.Json
 	m1.SetLastHopPoolChoiceToGlobalSpecType(f)
 	f.Nat64 = m1.Nat64
 	m1.SetRequestLoggingProfileChoiceToGlobalSpecType(f)
+	f.Sse = m1.Sse
 	f.State = m1.State
+	m1.SetStatisticsProfileChoiceToGlobalSpecType(f)
 	f.TrafficPolicies = m1.TrafficPolicies
 	f.Translations = m1.Translations
 	f.VirtualAddresses = m1.VirtualAddresses

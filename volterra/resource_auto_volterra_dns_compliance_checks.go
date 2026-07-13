@@ -216,6 +216,7 @@ func resourceVolterraDnsComplianceChecksRead(d *schema.ResourceData, meta interf
 		}
 		return fmt.Errorf("Error finding Volterra DnsComplianceChecks %q: %s", d.Id(), err)
 	}
+
 	return setDnsComplianceChecksFields(client, d, resp)
 }
 
@@ -360,5 +361,11 @@ func resourceVolterraDnsComplianceChecksDelete(d *schema.ResourceData, meta inte
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_dns_compliance_checks.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_dns_compliance_checks.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting DnsComplianceChecks: %w", err)
+	}
+	return nil
+
 }

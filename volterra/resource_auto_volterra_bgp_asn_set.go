@@ -163,6 +163,7 @@ func resourceVolterraBgpAsnSetRead(d *schema.ResourceData, meta interface{}) err
 		}
 		return fmt.Errorf("Error finding Volterra BgpAsnSet %q: %s", d.Id(), err)
 	}
+
 	return setBgpAsnSetFields(client, d, resp)
 }
 
@@ -276,5 +277,11 @@ func resourceVolterraBgpAsnSetDelete(d *schema.ResourceData, meta interface{}) e
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_bgp_asn_set.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_bgp_asn_set.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting BgpAsnSet: %w", err)
+	}
+	return nil
+
 }

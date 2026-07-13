@@ -324,6 +324,7 @@ func resourceVolterraProtocolInspectionRead(d *schema.ResourceData, meta interfa
 		}
 		return fmt.Errorf("Error finding Volterra ProtocolInspection %q: %s", d.Id(), err)
 	}
+
 	return setProtocolInspectionFields(client, d, resp)
 }
 
@@ -536,5 +537,11 @@ func resourceVolterraProtocolInspectionDelete(d *schema.ResourceData, meta inter
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_protocol_inspection.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_protocol_inspection.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting ProtocolInspection: %w", err)
+	}
+	return nil
+
 }

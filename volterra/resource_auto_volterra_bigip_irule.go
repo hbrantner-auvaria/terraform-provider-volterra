@@ -181,6 +181,7 @@ func resourceVolterraBigipIruleRead(d *schema.ResourceData, meta interface{}) er
 		}
 		return fmt.Errorf("Error finding Volterra BigipIrule %q: %s", d.Id(), err)
 	}
+
 	return setBigipIruleFields(client, d, resp)
 }
 
@@ -305,5 +306,11 @@ func resourceVolterraBigipIruleDelete(d *schema.ResourceData, meta interface{}) 
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_bigip_irule.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_bigip_irule.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting BigipIrule: %w", err)
+	}
+	return nil
+
 }

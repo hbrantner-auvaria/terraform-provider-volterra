@@ -4567,6 +4567,12 @@ func (v *ValidateTGWRouteTablesRequest) Validate(ctx context.Context, pm interfa
 			}
 		}
 	}
+	if fv, exists := v.FldValidators["site"]; exists {
+		vOpts := append(opts, db.WithValidateField("site"))
+		if err := fv(ctx, m.GetSite(), vOpts...); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 

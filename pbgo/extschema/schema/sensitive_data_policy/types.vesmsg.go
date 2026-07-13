@@ -412,6 +412,24 @@ type ValidateCustomDataTypeRef struct {
 	FldValidators map[string]db.ValidatorFunc
 }
 
+func (v *ValidateCustomDataTypeRef) CustomDataTypeRefValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	reqdValidatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "MessageValidationRuleHandler for custom_data_type_ref")
+	}
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		if err := reqdValidatorFn(ctx, val, opts...); err != nil {
+			return err
+		}
+		if err := ves_io_schema_views.ObjectRefTypeValidator().Validate(ctx, val, opts...); err != nil {
+			return err
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+
 func (v *ValidateCustomDataTypeRef) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
 	m, ok := pm.(*CustomDataTypeRef)
 	if !ok {
@@ -437,7 +455,24 @@ func (v *ValidateCustomDataTypeRef) Validate(ctx context.Context, pm interface{}
 // Well-known symbol for default validator implementation
 var DefaultCustomDataTypeRefValidator = func() *ValidateCustomDataTypeRef {
 	v := &ValidateCustomDataTypeRef{FldValidators: map[string]db.ValidatorFunc{}}
-	v.FldValidators["custom_data_type_ref"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhCustomDataTypeRef := v.CustomDataTypeRefValidationRuleHandler
+	rulesCustomDataTypeRef := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhCustomDataTypeRef(rulesCustomDataTypeRef)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for CustomDataTypeRef.custom_data_type_ref: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["custom_data_type_ref"] = vFn
 
 	return v
 }()

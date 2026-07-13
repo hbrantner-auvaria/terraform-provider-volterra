@@ -426,8 +426,20 @@ func resourceVolterraUnifiedPolicyGroupCreate(d *schema.ResourceData, meta inter
 											for i, ps := range sl {
 												if ps != nil {
 
-													_ = ps.(map[string]interface{})
+													efpMapToStrVal := ps.(map[string]interface{})
 													enhancedFirewallPoliciesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+													if v, ok := efpMapToStrVal["name"]; ok && !isIntfNil(v) {
+														enhancedFirewallPoliciesInt[i].Name = v.(string)
+													}
+
+													if v, ok := efpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+														enhancedFirewallPoliciesInt[i].Namespace = v.(string)
+													}
+
+													if v, ok := efpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+														enhancedFirewallPoliciesInt[i].Tenant = v.(string)
+													}
 
 												}
 											}
@@ -473,8 +485,20 @@ func resourceVolterraUnifiedPolicyGroupCreate(d *schema.ResourceData, meta inter
 											for i, ps := range sl {
 												if ps != nil {
 
-													_ = ps.(map[string]interface{})
+													fppMapToStrVal := ps.(map[string]interface{})
 													forwardProxyPoliciesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+													if v, ok := fppMapToStrVal["name"]; ok && !isIntfNil(v) {
+														forwardProxyPoliciesInt[i].Name = v.(string)
+													}
+
+													if v, ok := fppMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+														forwardProxyPoliciesInt[i].Namespace = v.(string)
+													}
+
+													if v, ok := fppMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+														forwardProxyPoliciesInt[i].Tenant = v.(string)
+													}
 
 												}
 											}
@@ -506,8 +530,20 @@ func resourceVolterraUnifiedPolicyGroupCreate(d *schema.ResourceData, meta inter
 											for i, ps := range sl {
 												if ps != nil {
 
-													_ = ps.(map[string]interface{})
+													spMapToStrVal := ps.(map[string]interface{})
 													servicePoliciesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+													if v, ok := spMapToStrVal["name"]; ok && !isIntfNil(v) {
+														servicePoliciesInt[i].Name = v.(string)
+													}
+
+													if v, ok := spMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+														servicePoliciesInt[i].Namespace = v.(string)
+													}
+
+													if v, ok := spMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+														servicePoliciesInt[i].Tenant = v.(string)
+													}
 
 												}
 											}
@@ -582,8 +618,20 @@ func resourceVolterraUnifiedPolicyGroupCreate(d *schema.ResourceData, meta inter
 											for i, ps := range sl {
 												if ps != nil {
 
-													_ = ps.(map[string]interface{})
+													efpMapToStrVal := ps.(map[string]interface{})
 													enhancedFirewallPoliciesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+													if v, ok := efpMapToStrVal["name"]; ok && !isIntfNil(v) {
+														enhancedFirewallPoliciesInt[i].Name = v.(string)
+													}
+
+													if v, ok := efpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+														enhancedFirewallPoliciesInt[i].Namespace = v.(string)
+													}
+
+													if v, ok := efpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+														enhancedFirewallPoliciesInt[i].Tenant = v.(string)
+													}
 
 												}
 											}
@@ -629,8 +677,20 @@ func resourceVolterraUnifiedPolicyGroupCreate(d *schema.ResourceData, meta inter
 											for i, ps := range sl {
 												if ps != nil {
 
-													_ = ps.(map[string]interface{})
+													fppMapToStrVal := ps.(map[string]interface{})
 													forwardProxyPoliciesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+													if v, ok := fppMapToStrVal["name"]; ok && !isIntfNil(v) {
+														forwardProxyPoliciesInt[i].Name = v.(string)
+													}
+
+													if v, ok := fppMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+														forwardProxyPoliciesInt[i].Namespace = v.(string)
+													}
+
+													if v, ok := fppMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+														forwardProxyPoliciesInt[i].Tenant = v.(string)
+													}
 
 												}
 											}
@@ -662,8 +722,20 @@ func resourceVolterraUnifiedPolicyGroupCreate(d *schema.ResourceData, meta inter
 											for i, ps := range sl {
 												if ps != nil {
 
-													_ = ps.(map[string]interface{})
+													spMapToStrVal := ps.(map[string]interface{})
 													servicePoliciesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+													if v, ok := spMapToStrVal["name"]; ok && !isIntfNil(v) {
+														servicePoliciesInt[i].Name = v.(string)
+													}
+
+													if v, ok := spMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+														servicePoliciesInt[i].Namespace = v.(string)
+													}
+
+													if v, ok := spMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+														servicePoliciesInt[i].Tenant = v.(string)
+													}
 
 												}
 											}
@@ -722,6 +794,7 @@ func resourceVolterraUnifiedPolicyGroupRead(d *schema.ResourceData, meta interfa
 		}
 		return fmt.Errorf("Error finding Volterra UnifiedPolicyGroup %q: %s", d.Id(), err)
 	}
+
 	return setUnifiedPolicyGroupFields(client, d, resp)
 }
 
@@ -836,8 +909,20 @@ func resourceVolterraUnifiedPolicyGroupUpdate(d *schema.ResourceData, meta inter
 											for i, ps := range sl {
 												if ps != nil {
 
-													_ = ps.(map[string]interface{})
+													efpMapToStrVal := ps.(map[string]interface{})
 													enhancedFirewallPoliciesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+													if v, ok := efpMapToStrVal["name"]; ok && !isIntfNil(v) {
+														enhancedFirewallPoliciesInt[i].Name = v.(string)
+													}
+
+													if v, ok := efpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+														enhancedFirewallPoliciesInt[i].Namespace = v.(string)
+													}
+
+													if v, ok := efpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+														enhancedFirewallPoliciesInt[i].Tenant = v.(string)
+													}
 
 												}
 											}
@@ -883,8 +968,20 @@ func resourceVolterraUnifiedPolicyGroupUpdate(d *schema.ResourceData, meta inter
 											for i, ps := range sl {
 												if ps != nil {
 
-													_ = ps.(map[string]interface{})
+													fppMapToStrVal := ps.(map[string]interface{})
 													forwardProxyPoliciesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+													if v, ok := fppMapToStrVal["name"]; ok && !isIntfNil(v) {
+														forwardProxyPoliciesInt[i].Name = v.(string)
+													}
+
+													if v, ok := fppMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+														forwardProxyPoliciesInt[i].Namespace = v.(string)
+													}
+
+													if v, ok := fppMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+														forwardProxyPoliciesInt[i].Tenant = v.(string)
+													}
 
 												}
 											}
@@ -916,8 +1013,20 @@ func resourceVolterraUnifiedPolicyGroupUpdate(d *schema.ResourceData, meta inter
 											for i, ps := range sl {
 												if ps != nil {
 
-													_ = ps.(map[string]interface{})
+													spMapToStrVal := ps.(map[string]interface{})
 													servicePoliciesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+													if v, ok := spMapToStrVal["name"]; ok && !isIntfNil(v) {
+														servicePoliciesInt[i].Name = v.(string)
+													}
+
+													if v, ok := spMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+														servicePoliciesInt[i].Namespace = v.(string)
+													}
+
+													if v, ok := spMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+														servicePoliciesInt[i].Tenant = v.(string)
+													}
 
 												}
 											}
@@ -991,8 +1100,20 @@ func resourceVolterraUnifiedPolicyGroupUpdate(d *schema.ResourceData, meta inter
 											for i, ps := range sl {
 												if ps != nil {
 
-													_ = ps.(map[string]interface{})
+													efpMapToStrVal := ps.(map[string]interface{})
 													enhancedFirewallPoliciesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+													if v, ok := efpMapToStrVal["name"]; ok && !isIntfNil(v) {
+														enhancedFirewallPoliciesInt[i].Name = v.(string)
+													}
+
+													if v, ok := efpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+														enhancedFirewallPoliciesInt[i].Namespace = v.(string)
+													}
+
+													if v, ok := efpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+														enhancedFirewallPoliciesInt[i].Tenant = v.(string)
+													}
 
 												}
 											}
@@ -1038,8 +1159,20 @@ func resourceVolterraUnifiedPolicyGroupUpdate(d *schema.ResourceData, meta inter
 											for i, ps := range sl {
 												if ps != nil {
 
-													_ = ps.(map[string]interface{})
+													fppMapToStrVal := ps.(map[string]interface{})
 													forwardProxyPoliciesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+													if v, ok := fppMapToStrVal["name"]; ok && !isIntfNil(v) {
+														forwardProxyPoliciesInt[i].Name = v.(string)
+													}
+
+													if v, ok := fppMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+														forwardProxyPoliciesInt[i].Namespace = v.(string)
+													}
+
+													if v, ok := fppMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+														forwardProxyPoliciesInt[i].Tenant = v.(string)
+													}
 
 												}
 											}
@@ -1071,8 +1204,20 @@ func resourceVolterraUnifiedPolicyGroupUpdate(d *schema.ResourceData, meta inter
 											for i, ps := range sl {
 												if ps != nil {
 
-													_ = ps.(map[string]interface{})
+													spMapToStrVal := ps.(map[string]interface{})
 													servicePoliciesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+													if v, ok := spMapToStrVal["name"]; ok && !isIntfNil(v) {
+														servicePoliciesInt[i].Name = v.(string)
+													}
+
+													if v, ok := spMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+														servicePoliciesInt[i].Namespace = v.(string)
+													}
+
+													if v, ok := spMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+														servicePoliciesInt[i].Tenant = v.(string)
+													}
 
 												}
 											}
@@ -1135,5 +1280,11 @@ func resourceVolterraUnifiedPolicyGroupDelete(d *schema.ResourceData, meta inter
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_unified_policy_group.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_unified_policy_group.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting UnifiedPolicyGroup: %w", err)
+	}
+	return nil
+
 }

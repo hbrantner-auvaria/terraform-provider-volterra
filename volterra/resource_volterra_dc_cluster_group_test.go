@@ -28,6 +28,11 @@ func TestDCClusterGrp(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testDCClusterGrp(name),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("volterra_dc_cluster_group.dd", "type.#", "1"),
+					resource.TestCheckResourceAttr("volterra_dc_cluster_group.dd", "type.0.data_plane_mesh", "true"),
+					resource.TestCheckResourceAttr("volterra_dc_cluster_group.dd", "type.0.control_and_data_plane_mesh", "false"),
+				),
 			},
 		},
 	})
@@ -38,6 +43,9 @@ func testDCClusterGrp(name string) string {
 		resource "volterra_dc_cluster_group" "dd" {
 			name = "%s"
 			namespace = "system"
+			type {
+				data_plane_mesh = true
+			}
 		}
 
 	`, name)

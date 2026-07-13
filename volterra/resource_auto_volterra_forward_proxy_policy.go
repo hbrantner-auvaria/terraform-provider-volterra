@@ -899,11 +899,6 @@ func resourceVolterraForwardProxyPolicy() *schema.Resource {
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
 
-												"kind": {
-													Type:     schema.TypeString,
-													Computed: true,
-												},
-
 												"name": {
 													Type:     schema.TypeString,
 													Optional: true,
@@ -948,11 +943,6 @@ func resourceVolterraForwardProxyPolicy() *schema.Resource {
 										Required: true,
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
-
-												"kind": {
-													Type:     schema.TypeString,
-													Computed: true,
-												},
 
 												"name": {
 													Type:     schema.TypeString,
@@ -2518,6 +2508,7 @@ func resourceVolterraForwardProxyPolicyRead(d *schema.ResourceData, meta interfa
 		}
 		return fmt.Errorf("Error finding Volterra ForwardProxyPolicy %q: %s", d.Id(), err)
 	}
+
 	return setForwardProxyPolicyFields(client, d, resp)
 }
 
@@ -4077,5 +4068,11 @@ func resourceVolterraForwardProxyPolicyDelete(d *schema.ResourceData, meta inter
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_views_forward_proxy_policy.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_views_forward_proxy_policy.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting ForwardProxyPolicy: %w", err)
+	}
+	return nil
+
 }

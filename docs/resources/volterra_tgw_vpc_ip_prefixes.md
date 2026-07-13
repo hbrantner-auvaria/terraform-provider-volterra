@@ -40,5 +40,5 @@ resource "volterra_tgw_vpc_ip_prefixes" "example" {
 -   `namespace` - (Required) Must be a DNS_LABEL format. For a namespace object itself, namespace value will be "" (`String`).
 
 -   `vpc_ip_prefixes` - (Required) List of vpc ip prefixes
-    -   `name` - (Required) Name of vpc (`String`)
-    -   `values` - (Required) List of vpc cidrs (`String`)
+    -   `name` - (Required) Name of vpc (`String`\)
+    -   `values` - (Required) List of vpc cidrs (`String`\)

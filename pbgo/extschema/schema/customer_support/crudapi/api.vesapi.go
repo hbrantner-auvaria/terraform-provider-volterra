@@ -1791,7 +1791,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2015,7 +2015,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2269,7 +2269,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -3022,6 +3022,13 @@ var APISwaggerJSON string = `{
                     "x-displayname": "Timeline",
                     "x-ves-example": "Both LBs have been down since noon on Jan 5, 2022."
                 },
+                "timezone": {
+                    "type": "string",
+                    "description": " Stores the timezone provided by the user at the time of support ticket creation\n\nExample: - \"(GMT 0:00) GB-Eire - Greenwich Mean Time\"-",
+                    "title": "Timezone",
+                    "x-displayname": "Timezone",
+                    "x-ves-example": "(GMT 0:00) GB-Eire - Greenwich Mean Time"
+                },
                 "topic": {
                     "description": " Support topic for the ticket. This field supersedes the category field.",
                     "title": "Topic",
@@ -3117,7 +3124,7 @@ var APISwaggerJSON string = `{
         },
         "customer_supportSupportService": {
             "type": "string",
-            "description": "Indicates the list of support service\n\nUnknown Support Service\nAccount Protection Support Service\nAdministration Support Service\nApplication Traffic Insight Support Service\nAudit Logs \u0026 Alerts Support Service\nAuthentication Intelligence Support Service\nBilling Support Service\nClient Side Defense Support Service\nCloud \u0026 Edge Sites Support Service\ndeprecated: use SS_MULTI_CLOUD_NETWORK_CONNECT instead\nDDOS \u0026 Transit Support Service\nDeprecated: use SS_ROUTED_DDOS instead\nDistributed Apps Support Service\nDNS Management Support Service\nLoadBalancers Support Service\ndeprecated: use SS_MULTI_CLOUD_APP_CONNECT instead\nShared Configuration Support Service\nWeb App \u0026 API Protection Support Service\nOther Support Service\nBot Defense Support Service\nContent delivery network Support Service\nObservability Support Service\nDelegated Access Support Service\nNetworking \u0026 security across clouds, edge and on-premises\nConnect apps across clouds, edge and on-premises using Load Balancers\nBIG-IP Access Policy Manager (APM)\nData Intelligence Support Service\nNGINX One Support Service\nWeb App Scanning Support Service\nRouted DDoS Support Service\nMobile App Shield protects mobile apps from reverse engineering, tampering and malware",
+            "description": "Indicates the list of support service\n\nUnknown Support Service\nAccount Protection Support Service\nAdministration Support Service\nApplication Traffic Insight Support Service\nAudit Logs \u0026 Alerts Support Service\nAuthentication Intelligence Support Service\nBilling Support Service\nClient Side Defense Support Service\nCloud \u0026 Edge Sites Support Service\ndeprecated: use SS_MULTI_CLOUD_NETWORK_CONNECT instead\nDDOS \u0026 Transit Support Service\nDeprecated: use SS_ROUTED_DDOS instead\nDistributed Apps Support Service\nDNS Management Support Service\nLoadBalancers Support Service\ndeprecated: use SS_MULTI_CLOUD_APP_CONNECT instead\nShared Configuration Support Service\nWeb App \u0026 API Protection Support Service\nOther Support Service\nBot Defense Support Service\nContent delivery network Support Service\nObservability Support Service\nDelegated Access Support Service\nNetworking \u0026 security across clouds, edge and on-premises\nConnect apps across clouds, edge and on-premises using Load Balancers\nData Intelligence Support Service\nNGINX One Support Service\nWeb App Scanning Support Service\nRouted DDoS Support Service\nMobile App Shield protects mobile apps from reverse engineering, tampering and malware\nDefault for deprecated services\nAutomation Support Service for Terraform Provider",
             "title": "SupportService",
             "enum": [
                 "SS_UNKNOWN",
@@ -3142,12 +3149,13 @@ var APISwaggerJSON string = `{
                 "SS_DELEGATED_ACCESS",
                 "SS_MULTI_CLOUD_NETWORK_CONNECT",
                 "SS_MULTI_CLOUD_APP_CONNECT",
-                "SS_BIG_IP_APM",
                 "SS_DATA_INTELLIGENCE",
                 "SS_NGINX_ONE",
                 "SS_WEB_APP_SCANNING",
                 "SS_ROUTED_DDOS",
-                "SS_MOBILE_APP_SHIELD"
+                "SS_MOBILE_APP_SHIELD",
+                "SS_DEPRECATED",
+                "SS_AUTOMATION"
             ],
             "default": "SS_UNKNOWN",
             "x-displayname": "Support Service",
@@ -3205,7 +3213,7 @@ var APISwaggerJSON string = `{
         },
         "customer_supportSupportTopic": {
             "type": "string",
-            "description": "Support Topic indicates the list of topics for service tickets\n\nUnknown/empty priority\nACCOUNT_SUPPORT_TOPIC_ACCESS_REQUEST\nACCOUNT_SUPPORT_TOPIC_ACCOUNT\nACCOUNT_SUPPORT_TOPIC_BILLING\nACCOUNT_SUPPORT_TOPIC_BILLING_PLAN_CHANGE\nACCOUNT_SUPPORT_TOPIC_PUBLIC_IP\nACCOUNT_SUPPORT_TOPIC_QUOTA_INCREASE\nACCOUNT_SUPPORT_TOPIC_RMA\nACCOUNT_SUPPORT_TOPIC_TAX_EXEMPT_VERIFICATION\nACCOUNT_SUPPORT_TOPIC_OTHERS\nTECHNICAL_SUPPORT_TOPIC_CONFIGURATION_CHANGES\nTECHNICAL_SUPPORT_TOPIC_ERROR_MESSAGE\nTECHNICAL_SUPPORT_TOPIC_NEW_CONFIGURATION\nTECHNICAL_SUPPORT_TOPIC_PRODUCT_QUESTION\nTECHNICAL_SUPPORT_TOPIC_TROUBLESHOOTING\nTECHNICAL_SUPPORT_TOPIC_OTHERS\nINCIDENT_SUPPORT_TOPIC_LATENCY\nINCIDENT_SUPPORT_TOPIC_PERFORMANCE_DEGRADATION\nINCIDENT_SUPPORT_TOPIC_PARTIAL_OUTAGE\nINCIDENT_SUPPORT_TOPIC_COMPLETE_OUTAGE\nINCIDENT_SUPPORT_TOPIC_OTHERS\nTASK_TOPIC_PLAN_TRANSITION\nPROBLEM_TOPIC_SUPPORT_ALERT\nQUESTION_TOPIC_INFRASTRUCTURE\nTECHNICAL_SUPPORT_TOPIC_DELEGATED_DOMAIN_MIGRATION",
+            "description": "Support Topic indicates the list of topics for service tickets\n\nUnknown/empty priority\nACCOUNT_SUPPORT_TOPIC_ACCESS_REQUEST\nACCOUNT_SUPPORT_TOPIC_ACCOUNT\nACCOUNT_SUPPORT_TOPIC_BILLING\nACCOUNT_SUPPORT_TOPIC_BILLING_PLAN_CHANGE\nACCOUNT_SUPPORT_TOPIC_PUBLIC_IP\nACCOUNT_SUPPORT_TOPIC_QUOTA_INCREASE\nACCOUNT_SUPPORT_TOPIC_RMA\nACCOUNT_SUPPORT_TOPIC_TAX_EXEMPT_VERIFICATION\nACCOUNT_SUPPORT_TOPIC_OTHERS\nTECHNICAL_SUPPORT_TOPIC_CONFIGURATION_CHANGES\nTECHNICAL_SUPPORT_TOPIC_ERROR_MESSAGE\nTECHNICAL_SUPPORT_TOPIC_NEW_CONFIGURATION\nTECHNICAL_SUPPORT_TOPIC_PRODUCT_QUESTION\nTECHNICAL_SUPPORT_TOPIC_TROUBLESHOOTING\nTECHNICAL_SUPPORT_TOPIC_OTHERS\nINCIDENT_SUPPORT_TOPIC_LATENCY\nINCIDENT_SUPPORT_TOPIC_PERFORMANCE_DEGRADATION\nINCIDENT_SUPPORT_TOPIC_PARTIAL_OUTAGE\nINCIDENT_SUPPORT_TOPIC_COMPLETE_OUTAGE\nINCIDENT_SUPPORT_TOPIC_OTHERS\nTASK_TOPIC_PLAN_TRANSITION\nPROBLEM_TOPIC_SUPPORT_ALERT\nQUESTION_TOPIC_INFRASTRUCTURE\nTECHNICAL_SUPPORT_TOPIC_DELEGATED_DOMAIN_MIGRATION\nTECHNICAL_SUPPORT_TOPIC_TERRAFORM_PROVIDER",
             "title": "SupportTopic",
             "enum": [
                 "TOPIC_UNKNOWN",
@@ -3232,7 +3240,8 @@ var APISwaggerJSON string = `{
                 "TASK_TOPIC_PLAN_TRANSITION",
                 "PROBLEM_TOPIC_SUPPORT_ALERT",
                 "QUESTION_TOPIC_INFRASTRUCTURE",
-                "TECHNICAL_SUPPORT_TOPIC_DELEGATED_DOMAIN_MIGRATION"
+                "TECHNICAL_SUPPORT_TOPIC_DELEGATED_DOMAIN_MIGRATION",
+                "TECHNICAL_SUPPORT_TOPIC_TERRAFORM_PROVIDER"
             ],
             "default": "TOPIC_UNKNOWN",
             "x-displayname": "Support Topic",

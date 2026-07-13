@@ -1024,24 +1024,24 @@ func resourceVolterraK8SClusterCreate(d *schema.ResourceData, meta interface{}) 
 				if v, ok := cs["cluster_role_bindings"]; ok && !isIntfNil(v) {
 
 					sl := v.([]interface{})
-					clusterRoleBindingsIntNew := make([]*ves_io_schema_views.ObjectRefType, len(sl))
-					clusterRoleBindingsChoiceInt.UseCustomClusterRoleBindings.ClusterRoleBindings = clusterRoleBindingsIntNew
+					clusterRoleBindingsChoiceIntNew := make([]*ves_io_schema_views.ObjectRefType, len(sl))
+					clusterRoleBindingsChoiceInt.UseCustomClusterRoleBindings.ClusterRoleBindings = clusterRoleBindingsChoiceIntNew
 					for i, ps := range sl {
 						if ps != nil {
 
 							crbMapToStrVal := ps.(map[string]interface{})
-							clusterRoleBindingsIntNew[i] = &ves_io_schema_views.ObjectRefType{}
+							clusterRoleBindingsChoiceIntNew[i] = &ves_io_schema_views.ObjectRefType{}
 
 							if v, ok := crbMapToStrVal["name"]; ok && !isIntfNil(v) {
-								clusterRoleBindingsIntNew[i].Name = v.(string)
+								clusterRoleBindingsChoiceIntNew[i].Name = v.(string)
 							}
 
 							if v, ok := crbMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-								clusterRoleBindingsIntNew[i].Namespace = v.(string)
+								clusterRoleBindingsChoiceIntNew[i].Namespace = v.(string)
 							}
 
 							if v, ok := crbMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-								clusterRoleBindingsIntNew[i].Tenant = v.(string)
+								clusterRoleBindingsChoiceIntNew[i].Tenant = v.(string)
 							}
 
 						}
@@ -1460,6 +1460,7 @@ func resourceVolterraK8SClusterRead(d *schema.ResourceData, meta interface{}) er
 		}
 		return fmt.Errorf("Error finding Volterra K8SCluster %q: %s", d.Id(), err)
 	}
+
 	return setK8SClusterFields(client, d, resp)
 }
 
@@ -1916,24 +1917,24 @@ func resourceVolterraK8SClusterUpdate(d *schema.ResourceData, meta interface{}) 
 				if v, ok := cs["cluster_role_bindings"]; ok && !isIntfNil(v) {
 
 					sl := v.([]interface{})
-					clusterRoleBindingsIntNew := make([]*ves_io_schema_views.ObjectRefType, len(sl))
-					clusterRoleBindingsChoiceInt.UseCustomClusterRoleBindings.ClusterRoleBindings = clusterRoleBindingsIntNew
+					clusterRoleBindingsChoiceIntNew := make([]*ves_io_schema_views.ObjectRefType, len(sl))
+					clusterRoleBindingsChoiceInt.UseCustomClusterRoleBindings.ClusterRoleBindings = clusterRoleBindingsChoiceIntNew
 					for i, ps := range sl {
 						if ps != nil {
 
 							crbMapToStrVal := ps.(map[string]interface{})
-							clusterRoleBindingsIntNew[i] = &ves_io_schema_views.ObjectRefType{}
+							clusterRoleBindingsChoiceIntNew[i] = &ves_io_schema_views.ObjectRefType{}
 
 							if v, ok := crbMapToStrVal["name"]; ok && !isIntfNil(v) {
-								clusterRoleBindingsIntNew[i].Name = v.(string)
+								clusterRoleBindingsChoiceIntNew[i].Name = v.(string)
 							}
 
 							if v, ok := crbMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-								clusterRoleBindingsIntNew[i].Namespace = v.(string)
+								clusterRoleBindingsChoiceIntNew[i].Namespace = v.(string)
 							}
 
 							if v, ok := crbMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-								clusterRoleBindingsIntNew[i].Tenant = v.(string)
+								clusterRoleBindingsChoiceIntNew[i].Tenant = v.(string)
 							}
 
 						}
@@ -2340,5 +2341,11 @@ func resourceVolterraK8SClusterDelete(d *schema.ResourceData, meta interface{}) 
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_k8s_cluster.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_k8s_cluster.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting K8SCluster: %w", err)
+	}
+	return nil
+
 }

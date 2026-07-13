@@ -1782,7 +1782,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2006,7 +2006,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2260,7 +2260,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -3396,6 +3396,15 @@ var APISwaggerJSON string = `{
             "x-displayname": "MetaType",
             "x-ves-proto-message": "ves.io.schema.topology.MetaType",
             "properties": {
+                "cloud_user_accounts": {
+                    "type": "array",
+                    "description": " Reference to cloud user account to fetch cloud resources.",
+                    "title": "Cloud User Account",
+                    "items": {
+                        "$ref": "#/definitions/ioschemaObjectRefType"
+                    },
+                    "x-displayname": "Cloud User Account"
+                },
                 "creds": {
                     "type": "array",
                     "description": " Reference to cloud credentials to fetch cloud resources.",

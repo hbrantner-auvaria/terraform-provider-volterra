@@ -1733,10 +1733,10 @@ var APISwaggerJSON string = `{
                 },
                 "definition": {
                     "type": "string",
-                    "description": " Location definition specified as the attributes of ${location} block in nginx config.\n This includes both the optional_modifier and the location_match combined.\n A location can either be defined by a prefix string, or by a regular expression.\n Reference: https://nginx.org/en/docs/http/ngx_http_core_module.html#location\n\nExample: - \"~* \\.(jpg|png|gif)$\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "description": " Location definition specified as the attributes of ${location} block in nginx config.\n This includes both the optional_modifier and the location_match combined.\n A location can either be defined by a prefix string, or by a regular expression.\n Reference: https://nginx.org/en/docs/http/ngx_http_core_module.html#location\n\nExample: - \"~* \\\\.(jpg|png|gif)$\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
                     "title": "definition",
                     "x-displayname": "Definition",
-                    "x-ves-example": "~* \\.(jpg|png|gif)$",
+                    "x-ves-example": "~* \\\\.(jpg|png|gif)$",
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true"

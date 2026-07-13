@@ -24,6 +24,499 @@ var (
 
 // augmented methods on protoc/std generated struct
 
+func (m *ApplyCertificateRegion) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *ApplyCertificateRegion) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *ApplyCertificateRegion) DeepCopy() *ApplyCertificateRegion {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &ApplyCertificateRegion{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *ApplyCertificateRegion) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *ApplyCertificateRegion) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return ApplyCertificateRegionValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateApplyCertificateRegion struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateApplyCertificateRegion) RegionNameValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	var conv db.EnumConvFn
+	conv = func(v interface{}) int32 {
+		i := v.(Location)
+		return int32(i)
+	}
+	// Location_name is generated in .pb.go
+	validatorFn, err := db.NewEnumValidationRuleHandler(rules, Location_name, conv)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for region_name")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateApplyCertificateRegion) CertIdValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for cert_id")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateApplyCertificateRegion) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*ApplyCertificateRegion)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *ApplyCertificateRegion got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["cert_id"]; exists {
+		vOpts := append(opts, db.WithValidateField("cert_id"))
+		if err := fv(ctx, m.GetCertId(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["region_name"]; exists {
+		vOpts := append(opts, db.WithValidateField("region_name"))
+		if err := fv(ctx, m.GetRegionName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultApplyCertificateRegionValidator = func() *ValidateApplyCertificateRegion {
+	v := &ValidateApplyCertificateRegion{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhRegionName := v.RegionNameValidationRuleHandler
+	rulesRegionName := map[string]string{
+		"ves.io.schema.rules.enum.defined_only": "true",
+		"ves.io.schema.rules.message.required":  "true",
+	}
+	vFn, err = vrhRegionName(rulesRegionName)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for ApplyCertificateRegion.region_name: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["region_name"] = vFn
+
+	vrhCertId := v.CertIdValidationRuleHandler
+	rulesCertId := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+		"ves.io.schema.rules.string.min_len":   "1",
+	}
+	vFn, err = vrhCertId(rulesCertId)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for ApplyCertificateRegion.cert_id: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["cert_id"] = vFn
+
+	return v
+}()
+
+func ApplyCertificateRegionValidator() db.Validator {
+	return DefaultApplyCertificateRegionValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *ApplyCertificateRequest) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *ApplyCertificateRequest) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *ApplyCertificateRequest) DeepCopy() *ApplyCertificateRequest {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &ApplyCertificateRequest{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *ApplyCertificateRequest) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *ApplyCertificateRequest) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return ApplyCertificateRequestValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateApplyCertificateRequest struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateApplyCertificateRequest) NamespaceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for namespace")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateApplyCertificateRequest) NameValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for name")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateApplyCertificateRequest) RegionListValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepMessageItemRules(rules)
+	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Message ValidationRuleHandler for region_list")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []*ApplyCertificateRegion, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+			if err := ApplyCertificateRegionValidator().Validate(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for region_list")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]*ApplyCertificateRegion)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []*ApplyCertificateRegion, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
+			if err != nil {
+				return errors.Wrapf(err, "Converting %v to JSON", elem)
+			}
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated region_list")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items region_list")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateApplyCertificateRequest) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*ApplyCertificateRequest)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *ApplyCertificateRequest got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["name"]; exists {
+		vOpts := append(opts, db.WithValidateField("name"))
+		if err := fv(ctx, m.GetName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["namespace"]; exists {
+		vOpts := append(opts, db.WithValidateField("namespace"))
+		if err := fv(ctx, m.GetNamespace(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["region_list"]; exists {
+		vOpts := append(opts, db.WithValidateField("region_list"))
+		if err := fv(ctx, m.GetRegionList(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultApplyCertificateRequestValidator = func() *ValidateApplyCertificateRequest {
+	v := &ValidateApplyCertificateRequest{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhNamespace := v.NamespaceValidationRuleHandler
+	rulesNamespace := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhNamespace(rulesNamespace)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for ApplyCertificateRequest.namespace: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["namespace"] = vFn
+
+	vrhName := v.NameValidationRuleHandler
+	rulesName := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhName(rulesName)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for ApplyCertificateRequest.name: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["name"] = vFn
+
+	vrhRegionList := v.RegionListValidationRuleHandler
+	rulesRegionList := map[string]string{
+		"ves.io.schema.rules.message.required":   "true",
+		"ves.io.schema.rules.repeated.min_items": "1",
+	}
+	vFn, err = vrhRegionList(rulesRegionList)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for ApplyCertificateRequest.region_list: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["region_list"] = vFn
+
+	return v
+}()
+
+func ApplyCertificateRequestValidator() db.Validator {
+	return DefaultApplyCertificateRequestValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *CertificateOperationRegion) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *CertificateOperationRegion) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *CertificateOperationRegion) DeepCopy() *CertificateOperationRegion {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &CertificateOperationRegion{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *CertificateOperationRegion) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *CertificateOperationRegion) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return CertificateOperationRegionValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateCertificateOperationRegion struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateCertificateOperationRegion) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*CertificateOperationRegion)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *CertificateOperationRegion got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["cert_status"]; exists {
+		vOpts := append(opts, db.WithValidateField("cert_status"))
+		if err := fv(ctx, m.GetCertStatus(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["deploy_status"]; exists {
+		vOpts := append(opts, db.WithValidateField("deploy_status"))
+		if err := fv(ctx, m.GetDeployStatus(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["region"]; exists {
+		vOpts := append(opts, db.WithValidateField("region"))
+		if err := fv(ctx, m.GetRegion(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultCertificateOperationRegionValidator = func() *ValidateCertificateOperationRegion {
+	v := &ValidateCertificateOperationRegion{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func CertificateOperationRegionValidator() db.Validator {
+	return DefaultCertificateOperationRegionValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *CertificateOperationResponse) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *CertificateOperationResponse) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *CertificateOperationResponse) DeepCopy() *CertificateOperationResponse {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &CertificateOperationResponse{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *CertificateOperationResponse) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *CertificateOperationResponse) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return CertificateOperationResponseValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateCertificateOperationResponse struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateCertificateOperationResponse) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*CertificateOperationResponse)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *CertificateOperationResponse got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["name"]; exists {
+		vOpts := append(opts, db.WithValidateField("name"))
+		if err := fv(ctx, m.GetName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["region_list"]; exists {
+		vOpts := append(opts, db.WithValidateField("region_list"))
+		for idx, item := range m.GetRegionList() {
+			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
+			if err := fv(ctx, item, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultCertificateOperationResponseValidator = func() *ValidateCertificateOperationResponse {
+	v := &ValidateCertificateOperationResponse{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func CertificateOperationResponseValidator() db.Validator {
+	return DefaultCertificateOperationResponseValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *DeployPoliciesRequest) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
@@ -120,6 +613,12 @@ func (v *ValidateDeployPoliciesRequest) Validate(ctx context.Context, pm interfa
 			}
 		}
 	}
+	if fv, exists := v.FldValidators["ti_package_metadata"]; exists {
+		vOpts := append(opts, db.WithValidateField("ti_package_metadata"))
+		if err := fv(ctx, m.GetTiPackageMetadata(), vOpts...); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -158,6 +657,7 @@ var DefaultDeployPoliciesRequestValidator = func() *ValidateDeployPoliciesReques
 	}
 	v.FldValidators["name"] = vFn
 	v.FldValidators["policy_metadata"] = DeployPolicyMetadataValidator().Validate
+	v.FldValidators["ti_package_metadata"] = TIPackageMetadataValidator().Validate
 
 	return v
 }()
@@ -764,6 +1264,14 @@ func (v *ValidateDeploymentHistoryData) CommentsValidationRuleHandler(rules map[
 
 	return validatorFn, nil
 }
+func (v *ValidateDeploymentHistoryData) PolicyIdValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for policy_id")
+	}
+
+	return validatorFn, nil
+}
 
 func (v *ValidateDeploymentHistoryData) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
 	m, ok := pm.(*DeploymentHistoryData)
@@ -809,6 +1317,18 @@ func (v *ValidateDeploymentHistoryData) Validate(ctx context.Context, pm interfa
 			}
 		}
 	}
+	if fv, exists := v.FldValidators["generated_link"]; exists {
+		vOpts := append(opts, db.WithValidateField("generated_link"))
+		if err := fv(ctx, m.GetGeneratedLink(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["policy_id"]; exists {
+		vOpts := append(opts, db.WithValidateField("policy_id"))
+		if err := fv(ctx, m.GetPolicyId(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["policy_metadata"]; exists {
 		vOpts := append(opts, db.WithValidateField("policy_metadata"))
 		for idx, item := range m.GetPolicyMetadata() {
@@ -821,6 +1341,12 @@ func (v *ValidateDeploymentHistoryData) Validate(ctx context.Context, pm interfa
 	if fv, exists := v.FldValidators["status"]; exists {
 		vOpts := append(opts, db.WithValidateField("status"))
 		if err := fv(ctx, m.GetStatus(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["ti_package_name"]; exists {
+		vOpts := append(opts, db.WithValidateField("ti_package_name"))
+		if err := fv(ctx, m.GetTiPackageName(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -854,6 +1380,17 @@ var DefaultDeploymentHistoryDataValidator = func() *ValidateDeploymentHistoryDat
 		panic(errMsg)
 	}
 	v.FldValidators["comments"] = vFn
+
+	vrhPolicyId := v.PolicyIdValidationRuleHandler
+	rulesPolicyId := map[string]string{
+		"ves.io.schema.rules.string.min_len": "1",
+	}
+	vFn, err = vrhPolicyId(rulesPolicyId)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for DeploymentHistoryData.policy_id: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["policy_id"] = vFn
 	v.FldValidators["policy_metadata"] = DeployPolicyMetadataValidator().Validate
 
 	return v
@@ -1269,4 +1806,331 @@ var DefaultDeploymentStatusResponseValidator = func() *ValidateDeploymentStatusR
 
 func DeploymentStatusResponseValidator() db.Validator {
 	return DefaultDeploymentStatusResponseValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *RollbackCertificateToDefaultRequest) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *RollbackCertificateToDefaultRequest) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *RollbackCertificateToDefaultRequest) DeepCopy() *RollbackCertificateToDefaultRequest {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &RollbackCertificateToDefaultRequest{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *RollbackCertificateToDefaultRequest) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *RollbackCertificateToDefaultRequest) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return RollbackCertificateToDefaultRequestValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateRollbackCertificateToDefaultRequest struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateRollbackCertificateToDefaultRequest) NamespaceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for namespace")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateRollbackCertificateToDefaultRequest) NameValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for name")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateRollbackCertificateToDefaultRequest) RegionListValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepEnumItemRules(rules)
+	var conv db.EnumConvFn
+	conv = func(v interface{}) int32 {
+		i := v.(Location)
+		return int32(i)
+	}
+	// Location_name is generated in .pb.go
+	itemValFn, err := db.NewEnumValidationRuleHandler(itemRules, Location_name, conv)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for region_list")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []Location, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for region_list")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]Location)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []Location, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal := fmt.Sprintf("%v", elem)
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated region_list")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items region_list")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateRollbackCertificateToDefaultRequest) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*RollbackCertificateToDefaultRequest)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *RollbackCertificateToDefaultRequest got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["name"]; exists {
+		vOpts := append(opts, db.WithValidateField("name"))
+		if err := fv(ctx, m.GetName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["namespace"]; exists {
+		vOpts := append(opts, db.WithValidateField("namespace"))
+		if err := fv(ctx, m.GetNamespace(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["region_list"]; exists {
+		vOpts := append(opts, db.WithValidateField("region_list"))
+		if err := fv(ctx, m.GetRegionList(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultRollbackCertificateToDefaultRequestValidator = func() *ValidateRollbackCertificateToDefaultRequest {
+	v := &ValidateRollbackCertificateToDefaultRequest{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhNamespace := v.NamespaceValidationRuleHandler
+	rulesNamespace := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhNamespace(rulesNamespace)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for RollbackCertificateToDefaultRequest.namespace: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["namespace"] = vFn
+
+	vrhName := v.NameValidationRuleHandler
+	rulesName := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhName(rulesName)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for RollbackCertificateToDefaultRequest.name: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["name"] = vFn
+
+	vrhRegionList := v.RegionListValidationRuleHandler
+	rulesRegionList := map[string]string{
+		"ves.io.schema.rules.message.required":                 "true",
+		"ves.io.schema.rules.repeated.items.enum.defined_only": "true",
+		"ves.io.schema.rules.repeated.max_items":               "32",
+		"ves.io.schema.rules.repeated.min_items":               "1",
+		"ves.io.schema.rules.repeated.unique":                  "true",
+	}
+	vFn, err = vrhRegionList(rulesRegionList)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for RollbackCertificateToDefaultRequest.region_list: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["region_list"] = vFn
+
+	return v
+}()
+
+func RollbackCertificateToDefaultRequestValidator() db.Validator {
+	return DefaultRollbackCertificateToDefaultRequestValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *TIPackageMetadata) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *TIPackageMetadata) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *TIPackageMetadata) DeepCopy() *TIPackageMetadata {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &TIPackageMetadata{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *TIPackageMetadata) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *TIPackageMetadata) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return TIPackageMetadataValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateTIPackageMetadata struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateTIPackageMetadata) NameValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for name")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateTIPackageMetadata) IdValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for id")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateTIPackageMetadata) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*TIPackageMetadata)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *TIPackageMetadata got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["id"]; exists {
+		vOpts := append(opts, db.WithValidateField("id"))
+		if err := fv(ctx, m.GetId(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["name"]; exists {
+		vOpts := append(opts, db.WithValidateField("name"))
+		if err := fv(ctx, m.GetName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["version"]; exists {
+		vOpts := append(opts, db.WithValidateField("version"))
+		if err := fv(ctx, m.GetVersion(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultTIPackageMetadataValidator = func() *ValidateTIPackageMetadata {
+	v := &ValidateTIPackageMetadata{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhName := v.NameValidationRuleHandler
+	rulesName := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+		"ves.io.schema.rules.string.min_len":   "1",
+	}
+	vFn, err = vrhName(rulesName)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for TIPackageMetadata.name: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["name"] = vFn
+
+	vrhId := v.IdValidationRuleHandler
+	rulesId := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+		"ves.io.schema.rules.string.min_len":   "1",
+	}
+	vFn, err = vrhId(rulesId)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for TIPackageMetadata.id: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["id"] = vFn
+
+	return v
+}()
+
+func TIPackageMetadataValidator() db.Validator {
+	return DefaultTIPackageMetadataValidator
 }

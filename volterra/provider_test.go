@@ -3,6 +3,7 @@ package volterra
 
 import (
 	"os"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -338,5 +339,50 @@ func TestProviderConfigure_WithLimiter(t *testing.T) {
 				t.Fatal("Expected non-nil result from ConfigureContext")
 			}
 		})
+	}
+}
+
+func TestProvider_DefaultTerraformVersion(t *testing.T) {
+	provider := Provider()
+	if provider.TerraformVersion != TerraformVersion {
+		t.Fatalf("expected provider TerraformVersion %q, got %q", TerraformVersion, provider.TerraformVersion)
+	}
+}
+
+func TestProviderUserAgent_Format(t *testing.T) {
+	terraformVersion := "9.9.9"
+	ua := providerUserAgent(terraformVersion)
+
+	if ua == "" {
+		t.Fatal("expected non-empty user-agent")
+	}
+
+	if !strings.HasPrefix(ua, "terraform/"+terraformVersion+" ") {
+		t.Fatalf("expected user-agent to start with terraform/%s, got %q", terraformVersion, ua)
+	}
+
+	formatRE := regexp.MustCompile(`^terraform/[^ ]+ [^/]+/.+$`)
+	if !formatRE.MatchString(ua) {
+		t.Fatalf("unexpected user-agent format: %q", ua)
+	}
+}
+
+func TestProviderUserAgent_UsesTerraformVersion(t *testing.T) {
+	ua := providerUserAgent("1.5.7")
+	if !strings.HasPrefix(ua, "terraform/1.5.7 ") {
+		t.Fatalf("expected terraform/1.5.7 prefix, got %q", ua)
+	}
+}
+
+func TestProviderBinaryInfo_ReturnsNameAndVersion(t *testing.T) {
+	name, version := providerBinaryInfo()
+	if name == "" {
+		t.Fatal("expected non-empty provider name")
+	}
+	if version == "" {
+		t.Fatal("expected non-empty provider version")
+	}
+	if !strings.HasPrefix(name, "terraform-provider-") {
+		t.Fatalf("expected name to start with terraform-provider-, got %q", name)
 	}
 }

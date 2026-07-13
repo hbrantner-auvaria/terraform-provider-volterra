@@ -2472,11 +2472,11 @@ var APISwaggerJSON string = `{
             "title": "HTTP Health Check",
             "x-displayname": "HTTP Health Check",
             "x-ves-displayorder": "1,2,3,4",
-            "x-ves-oneof-field-virtual_host_choice": "[\"disable_virtual_host\",\"virtual_host\"]",
+            "x-ves-oneof-field-virtual_host_choice": "[\"disable_virtual_host\",\"inherit_load_balancer_fqdn\",\"virtual_host\"]",
             "x-ves-proto-message": "ves.io.schema.dns_lb_health_check.HttpHealthCheck",
             "properties": {
                 "disable_virtual_host": {
-                    "description": "Exclusive with [virtual_host]\n",
+                    "description": "Exclusive with [inherit_load_balancer_fqdn virtual_host]\n",
                     "title": "Disable Virtual Host",
                     "$ref": "#/definitions/ioschemaEmpty",
                     "x-displayname": "Disable Virtual Host"
@@ -2507,6 +2507,12 @@ var APISwaggerJSON string = `{
                         "ves.io.schema.rules.uint32.lte": "65535"
                     }
                 },
+                "inherit_load_balancer_fqdn": {
+                    "description": "Exclusive with [disable_virtual_host virtual_host]\n Inherit load balancer FQDN as the virtual host to use for SNI.",
+                    "title": "Inherit From Load Balancer FQDN",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Inherit From Load Balancer FQDN"
+                },
                 "receive": {
                     "type": "string",
                     "description": " Regular expression used to match against the response to the health check's request. Mark node up upon receipt of a successful regular expression match. Uses re2 regular expression syntax.\n\nExample: - \"HTTP/1\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.max_len: 2048\n  ves.io.schema.rules.string.regex: true\n",
@@ -2532,10 +2538,10 @@ var APISwaggerJSON string = `{
                 },
                 "virtual_host": {
                     "type": "string",
-                    "description": "Exclusive with [disable_virtual_host]\n Name of the virtual host to use for SNI.\n\nExample: - \"example.com\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.max_len: 2048\n",
-                    "title": "Virtual Host",
+                    "description": "Exclusive with [disable_virtual_host inherit_load_balancer_fqdn]\n Name of the virtual host to use for SNI.\n\nExample: - \"example.com\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.max_len: 2048\n",
+                    "title": "Enable Virtual Host",
                     "maxLength": 2048,
-                    "x-displayname": "Virtual Host",
+                    "x-displayname": "Enable Virtual Host",
                     "x-ves-example": "example.com",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.string.max_len": "2048"

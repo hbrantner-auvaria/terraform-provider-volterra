@@ -605,6 +605,7 @@ func resourceVolterraSiteMeshGroupRead(d *schema.ResourceData, meta interface{})
 		}
 		return fmt.Errorf("Error finding Volterra SiteMeshGroup %q: %s", d.Id(), err)
 	}
+
 	return setSiteMeshGroupFields(client, d, resp)
 }
 
@@ -960,5 +961,11 @@ func resourceVolterraSiteMeshGroupDelete(d *schema.ResourceData, meta interface{
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_site_mesh_group.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_site_mesh_group.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting SiteMeshGroup: %w", err)
+	}
+	return nil
+
 }

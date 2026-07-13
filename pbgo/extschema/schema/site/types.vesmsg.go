@@ -652,6 +652,12 @@ func (v *ValidateAWSOrchestrationStatusType) Validate(ctx context.Context, pm in
 			}
 		}
 	}
+	if fv, exists := v.FldValidators["replace_validation"]; exists {
+		vOpts := append(opts, db.WithValidateField("replace_validation"))
+		if err := fv(ctx, m.GetReplaceValidation(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["site_vpc_status"]; exists {
 		vOpts := append(opts, db.WithValidateField("site_vpc_status"))
 		if err := fv(ctx, m.GetSiteVpcStatus(), vOpts...); err != nil {

@@ -34,6 +34,14 @@ type CustomAPIGrpcClient struct {
 	rpcFns map[string]func(context.Context, string, ...grpc.CallOption) (proto.Message, error)
 }
 
+func (c *CustomAPIGrpcClient) doRPCApplyCertificate(ctx context.Context, yamlReq string, opts ...grpc.CallOption) (proto.Message, error) {
+	req := &ApplyCertificateRequest{}
+	if err := codec.FromYAML(yamlReq, req); err != nil {
+		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.shape.bot_defense.bot_infrastructure.ApplyCertificateRequest", yamlReq)
+	}
+	rsp, err := c.grpcClient.ApplyCertificate(ctx, req, opts...)
+	return rsp, err
+}
 func (c *CustomAPIGrpcClient) doRPCDeployPoliciesToBotInfra(ctx context.Context, yamlReq string, opts ...grpc.CallOption) (proto.Message, error) {
 	req := &DeployPoliciesRequest{}
 	if err := codec.FromYAML(yamlReq, req); err != nil {
@@ -56,6 +64,14 @@ func (c *CustomAPIGrpcClient) doRPCDeploymentStatusOverview(ctx context.Context,
 		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.shape.bot_defense.bot_infrastructure.DeploymentStatusRequest", yamlReq)
 	}
 	rsp, err := c.grpcClient.DeploymentStatusOverview(ctx, req, opts...)
+	return rsp, err
+}
+func (c *CustomAPIGrpcClient) doRPCRollbackCertificateToDefault(ctx context.Context, yamlReq string, opts ...grpc.CallOption) (proto.Message, error) {
+	req := &RollbackCertificateToDefaultRequest{}
+	if err := codec.FromYAML(yamlReq, req); err != nil {
+		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.shape.bot_defense.bot_infrastructure.RollbackCertificateToDefaultRequest", yamlReq)
+	}
+	rsp, err := c.grpcClient.RollbackCertificateToDefault(ctx, req, opts...)
 	return rsp, err
 }
 
@@ -89,9 +105,11 @@ func NewCustomAPIGrpcClient(cc *grpc.ClientConn) server.CustomClient {
 		grpcClient: NewCustomAPIClient(cc),
 	}
 	rpcFns := make(map[string]func(context.Context, string, ...grpc.CallOption) (proto.Message, error))
+	rpcFns["ApplyCertificate"] = ccl.doRPCApplyCertificate
 	rpcFns["DeployPoliciesToBotInfra"] = ccl.doRPCDeployPoliciesToBotInfra
 	rpcFns["DeploymentHistory"] = ccl.doRPCDeploymentHistory
 	rpcFns["DeploymentStatusOverview"] = ccl.doRPCDeploymentStatusOverview
+	rpcFns["RollbackCertificateToDefault"] = ccl.doRPCRollbackCertificateToDefault
 	ccl.rpcFns = rpcFns
 	return ccl
 }
@@ -104,6 +122,91 @@ type CustomAPIRestClient struct {
 	rpcFns map[string]func(context.Context, *server.CustomCallOpts) (proto.Message, error)
 }
 
+func (c *CustomAPIRestClient) doRPCApplyCertificate(ctx context.Context, callOpts *server.CustomCallOpts) (proto.Message, error) {
+	if callOpts.URI == "" {
+		return nil, fmt.Errorf("Error, URI should be specified, got empty")
+	}
+	url := fmt.Sprintf("%s%s", c.baseURL, callOpts.URI)
+
+	yamlReq := callOpts.YAMLReq
+	req := &ApplyCertificateRequest{}
+	if err := codec.FromYAML(yamlReq, req); err != nil {
+		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.shape.bot_defense.bot_infrastructure.ApplyCertificateRequest: %s", yamlReq, err)
+	}
+
+	var hReq *http.Request
+	hm := strings.ToLower(callOpts.HTTPMethod)
+	switch hm {
+	case "post", "put":
+		jsn, err := codec.ToJSON(req, codec.ToWithUseProtoFieldName())
+		if err != nil {
+			return nil, errors.Wrap(err, "Custom RestClient converting YAML to JSON")
+		}
+		var op string
+		if hm == "post" {
+			op = http.MethodPost
+		} else {
+			op = http.MethodPut
+		}
+		newReq, err := http.NewRequest(op, url, bytes.NewBuffer([]byte(jsn)))
+		if err != nil {
+			return nil, errors.Wrapf(err, "Creating new HTTP %s request for custom API", op)
+		}
+		hReq = newReq
+	case "get":
+		newReq, err := http.NewRequest(http.MethodGet, url, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "Creating new HTTP GET request for custom API")
+		}
+		hReq = newReq
+		q := hReq.URL.Query()
+		_ = q
+		q.Add("name", fmt.Sprintf("%v", req.Name))
+		q.Add("namespace", fmt.Sprintf("%v", req.Namespace))
+		for _, item := range req.RegionList {
+			q.Add("region_list", fmt.Sprintf("%v", item))
+		}
+
+		hReq.URL.RawQuery += q.Encode()
+	case "delete":
+		newReq, err := http.NewRequest(http.MethodDelete, url, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "Creating new HTTP DELETE request for custom API")
+		}
+		hReq = newReq
+	default:
+		return nil, fmt.Errorf("Error, invalid/empty HTTPMethod(%s) specified, should be POST|DELETE|GET", callOpts.HTTPMethod)
+	}
+	hReq = hReq.WithContext(ctx)
+	hReq.Header.Set("Content-Type", "application/json")
+	client.AddHdrsToReq(callOpts.Headers, hReq)
+
+	rsp, err := c.client.Do(hReq)
+	if err != nil {
+		return nil, errors.Wrap(err, "Custom API RestClient")
+	}
+	defer rsp.Body.Close()
+
+	// checking whether the status code is a successful status code (2xx series)
+	if rsp.StatusCode < 200 || rsp.StatusCode > 299 {
+		body, err := io.ReadAll(rsp.Body)
+		return nil, fmt.Errorf("Unsuccessful custom API %s on %s, status code %d, body %s, err %s", callOpts.HTTPMethod, callOpts.URI, rsp.StatusCode, body, err)
+	}
+
+	body, err := io.ReadAll(rsp.Body)
+	if err != nil {
+		return nil, errors.Wrap(err, "Custom API RestClient read body")
+	}
+	pbRsp := &CertificateOperationResponse{}
+	if err := codec.FromJSON(string(body), pbRsp); err != nil {
+		return nil, errors.Wrapf(err, "JSON Response %s is not of type *ves.io.schema.shape.bot_defense.bot_infrastructure.CertificateOperationResponse", body)
+	}
+	if callOpts.OutCallResponse != nil {
+		callOpts.OutCallResponse.ProtoMsg = pbRsp
+		callOpts.OutCallResponse.JSON = string(body)
+	}
+	return pbRsp, nil
+}
 func (c *CustomAPIRestClient) doRPCDeployPoliciesToBotInfra(ctx context.Context, callOpts *server.CustomCallOpts) (proto.Message, error) {
 	if callOpts.URI == "" {
 		return nil, fmt.Errorf("Error, URI should be specified, got empty")
@@ -149,6 +252,7 @@ func (c *CustomAPIRestClient) doRPCDeployPoliciesToBotInfra(ctx context.Context,
 		for _, item := range req.PolicyMetadata {
 			q.Add("policy_metadata", fmt.Sprintf("%v", item))
 		}
+		q.Add("ti_package_metadata", fmt.Sprintf("%v", req.TiPackageMetadata))
 
 		hReq.URL.RawQuery += q.Encode()
 	case "delete":
@@ -354,6 +458,91 @@ func (c *CustomAPIRestClient) doRPCDeploymentStatusOverview(ctx context.Context,
 	}
 	return pbRsp, nil
 }
+func (c *CustomAPIRestClient) doRPCRollbackCertificateToDefault(ctx context.Context, callOpts *server.CustomCallOpts) (proto.Message, error) {
+	if callOpts.URI == "" {
+		return nil, fmt.Errorf("Error, URI should be specified, got empty")
+	}
+	url := fmt.Sprintf("%s%s", c.baseURL, callOpts.URI)
+
+	yamlReq := callOpts.YAMLReq
+	req := &RollbackCertificateToDefaultRequest{}
+	if err := codec.FromYAML(yamlReq, req); err != nil {
+		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.shape.bot_defense.bot_infrastructure.RollbackCertificateToDefaultRequest: %s", yamlReq, err)
+	}
+
+	var hReq *http.Request
+	hm := strings.ToLower(callOpts.HTTPMethod)
+	switch hm {
+	case "post", "put":
+		jsn, err := codec.ToJSON(req, codec.ToWithUseProtoFieldName())
+		if err != nil {
+			return nil, errors.Wrap(err, "Custom RestClient converting YAML to JSON")
+		}
+		var op string
+		if hm == "post" {
+			op = http.MethodPost
+		} else {
+			op = http.MethodPut
+		}
+		newReq, err := http.NewRequest(op, url, bytes.NewBuffer([]byte(jsn)))
+		if err != nil {
+			return nil, errors.Wrapf(err, "Creating new HTTP %s request for custom API", op)
+		}
+		hReq = newReq
+	case "get":
+		newReq, err := http.NewRequest(http.MethodGet, url, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "Creating new HTTP GET request for custom API")
+		}
+		hReq = newReq
+		q := hReq.URL.Query()
+		_ = q
+		q.Add("name", fmt.Sprintf("%v", req.Name))
+		q.Add("namespace", fmt.Sprintf("%v", req.Namespace))
+		for _, item := range req.RegionList {
+			q.Add("region_list", fmt.Sprintf("%v", item))
+		}
+
+		hReq.URL.RawQuery += q.Encode()
+	case "delete":
+		newReq, err := http.NewRequest(http.MethodDelete, url, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "Creating new HTTP DELETE request for custom API")
+		}
+		hReq = newReq
+	default:
+		return nil, fmt.Errorf("Error, invalid/empty HTTPMethod(%s) specified, should be POST|DELETE|GET", callOpts.HTTPMethod)
+	}
+	hReq = hReq.WithContext(ctx)
+	hReq.Header.Set("Content-Type", "application/json")
+	client.AddHdrsToReq(callOpts.Headers, hReq)
+
+	rsp, err := c.client.Do(hReq)
+	if err != nil {
+		return nil, errors.Wrap(err, "Custom API RestClient")
+	}
+	defer rsp.Body.Close()
+
+	// checking whether the status code is a successful status code (2xx series)
+	if rsp.StatusCode < 200 || rsp.StatusCode > 299 {
+		body, err := io.ReadAll(rsp.Body)
+		return nil, fmt.Errorf("Unsuccessful custom API %s on %s, status code %d, body %s, err %s", callOpts.HTTPMethod, callOpts.URI, rsp.StatusCode, body, err)
+	}
+
+	body, err := io.ReadAll(rsp.Body)
+	if err != nil {
+		return nil, errors.Wrap(err, "Custom API RestClient read body")
+	}
+	pbRsp := &CertificateOperationResponse{}
+	if err := codec.FromJSON(string(body), pbRsp); err != nil {
+		return nil, errors.Wrapf(err, "JSON Response %s is not of type *ves.io.schema.shape.bot_defense.bot_infrastructure.CertificateOperationResponse", body)
+	}
+	if callOpts.OutCallResponse != nil {
+		callOpts.OutCallResponse.ProtoMsg = pbRsp
+		callOpts.OutCallResponse.JSON = string(body)
+	}
+	return pbRsp, nil
+}
 
 func (c *CustomAPIRestClient) DoRPC(ctx context.Context, rpc string, opts ...server.CustomCallOpt) (proto.Message, error) {
 	rpcFn, exists := c.rpcFns[rpc]
@@ -379,9 +568,11 @@ func NewCustomAPIRestClient(baseURL string, hc http.Client) server.CustomClient 
 	}
 
 	rpcFns := make(map[string]func(context.Context, *server.CustomCallOpts) (proto.Message, error))
+	rpcFns["ApplyCertificate"] = ccl.doRPCApplyCertificate
 	rpcFns["DeployPoliciesToBotInfra"] = ccl.doRPCDeployPoliciesToBotInfra
 	rpcFns["DeploymentHistory"] = ccl.doRPCDeploymentHistory
 	rpcFns["DeploymentStatusOverview"] = ccl.doRPCDeploymentStatusOverview
+	rpcFns["RollbackCertificateToDefault"] = ccl.doRPCRollbackCertificateToDefault
 	ccl.rpcFns = rpcFns
 	return ccl
 }
@@ -393,6 +584,10 @@ type customAPIInprocClient struct {
 	CustomAPIServer
 }
 
+func (c *customAPIInprocClient) ApplyCertificate(ctx context.Context, in *ApplyCertificateRequest, opts ...grpc.CallOption) (*CertificateOperationResponse, error) {
+	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.shape.bot_defense.bot_infrastructure.CustomAPI.ApplyCertificate")
+	return c.CustomAPIServer.ApplyCertificate(ctx, in)
+}
 func (c *customAPIInprocClient) DeployPoliciesToBotInfra(ctx context.Context, in *DeployPoliciesRequest, opts ...grpc.CallOption) (*DeployPoliciesResponse, error) {
 	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.shape.bot_defense.bot_infrastructure.CustomAPI.DeployPoliciesToBotInfra")
 	return c.CustomAPIServer.DeployPoliciesToBotInfra(ctx, in)
@@ -404,6 +599,10 @@ func (c *customAPIInprocClient) DeploymentHistory(ctx context.Context, in *Deplo
 func (c *customAPIInprocClient) DeploymentStatusOverview(ctx context.Context, in *DeploymentStatusRequest, opts ...grpc.CallOption) (*DeploymentStatusResponse, error) {
 	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.shape.bot_defense.bot_infrastructure.CustomAPI.DeploymentStatusOverview")
 	return c.CustomAPIServer.DeploymentStatusOverview(ctx, in)
+}
+func (c *customAPIInprocClient) RollbackCertificateToDefault(ctx context.Context, in *RollbackCertificateToDefaultRequest, opts ...grpc.CallOption) (*CertificateOperationResponse, error) {
+	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.shape.bot_defense.bot_infrastructure.CustomAPI.RollbackCertificateToDefault")
+	return c.CustomAPIServer.RollbackCertificateToDefault(ctx, in)
 }
 
 func NewCustomAPIInprocClient(svc svcfw.Service) CustomAPIClient {
@@ -427,6 +626,54 @@ type customAPISrv struct {
 	svc svcfw.Service
 }
 
+func (s *customAPISrv) ApplyCertificate(ctx context.Context, in *ApplyCertificateRequest) (*CertificateOperationResponse, error) {
+	ah := s.svc.GetAPIHandler("ves.io.schema.shape.bot_defense.bot_infrastructure.CustomAPI")
+	cah, ok := ah.(CustomAPIServer)
+	if !ok {
+		return nil, fmt.Errorf("ah %v is not of type *CustomAPIServer", ah)
+	}
+
+	var (
+		rsp *CertificateOperationResponse
+		err error
+	)
+
+	bodyFields := svcfw.GenAuditReqBodyFields(ctx, s.svc, "ves.io.schema.shape.bot_defense.bot_infrastructure.ApplyCertificateRequest", in)
+	defer func() {
+		if len(bodyFields) > 0 {
+			server.ExtendAPIAudit(ctx, svcfw.PublicAPIBodyLog.Uid, bodyFields)
+		}
+		userMsg := "The 'CustomAPI.ApplyCertificate' operation on 'bot_infrastructure'"
+		if err == nil {
+			userMsg += " was successfully performed."
+		} else {
+			userMsg += " failed to be performed."
+		}
+		server.AddUserMsgToAPIAudit(ctx, userMsg)
+	}()
+
+	if err := svcfw.FillOneofDefaultChoice(ctx, s.svc, in); err != nil {
+		err = server.MaybePublicRestError(ctx, errors.Wrapf(err, "Filling oneof default choice"))
+		return nil, server.GRPCStatusFromError(err).Err()
+	}
+
+	if s.svc.Config().EnableAPIValidation {
+		if rvFn := s.svc.GetRPCValidator("ves.io.schema.shape.bot_defense.bot_infrastructure.CustomAPI.ApplyCertificate"); rvFn != nil {
+			if verr := rvFn(ctx, in); verr != nil {
+				err = server.MaybePublicRestError(ctx, errors.Wrapf(verr, "Validating Request"))
+				return nil, server.GRPCStatusFromError(err).Err()
+			}
+		}
+	}
+
+	rsp, err = cah.ApplyCertificate(ctx, in)
+	if err != nil {
+		return rsp, server.GRPCStatusFromError(server.MaybePublicRestError(ctx, err)).Err()
+	}
+	bodyFields = append(bodyFields, svcfw.GenAuditRspBodyFields(ctx, s.svc, "ves.io.schema.shape.bot_defense.bot_infrastructure.CertificateOperationResponse", rsp)...)
+
+	return rsp, nil
+}
 func (s *customAPISrv) DeployPoliciesToBotInfra(ctx context.Context, in *DeployPoliciesRequest) (*DeployPoliciesResponse, error) {
 	ah := s.svc.GetAPIHandler("ves.io.schema.shape.bot_defense.bot_infrastructure.CustomAPI")
 	cah, ok := ah.(CustomAPIServer)
@@ -571,6 +818,54 @@ func (s *customAPISrv) DeploymentStatusOverview(ctx context.Context, in *Deploym
 
 	return rsp, nil
 }
+func (s *customAPISrv) RollbackCertificateToDefault(ctx context.Context, in *RollbackCertificateToDefaultRequest) (*CertificateOperationResponse, error) {
+	ah := s.svc.GetAPIHandler("ves.io.schema.shape.bot_defense.bot_infrastructure.CustomAPI")
+	cah, ok := ah.(CustomAPIServer)
+	if !ok {
+		return nil, fmt.Errorf("ah %v is not of type *CustomAPIServer", ah)
+	}
+
+	var (
+		rsp *CertificateOperationResponse
+		err error
+	)
+
+	bodyFields := svcfw.GenAuditReqBodyFields(ctx, s.svc, "ves.io.schema.shape.bot_defense.bot_infrastructure.RollbackCertificateToDefaultRequest", in)
+	defer func() {
+		if len(bodyFields) > 0 {
+			server.ExtendAPIAudit(ctx, svcfw.PublicAPIBodyLog.Uid, bodyFields)
+		}
+		userMsg := "The 'CustomAPI.RollbackCertificateToDefault' operation on 'bot_infrastructure'"
+		if err == nil {
+			userMsg += " was successfully performed."
+		} else {
+			userMsg += " failed to be performed."
+		}
+		server.AddUserMsgToAPIAudit(ctx, userMsg)
+	}()
+
+	if err := svcfw.FillOneofDefaultChoice(ctx, s.svc, in); err != nil {
+		err = server.MaybePublicRestError(ctx, errors.Wrapf(err, "Filling oneof default choice"))
+		return nil, server.GRPCStatusFromError(err).Err()
+	}
+
+	if s.svc.Config().EnableAPIValidation {
+		if rvFn := s.svc.GetRPCValidator("ves.io.schema.shape.bot_defense.bot_infrastructure.CustomAPI.RollbackCertificateToDefault"); rvFn != nil {
+			if verr := rvFn(ctx, in); verr != nil {
+				err = server.MaybePublicRestError(ctx, errors.Wrapf(verr, "Validating Request"))
+				return nil, server.GRPCStatusFromError(err).Err()
+			}
+		}
+	}
+
+	rsp, err = cah.RollbackCertificateToDefault(ctx, in)
+	if err != nil {
+		return rsp, server.GRPCStatusFromError(server.MaybePublicRestError(ctx, err)).Err()
+	}
+	bodyFields = append(bodyFields, svcfw.GenAuditRspBodyFields(ctx, s.svc, "ves.io.schema.shape.bot_defense.bot_infrastructure.CertificateOperationResponse", rsp)...)
+
+	return rsp, nil
+}
 
 func NewCustomAPIServer(svc svcfw.Service) CustomAPIServer {
 	return &customAPISrv{svc: svc}
@@ -595,6 +890,106 @@ var CustomAPISwaggerJSON string = `{
     ],
     "tags": [],
     "paths": {
+        "/public/namespaces/{namespace}/bot_infrastructures/{name}/apply-certificate": {
+            "put": {
+                "summary": "Apply Certificate",
+                "description": "Apply custom certificate on Bot Infrastructure",
+                "operationId": "ves.io.schema.shape.bot_defense.bot_infrastructure.CustomAPI.ApplyCertificate",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/bot_infrastructureCertificateOperationResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Returned when operation is not authorized",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "Returned when there is no permission to access resource",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Returned when resource is not found",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Returned when operation on resource is conflicting with current value",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "429": {
+                        "description": "Returned when operation has been rejected as it is happening too frequently",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Returned when server encountered an error in processing API",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "503": {
+                        "description": "Returned when service is unavailable temporarily",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "504": {
+                        "description": "Returned when server timed out processing request",
+                        "schema": {
+                            "format": "string"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "namespace",
+                        "description": "Namespace\n\nx-example: \"default\"\nx-required\nNamespace",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "x-displayname": "Namespace"
+                    },
+                    {
+                        "name": "name",
+                        "description": "Bot Infrastructure Name\n\nx-example: \"cluster_1\"\nx-required\nBot Infrastructure Name",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "x-displayname": "Bot Infrastructure Name"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/bot_infrastructureApplyCertificateRequest"
+                        }
+                    }
+                ],
+                "tags": [
+                    "CustomAPI"
+                ],
+                "externalDocs": {
+                    "description": "Examples of this operation",
+                    "url": "https://docs.cloud.f5.com/docs-v2/platform/reference/api-ref/ves-io-schema-shape-bot_defense-bot_infrastructure-customapi-applycertificate"
+                },
+                "x-ves-proto-rpc": "ves.io.schema.shape.bot_defense.bot_infrastructure.CustomAPI.ApplyCertificate"
+            },
+            "x-displayname": "Bot Infrastructure ",
+            "x-ves-proto-service": "ves.io.schema.shape.bot_defense.bot_infrastructure.CustomAPI",
+            "x-ves-proto-service-type": "CUSTOM_PUBLIC"
+        },
         "/public/namespaces/{namespace}/bot_infrastructures/{name}/deployment_history": {
             "get": {
                 "summary": "Deployment History",
@@ -843,7 +1238,7 @@ var CustomAPISwaggerJSON string = `{
                 "parameters": [
                     {
                         "name": "namespace",
-                        "description": "namespace\n\nx-example: \"system\"\nnamespace is used to scope the query",
+                        "description": "namespace\n\nx-example: \"default\"\nnamespace is used to scope the query",
                         "in": "path",
                         "required": true,
                         "type": "string",
@@ -878,9 +1273,306 @@ var CustomAPISwaggerJSON string = `{
             "x-displayname": "Bot Infrastructure ",
             "x-ves-proto-service": "ves.io.schema.shape.bot_defense.bot_infrastructure.CustomAPI",
             "x-ves-proto-service-type": "CUSTOM_PUBLIC"
+        },
+        "/public/namespaces/{namespace}/bot_infrastructures/{name}/rollback-certificate-to-default": {
+            "put": {
+                "summary": "Rollback Certificate To Default",
+                "description": "Rollback to default certificate on Bot Infrastructure",
+                "operationId": "ves.io.schema.shape.bot_defense.bot_infrastructure.CustomAPI.RollbackCertificateToDefault",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/bot_infrastructureCertificateOperationResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Returned when operation is not authorized",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "Returned when there is no permission to access resource",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Returned when resource is not found",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Returned when operation on resource is conflicting with current value",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "429": {
+                        "description": "Returned when operation has been rejected as it is happening too frequently",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Returned when server encountered an error in processing API",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "503": {
+                        "description": "Returned when service is unavailable temporarily",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "504": {
+                        "description": "Returned when server timed out processing request",
+                        "schema": {
+                            "format": "string"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "namespace",
+                        "description": "Namespace\n\nx-example: \"default\"\nx-required\nNamespace",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "x-displayname": "Namespace"
+                    },
+                    {
+                        "name": "name",
+                        "description": "Bot Infrastructure Name\n\nx-example: \"cluster_1\"\nx-required\nBot Infrastructure Name",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "x-displayname": "Bot Infrastructure Name"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/bot_infrastructureRollbackCertificateToDefaultRequest"
+                        }
+                    }
+                ],
+                "tags": [
+                    "CustomAPI"
+                ],
+                "externalDocs": {
+                    "description": "Examples of this operation",
+                    "url": "https://docs.cloud.f5.com/docs-v2/platform/reference/api-ref/ves-io-schema-shape-bot_defense-bot_infrastructure-customapi-rollbackcertificatetodefault"
+                },
+                "x-ves-proto-rpc": "ves.io.schema.shape.bot_defense.bot_infrastructure.CustomAPI.RollbackCertificateToDefault"
+            },
+            "x-displayname": "Bot Infrastructure ",
+            "x-ves-proto-service": "ves.io.schema.shape.bot_defense.bot_infrastructure.CustomAPI",
+            "x-ves-proto-service-type": "CUSTOM_PUBLIC"
         }
     },
     "definitions": {
+        "bot_defensebot_infrastructureLocation": {
+            "type": "string",
+            "description": "Region location\n\nAP_NORTHEAST_1\nAP_NORTHEAST_3\nAP_SOUTH_1\nAP_SOUTH_2\nAP_SOUTHEAST_1\nAP_SOUTHEAST_2\nAP_SOUTHEAST_3\nEU_CENTRAL_1\nEU_NORTH_1\nEU_WEST_1\nME_SOUTH_1\nME_CENTRAL_1\nSA_EAST_1\nUS_EAST_1\nUS_EAST_2\nUS_WEST_1\nUS_WEST_2\nAF_SOUTH_1\nASIA_EAST1\nASIA_EAST2\nASIA_NORTHEAST1\nASIA_NORTHEAST2\nASIA_NORTHEAST3\nASIA_SOUTH1\nASIA_SOUTHEAST1\nASIA_SOUTHEAST2\nAUSTRALIA_SOUTHEAST1\nEUROPE_WEST1\nEUROPE_WEST2\nEUROPE_WEST3\nNORTHAMERICA_NORTHEAST1\nNORTHAMERICA_NORTHEAST2\nSOUTHAMERICA_EAST1\nSOUTHAMERICA_WEST1\nUS_CENTRAL1\nUS_EAST1\nUS_EAST4\nUS_WEST1\nUS_WEST2",
+            "title": "Location",
+            "enum": [
+                "AP_NORTHEAST_1",
+                "AP_NORTHEAST_3",
+                "AP_SOUTH_1",
+                "AP_SOUTH_2",
+                "AP_SOUTHEAST_1",
+                "AP_SOUTHEAST_2",
+                "AP_SOUTHEAST_3",
+                "EU_CENTRAL_1",
+                "EU_NORTH_1",
+                "EU_WEST_1",
+                "ME_SOUTH_1",
+                "ME_CENTRAL_1",
+                "SA_EAST_1",
+                "US_EAST_1",
+                "US_EAST_2",
+                "US_WEST_1",
+                "US_WEST_2",
+                "AF_SOUTH_1",
+                "GCP_ASIA_EAST1",
+                "GCP_ASIA_EAST2",
+                "GCP_ASIA_NORTHEAST1",
+                "GCP_ASIA_NORTHEAST2",
+                "GCP_ASIA_NORTHEAST3",
+                "GCP_ASIA_SOUTH1",
+                "GCP_ASIA_SOUTHEAST1",
+                "GCP_ASIA_SOUTHEAST2",
+                "GCP_AUSTRALIA_SOUTHEAST1",
+                "GCP_EUROPE_WEST1",
+                "GCP_EUROPE_WEST2",
+                "GCP_EUROPE_WEST3",
+                "GCP_NORTHAMERICA_NORTHEAST1",
+                "GCP_NORTHAMERICA_NORTHEAST2",
+                "GCP_SOUTHAMERICA_EAST1",
+                "GCP_SOUTHAMERICA_WEST1",
+                "GCP_US_CENTRAL1",
+                "GCP_US_EAST1",
+                "GCP_US_EAST4",
+                "GCP_US_WEST1",
+                "GCP_US_WEST2"
+            ],
+            "default": "AP_NORTHEAST_1",
+            "x-displayname": "Location",
+            "x-ves-proto-enum": "ves.io.schema.shape.bot_defense.bot_infrastructure.Location"
+        },
+        "bot_infrastructureApplyCertificateRegion": {
+            "type": "object",
+            "description": "Request for applying certificate",
+            "title": "ApplyCertificateRequest",
+            "x-displayname": "Apply Certificate Request",
+            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.bot_infrastructure.ApplyCertificateRegion",
+            "properties": {
+                "cert_id": {
+                    "type": "string",
+                    "description": " Certificate ID\n\nExample: - \"6990a584f0526500012a1723\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.min_len: 1\n",
+                    "title": "Certificate ID",
+                    "minLength": 1,
+                    "x-displayname": "Certificate ID",
+                    "x-ves-example": "6990a584f0526500012a1723",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.string.min_len": "1"
+                    }
+                },
+                "region_name": {
+                    "description": " Region Name\n\nExample: - \"US_EAST_1\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.enum.defined_only: true\n  ves.io.schema.rules.message.required: true\n",
+                    "title": "Region Name",
+                    "$ref": "#/definitions/bot_defensebot_infrastructureLocation",
+                    "x-displayname": "Region Name",
+                    "x-ves-example": "US_EAST_1",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.enum.defined_only": "true",
+                        "ves.io.schema.rules.message.required": "true"
+                    }
+                }
+            }
+        },
+        "bot_infrastructureApplyCertificateRequest": {
+            "type": "object",
+            "description": "Request for applying certificate",
+            "title": "ApplyCertificateRequest",
+            "x-displayname": "Apply Certificate Request",
+            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.bot_infrastructure.ApplyCertificateRequest",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": " Bot Infrastructure Name\n\nExample: - \"cluster_1\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "title": "Bot Infrastructure Name",
+                    "x-displayname": "Bot Infrastructure Name",
+                    "x-ves-example": "cluster_1",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true"
+                    }
+                },
+                "namespace": {
+                    "type": "string",
+                    "description": " Namespace\n\nExample: - \"default\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "title": "Namespace",
+                    "x-displayname": "Namespace",
+                    "x-ves-example": "default",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true"
+                    }
+                },
+                "region_list": {
+                    "type": "array",
+                    "description": " List of region and certificate pairs to rollback\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.min_items: 1\n",
+                    "title": "Region List",
+                    "minItems": 1,
+                    "items": {
+                        "$ref": "#/definitions/bot_infrastructureApplyCertificateRegion"
+                    },
+                    "x-displayname": "Region List",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.repeated.min_items": "1"
+                    }
+                }
+            }
+        },
+        "bot_infrastructureCertificateOperationRegion": {
+            "type": "object",
+            "description": "Region status for certificate operation",
+            "title": "CertificateOperationRegion",
+            "x-displayname": "Certificate Operation Region",
+            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.bot_infrastructure.CertificateOperationRegion",
+            "properties": {
+                "cert_status": {
+                    "description": " Indicates if a custom certificate is currently applied or not applied.\n\nExample: - \"CERT_STATUS_APPLIED\"-",
+                    "title": "Certificate Status",
+                    "$ref": "#/definitions/bot_infrastructureCertificateStatus",
+                    "x-displayname": "Certificate Status",
+                    "x-ves-example": "CERT_STATUS_APPLIED"
+                },
+                "deploy_status": {
+                    "description": "\n\nExample: - \"IN_PROGRESS\"-",
+                    "title": "Deploy Status",
+                    "$ref": "#/definitions/bot_infrastructureDepolyStatus",
+                    "x-displayname": "Deploy Status",
+                    "x-ves-example": "IN_PROGRESS"
+                },
+                "region": {
+                    "description": "\n\nExample: - \"us-west\"-",
+                    "title": "Region",
+                    "$ref": "#/definitions/bot_defensebot_infrastructureLocation",
+                    "x-displayname": "Region",
+                    "x-ves-example": "us-west"
+                }
+            }
+        },
+        "bot_infrastructureCertificateOperationResponse": {
+            "type": "object",
+            "description": "Response for certificate operations",
+            "title": "CertificateOperationResponse",
+            "x-displayname": "Certificate Operation Response",
+            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.bot_infrastructure.CertificateOperationResponse",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": " Name of the cluster\n\nExample: - \"your-bot-infra-name\"-",
+                    "title": "Cluster Name",
+                    "x-displayname": "Cluster Name",
+                    "x-ves-example": "your-bot-infra-name"
+                },
+                "region_list": {
+                    "type": "array",
+                    "description": " List of region status for certificate operation",
+                    "title": "Region List",
+                    "items": {
+                        "$ref": "#/definitions/bot_infrastructureCertificateOperationRegion"
+                    },
+                    "x-displayname": "Region List"
+                }
+            }
+        },
+        "bot_infrastructureCertificateStatus": {
+            "type": "string",
+            "description": "The status of certificate application to the ingress\n\nCertificate status is undefined (initial state, before first sync)\nCertificate has been successfully applied to the ingress\nCertificate is not applied",
+            "title": "CertificateStatus",
+            "enum": [
+                "CERT_STATUS_UNDEFINED",
+                "CERT_STATUS_APPLIED",
+                "CERT_STATUS_NOT_APPLIED"
+            ],
+            "default": "CERT_STATUS_UNDEFINED",
+            "x-displayname": "Certificate Status",
+            "x-ves-proto-enum": "ves.io.schema.shape.bot_defense.bot_infrastructure.CertificateStatus"
+        },
         "bot_infrastructureDeployPoliciesRequest": {
             "type": "object",
             "description": "Request for deploy policies",
@@ -908,11 +1600,11 @@ var CustomAPISwaggerJSON string = `{
                 },
                 "namespace": {
                     "type": "string",
-                    "description": " namespace is used to scope the query\n\nExample: - \"system\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.min_len: 1\n  ves.io.schema.rules.string.ves_object_name: true\n",
+                    "description": " namespace is used to scope the query\n\nExample: - \"default\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.min_len: 1\n  ves.io.schema.rules.string.ves_object_name: true\n",
                     "title": "namespace",
                     "minLength": 1,
                     "x-displayname": "Namespace",
-                    "x-ves-example": "system",
+                    "x-ves-example": "default",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.string.min_len": "1",
                         "ves.io.schema.rules.string.ves_object_name": "true"
@@ -926,6 +1618,12 @@ var CustomAPISwaggerJSON string = `{
                         "$ref": "#/definitions/bot_infrastructureDeployPolicyMetadata"
                     },
                     "x-displayname": "Deployed Policy"
+                },
+                "ti_package_metadata": {
+                    "description": " Optional: TI Package Metadata for this deployment(deliver). Applicable only to the Kubernetes bot infrastructure.",
+                    "title": "TI Package Metadata",
+                    "$ref": "#/definitions/bot_infrastructureTIPackageMetadata",
+                    "x-displayname": "TI Package Metadata"
                 }
             }
         },
@@ -1110,11 +1808,29 @@ var CustomAPISwaggerJSON string = `{
                         "ves.io.schema.rules.string.max_len": "2048"
                     }
                 },
+                "generated_link": {
+                    "type": "string",
+                    "description": " Generated Link\n\nExample: - \"Generated Link\"-",
+                    "title": "Generated Link",
+                    "x-displayname": "Generated Link",
+                    "x-ves-example": "Generated Link"
+                },
                 "organization": {
                     "type": "string",
                     "description": "Exclusive with [user]\n Organization name must be \"F5\"",
                     "title": "Organization",
                     "x-displayname": "Organization"
+                },
+                "policy_id": {
+                    "type": "string",
+                    "description": " Policy ID\n\nExample: - \"Some_Policy-ID-1212\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.min_len: 1\n",
+                    "title": "Policy ID",
+                    "minLength": 1,
+                    "x-displayname": "Policy ID",
+                    "x-ves-example": "Some_Policy-ID-1212",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.string.min_len": "1"
+                    }
                 },
                 "policy_metadata": {
                     "type": "array",
@@ -1131,6 +1847,13 @@ var CustomAPISwaggerJSON string = `{
                     "title": "Status",
                     "x-displayname": "Status",
                     "x-ves-example": "Success"
+                },
+                "ti_package_name": {
+                    "type": "string",
+                    "description": " TI Package Name for this deployment(deliver), which will be only support for Kubernetes bot infrastructure\n\nExample: - \"TI_Package_1\"-",
+                    "title": "TI Package Name",
+                    "x-displayname": "TI Package Name",
+                    "x-ves-example": "TI_Package_1"
                 },
                 "timestamp": {
                     "type": "string",
@@ -1181,12 +1904,13 @@ var CustomAPISwaggerJSON string = `{
         },
         "bot_infrastructureDeploymentType": {
             "type": "string",
-            "description": "The type of bot infra\n\n - CLOUD_HOSTED: F5 Cloud Hosted\n\n - HOSTED: F5 Hosted\n\n - ON_PREM: F5 On Prem\n",
+            "description": "The type of bot infra\n\n - CLOUD_HOSTED: F5 Cloud Hosted\n\n - HOSTED: F5 Hosted\n\n - ON_PREM: F5 On Prem\n\n - KUBERNETES: Kubernetes\n",
             "title": "DeploymentResponseType",
             "enum": [
                 "CLOUD_HOSTED",
                 "HOSTED",
-                "ON_PREM"
+                "ON_PREM",
+                "KUBERNETES"
             ],
             "default": "CLOUD_HOSTED",
             "x-displayname": "Deployment Response Type",
@@ -1217,6 +1941,99 @@ var CustomAPISwaggerJSON string = `{
             "default": "ENDPOINT_POLICY",
             "x-displayname": "Policy Type",
             "x-ves-proto-enum": "ves.io.schema.shape.bot_defense.bot_infrastructure.PolicyType"
+        },
+        "bot_infrastructureRollbackCertificateToDefaultRequest": {
+            "type": "object",
+            "description": "Request for rollback certificate to default",
+            "title": "RollbackCertificateToDefaultRequest",
+            "x-displayname": "Rollback Certificate To Default Request",
+            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.bot_infrastructure.RollbackCertificateToDefaultRequest",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": " Bot Infrastructure Name\n\nExample: - \"cluster_1\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "title": "Bot Infrastructure Name",
+                    "x-displayname": "Bot Infrastructure Name",
+                    "x-ves-example": "cluster_1",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true"
+                    }
+                },
+                "namespace": {
+                    "type": "string",
+                    "description": " Namespace\n\nExample: - \"default\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "title": "Namespace",
+                    "x-displayname": "Namespace",
+                    "x-ves-example": "default",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true"
+                    }
+                },
+                "region_list": {
+                    "type": "array",
+                    "description": " List of regions for rollback\n\nExample: - \"[US_EAST_1, US_WEST_1]\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.items.enum.defined_only: true\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.min_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "title": "Region List",
+                    "minItems": 1,
+                    "maxItems": 32,
+                    "items": {
+                        "$ref": "#/definitions/bot_defensebot_infrastructureLocation"
+                    },
+                    "x-displayname": "Region List",
+                    "x-ves-example": "[US_EAST_1, US_WEST_1]",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.repeated.items.enum.defined_only": "true",
+                        "ves.io.schema.rules.repeated.max_items": "32",
+                        "ves.io.schema.rules.repeated.min_items": "1",
+                        "ves.io.schema.rules.repeated.unique": "true"
+                    }
+                }
+            }
+        },
+        "bot_infrastructureTIPackageMetadata": {
+            "type": "object",
+            "description": "The metadata for TI package, which will be only support for Kubernetes bot infrastructure",
+            "title": "TI Package Metadata",
+            "x-displayname": "TI Package Metadata",
+            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.bot_infrastructure.TIPackageMetadata",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": " TI Package ID\n\nExample: - \"1234567\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.min_len: 1\n",
+                    "title": "TI Package ID",
+                    "minLength": 1,
+                    "x-displayname": "TI Package ID",
+                    "x-ves-example": "1234567",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.string.min_len": "1"
+                    }
+                },
+                "name": {
+                    "type": "string",
+                    "description": " TI Package Name\n\nExample: - \"TI_Package_1\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.min_len: 1\n",
+                    "title": "TI Package Name",
+                    "minLength": 1,
+                    "x-displayname": "TI Package Name",
+                    "x-ves-example": "TI_Package_1",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.string.min_len": "1"
+                    }
+                },
+                "version": {
+                    "type": "string",
+                    "description": " TI Package Version\n\nExample: - \"1.0\"-",
+                    "title": "TI Package Version",
+                    "x-displayname": "TI Package Version",
+                    "x-ves-example": "1.0"
+                }
+            }
         }
     },
     "x-displayname": "Bot Infrastructure",

@@ -83,7 +83,7 @@ func resourceVolterraSensitiveDataPolicy() *schema.Resource {
 						"custom_data_type_ref": {
 							Type:     schema.TypeList,
 							MaxItems: 1,
-							Optional: true,
+							Required: true,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 
@@ -267,6 +267,7 @@ func resourceVolterraSensitiveDataPolicyRead(d *schema.ResourceData, meta interf
 		}
 		return fmt.Errorf("Error finding Volterra SensitiveDataPolicy %q: %s", d.Id(), err)
 	}
+
 	return setSensitiveDataPolicyFields(client, d, resp)
 }
 
@@ -437,5 +438,11 @@ func resourceVolterraSensitiveDataPolicyDelete(d *schema.ResourceData, meta inte
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_sensitive_data_policy.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_sensitive_data_policy.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting SensitiveDataPolicy: %w", err)
+	}
+	return nil
+
 }

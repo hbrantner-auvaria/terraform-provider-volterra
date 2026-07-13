@@ -19,20 +19,7 @@ Example Usage
 resource "volterra_virtual_server" "example" {
   name      = "acmecorp-web"
   namespace = "staging"
-
-  // One of the arguments from this list "managed not_managed" must be set
-
-  managed {
-    domains {
-      dns_zone {
-        name      = "test1"
-        namespace = "staging"
-        tenant    = "acmecorp"
-      }
-
-      prefix = "prefix"
-    }
-  }
+  domains   = ["www.foo.com"]
 }
 ```
 
@@ -73,21 +60,19 @@ Argument Reference
 
 `default_pool_none` - (Optional) x-displayName: "None" (`Bool`).
 
-###### One of the arguments from this list "managed, not_managed" must be set
-
-`managed` - (Optional) Domains that are managed by F5XC platform through setting up of dns_zones. See [Domain Choice Managed ](#domain-choice-managed) below for details.
-
-`not_managed` - (Optional) Not Managed by F5XC. See [Domain Choice Not Managed ](#domain-choice-not-managed) below for details.
+`domains` - (Required) Domains also indicate the list of names for which DNS resolution will be automatically resolved to IP addresses by the system. (`List of String`).
 
 ###### One of the arguments from this list "fallback_persistence_profile, fallback_persistence_profile_none" can be set
 
-`fallback_persistence_profile` - (Optional) x-displayName: "Select Profile". See [ref](#ref) below for details.
+`fallback_persistence_profile`- (Optional) x-displayName: "Select Profile". See [ref](#ref) below for details.
 
 `fallback_persistence_profile_none` - (Optional) x-displayName: "None" (`Bool`).
 
 `immediate_action_on_service_down` - (Optional) - Drop: Specifies that the system drops the connections when the virtual server is reported Offline or Unavailable.. See [Immediate Action On Service Down ](#immediate-action-on-service-down) below for details.
 
 `irules` - (Optional) Specifies the iRules you want run on this virtual server. iRules help automate the intercepting, processing, and routing of application traffic.. See [ref](#ref) below for details.
+
+`json` - (Optional) Specifies whether the JSON profile is enabled. Default value is False. (`String`).
 
 ###### One of the arguments from this list "last_hop_pool, last_hop_pool_none" can be set
 
@@ -103,7 +88,15 @@ Argument Reference
 
 `request_logging_profile_none` - (Optional) x-displayName: "None" (`Bool`).
 
+`sse` - (Optional) Specifies whether the SSE profile is enabled. Default value is False. (`String`).
+
 `state` - (Optional) State. See [State ](#state) below for details.
+
+###### One of the arguments from this list "statistics_profile, statistics_profile_none" can be set
+
+`statistics_profile` - (Optional) x-displayName: "Select Profile". See [ref](#ref) below for details.
+
+`statistics_profile_none` - (Optional) x-displayName: "None" (`Bool`).
 
 `traffic_policies` - (Optional) Specifies the Traffic Policy you want use for this virtual server.. See [ref](#ref) below for details.
 
@@ -111,15 +104,17 @@ Argument Reference
 
 `virtual_addresses` - (Optional) Specify the virtual address objects to be associated with this virtual server. See [ref](#ref) below for details.
 
-###### One of the arguments from this list "http, https, tcp, udp" can be set
+###### One of the arguments from this list "http, http3, https, tcp, udp" can be set
 
-`http` - (Optional) x-displayName: "HTTP". See [Virtual Server Type Http ](#virtual-server-type-http) below for details.
+`http` - (Optional) Selection provides configuration for HTTP and HTTP/2 services. See [Virtual Server Type Http ](#virtual-server-type-http) below for details.
 
-`https` - (Optional) x-displayName: "HTTPS". See [Virtual Server Type Https ](#virtual-server-type-https) below for details.
+`http3` - (Optional) Selection provides configuration for HTTP/3 services. See [Virtual Server Type Http3 ](#virtual-server-type-http3) below for details.
 
-`tcp` - (Optional) x-displayName: "TCP". See [Virtual Server Type Tcp ](#virtual-server-type-tcp) below for details.
+`https` - (Optional) Selection provides configuration for HTTP and HTTP/2 services with TLS configuration. See [Virtual Server Type Https ](#virtual-server-type-https) below for details.
 
-`udp` - (Optional) x-displayName: "UDP". See [Virtual Server Type Udp ](#virtual-server-type-udp) below for details.
+`tcp` - (Optional) Selection provides configuration for TCP services. See [Virtual Server Type Tcp ](#virtual-server-type-tcp) below for details.
+
+`udp` - (Optional) Selection provides configuration for UDP services. See [Virtual Server Type Udp ](#virtual-server-type-udp) below for details.
 
 `vs_score` - (Optional) Specifies the virtual server score in percent. Global Traffic Manager (GTM) can rely on this value to load balance traffic in a proportional manner. The default is 0, meaning that no additional metric is applied for the virtual server. (`Int`).
 
@@ -295,33 +290,27 @@ x-displayName: "Per Virtual Server, Destination and Source Address".
 
 `source_mask` - (Optional) x-displayName: "Source Mask" (`Int`).
 
-### Domain Choice Managed
-
-Domains that are managed by F5XC platform through setting up of dns_zones.
-
-`domains` - (Required) A list of Domains (host/authority header) that will be matched to load balancer.. See [Managed Domains ](#managed-domains) below for details.
-
-### Domain Choice Not Managed
-
-Not Managed by F5XC.
-
-`domains` - (Required) Domains also indicate the list of names for which DNS resolution will be automatically resolved to IP addresses by the system. (`String`).
-
 ### Fix Profile Choice Fix Profile None
 
 x-displayName: "None".
 
-### Http Http Profiles
+### Http2 Client Profile Choice Http2 Client Profile None
 
-Specifies that the selected HTTP profile is a client-side and server-side profile. The list contains entries for each already defined protocol profile..
+x-displayName: "None".
 
-`client_profile` - (Required) Specifies that the selected profile is a client-side HTTP profile. The list contains entries for each already defined client protocol profile.. See [ref](#ref) below for details.
+### Http2 Server Profile Choice Http2 Server Profile None
 
-###### One of the arguments from this list "server_profile, server_profile_same_as_client" can be set
+x-displayName: "None".
 
-`server_profile` - (Optional) x-displayName: "Select Profile". See [ref](#ref) below for details.
+### Http3 Services
 
-`server_profile_same_as_client` - (Optional) x-displayName: "Use Client Profile" (`Bool`).
+x-displayName: "Services".
+
+###### One of the arguments from this list "port, port_ranges" can be set
+
+`port` - (Optional) Exact Port to match (`Int`).
+
+`port_ranges` - (Optional) Port range to match (`String`).
 
 ### Http Services
 
@@ -333,35 +322,7 @@ x-displayName: "Services".
 
 `port_ranges` - (Optional) Port range to match (`String`).
 
-### Http Tcp Profiles
-
-Specifies that the selected profile is a client-side and server-side profile. The list contains entries for each already defined protocol profile..
-
-`client_profile` - (Required) Specifies that the selected profile is a client-side profile. The list contains entries for each already defined client protocol profile.. See [ref](#ref) below for details.
-
-###### One of the arguments from this list "server_profile, server_profile_same_as_client" can be set
-
-`server_profile` - (Optional) x-displayName: "Select Profile". See [ref](#ref) below for details.
-
-`server_profile_same_as_client` - (Optional) x-displayName: "Use Client Profile" (`Bool`).
-
-### Http Websocket Profiles
-
-Specifies that the selected Websocket profile is a client-side and server-side profile. The list contains entries for each already defined protocol profile..
-
-###### One of the arguments from this list "client_profile, client_profile_none" can be set
-
-`client_profile` - (Optional) x-displayName: "Select Profile". See [ref](#ref) below for details.
-
-`client_profile_none` - (Optional) x-displayName: "None" (`Bool`).
-
-###### One of the arguments from this list "server_profile, server_profile_same_as_client" can be set
-
-`server_profile` - (Optional) x-displayName: "Select Profile". See [ref](#ref) below for details.
-
-`server_profile_same_as_client` - (Optional) x-displayName: "Use Client Profile" (`Bool`).
-
-### Http Server Profile Choice Server Profile Same As Client
+### Http Server Profile Choice Http Server Profile Same As Client
 
 x-displayName: "Use Client Profile".
 
@@ -387,14 +348,6 @@ x-displayName: "None".
 
 x-displayName: "Reset".
 
-### Managed Domains
-
-A list of Domains (host/authority header) that will be matched to load balancer..
-
-`dns_zone` - (Required) DNS Zone managed by F5XC. See [ref](#ref) below for details.
-
-`prefix` - (Required) x-required (`String`).
-
 ### Nat64 Choice Nat64 Disable
 
 x-displayName: "Disable".
@@ -403,6 +356,10 @@ x-displayName: "Disable".
 
 x-displayName: "Enable".
 
+### Ocsp Profile Choice Ocsp Profile None
+
+x-displayName: "None".
+
 ### Port Translation Choice Port Translation Disable
 
 x-displayName: "Disable".
@@ -410,6 +367,14 @@ x-displayName: "Disable".
 ### Port Translation Choice Port Translation Enable
 
 x-displayName: "Enable".
+
+### Protocol Server Profile Choice Protocol Server Profile Same As Client
+
+x-displayName: "Use Client Profile".
+
+### Quic Profile Choice Quic Client Profile None
+
+x-displayName: "None".
 
 ### Ref
 
@@ -420,6 +385,74 @@ name - (Required) then name will hold the referred object's(e.g. route's) name. 
 namespace - (Optional) then namespace will hold the referred object's(e.g. route's) namespace. (String).
 
 tenant - (Optional) then tenant will hold the referred object's(e.g. route's) tenant. (String).
+
+### Server App Type Choice Server App Type Default
+
+x-displayName: "TCP".
+
+###### One of the arguments from this list "http_server_profile, http_server_profile_same_as_client" can be set
+
+`http_server_profile`- (Optional) x-displayName: "Select Profile". See [ref](#ref) below for details.
+
+`http_server_profile_same_as_client` - (Optional) x-displayName: "Use Client Profile" (`Bool`).
+
+`ssl_server_profiles` - (Optional) Specifies the SSL profile for managing server-side SSL traffic. The list contains entries for each already defined server-side SSL profile.. See [ref](#ref) below for details.
+
+`tcp_server_profile` - (Required) Specifies that the selected profile is a server-side profile. Options are: (Use Client Profile), and entries for each already defined server protocol profile. The default is (Use Client Profile).. See [ref](#ref) below for details.
+
+### Server App Type Choice Server App Type Same As Client
+
+x-displayName: "Same As Client".
+
+###### One of the arguments from this list "http2_server_profile, http2_server_profile_none" can be set
+
+`http2_server_profile` - (Optional) x-displayName: "Select Profile". See [ref](#ref) below for details.
+
+`http2_server_profile_none` - (Optional) x-displayName: "None" (`Bool`).
+
+###### One of the arguments from this list "http_server_profile, http_server_profile_same_as_client" can be set
+
+`http_server_profile` - (Optional) x-displayName: "Select Profile". See [ref](#ref) below for details.
+
+`http_server_profile_same_as_client` - (Optional) x-displayName: "Use Client Profile" (`Bool`).
+
+###### One of the arguments from this list "protocol_server_profile, protocol_server_profile_same_as_client" must be set
+
+`protocol_server_profile` - (Optional) x-displayName: "Select Profile". See [ref](#ref) below for details.
+
+`protocol_server_profile_same_as_client` - (Optional) x-displayName: "Use Client Profile" (`Bool`).
+
+`ssl_server_profiles` - (Optional) Specifies the SSL profile for managing server-side SSL traffic. The list contains entries for each already defined server-side SSL profile.. See [ref](#ref) below for details.
+
+###### One of the arguments from this list "websocket_server_profile, websocket_server_profile_same_as_client" can be set
+
+`websocket_server_profile` - (Optional) x-displayName: "Select Profile". See [ref](#ref) below for details.
+
+`websocket_server_profile_same_as_client` - (Optional) x-displayName: "Use Client Profile" (`Bool`).
+
+### Server App Type Choice Server App Type Same As Client
+
+x-displayName: "Same As Client".
+
+`ssl_server_profiles` - (Optional) Specifies the SSL profile for managing server-side SSL traffic. The list contains entries for each already defined server-side SSL profile.. See [ref](#ref) below for details.
+
+###### One of the arguments from this list "tcp_server_profile, tcp_server_profile_use_client" must be set
+
+`tcp_server_profile` - (Optional) x-displayName: "Select Profile". See [ref](#ref) below for details.
+
+`tcp_server_profile_use_client` - (Optional) x-displayName: "Use Client Profile" (`Bool`).
+
+### Server App Type Choice Server App Type Same As Client
+
+x-displayName: "Same As Client".
+
+`ssl_server_profiles` - (Optional) Specifies the SSL profile for managing server-side SSL traffic. The list contains entries for each already defined server-side SSL profile.. See [ref](#ref) below for details.
+
+###### One of the arguments from this list "udp_server_profile, udp_server_profile_use_client" must be set
+
+`udp_server_profile` - (Optional) x-displayName: "Select Profile". See [ref](#ref) below for details.
+
+`udp_server_profile_use_client` - (Optional) x-displayName: "Use Client Profile" (`Bool`).
 
 ### Source Port Choice Source Port Change
 
@@ -455,7 +488,7 @@ x-displayName: "Services".
 
 `port_ranges` - (Optional) Port range to match (`String`).
 
-### Tcp Server Profile Choice Server Profile Same As Client
+### Tcp Server Profile Choice Tcp Server Profile Use Client
 
 x-displayName: "Use Client Profile".
 
@@ -501,9 +534,37 @@ x-displayName: "Services".
 
 `port_ranges` - (Optional) Port range to match (`String`).
 
+### Udp Server Profile Choice Udp Server Profile Use Client
+
+x-displayName: "Use Client Profile".
+
+### Virtual Server Type Http3
+
+Selection provides configuration for HTTP/3 services.
+
+`http3_client_profile` - (Optional) Specifies that the selected profile is a client-side profile. The list contains entries for each already defined client protocol profile.. See [ref](#ref) below for details.
+
+`http_client_profile` - (Optional) Specifies that the selected profile is a client-side profile. The list contains entries for each already defined client protocol profile.. See [ref](#ref) below for details.
+
+`protocol_client_profile` - (Required) Specifies that the selected profile is a client-side profile. The list contains entries for each already defined client protocol profile.. See [ref](#ref) below for details.
+
+###### One of the arguments from this list "quic_client_profile, quic_client_profile_none" can be set
+
+`quic_client_profile` - (Optional) x-displayName: "Select Profile". See [ref](#ref) below for details.
+
+`quic_client_profile_none` - (Optional) x-displayName: "None" (`Bool`).
+
+###### One of the arguments from this list "server_app_type_default" can be set
+
+`server_app_type_default` - (Optional) x-displayName: "TCP". See [Server App Type Choice Server App Type Default ](#server-app-type-choice-server-app-type-default) below for details.
+
+`services` - (Optional) x-displayName: "Services". See [Http3 Services ](#http3-services) below for details.
+
+`ssl_client_profiles` - (Optional) Specifies the SSL profile for managing client-side SSL traffic. The list contains entries for each already defined client-side SSL profile.. See [ref](#ref) below for details.
+
 ### Virtual Server Type Http
 
-x-displayName: "HTTP".
+Selection provides configuration for HTTP and HTTP/2 services.
 
 ###### One of the arguments from this list "fix_profile, fix_profile_none" can be set
 
@@ -511,9 +572,29 @@ x-displayName: "HTTP".
 
 `fix_profile_none` - (Optional) x-displayName: "None" (`Bool`).
 
-`http_profiles` - (Optional) Specifies that the selected HTTP profile is a client-side and server-side profile. The list contains entries for each already defined protocol profile.. See [Http Http Profiles ](#http-http-profiles) below for details.
+###### One of the arguments from this list "http2_client_profile, http2_client_profile_none" can be set
+
+`http2_client_profile` - (Optional) x-displayName: "Select Profile". See [ref](#ref) below for details.
+
+`http2_client_profile_none` - (Optional) x-displayName: "None" (`Bool`).
+
+`http_client_profile` - (Required) Specifies that the selected profile is a client-side HTTP profile. The list contains entries for each already defined client protocol profile.. See [ref](#ref) below for details.
+
+###### One of the arguments from this list "ocsp_profile, ocsp_profile_none" can be set
+
+`ocsp_profile` - (Optional) x-displayName: "Select Profile". See [ref](#ref) below for details.
+
+`ocsp_profile_none` - (Optional) x-displayName: "None" (`Bool`).
+
+`protocol_client_profile` - (Required) Specifies that the selected profile is a client-side profile. The list contains entries for each already defined client protocol profile.. See [ref](#ref) below for details.
+
+###### One of the arguments from this list "server_app_type_same_as_client" can be set
+
+`server_app_type_same_as_client` - (Optional) x-displayName: "Same As Client". See [Server App Type Choice Server App Type Same As Client ](#server-app-type-choice-server-app-type-same-as-client) below for details.
 
 `services` - (Optional) x-displayName: "Services". See [Http Services ](#http-services) below for details.
+
+`ssl_client_profiles` - (Optional) Specifies the SSL profile for managing client-side SSL traffic. The list contains entries for each already defined client-side SSL profile.. See [ref](#ref) below for details.
 
 ###### One of the arguments from this list "stream_profile, stream_profile_none" can be set
 
@@ -521,33 +602,91 @@ x-displayName: "HTTP".
 
 `stream_profile_none` - (Optional) x-displayName: "None" (`Bool`).
 
-`tcp_profiles` - (Optional) Specifies that the selected profile is a client-side and server-side profile. The list contains entries for each already defined protocol profile.. See [Http Tcp Profiles ](#http-tcp-profiles) below for details.
+###### One of the arguments from this list "websocket_client_profile, websocket_client_profile_none" can be set
 
-`websocket_profiles` - (Optional) Specifies that the selected Websocket profile is a client-side and server-side profile. The list contains entries for each already defined protocol profile.. See [Http Websocket Profiles ](#http-websocket-profiles) below for details.
+`websocket_client_profile` - (Optional) x-displayName: "Select Profile". See [ref](#ref) below for details.
+
+`websocket_client_profile_none` - (Optional) x-displayName: "None" (`Bool`).
 
 ### Virtual Server Type Https
 
-x-displayName: "HTTPS".
+Selection provides configuration for HTTP and HTTP/2 services with TLS configuration.
+
+###### One of the arguments from this list "fix_profile, fix_profile_none" can be set
+
+`fix_profile` - (Optional) x-displayName: "Select Profile". See [ref](#ref) below for details.
+
+`fix_profile_none` - (Optional) x-displayName: "None" (`Bool`).
+
+###### One of the arguments from this list "http2_client_profile, http2_client_profile_none" can be set
+
+`http2_client_profile` - (Optional) x-displayName: "Select Profile". See [ref](#ref) below for details.
+
+`http2_client_profile_none` - (Optional) x-displayName: "None" (`Bool`).
+
+`http_client_profile` - (Required) Specifies that the selected profile is a client-side HTTP profile. The list contains entries for each already defined client protocol profile.. See [ref](#ref) below for details.
+
+###### One of the arguments from this list "ocsp_profile, ocsp_profile_none" can be set
+
+`ocsp_profile` - (Optional) x-displayName: "Select Profile". See [ref](#ref) below for details.
+
+`ocsp_profile_none` - (Optional) x-displayName: "None" (`Bool`).
+
+`protocol_client_profile` - (Required) Specifies that the selected profile is a client-side profile. The list contains entries for each already defined client protocol profile.. See [ref](#ref) below for details.
+
+###### One of the arguments from this list "server_app_type_same_as_client" can be set
+
+`server_app_type_same_as_client` - (Optional) x-displayName: "Same As Client". See [Server App Type Choice Server App Type Same As Client ](#server-app-type-choice-server-app-type-same-as-client) below for details.
 
 `services` - (Optional) x-displayName: "Services". See [Https Services ](#https-services) below for details.
 
+`ssl_client_profiles` - (Optional) Specifies the SSL profile for managing client-side SSL traffic. The list contains entries for each already defined client-side SSL profile.. See [ref](#ref) below for details.
+
+###### One of the arguments from this list "stream_profile, stream_profile_none" can be set
+
+`stream_profile` - (Optional) x-displayName: "Select Profile". See [ref](#ref) below for details.
+
+`stream_profile_none` - (Optional) x-displayName: "None" (`Bool`).
+
+###### One of the arguments from this list "websocket_client_profile, websocket_client_profile_none" can be set
+
+`websocket_client_profile` - (Optional) x-displayName: "Select Profile". See [ref](#ref) below for details.
+
+`websocket_client_profile_none` - (Optional) x-displayName: "None" (`Bool`).
+
 ### Virtual Server Type Tcp
 
-x-displayName: "TCP".
+Selection provides configuration for TCP services.
+
+`protocol_client_profile` - (Required) Specifies that the selected profile is a client-side profile. The list contains entries for each already defined client protocol profile.. See [ref](#ref) below for details.
+
+###### One of the arguments from this list "server_app_type_same_as_client" can be set
+
+`server_app_type_same_as_client` - (Optional) x-displayName: "Same As Client". See [Server App Type Choice Server App Type Same As Client ](#server-app-type-choice-server-app-type-same-as-client) below for details.
 
 `services` - (Optional) x-displayName: "Services". See [Tcp Services ](#tcp-services) below for details.
 
+`ssl_client_profiles` - (Optional) Specifies the SSL profile for managing client-side SSL traffic. The list contains entries for each already defined client-side SSL profile.. See [ref](#ref) below for details.
+
 ### Virtual Server Type Udp
 
-x-displayName: "UDP".
+Selection provides configuration for UDP services.
+
+`protocol_client_profile` - (Required) Specifies that the selected profile is a client-side profile. The list contains entries for each already defined client protocol profile.. See [ref](#ref) below for details.
+
+###### One of the arguments from this list "server_app_type_same_as_client" can be set
+
+`server_app_type_same_as_client` - (Optional) x-displayName: "Same As Client". See [Server App Type Choice Server App Type Same As Client ](#server-app-type-choice-server-app-type-same-as-client) below for details.
 
 `services` - (Optional) x-displayName: "Services". See [Udp Services ](#udp-services) below for details.
 
-### Websocket Client Profile Choice Client Profile None
+`ssl_client_profiles` - (Optional) Specifies the SSL profile for managing client-side SSL traffic. The list contains entries for each already defined client-side SSL profile.. See [ref](#ref) below for details.
+
+### Websocket Client Profile Choice Websocket Client Profile None
 
 x-displayName: "None".
 
-### Websocket Server Profile Choice Server Profile Same As Client
+### Websocket Server Profile Choice Websocket Server Profile Same As Client
 
 x-displayName: "Use Client Profile".
 

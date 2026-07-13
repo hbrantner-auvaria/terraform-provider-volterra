@@ -68,99 +68,6 @@ type ValidateAWSAttachmentsListStatusType struct {
 	FldValidators map[string]db.ValidatorFunc
 }
 
-func (v *ValidateAWSAttachmentsListStatusType) ConnectAttachmentStatusValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
-	itemRules := db.GetRepMessageItemRules(rules)
-	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
-	if err != nil {
-		return nil, errors.Wrap(err, "Message ValidationRuleHandler for connect_attachment_status")
-	}
-	itemsValidatorFn := func(ctx context.Context, elems []*AWSConnectAttachmentStatusType, opts ...db.ValidateOpt) error {
-		for i, el := range elems {
-			if err := itemValFn(ctx, el, opts...); err != nil {
-				return errors.Wrap(err, fmt.Sprintf("element %d", i))
-			}
-			if err := AWSConnectAttachmentStatusTypeValidator().Validate(ctx, el, opts...); err != nil {
-				return errors.Wrap(err, fmt.Sprintf("element %d", i))
-			}
-		}
-		return nil
-	}
-	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
-	if err != nil {
-		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for connect_attachment_status")
-	}
-
-	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
-		elems, ok := val.([]*AWSConnectAttachmentStatusType)
-		if !ok {
-			return fmt.Errorf("Repeated validation expected []*AWSConnectAttachmentStatusType, got %T", val)
-		}
-		l := []string{}
-		for _, elem := range elems {
-			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
-			if err != nil {
-				return errors.Wrapf(err, "Converting %v to JSON", elem)
-			}
-			l = append(l, strVal)
-		}
-		if err := repValFn(ctx, l, opts...); err != nil {
-			return errors.Wrap(err, "repeated connect_attachment_status")
-		}
-		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
-			return errors.Wrap(err, "items connect_attachment_status")
-		}
-		return nil
-	}
-
-	return validatorFn, nil
-}
-func (v *ValidateAWSAttachmentsListStatusType) TgwRouteTableStatusValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
-	itemRules := db.GetRepMessageItemRules(rules)
-	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
-	if err != nil {
-		return nil, errors.Wrap(err, "Message ValidationRuleHandler for tgw_route_table_status")
-	}
-	itemsValidatorFn := func(ctx context.Context, elems []*AWSTGWRouteTableStatusType, opts ...db.ValidateOpt) error {
-		for i, el := range elems {
-			if err := itemValFn(ctx, el, opts...); err != nil {
-				return errors.Wrap(err, fmt.Sprintf("element %d", i))
-			}
-			if err := AWSTGWRouteTableStatusTypeValidator().Validate(ctx, el, opts...); err != nil {
-				return errors.Wrap(err, fmt.Sprintf("element %d", i))
-			}
-		}
-		return nil
-	}
-	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
-	if err != nil {
-		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for tgw_route_table_status")
-	}
-
-	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
-		elems, ok := val.([]*AWSTGWRouteTableStatusType)
-		if !ok {
-			return fmt.Errorf("Repeated validation expected []*AWSTGWRouteTableStatusType, got %T", val)
-		}
-		l := []string{}
-		for _, elem := range elems {
-			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
-			if err != nil {
-				return errors.Wrapf(err, "Converting %v to JSON", elem)
-			}
-			l = append(l, strVal)
-		}
-		if err := repValFn(ctx, l, opts...); err != nil {
-			return errors.Wrap(err, "repeated tgw_route_table_status")
-		}
-		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
-			return errors.Wrap(err, "items tgw_route_table_status")
-		}
-		return nil
-	}
-
-	return validatorFn, nil
-}
-
 func (v *ValidateAWSAttachmentsListStatusType) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
 	m, ok := pm.(*AWSAttachmentsListStatusType)
 	if !ok {
@@ -185,14 +92,20 @@ func (v *ValidateAWSAttachmentsListStatusType) Validate(ctx context.Context, pm 
 	}
 	if fv, exists := v.FldValidators["connect_attachment_status"]; exists {
 		vOpts := append(opts, db.WithValidateField("connect_attachment_status"))
-		if err := fv(ctx, m.GetConnectAttachmentStatus(), vOpts...); err != nil {
-			return err
+		for idx, item := range m.GetConnectAttachmentStatus() {
+			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
+			if err := fv(ctx, item, vOpts...); err != nil {
+				return err
+			}
 		}
 	}
 	if fv, exists := v.FldValidators["tgw_route_table_status"]; exists {
 		vOpts := append(opts, db.WithValidateField("tgw_route_table_status"))
-		if err := fv(ctx, m.GetTgwRouteTableStatus(), vOpts...); err != nil {
-			return err
+		for idx, item := range m.GetTgwRouteTableStatus() {
+			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
+			if err := fv(ctx, item, vOpts...); err != nil {
+				return err
+			}
 		}
 	}
 	if fv, exists := v.FldValidators["tgw_status"]; exists {
@@ -213,36 +126,10 @@ func (v *ValidateAWSAttachmentsListStatusType) Validate(ctx context.Context, pm 
 // Well-known symbol for default validator implementation
 var DefaultAWSAttachmentsListStatusTypeValidator = func() *ValidateAWSAttachmentsListStatusType {
 	v := &ValidateAWSAttachmentsListStatusType{FldValidators: map[string]db.ValidatorFunc{}}
-	var (
-		err error
-		vFn db.ValidatorFunc
-	)
-	_, _ = err, vFn
-	vFnMap := map[string]db.ValidatorFunc{}
-	_ = vFnMap
-
-	vrhConnectAttachmentStatus := v.ConnectAttachmentStatusValidationRuleHandler
-	rulesConnectAttachmentStatus := map[string]string{
-		"ves.io.schema.rules.repeated.max_items": "1",
-	}
-	vFn, err = vrhConnectAttachmentStatus(rulesConnectAttachmentStatus)
-	if err != nil {
-		errMsg := fmt.Sprintf("ValidationRuleHandler for AWSAttachmentsListStatusType.connect_attachment_status: %s", err)
-		panic(errMsg)
-	}
-	v.FldValidators["connect_attachment_status"] = vFn
-
-	vrhTgwRouteTableStatus := v.TgwRouteTableStatusValidationRuleHandler
-	rulesTgwRouteTableStatus := map[string]string{
-		"ves.io.schema.rules.repeated.max_items": "2",
-	}
-	vFn, err = vrhTgwRouteTableStatus(rulesTgwRouteTableStatus)
-	if err != nil {
-		errMsg := fmt.Sprintf("ValidationRuleHandler for AWSAttachmentsListStatusType.tgw_route_table_status: %s", err)
-		panic(errMsg)
-	}
-	v.FldValidators["tgw_route_table_status"] = vFn
 	v.FldValidators["attachment_status"] = AWSAttachmentsStatusTypeValidator().Validate
+	v.FldValidators["connect_attachment_status"] = AWSConnectAttachmentStatusTypeValidator().Validate
+	v.FldValidators["tgw_route_table_status"] = AWSTGWRouteTableStatusTypeValidator().Validate
+	v.FldValidators["tgw_status"] = AWSTGWStatusTypeValidator().Validate
 
 	return v
 }()
@@ -912,6 +799,12 @@ func (v *ValidateAWSConnectAttachmentStatusType) Validate(ctx context.Context, p
 	if fv, exists := v.FldValidators["deployment_status"]; exists {
 		vOpts := append(opts, db.WithValidateField("deployment_status"))
 		if err := fv(ctx, m.GetDeploymentStatus(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["f5xc_site_asn"]; exists {
+		vOpts := append(opts, db.WithValidateField("f5xc_site_asn"))
+		if err := fv(ctx, m.GetF5XcSiteAsn(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -2221,6 +2114,7 @@ var DefaultAWSSecureMeshSiteStatusTypeValidator = func() *ValidateAWSSecureMeshS
 	v.FldValidators["attachment_status"] = AWSAttachmentsStatusTypeValidator().Validate
 	v.FldValidators["connect_attachment_status"] = AWSConnectAttachmentStatusTypeValidator().Validate
 	v.FldValidators["tgw_route_table_status"] = AWSTGWRouteTableStatusTypeValidator().Validate
+	v.FldValidators["tgw_status"] = AWSTGWStatusTypeValidator().Validate
 
 	return v
 }()
@@ -3463,6 +3357,50 @@ type ValidateAWSTGWStatusType struct {
 	FldValidators map[string]db.ValidatorFunc
 }
 
+func (v *ValidateAWSTGWStatusType) TagsValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemKeyRules := db.GetMapStringKeyRules(rules)
+	itemKeyFn, err := db.NewStringValidationRuleHandler(itemKeyRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Item key ValidationRuleHandler for tags")
+	}
+	itemValRules := db.GetMapStringValueRules(rules)
+	itemValFn, err := db.NewStringValidationRuleHandler(itemValRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Item value ValidationRuleHandler for tags")
+	}
+	itemsValidatorFn := func(ctx context.Context, kv map[string]string, opts ...db.ValidateOpt) error {
+		for key, value := range kv {
+			if err := itemKeyFn(ctx, key, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element with key %v", key))
+			}
+			if err := itemValFn(ctx, value, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("value for element with key %v", key))
+			}
+		}
+		return nil
+	}
+	mapValFn, err := db.NewMapValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Map ValidationRuleHandler for tags")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.(map[string]string)
+		if !ok {
+			return fmt.Errorf("Map validation expected map[ string ]string, got %T", val)
+		}
+		if err := mapValFn(ctx, len(elems), opts...); err != nil {
+			return errors.Wrap(err, "map tags")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items tags")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+
 func (v *ValidateAWSTGWStatusType) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
 	m, ok := pm.(*AWSTGWStatusType)
 	if !ok {
@@ -3488,6 +3426,18 @@ func (v *ValidateAWSTGWStatusType) Validate(ctx context.Context, pm interface{},
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["association_default_route_table_id"]; exists {
+		vOpts := append(opts, db.WithValidateField("association_default_route_table_id"))
+		if err := fv(ctx, m.GetAssociationDefaultRouteTableId(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["auto_accept_shared_attachments"]; exists {
+		vOpts := append(opts, db.WithValidateField("auto_accept_shared_attachments"))
+		if err := fv(ctx, m.GetAutoAcceptSharedAttachments(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["cidrs"]; exists {
 		vOpts := append(opts, db.WithValidateField("cidrs"))
 		for idx, item := range m.GetCidrs() {
@@ -3495,6 +3445,18 @@ func (v *ValidateAWSTGWStatusType) Validate(ctx context.Context, pm interface{},
 			if err := fv(ctx, item, vOpts...); err != nil {
 				return err
 			}
+		}
+	}
+	if fv, exists := v.FldValidators["default_route_table_association"]; exists {
+		vOpts := append(opts, db.WithValidateField("default_route_table_association"))
+		if err := fv(ctx, m.GetDefaultRouteTableAssociation(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["default_route_table_propagation"]; exists {
+		vOpts := append(opts, db.WithValidateField("default_route_table_propagation"))
+		if err := fv(ctx, m.GetDefaultRouteTablePropagation(), vOpts...); err != nil {
+			return err
 		}
 	}
 	if fv, exists := v.FldValidators["id"]; exists {
@@ -3506,6 +3468,12 @@ func (v *ValidateAWSTGWStatusType) Validate(ctx context.Context, pm interface{},
 	if fv, exists := v.FldValidators["owner_account"]; exists {
 		vOpts := append(opts, db.WithValidateField("owner_account"))
 		if err := fv(ctx, m.GetOwnerAccount(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["propagation_default_route_table_id"]; exists {
+		vOpts := append(opts, db.WithValidateField("propagation_default_route_table_id"))
+		if err := fv(ctx, m.GetPropagationDefaultRouteTableId(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -3529,11 +3497,8 @@ func (v *ValidateAWSTGWStatusType) Validate(ctx context.Context, pm interface{},
 	}
 	if fv, exists := v.FldValidators["tags"]; exists {
 		vOpts := append(opts, db.WithValidateField("tags"))
-		for key, value := range m.GetTags() {
-			vOpts := append(vOpts, db.WithValidateMapKey(key))
-			if err := fv(ctx, value, vOpts...); err != nil {
-				return err
-			}
+		if err := fv(ctx, m.GetTags(), vOpts...); err != nil {
+			return err
 		}
 	}
 	return nil
@@ -3542,6 +3507,26 @@ func (v *ValidateAWSTGWStatusType) Validate(ctx context.Context, pm interface{},
 // Well-known symbol for default validator implementation
 var DefaultAWSTGWStatusTypeValidator = func() *ValidateAWSTGWStatusType {
 	v := &ValidateAWSTGWStatusType{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhTags := v.TagsValidationRuleHandler
+	rulesTags := map[string]string{
+		"ves.io.schema.rules.map.keys.string.max_len":   "127",
+		"ves.io.schema.rules.map.max_pairs":             "20",
+		"ves.io.schema.rules.map.values.string.max_len": "255",
+	}
+	vFn, err = vrhTags(rulesTags)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for AWSTGWStatusType.tags: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["tags"] = vFn
 
 	return v
 }()

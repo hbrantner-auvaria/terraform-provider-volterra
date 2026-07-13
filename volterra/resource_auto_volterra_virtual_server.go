@@ -18,6 +18,7 @@ import (
 	ves_io_schema "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema"
 	ves_io_schema_views "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/views"
 	ves_io_schema_views_virtual_server "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/views/virtual_server"
+	ves_io_schema_vs_profiles "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/vs_profiles"
 )
 
 // resourceVolterraVirtualServer is implementation of Volterra's VirtualServer resources
@@ -382,72 +383,13 @@ func resourceVolterraVirtualServer() *schema.Resource {
 				Optional: true,
 			},
 
-			"managed": {
+			"domains": {
 
-				Type:     schema.TypeList,
-				MaxItems: 1,
-				Optional: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
+				Type: schema.TypeList,
 
-						"domains": {
-
-							Type:     schema.TypeList,
-							Required: true,
-							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{
-
-									"dns_zone": {
-										Type:     schema.TypeList,
-										MaxItems: 1,
-										Required: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-
-												"name": {
-													Type:     schema.TypeString,
-													Optional: true,
-												},
-												"namespace": {
-													Type:     schema.TypeString,
-													Optional: true,
-												},
-												"tenant": {
-													Type:     schema.TypeString,
-													Optional: true,
-												},
-											},
-										},
-									},
-
-									"prefix": {
-										Type:     schema.TypeString,
-										Required: true,
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-
-			"not_managed": {
-
-				Type:     schema.TypeList,
-				MaxItems: 1,
-				Optional: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-
-						"domains": {
-							Type: schema.TypeList,
-
-							Required: true,
-							Elem: &schema.Schema{
-								Type: schema.TypeString,
-							},
-						},
-					},
+				Required: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
 				},
 			},
 
@@ -549,6 +491,11 @@ func resourceVolterraVirtualServer() *schema.Resource {
 				},
 			},
 
+			"json": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+
 			"last_hop_pool": {
 
 				Type:     schema.TypeList,
@@ -640,6 +587,11 @@ func resourceVolterraVirtualServer() *schema.Resource {
 				Optional: true,
 			},
 
+			"sse": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+
 			"state": {
 
 				Type:     schema.TypeList,
@@ -669,6 +621,36 @@ func resourceVolterraVirtualServer() *schema.Resource {
 						},
 					},
 				},
+			},
+
+			"statistics_profile": {
+
+				Type:     schema.TypeList,
+				MaxItems: 1,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+
+						"name": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"namespace": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"tenant": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+					},
+				},
+			},
+
+			"statistics_profile_none": {
+
+				Type:     schema.TypeBool,
+				Optional: true,
 			},
 
 			"traffic_policies": {
@@ -872,7 +854,7 @@ func resourceVolterraVirtualServer() *schema.Resource {
 							Optional: true,
 						},
 
-						"http_profiles": {
+						"http2_client_profile": {
 
 							Type:     schema.TypeList,
 							MaxItems: 1,
@@ -880,30 +862,113 @@ func resourceVolterraVirtualServer() *schema.Resource {
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 
-									"client_profile": {
-										Type:     schema.TypeList,
-										MaxItems: 1,
-										Required: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-
-												"name": {
-													Type:     schema.TypeString,
-													Optional: true,
-												},
-												"namespace": {
-													Type:     schema.TypeString,
-													Optional: true,
-												},
-												"tenant": {
-													Type:     schema.TypeString,
-													Optional: true,
-												},
-											},
-										},
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
 									},
+									"namespace": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"tenant": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
 
-									"server_profile": {
+						"http2_client_profile_none": {
+
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+
+						"http_client_profile": {
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Required: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"namespace": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"tenant": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
+
+						"ocsp_profile": {
+
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"namespace": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"tenant": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
+
+						"ocsp_profile_none": {
+
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+
+						"protocol_client_profile": {
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Required: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"namespace": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"tenant": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
+
+						"server_app_type_same_as_client": {
+
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"http2_server_profile": {
 
 										Type:     schema.TypeList,
 										MaxItems: 1,
@@ -927,7 +992,119 @@ func resourceVolterraVirtualServer() *schema.Resource {
 										},
 									},
 
-									"server_profile_same_as_client": {
+									"http2_server_profile_none": {
+
+										Type:     schema.TypeBool,
+										Optional: true,
+									},
+
+									"http_server_profile": {
+
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"http_server_profile_same_as_client": {
+
+										Type:     schema.TypeBool,
+										Optional: true,
+									},
+
+									"protocol_server_profile": {
+
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"protocol_server_profile_same_as_client": {
+
+										Type:     schema.TypeBool,
+										Optional: true,
+									},
+
+									"ssl_server_profiles": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"websocket_server_profile": {
+
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"websocket_server_profile_same_as_client": {
 
 										Type:     schema.TypeBool,
 										Optional: true,
@@ -951,6 +1128,28 @@ func resourceVolterraVirtualServer() *schema.Resource {
 
 									"port_ranges": {
 
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
+
+						"ssl_client_profiles": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"namespace": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"tenant": {
 										Type:     schema.TypeString,
 										Optional: true,
 									},
@@ -988,7 +1187,7 @@ func resourceVolterraVirtualServer() *schema.Resource {
 							Optional: true,
 						},
 
-						"tcp_profiles": {
+						"websocket_client_profile": {
 
 							Type:     schema.TypeList,
 							MaxItems: 1,
@@ -996,7 +1195,199 @@ func resourceVolterraVirtualServer() *schema.Resource {
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 
-									"client_profile": {
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"namespace": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"tenant": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
+
+						"websocket_client_profile_none": {
+
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+					},
+				},
+			},
+
+			"http3": {
+
+				Type:     schema.TypeList,
+				MaxItems: 1,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+
+						"http3_client_profile": {
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"namespace": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"tenant": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
+
+						"http_client_profile": {
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"namespace": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"tenant": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
+
+						"protocol_client_profile": {
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Required: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"namespace": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"tenant": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
+
+						"quic_client_profile": {
+
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"namespace": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"tenant": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
+
+						"quic_client_profile_none": {
+
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+
+						"server_app_type_default": {
+
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"http_server_profile": {
+
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"http_server_profile_same_as_client": {
+
+										Type:     schema.TypeBool,
+										Optional: true,
+									},
+
+									"ssl_server_profiles": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"tcp_server_profile": {
 										Type:     schema.TypeList,
 										MaxItems: 1,
 										Required: true,
@@ -1018,121 +1409,9 @@ func resourceVolterraVirtualServer() *schema.Resource {
 											},
 										},
 									},
-
-									"server_profile": {
-
-										Type:     schema.TypeList,
-										MaxItems: 1,
-										Optional: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-
-												"name": {
-													Type:     schema.TypeString,
-													Optional: true,
-												},
-												"namespace": {
-													Type:     schema.TypeString,
-													Optional: true,
-												},
-												"tenant": {
-													Type:     schema.TypeString,
-													Optional: true,
-												},
-											},
-										},
-									},
-
-									"server_profile_same_as_client": {
-
-										Type:     schema.TypeBool,
-										Optional: true,
-									},
 								},
 							},
 						},
-
-						"websocket_profiles": {
-
-							Type:     schema.TypeList,
-							MaxItems: 1,
-							Optional: true,
-							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{
-
-									"client_profile": {
-
-										Type:     schema.TypeList,
-										MaxItems: 1,
-										Optional: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-
-												"name": {
-													Type:     schema.TypeString,
-													Optional: true,
-												},
-												"namespace": {
-													Type:     schema.TypeString,
-													Optional: true,
-												},
-												"tenant": {
-													Type:     schema.TypeString,
-													Optional: true,
-												},
-											},
-										},
-									},
-
-									"client_profile_none": {
-
-										Type:     schema.TypeBool,
-										Optional: true,
-									},
-
-									"server_profile": {
-
-										Type:     schema.TypeList,
-										MaxItems: 1,
-										Optional: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-
-												"name": {
-													Type:     schema.TypeString,
-													Optional: true,
-												},
-												"namespace": {
-													Type:     schema.TypeString,
-													Optional: true,
-												},
-												"tenant": {
-													Type:     schema.TypeString,
-													Optional: true,
-												},
-											},
-										},
-									},
-
-									"server_profile_same_as_client": {
-
-										Type:     schema.TypeBool,
-										Optional: true,
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-
-			"https": {
-
-				Type:     schema.TypeList,
-				MaxItems: 1,
-				Optional: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
 
 						"services": {
 
@@ -1155,17 +1434,328 @@ func resourceVolterraVirtualServer() *schema.Resource {
 								},
 							},
 						},
+
+						"ssl_client_profiles": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"namespace": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"tenant": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
 					},
 				},
 			},
 
-			"tcp": {
+			"https": {
 
 				Type:     schema.TypeList,
 				MaxItems: 1,
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
+
+						"fix_profile": {
+
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"namespace": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"tenant": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
+
+						"fix_profile_none": {
+
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+
+						"http2_client_profile": {
+
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"namespace": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"tenant": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
+
+						"http2_client_profile_none": {
+
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+
+						"http_client_profile": {
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Required: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"namespace": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"tenant": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
+
+						"ocsp_profile": {
+
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"namespace": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"tenant": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
+
+						"ocsp_profile_none": {
+
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+
+						"protocol_client_profile": {
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Required: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"namespace": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"tenant": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
+
+						"server_app_type_same_as_client": {
+
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"http2_server_profile": {
+
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"http2_server_profile_none": {
+
+										Type:     schema.TypeBool,
+										Optional: true,
+									},
+
+									"http_server_profile": {
+
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"http_server_profile_same_as_client": {
+
+										Type:     schema.TypeBool,
+										Optional: true,
+									},
+
+									"protocol_server_profile": {
+
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"protocol_server_profile_same_as_client": {
+
+										Type:     schema.TypeBool,
+										Optional: true,
+									},
+
+									"ssl_server_profiles": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"websocket_server_profile": {
+
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"websocket_server_profile_same_as_client": {
+
+										Type:     schema.TypeBool,
+										Optional: true,
+									},
+								},
+							},
+						},
 
 						"services": {
 
@@ -1182,6 +1772,229 @@ func resourceVolterraVirtualServer() *schema.Resource {
 
 									"port_ranges": {
 
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
+
+						"ssl_client_profiles": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"namespace": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"tenant": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
+
+						"stream_profile": {
+
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"namespace": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"tenant": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
+
+						"stream_profile_none": {
+
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+
+						"websocket_client_profile": {
+
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"namespace": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"tenant": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
+
+						"websocket_client_profile_none": {
+
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+					},
+				},
+			},
+
+			"tcp": {
+
+				Type:     schema.TypeList,
+				MaxItems: 1,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+
+						"protocol_client_profile": {
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Required: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"namespace": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"tenant": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
+
+						"server_app_type_same_as_client": {
+
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"ssl_server_profiles": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"tcp_server_profile": {
+
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"tcp_server_profile_use_client": {
+
+										Type:     schema.TypeBool,
+										Optional: true,
+									},
+								},
+							},
+						},
+
+						"services": {
+
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"port": {
+
+										Type:     schema.TypeInt,
+										Optional: true,
+									},
+
+									"port_ranges": {
+
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
+
+						"ssl_client_profiles": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"namespace": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"tenant": {
 										Type:     schema.TypeString,
 										Optional: true,
 									},
@@ -1200,6 +2013,92 @@ func resourceVolterraVirtualServer() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 
+						"protocol_client_profile": {
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Required: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"namespace": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"tenant": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
+
+						"server_app_type_same_as_client": {
+
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"ssl_server_profiles": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"udp_server_profile": {
+
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"udp_server_profile_use_client": {
+
+										Type:     schema.TypeBool,
+										Optional: true,
+									},
+								},
+							},
+						},
+
 						"services": {
 
 							Type:     schema.TypeList,
@@ -1215,6 +2114,28 @@ func resourceVolterraVirtualServer() *schema.Resource {
 
 									"port_ranges": {
 
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
+
+						"ssl_client_profiles": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"namespace": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"tenant": {
 										Type:     schema.TypeString,
 										Optional: true,
 									},
@@ -1743,99 +2664,19 @@ func resourceVolterraVirtualServerCreate(d *schema.ResourceData, meta interface{
 
 	}
 
-	//domain_choice
+	//domains
+	if v, ok := d.GetOk("domains"); ok && !isIntfNil(v) {
 
-	domainChoiceTypeFound := false
-
-	if v, ok := d.GetOk("managed"); ok && !isIntfNil(v) && !domainChoiceTypeFound {
-
-		domainChoiceTypeFound = true
-		domainChoiceInt := &ves_io_schema_views_virtual_server.CreateSpecType_Managed{}
-		domainChoiceInt.Managed = &ves_io_schema_views_virtual_server.DomainsManagedByF5XC{}
-		createSpec.DomainChoice = domainChoiceInt
-
-		sl := v.([]interface{})
-		for _, set := range sl {
-			if set != nil {
-				cs := set.(map[string]interface{})
-
-				if v, ok := cs["domains"]; ok && !isIntfNil(v) {
-
-					sl := v.([]interface{})
-					domains := make([]*ves_io_schema_views_virtual_server.ManagedDomain, len(sl))
-					domainChoiceInt.Managed.Domains = domains
-					for i, set := range sl {
-						if set != nil {
-							domains[i] = &ves_io_schema_views_virtual_server.ManagedDomain{}
-							domainsMapStrToI := set.(map[string]interface{})
-
-							if v, ok := domainsMapStrToI["dns_zone"]; ok && !isIntfNil(v) {
-
-								sl := v.([]interface{})
-								dnsZoneInt := &ves_io_schema_views.ObjectRefType{}
-								domains[i].DnsZone = dnsZoneInt
-
-								for _, set := range sl {
-									if set != nil {
-										dzMapToStrVal := set.(map[string]interface{})
-										if val, ok := dzMapToStrVal["name"]; ok && !isIntfNil(v) {
-											dnsZoneInt.Name = val.(string)
-										}
-										if val, ok := dzMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-											dnsZoneInt.Namespace = val.(string)
-										}
-
-										if val, ok := dzMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-											dnsZoneInt.Tenant = val.(string)
-										}
-									}
-								}
-
-							}
-
-							if w, ok := domainsMapStrToI["prefix"]; ok && !isIntfNil(w) {
-								domains[i].Prefix = w.(string)
-							}
-
-						}
-					}
-
-				}
-
+		ls := make([]string, len(v.([]interface{})))
+		for i, v := range v.([]interface{}) {
+			if v == nil {
+				return fmt.Errorf("please provide valid non-empty string value of field domains")
+			}
+			if str, ok := v.(string); ok {
+				ls[i] = str
 			}
 		}
-
-	}
-
-	if v, ok := d.GetOk("not_managed"); ok && !isIntfNil(v) && !domainChoiceTypeFound {
-
-		domainChoiceTypeFound = true
-		domainChoiceInt := &ves_io_schema_views_virtual_server.CreateSpecType_NotManaged{}
-		domainChoiceInt.NotManaged = &ves_io_schema_views_virtual_server.NotManagedDomainsType{}
-		createSpec.DomainChoice = domainChoiceInt
-
-		sl := v.([]interface{})
-		for _, set := range sl {
-			if set != nil {
-				cs := set.(map[string]interface{})
-
-				if v, ok := cs["domains"]; ok && !isIntfNil(v) {
-
-					ls := make([]string, len(v.([]interface{})))
-					for i, v := range v.([]interface{}) {
-						if v == nil {
-							return fmt.Errorf("please provide valid non-empty string value of field domains")
-						}
-						if str, ok := v.(string); ok {
-							ls[i] = str
-						}
-					}
-					domainChoiceInt.NotManaged.Domains = ls
-
-				}
-
-			}
-		}
+		createSpec.Domains = ls
 
 	}
 
@@ -1966,6 +2807,13 @@ func resourceVolterraVirtualServerCreate(d *schema.ResourceData, meta interface{
 
 			}
 		}
+
+	}
+
+	//json
+	if v, ok := d.GetOk("json"); ok && !isIntfNil(v) {
+
+		createSpec.Json = ves_io_schema_vs_profiles.TrueFalseChoice(ves_io_schema_vs_profiles.TrueFalseChoice_value[v.(string)])
 
 	}
 
@@ -2106,6 +2954,13 @@ func resourceVolterraVirtualServerCreate(d *schema.ResourceData, meta interface{
 
 	}
 
+	//sse
+	if v, ok := d.GetOk("sse"); ok && !isIntfNil(v) {
+
+		createSpec.Sse = ves_io_schema_vs_profiles.TrueFalseChoice(ves_io_schema_vs_profiles.TrueFalseChoice_value[v.(string)])
+
+	}
+
 	//state
 	if v, ok := d.GetOk("state"); ok && !isIntfNil(v) {
 
@@ -2137,6 +2992,57 @@ func resourceVolterraVirtualServerCreate(d *schema.ResourceData, meta interface{
 				}
 
 			}
+		}
+
+	}
+
+	//statistics_profile_choice
+
+	statisticsProfileChoiceTypeFound := false
+
+	if v, ok := d.GetOk("statistics_profile"); ok && !isIntfNil(v) && !statisticsProfileChoiceTypeFound {
+
+		statisticsProfileChoiceTypeFound = true
+		statisticsProfileChoiceInt := &ves_io_schema_views_virtual_server.CreateSpecType_StatisticsProfile{}
+		statisticsProfileChoiceInt.StatisticsProfile = &ves_io_schema_views.ObjectRefType{}
+		createSpec.StatisticsProfileChoice = statisticsProfileChoiceInt
+
+		sl := v.([]interface{})
+		for _, set := range sl {
+			if set != nil {
+				cs := set.(map[string]interface{})
+
+				if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+					statisticsProfileChoiceInt.StatisticsProfile.Name = v.(string)
+
+				}
+
+				if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+					statisticsProfileChoiceInt.StatisticsProfile.Namespace = v.(string)
+
+				}
+
+				if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+					statisticsProfileChoiceInt.StatisticsProfile.Tenant = v.(string)
+
+				}
+
+			}
+		}
+
+	}
+
+	if v, ok := d.GetOk("statistics_profile_none"); ok && !statisticsProfileChoiceTypeFound {
+
+		statisticsProfileChoiceTypeFound = true
+
+		if v.(bool) {
+			statisticsProfileChoiceInt := &ves_io_schema_views_virtual_server.CreateSpecType_StatisticsProfileNone{}
+			statisticsProfileChoiceInt.StatisticsProfileNone = &ves_io_schema.Empty{}
+			createSpec.StatisticsProfileChoice = statisticsProfileChoiceInt
 		}
 
 	}
@@ -2396,47 +3302,174 @@ func resourceVolterraVirtualServerCreate(d *schema.ResourceData, meta interface{
 
 				}
 
-				if v, ok := cs["http_profiles"]; ok && !isIntfNil(v) {
+				http2ClientProfileChoiceTypeFound := false
+
+				if v, ok := cs["http2_client_profile"]; ok && !isIntfNil(v) && !http2ClientProfileChoiceTypeFound {
+
+					http2ClientProfileChoiceTypeFound = true
+					http2ClientProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_Http2ClientProfile{}
+					http2ClientProfileChoiceInt.Http2ClientProfile = &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Http.Http2ClientProfileChoice = http2ClientProfileChoiceInt
 
 					sl := v.([]interface{})
-					httpProfiles := &ves_io_schema_views_virtual_server.HTTPProfileType{}
-					virtualServerTypeInt.Http.HttpProfiles = httpProfiles
 					for _, set := range sl {
 						if set != nil {
-							httpProfilesMapStrToI := set.(map[string]interface{})
+							cs := set.(map[string]interface{})
 
-							if v, ok := httpProfilesMapStrToI["client_profile"]; ok && !isIntfNil(v) {
+							if v, ok := cs["name"]; ok && !isIntfNil(v) {
 
-								sl := v.([]interface{})
-								clientProfileInt := &ves_io_schema_views.ObjectRefType{}
-								httpProfiles.ClientProfile = clientProfileInt
-
-								for _, set := range sl {
-									if set != nil {
-										cpMapToStrVal := set.(map[string]interface{})
-										if val, ok := cpMapToStrVal["name"]; ok && !isIntfNil(v) {
-											clientProfileInt.Name = val.(string)
-										}
-										if val, ok := cpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-											clientProfileInt.Namespace = val.(string)
-										}
-
-										if val, ok := cpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-											clientProfileInt.Tenant = val.(string)
-										}
-									}
-								}
+								http2ClientProfileChoiceInt.Http2ClientProfile.Name = v.(string)
 
 							}
 
-							httpServerProfileChoiceTypeFound := false
+							if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
 
-							if v, ok := httpProfilesMapStrToI["server_profile"]; ok && !isIntfNil(v) && !httpServerProfileChoiceTypeFound {
+								http2ClientProfileChoiceInt.Http2ClientProfile.Namespace = v.(string)
 
-								httpServerProfileChoiceTypeFound = true
-								httpServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPProfileType_ServerProfile{}
-								httpServerProfileChoiceInt.ServerProfile = &ves_io_schema_views.ObjectRefType{}
-								httpProfiles.HttpServerProfileChoice = httpServerProfileChoiceInt
+							}
+
+							if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+								http2ClientProfileChoiceInt.Http2ClientProfile.Tenant = v.(string)
+
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := cs["http2_client_profile_none"]; ok && !isIntfNil(v) && !http2ClientProfileChoiceTypeFound {
+
+					http2ClientProfileChoiceTypeFound = true
+
+					if v.(bool) {
+						http2ClientProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_Http2ClientProfileNone{}
+						http2ClientProfileChoiceInt.Http2ClientProfileNone = &ves_io_schema.Empty{}
+						virtualServerTypeInt.Http.Http2ClientProfileChoice = http2ClientProfileChoiceInt
+					}
+
+				}
+
+				if v, ok := cs["http_client_profile"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					httpClientProfileInt := &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Http.HttpClientProfile = httpClientProfileInt
+
+					for _, set := range sl {
+						if set != nil {
+							hcpMapToStrVal := set.(map[string]interface{})
+							if val, ok := hcpMapToStrVal["name"]; ok && !isIntfNil(v) {
+								httpClientProfileInt.Name = val.(string)
+							}
+							if val, ok := hcpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								httpClientProfileInt.Namespace = val.(string)
+							}
+
+							if val, ok := hcpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								httpClientProfileInt.Tenant = val.(string)
+							}
+						}
+					}
+
+				}
+
+				ocspProfileChoiceTypeFound := false
+
+				if v, ok := cs["ocsp_profile"]; ok && !isIntfNil(v) && !ocspProfileChoiceTypeFound {
+
+					ocspProfileChoiceTypeFound = true
+					ocspProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_OcspProfile{}
+					ocspProfileChoiceInt.OcspProfile = &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Http.OcspProfileChoice = ocspProfileChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+								ocspProfileChoiceInt.OcspProfile.Name = v.(string)
+
+							}
+
+							if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+								ocspProfileChoiceInt.OcspProfile.Namespace = v.(string)
+
+							}
+
+							if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+								ocspProfileChoiceInt.OcspProfile.Tenant = v.(string)
+
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := cs["ocsp_profile_none"]; ok && !isIntfNil(v) && !ocspProfileChoiceTypeFound {
+
+					ocspProfileChoiceTypeFound = true
+
+					if v.(bool) {
+						ocspProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_OcspProfileNone{}
+						ocspProfileChoiceInt.OcspProfileNone = &ves_io_schema.Empty{}
+						virtualServerTypeInt.Http.OcspProfileChoice = ocspProfileChoiceInt
+					}
+
+				}
+
+				if v, ok := cs["protocol_client_profile"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					protocolClientProfileInt := &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Http.ProtocolClientProfile = protocolClientProfileInt
+
+					for _, set := range sl {
+						if set != nil {
+							pcpMapToStrVal := set.(map[string]interface{})
+							if val, ok := pcpMapToStrVal["name"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Name = val.(string)
+							}
+							if val, ok := pcpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Namespace = val.(string)
+							}
+
+							if val, ok := pcpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Tenant = val.(string)
+							}
+						}
+					}
+
+				}
+
+				serverAppTypeChoiceTypeFound := false
+
+				if v, ok := cs["server_app_type_same_as_client"]; ok && !isIntfNil(v) && !serverAppTypeChoiceTypeFound {
+
+					serverAppTypeChoiceTypeFound = true
+					serverAppTypeChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_ServerAppTypeSameAsClient{}
+					serverAppTypeChoiceInt.ServerAppTypeSameAsClient = &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection{}
+					virtualServerTypeInt.Http.ServerAppTypeChoice = serverAppTypeChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							http2ServerProfileChoiceTypeFound := false
+
+							if v, ok := cs["http2_server_profile"]; ok && !isIntfNil(v) && !http2ServerProfileChoiceTypeFound {
+
+								http2ServerProfileChoiceTypeFound = true
+								http2ServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_Http2ServerProfile{}
+								http2ServerProfileChoiceInt.Http2ServerProfile = &ves_io_schema_views.ObjectRefType{}
+								serverAppTypeChoiceInt.ServerAppTypeSameAsClient.Http2ServerProfileChoice = http2ServerProfileChoiceInt
 
 								sl := v.([]interface{})
 								for _, set := range sl {
@@ -2445,19 +3478,19 @@ func resourceVolterraVirtualServerCreate(d *schema.ResourceData, meta interface{
 
 										if v, ok := cs["name"]; ok && !isIntfNil(v) {
 
-											httpServerProfileChoiceInt.ServerProfile.Name = v.(string)
+											http2ServerProfileChoiceInt.Http2ServerProfile.Name = v.(string)
 
 										}
 
 										if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
 
-											httpServerProfileChoiceInt.ServerProfile.Namespace = v.(string)
+											http2ServerProfileChoiceInt.Http2ServerProfile.Namespace = v.(string)
 
 										}
 
 										if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
 
-											httpServerProfileChoiceInt.ServerProfile.Tenant = v.(string)
+											http2ServerProfileChoiceInt.Http2ServerProfile.Tenant = v.(string)
 
 										}
 
@@ -2466,14 +3499,189 @@ func resourceVolterraVirtualServerCreate(d *schema.ResourceData, meta interface{
 
 							}
 
-							if v, ok := httpProfilesMapStrToI["server_profile_same_as_client"]; ok && !isIntfNil(v) && !httpServerProfileChoiceTypeFound {
+							if v, ok := cs["http2_server_profile_none"]; ok && !isIntfNil(v) && !http2ServerProfileChoiceTypeFound {
+
+								http2ServerProfileChoiceTypeFound = true
+
+								if v.(bool) {
+									http2ServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_Http2ServerProfileNone{}
+									http2ServerProfileChoiceInt.Http2ServerProfileNone = &ves_io_schema.Empty{}
+									serverAppTypeChoiceInt.ServerAppTypeSameAsClient.Http2ServerProfileChoice = http2ServerProfileChoiceInt
+								}
+
+							}
+
+							httpServerProfileChoiceTypeFound := false
+
+							if v, ok := cs["http_server_profile"]; ok && !isIntfNil(v) && !httpServerProfileChoiceTypeFound {
+
+								httpServerProfileChoiceTypeFound = true
+								httpServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_HttpServerProfile{}
+								httpServerProfileChoiceInt.HttpServerProfile = &ves_io_schema_views.ObjectRefType{}
+								serverAppTypeChoiceInt.ServerAppTypeSameAsClient.HttpServerProfileChoice = httpServerProfileChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+											httpServerProfileChoiceInt.HttpServerProfile.Name = v.(string)
+
+										}
+
+										if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+											httpServerProfileChoiceInt.HttpServerProfile.Namespace = v.(string)
+
+										}
+
+										if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+											httpServerProfileChoiceInt.HttpServerProfile.Tenant = v.(string)
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["http_server_profile_same_as_client"]; ok && !isIntfNil(v) && !httpServerProfileChoiceTypeFound {
 
 								httpServerProfileChoiceTypeFound = true
 
 								if v.(bool) {
-									httpServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPProfileType_ServerProfileSameAsClient{}
-									httpServerProfileChoiceInt.ServerProfileSameAsClient = &ves_io_schema.Empty{}
-									httpProfiles.HttpServerProfileChoice = httpServerProfileChoiceInt
+									httpServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_HttpServerProfileSameAsClient{}
+									httpServerProfileChoiceInt.HttpServerProfileSameAsClient = &ves_io_schema.Empty{}
+									serverAppTypeChoiceInt.ServerAppTypeSameAsClient.HttpServerProfileChoice = httpServerProfileChoiceInt
+								}
+
+							}
+
+							protocolServerProfileChoiceTypeFound := false
+
+							if v, ok := cs["protocol_server_profile"]; ok && !isIntfNil(v) && !protocolServerProfileChoiceTypeFound {
+
+								protocolServerProfileChoiceTypeFound = true
+								protocolServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_ProtocolServerProfile{}
+								protocolServerProfileChoiceInt.ProtocolServerProfile = &ves_io_schema_views.ObjectRefType{}
+								serverAppTypeChoiceInt.ServerAppTypeSameAsClient.ProtocolServerProfileChoice = protocolServerProfileChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+											protocolServerProfileChoiceInt.ProtocolServerProfile.Name = v.(string)
+
+										}
+
+										if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+											protocolServerProfileChoiceInt.ProtocolServerProfile.Namespace = v.(string)
+
+										}
+
+										if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+											protocolServerProfileChoiceInt.ProtocolServerProfile.Tenant = v.(string)
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["protocol_server_profile_same_as_client"]; ok && !isIntfNil(v) && !protocolServerProfileChoiceTypeFound {
+
+								protocolServerProfileChoiceTypeFound = true
+
+								if v.(bool) {
+									protocolServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_ProtocolServerProfileSameAsClient{}
+									protocolServerProfileChoiceInt.ProtocolServerProfileSameAsClient = &ves_io_schema.Empty{}
+									serverAppTypeChoiceInt.ServerAppTypeSameAsClient.ProtocolServerProfileChoice = protocolServerProfileChoiceInt
+								}
+
+							}
+
+							if v, ok := cs["ssl_server_profiles"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								sslServerProfilesInt := make([]*ves_io_schema_views.ObjectRefType, len(sl))
+								serverAppTypeChoiceInt.ServerAppTypeSameAsClient.SslServerProfiles = sslServerProfilesInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										sspMapToStrVal := ps.(map[string]interface{})
+										sslServerProfilesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+										if v, ok := sspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Name = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Tenant = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							websocketServerProfileChoiceTypeFound := false
+
+							if v, ok := cs["websocket_server_profile"]; ok && !isIntfNil(v) && !websocketServerProfileChoiceTypeFound {
+
+								websocketServerProfileChoiceTypeFound = true
+								websocketServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_WebsocketServerProfile{}
+								websocketServerProfileChoiceInt.WebsocketServerProfile = &ves_io_schema_views.ObjectRefType{}
+								serverAppTypeChoiceInt.ServerAppTypeSameAsClient.WebsocketServerProfileChoice = websocketServerProfileChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+											websocketServerProfileChoiceInt.WebsocketServerProfile.Name = v.(string)
+
+										}
+
+										if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+											websocketServerProfileChoiceInt.WebsocketServerProfile.Namespace = v.(string)
+
+										}
+
+										if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+											websocketServerProfileChoiceInt.WebsocketServerProfile.Tenant = v.(string)
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["websocket_server_profile_same_as_client"]; ok && !isIntfNil(v) && !websocketServerProfileChoiceTypeFound {
+
+								websocketServerProfileChoiceTypeFound = true
+
+								if v.(bool) {
+									websocketServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_WebsocketServerProfileSameAsClient{}
+									websocketServerProfileChoiceInt.WebsocketServerProfileSameAsClient = &ves_io_schema.Empty{}
+									serverAppTypeChoiceInt.ServerAppTypeSameAsClient.WebsocketServerProfileChoice = websocketServerProfileChoiceInt
 								}
 
 							}
@@ -2515,6 +3723,34 @@ func resourceVolterraVirtualServerCreate(d *schema.ResourceData, meta interface{
 
 								portChoiceInt.PortRanges = v.(string)
 
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := cs["ssl_client_profiles"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					sslClientProfilesInt := make([]*ves_io_schema_views.ObjectRefType, len(sl))
+					virtualServerTypeInt.Http.SslClientProfiles = sslClientProfilesInt
+					for i, ps := range sl {
+						if ps != nil {
+
+							scpMapToStrVal := ps.(map[string]interface{})
+							sslClientProfilesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+							if v, ok := scpMapToStrVal["name"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Name = v.(string)
+							}
+
+							if v, ok := scpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Namespace = v.(string)
+							}
+
+							if v, ok := scpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Tenant = v.(string)
 							}
 
 						}
@@ -2571,47 +3807,215 @@ func resourceVolterraVirtualServerCreate(d *schema.ResourceData, meta interface{
 
 				}
 
-				if v, ok := cs["tcp_profiles"]; ok && !isIntfNil(v) {
+				websocketClientProfileChoiceTypeFound := false
+
+				if v, ok := cs["websocket_client_profile"]; ok && !isIntfNil(v) && !websocketClientProfileChoiceTypeFound {
+
+					websocketClientProfileChoiceTypeFound = true
+					websocketClientProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_WebsocketClientProfile{}
+					websocketClientProfileChoiceInt.WebsocketClientProfile = &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Http.WebsocketClientProfileChoice = websocketClientProfileChoiceInt
 
 					sl := v.([]interface{})
-					tcpProfiles := &ves_io_schema_views_virtual_server.TCPProfileType{}
-					virtualServerTypeInt.Http.TcpProfiles = tcpProfiles
 					for _, set := range sl {
 						if set != nil {
-							tcpProfilesMapStrToI := set.(map[string]interface{})
+							cs := set.(map[string]interface{})
 
-							if v, ok := tcpProfilesMapStrToI["client_profile"]; ok && !isIntfNil(v) {
+							if v, ok := cs["name"]; ok && !isIntfNil(v) {
 
-								sl := v.([]interface{})
-								clientProfileInt := &ves_io_schema_views.ObjectRefType{}
-								tcpProfiles.ClientProfile = clientProfileInt
-
-								for _, set := range sl {
-									if set != nil {
-										cpMapToStrVal := set.(map[string]interface{})
-										if val, ok := cpMapToStrVal["name"]; ok && !isIntfNil(v) {
-											clientProfileInt.Name = val.(string)
-										}
-										if val, ok := cpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-											clientProfileInt.Namespace = val.(string)
-										}
-
-										if val, ok := cpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-											clientProfileInt.Tenant = val.(string)
-										}
-									}
-								}
+								websocketClientProfileChoiceInt.WebsocketClientProfile.Name = v.(string)
 
 							}
 
-							tcpServerProfileChoiceTypeFound := false
+							if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
 
-							if v, ok := tcpProfilesMapStrToI["server_profile"]; ok && !isIntfNil(v) && !tcpServerProfileChoiceTypeFound {
+								websocketClientProfileChoiceInt.WebsocketClientProfile.Namespace = v.(string)
 
-								tcpServerProfileChoiceTypeFound = true
-								tcpServerProfileChoiceInt := &ves_io_schema_views_virtual_server.TCPProfileType_ServerProfile{}
-								tcpServerProfileChoiceInt.ServerProfile = &ves_io_schema_views.ObjectRefType{}
-								tcpProfiles.TcpServerProfileChoice = tcpServerProfileChoiceInt
+							}
+
+							if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+								websocketClientProfileChoiceInt.WebsocketClientProfile.Tenant = v.(string)
+
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := cs["websocket_client_profile_none"]; ok && !isIntfNil(v) && !websocketClientProfileChoiceTypeFound {
+
+					websocketClientProfileChoiceTypeFound = true
+
+					if v.(bool) {
+						websocketClientProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_WebsocketClientProfileNone{}
+						websocketClientProfileChoiceInt.WebsocketClientProfileNone = &ves_io_schema.Empty{}
+						virtualServerTypeInt.Http.WebsocketClientProfileChoice = websocketClientProfileChoiceInt
+					}
+
+				}
+
+			}
+		}
+
+	}
+
+	if v, ok := d.GetOk("http3"); ok && !isIntfNil(v) && !virtualServerTypeTypeFound {
+
+		virtualServerTypeTypeFound = true
+		virtualServerTypeInt := &ves_io_schema_views_virtual_server.CreateSpecType_Http3{}
+		virtualServerTypeInt.Http3 = &ves_io_schema_views_virtual_server.HTTP3Services{}
+		createSpec.VirtualServerType = virtualServerTypeInt
+
+		sl := v.([]interface{})
+		for _, set := range sl {
+			if set != nil {
+				cs := set.(map[string]interface{})
+
+				if v, ok := cs["http3_client_profile"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					http3ClientProfileInt := &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Http3.Http3ClientProfile = http3ClientProfileInt
+
+					for _, set := range sl {
+						if set != nil {
+							hcpMapToStrVal := set.(map[string]interface{})
+							if val, ok := hcpMapToStrVal["name"]; ok && !isIntfNil(v) {
+								http3ClientProfileInt.Name = val.(string)
+							}
+							if val, ok := hcpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								http3ClientProfileInt.Namespace = val.(string)
+							}
+
+							if val, ok := hcpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								http3ClientProfileInt.Tenant = val.(string)
+							}
+						}
+					}
+
+				}
+
+				if v, ok := cs["http_client_profile"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					httpClientProfileInt := &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Http3.HttpClientProfile = httpClientProfileInt
+
+					for _, set := range sl {
+						if set != nil {
+							hcpMapToStrVal := set.(map[string]interface{})
+							if val, ok := hcpMapToStrVal["name"]; ok && !isIntfNil(v) {
+								httpClientProfileInt.Name = val.(string)
+							}
+							if val, ok := hcpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								httpClientProfileInt.Namespace = val.(string)
+							}
+
+							if val, ok := hcpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								httpClientProfileInt.Tenant = val.(string)
+							}
+						}
+					}
+
+				}
+
+				if v, ok := cs["protocol_client_profile"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					protocolClientProfileInt := &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Http3.ProtocolClientProfile = protocolClientProfileInt
+
+					for _, set := range sl {
+						if set != nil {
+							pcpMapToStrVal := set.(map[string]interface{})
+							if val, ok := pcpMapToStrVal["name"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Name = val.(string)
+							}
+							if val, ok := pcpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Namespace = val.(string)
+							}
+
+							if val, ok := pcpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Tenant = val.(string)
+							}
+						}
+					}
+
+				}
+
+				quicProfileChoiceTypeFound := false
+
+				if v, ok := cs["quic_client_profile"]; ok && !isIntfNil(v) && !quicProfileChoiceTypeFound {
+
+					quicProfileChoiceTypeFound = true
+					quicProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTP3Services_QuicClientProfile{}
+					quicProfileChoiceInt.QuicClientProfile = &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Http3.QuicProfileChoice = quicProfileChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+								quicProfileChoiceInt.QuicClientProfile.Name = v.(string)
+
+							}
+
+							if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+								quicProfileChoiceInt.QuicClientProfile.Namespace = v.(string)
+
+							}
+
+							if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+								quicProfileChoiceInt.QuicClientProfile.Tenant = v.(string)
+
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := cs["quic_client_profile_none"]; ok && !isIntfNil(v) && !quicProfileChoiceTypeFound {
+
+					quicProfileChoiceTypeFound = true
+
+					if v.(bool) {
+						quicProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTP3Services_QuicClientProfileNone{}
+						quicProfileChoiceInt.QuicClientProfileNone = &ves_io_schema.Empty{}
+						virtualServerTypeInt.Http3.QuicProfileChoice = quicProfileChoiceInt
+					}
+
+				}
+
+				serverAppTypeChoiceTypeFound := false
+
+				if v, ok := cs["server_app_type_default"]; ok && !isIntfNil(v) && !serverAppTypeChoiceTypeFound {
+
+					serverAppTypeChoiceTypeFound = true
+					serverAppTypeChoiceInt := &ves_io_schema_views_virtual_server.HTTP3Services_ServerAppTypeDefault{}
+					serverAppTypeChoiceInt.ServerAppTypeDefault = &ves_io_schema_views_virtual_server.HTTP3DefaultServerSelection{}
+					virtualServerTypeInt.Http3.ServerAppTypeChoice = serverAppTypeChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							httpServerProfileChoiceTypeFound := false
+
+							if v, ok := cs["http_server_profile"]; ok && !isIntfNil(v) && !httpServerProfileChoiceTypeFound {
+
+								httpServerProfileChoiceTypeFound = true
+								httpServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTP3DefaultServerSelection_HttpServerProfile{}
+								httpServerProfileChoiceInt.HttpServerProfile = &ves_io_schema_views.ObjectRefType{}
+								serverAppTypeChoiceInt.ServerAppTypeDefault.HttpServerProfileChoice = httpServerProfileChoiceInt
 
 								sl := v.([]interface{})
 								for _, set := range sl {
@@ -2620,19 +4024,19 @@ func resourceVolterraVirtualServerCreate(d *schema.ResourceData, meta interface{
 
 										if v, ok := cs["name"]; ok && !isIntfNil(v) {
 
-											tcpServerProfileChoiceInt.ServerProfile.Name = v.(string)
+											httpServerProfileChoiceInt.HttpServerProfile.Name = v.(string)
 
 										}
 
 										if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
 
-											tcpServerProfileChoiceInt.ServerProfile.Namespace = v.(string)
+											httpServerProfileChoiceInt.HttpServerProfile.Namespace = v.(string)
 
 										}
 
 										if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
 
-											tcpServerProfileChoiceInt.ServerProfile.Tenant = v.(string)
+											httpServerProfileChoiceInt.HttpServerProfile.Tenant = v.(string)
 
 										}
 
@@ -2641,14 +4045,66 @@ func resourceVolterraVirtualServerCreate(d *schema.ResourceData, meta interface{
 
 							}
 
-							if v, ok := tcpProfilesMapStrToI["server_profile_same_as_client"]; ok && !isIntfNil(v) && !tcpServerProfileChoiceTypeFound {
+							if v, ok := cs["http_server_profile_same_as_client"]; ok && !isIntfNil(v) && !httpServerProfileChoiceTypeFound {
 
-								tcpServerProfileChoiceTypeFound = true
+								httpServerProfileChoiceTypeFound = true
 
 								if v.(bool) {
-									tcpServerProfileChoiceInt := &ves_io_schema_views_virtual_server.TCPProfileType_ServerProfileSameAsClient{}
-									tcpServerProfileChoiceInt.ServerProfileSameAsClient = &ves_io_schema.Empty{}
-									tcpProfiles.TcpServerProfileChoice = tcpServerProfileChoiceInt
+									httpServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTP3DefaultServerSelection_HttpServerProfileSameAsClient{}
+									httpServerProfileChoiceInt.HttpServerProfileSameAsClient = &ves_io_schema.Empty{}
+									serverAppTypeChoiceInt.ServerAppTypeDefault.HttpServerProfileChoice = httpServerProfileChoiceInt
+								}
+
+							}
+
+							if v, ok := cs["ssl_server_profiles"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								sslServerProfilesInt := make([]*ves_io_schema_views.ObjectRefType, len(sl))
+								serverAppTypeChoiceInt.ServerAppTypeDefault.SslServerProfiles = sslServerProfilesInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										sspMapToStrVal := ps.(map[string]interface{})
+										sslServerProfilesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+										if v, ok := sspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Name = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Tenant = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["tcp_server_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								tcpServerProfileInt := &ves_io_schema_views.ObjectRefType{}
+								serverAppTypeChoiceInt.ServerAppTypeDefault.TcpServerProfile = tcpServerProfileInt
+
+								for _, set := range sl {
+									if set != nil {
+										tspMapToStrVal := set.(map[string]interface{})
+										if val, ok := tspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											tcpServerProfileInt.Name = val.(string)
+										}
+										if val, ok := tspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											tcpServerProfileInt.Namespace = val.(string)
+										}
+
+										if val, ok := tspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											tcpServerProfileInt.Tenant = val.(string)
+										}
+									}
 								}
 
 							}
@@ -2658,111 +4114,66 @@ func resourceVolterraVirtualServerCreate(d *schema.ResourceData, meta interface{
 
 				}
 
-				if v, ok := cs["websocket_profiles"]; ok && !isIntfNil(v) {
+				if v, ok := cs["services"]; ok && !isIntfNil(v) {
 
 					sl := v.([]interface{})
-					websocketProfiles := &ves_io_schema_views_virtual_server.WebsocketProfileType{}
-					virtualServerTypeInt.Http.WebsocketProfiles = websocketProfiles
-					for _, set := range sl {
+					services := make([]*ves_io_schema_views_virtual_server.ServiceType, len(sl))
+					virtualServerTypeInt.Http3.Services = services
+					for i, set := range sl {
 						if set != nil {
-							websocketProfilesMapStrToI := set.(map[string]interface{})
+							services[i] = &ves_io_schema_views_virtual_server.ServiceType{}
+							servicesMapStrToI := set.(map[string]interface{})
 
-							websocketClientProfileChoiceTypeFound := false
+							portChoiceTypeFound := false
 
-							if v, ok := websocketProfilesMapStrToI["client_profile"]; ok && !isIntfNil(v) && !websocketClientProfileChoiceTypeFound {
+							if v, ok := servicesMapStrToI["port"]; ok && !isIntfNil(v) && !portChoiceTypeFound {
 
-								websocketClientProfileChoiceTypeFound = true
-								websocketClientProfileChoiceInt := &ves_io_schema_views_virtual_server.WebsocketProfileType_ClientProfile{}
-								websocketClientProfileChoiceInt.ClientProfile = &ves_io_schema_views.ObjectRefType{}
-								websocketProfiles.WebsocketClientProfileChoice = websocketClientProfileChoiceInt
+								portChoiceTypeFound = true
+								portChoiceInt := &ves_io_schema_views_virtual_server.ServiceType_Port{}
 
-								sl := v.([]interface{})
-								for _, set := range sl {
-									if set != nil {
-										cs := set.(map[string]interface{})
+								services[i].PortChoice = portChoiceInt
 
-										if v, ok := cs["name"]; ok && !isIntfNil(v) {
-
-											websocketClientProfileChoiceInt.ClientProfile.Name = v.(string)
-
-										}
-
-										if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
-
-											websocketClientProfileChoiceInt.ClientProfile.Namespace = v.(string)
-
-										}
-
-										if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
-
-											websocketClientProfileChoiceInt.ClientProfile.Tenant = v.(string)
-
-										}
-
-									}
-								}
+								portChoiceInt.Port = uint32(v.(int))
 
 							}
 
-							if v, ok := websocketProfilesMapStrToI["client_profile_none"]; ok && !isIntfNil(v) && !websocketClientProfileChoiceTypeFound {
+							if v, ok := servicesMapStrToI["port_ranges"]; ok && !isIntfNil(v) && !portChoiceTypeFound {
 
-								websocketClientProfileChoiceTypeFound = true
+								portChoiceTypeFound = true
+								portChoiceInt := &ves_io_schema_views_virtual_server.ServiceType_PortRanges{}
 
-								if v.(bool) {
-									websocketClientProfileChoiceInt := &ves_io_schema_views_virtual_server.WebsocketProfileType_ClientProfileNone{}
-									websocketClientProfileChoiceInt.ClientProfileNone = &ves_io_schema.Empty{}
-									websocketProfiles.WebsocketClientProfileChoice = websocketClientProfileChoiceInt
-								}
+								services[i].PortChoice = portChoiceInt
 
-							}
-
-							websocketServerProfileChoiceTypeFound := false
-
-							if v, ok := websocketProfilesMapStrToI["server_profile"]; ok && !isIntfNil(v) && !websocketServerProfileChoiceTypeFound {
-
-								websocketServerProfileChoiceTypeFound = true
-								websocketServerProfileChoiceInt := &ves_io_schema_views_virtual_server.WebsocketProfileType_ServerProfile{}
-								websocketServerProfileChoiceInt.ServerProfile = &ves_io_schema_views.ObjectRefType{}
-								websocketProfiles.WebsocketServerProfileChoice = websocketServerProfileChoiceInt
-
-								sl := v.([]interface{})
-								for _, set := range sl {
-									if set != nil {
-										cs := set.(map[string]interface{})
-
-										if v, ok := cs["name"]; ok && !isIntfNil(v) {
-
-											websocketServerProfileChoiceInt.ServerProfile.Name = v.(string)
-
-										}
-
-										if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
-
-											websocketServerProfileChoiceInt.ServerProfile.Namespace = v.(string)
-
-										}
-
-										if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
-
-											websocketServerProfileChoiceInt.ServerProfile.Tenant = v.(string)
-
-										}
-
-									}
-								}
+								portChoiceInt.PortRanges = v.(string)
 
 							}
 
-							if v, ok := websocketProfilesMapStrToI["server_profile_same_as_client"]; ok && !isIntfNil(v) && !websocketServerProfileChoiceTypeFound {
+						}
+					}
 
-								websocketServerProfileChoiceTypeFound = true
+				}
 
-								if v.(bool) {
-									websocketServerProfileChoiceInt := &ves_io_schema_views_virtual_server.WebsocketProfileType_ServerProfileSameAsClient{}
-									websocketServerProfileChoiceInt.ServerProfileSameAsClient = &ves_io_schema.Empty{}
-									websocketProfiles.WebsocketServerProfileChoice = websocketServerProfileChoiceInt
-								}
+				if v, ok := cs["ssl_client_profiles"]; ok && !isIntfNil(v) {
 
+					sl := v.([]interface{})
+					sslClientProfilesInt := make([]*ves_io_schema_views.ObjectRefType, len(sl))
+					virtualServerTypeInt.Http3.SslClientProfiles = sslClientProfilesInt
+					for i, ps := range sl {
+						if ps != nil {
+
+							scpMapToStrVal := ps.(map[string]interface{})
+							sslClientProfilesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+							if v, ok := scpMapToStrVal["name"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Name = v.(string)
+							}
+
+							if v, ok := scpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Namespace = v.(string)
+							}
+
+							if v, ok := scpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Tenant = v.(string)
 							}
 
 						}
@@ -2779,13 +4190,451 @@ func resourceVolterraVirtualServerCreate(d *schema.ResourceData, meta interface{
 
 		virtualServerTypeTypeFound = true
 		virtualServerTypeInt := &ves_io_schema_views_virtual_server.CreateSpecType_Https{}
-		virtualServerTypeInt.Https = &ves_io_schema_views_virtual_server.Services{}
+		virtualServerTypeInt.Https = &ves_io_schema_views_virtual_server.HTTPServices{}
 		createSpec.VirtualServerType = virtualServerTypeInt
 
 		sl := v.([]interface{})
 		for _, set := range sl {
 			if set != nil {
 				cs := set.(map[string]interface{})
+
+				fixProfileChoiceTypeFound := false
+
+				if v, ok := cs["fix_profile"]; ok && !isIntfNil(v) && !fixProfileChoiceTypeFound {
+
+					fixProfileChoiceTypeFound = true
+					fixProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_FixProfile{}
+					fixProfileChoiceInt.FixProfile = &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Https.FixProfileChoice = fixProfileChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+								fixProfileChoiceInt.FixProfile.Name = v.(string)
+
+							}
+
+							if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+								fixProfileChoiceInt.FixProfile.Namespace = v.(string)
+
+							}
+
+							if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+								fixProfileChoiceInt.FixProfile.Tenant = v.(string)
+
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := cs["fix_profile_none"]; ok && !isIntfNil(v) && !fixProfileChoiceTypeFound {
+
+					fixProfileChoiceTypeFound = true
+
+					if v.(bool) {
+						fixProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_FixProfileNone{}
+						fixProfileChoiceInt.FixProfileNone = &ves_io_schema.Empty{}
+						virtualServerTypeInt.Https.FixProfileChoice = fixProfileChoiceInt
+					}
+
+				}
+
+				http2ClientProfileChoiceTypeFound := false
+
+				if v, ok := cs["http2_client_profile"]; ok && !isIntfNil(v) && !http2ClientProfileChoiceTypeFound {
+
+					http2ClientProfileChoiceTypeFound = true
+					http2ClientProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_Http2ClientProfile{}
+					http2ClientProfileChoiceInt.Http2ClientProfile = &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Https.Http2ClientProfileChoice = http2ClientProfileChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+								http2ClientProfileChoiceInt.Http2ClientProfile.Name = v.(string)
+
+							}
+
+							if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+								http2ClientProfileChoiceInt.Http2ClientProfile.Namespace = v.(string)
+
+							}
+
+							if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+								http2ClientProfileChoiceInt.Http2ClientProfile.Tenant = v.(string)
+
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := cs["http2_client_profile_none"]; ok && !isIntfNil(v) && !http2ClientProfileChoiceTypeFound {
+
+					http2ClientProfileChoiceTypeFound = true
+
+					if v.(bool) {
+						http2ClientProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_Http2ClientProfileNone{}
+						http2ClientProfileChoiceInt.Http2ClientProfileNone = &ves_io_schema.Empty{}
+						virtualServerTypeInt.Https.Http2ClientProfileChoice = http2ClientProfileChoiceInt
+					}
+
+				}
+
+				if v, ok := cs["http_client_profile"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					httpClientProfileInt := &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Https.HttpClientProfile = httpClientProfileInt
+
+					for _, set := range sl {
+						if set != nil {
+							hcpMapToStrVal := set.(map[string]interface{})
+							if val, ok := hcpMapToStrVal["name"]; ok && !isIntfNil(v) {
+								httpClientProfileInt.Name = val.(string)
+							}
+							if val, ok := hcpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								httpClientProfileInt.Namespace = val.(string)
+							}
+
+							if val, ok := hcpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								httpClientProfileInt.Tenant = val.(string)
+							}
+						}
+					}
+
+				}
+
+				ocspProfileChoiceTypeFound := false
+
+				if v, ok := cs["ocsp_profile"]; ok && !isIntfNil(v) && !ocspProfileChoiceTypeFound {
+
+					ocspProfileChoiceTypeFound = true
+					ocspProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_OcspProfile{}
+					ocspProfileChoiceInt.OcspProfile = &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Https.OcspProfileChoice = ocspProfileChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+								ocspProfileChoiceInt.OcspProfile.Name = v.(string)
+
+							}
+
+							if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+								ocspProfileChoiceInt.OcspProfile.Namespace = v.(string)
+
+							}
+
+							if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+								ocspProfileChoiceInt.OcspProfile.Tenant = v.(string)
+
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := cs["ocsp_profile_none"]; ok && !isIntfNil(v) && !ocspProfileChoiceTypeFound {
+
+					ocspProfileChoiceTypeFound = true
+
+					if v.(bool) {
+						ocspProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_OcspProfileNone{}
+						ocspProfileChoiceInt.OcspProfileNone = &ves_io_schema.Empty{}
+						virtualServerTypeInt.Https.OcspProfileChoice = ocspProfileChoiceInt
+					}
+
+				}
+
+				if v, ok := cs["protocol_client_profile"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					protocolClientProfileInt := &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Https.ProtocolClientProfile = protocolClientProfileInt
+
+					for _, set := range sl {
+						if set != nil {
+							pcpMapToStrVal := set.(map[string]interface{})
+							if val, ok := pcpMapToStrVal["name"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Name = val.(string)
+							}
+							if val, ok := pcpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Namespace = val.(string)
+							}
+
+							if val, ok := pcpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Tenant = val.(string)
+							}
+						}
+					}
+
+				}
+
+				serverAppTypeChoiceTypeFound := false
+
+				if v, ok := cs["server_app_type_same_as_client"]; ok && !isIntfNil(v) && !serverAppTypeChoiceTypeFound {
+
+					serverAppTypeChoiceTypeFound = true
+					serverAppTypeChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_ServerAppTypeSameAsClient{}
+					serverAppTypeChoiceInt.ServerAppTypeSameAsClient = &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection{}
+					virtualServerTypeInt.Https.ServerAppTypeChoice = serverAppTypeChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							http2ServerProfileChoiceTypeFound := false
+
+							if v, ok := cs["http2_server_profile"]; ok && !isIntfNil(v) && !http2ServerProfileChoiceTypeFound {
+
+								http2ServerProfileChoiceTypeFound = true
+								http2ServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_Http2ServerProfile{}
+								http2ServerProfileChoiceInt.Http2ServerProfile = &ves_io_schema_views.ObjectRefType{}
+								serverAppTypeChoiceInt.ServerAppTypeSameAsClient.Http2ServerProfileChoice = http2ServerProfileChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+											http2ServerProfileChoiceInt.Http2ServerProfile.Name = v.(string)
+
+										}
+
+										if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+											http2ServerProfileChoiceInt.Http2ServerProfile.Namespace = v.(string)
+
+										}
+
+										if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+											http2ServerProfileChoiceInt.Http2ServerProfile.Tenant = v.(string)
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["http2_server_profile_none"]; ok && !isIntfNil(v) && !http2ServerProfileChoiceTypeFound {
+
+								http2ServerProfileChoiceTypeFound = true
+
+								if v.(bool) {
+									http2ServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_Http2ServerProfileNone{}
+									http2ServerProfileChoiceInt.Http2ServerProfileNone = &ves_io_schema.Empty{}
+									serverAppTypeChoiceInt.ServerAppTypeSameAsClient.Http2ServerProfileChoice = http2ServerProfileChoiceInt
+								}
+
+							}
+
+							httpServerProfileChoiceTypeFound := false
+
+							if v, ok := cs["http_server_profile"]; ok && !isIntfNil(v) && !httpServerProfileChoiceTypeFound {
+
+								httpServerProfileChoiceTypeFound = true
+								httpServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_HttpServerProfile{}
+								httpServerProfileChoiceInt.HttpServerProfile = &ves_io_schema_views.ObjectRefType{}
+								serverAppTypeChoiceInt.ServerAppTypeSameAsClient.HttpServerProfileChoice = httpServerProfileChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+											httpServerProfileChoiceInt.HttpServerProfile.Name = v.(string)
+
+										}
+
+										if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+											httpServerProfileChoiceInt.HttpServerProfile.Namespace = v.(string)
+
+										}
+
+										if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+											httpServerProfileChoiceInt.HttpServerProfile.Tenant = v.(string)
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["http_server_profile_same_as_client"]; ok && !isIntfNil(v) && !httpServerProfileChoiceTypeFound {
+
+								httpServerProfileChoiceTypeFound = true
+
+								if v.(bool) {
+									httpServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_HttpServerProfileSameAsClient{}
+									httpServerProfileChoiceInt.HttpServerProfileSameAsClient = &ves_io_schema.Empty{}
+									serverAppTypeChoiceInt.ServerAppTypeSameAsClient.HttpServerProfileChoice = httpServerProfileChoiceInt
+								}
+
+							}
+
+							protocolServerProfileChoiceTypeFound := false
+
+							if v, ok := cs["protocol_server_profile"]; ok && !isIntfNil(v) && !protocolServerProfileChoiceTypeFound {
+
+								protocolServerProfileChoiceTypeFound = true
+								protocolServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_ProtocolServerProfile{}
+								protocolServerProfileChoiceInt.ProtocolServerProfile = &ves_io_schema_views.ObjectRefType{}
+								serverAppTypeChoiceInt.ServerAppTypeSameAsClient.ProtocolServerProfileChoice = protocolServerProfileChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+											protocolServerProfileChoiceInt.ProtocolServerProfile.Name = v.(string)
+
+										}
+
+										if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+											protocolServerProfileChoiceInt.ProtocolServerProfile.Namespace = v.(string)
+
+										}
+
+										if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+											protocolServerProfileChoiceInt.ProtocolServerProfile.Tenant = v.(string)
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["protocol_server_profile_same_as_client"]; ok && !isIntfNil(v) && !protocolServerProfileChoiceTypeFound {
+
+								protocolServerProfileChoiceTypeFound = true
+
+								if v.(bool) {
+									protocolServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_ProtocolServerProfileSameAsClient{}
+									protocolServerProfileChoiceInt.ProtocolServerProfileSameAsClient = &ves_io_schema.Empty{}
+									serverAppTypeChoiceInt.ServerAppTypeSameAsClient.ProtocolServerProfileChoice = protocolServerProfileChoiceInt
+								}
+
+							}
+
+							if v, ok := cs["ssl_server_profiles"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								sslServerProfilesInt := make([]*ves_io_schema_views.ObjectRefType, len(sl))
+								serverAppTypeChoiceInt.ServerAppTypeSameAsClient.SslServerProfiles = sslServerProfilesInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										sspMapToStrVal := ps.(map[string]interface{})
+										sslServerProfilesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+										if v, ok := sspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Name = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Tenant = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							websocketServerProfileChoiceTypeFound := false
+
+							if v, ok := cs["websocket_server_profile"]; ok && !isIntfNil(v) && !websocketServerProfileChoiceTypeFound {
+
+								websocketServerProfileChoiceTypeFound = true
+								websocketServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_WebsocketServerProfile{}
+								websocketServerProfileChoiceInt.WebsocketServerProfile = &ves_io_schema_views.ObjectRefType{}
+								serverAppTypeChoiceInt.ServerAppTypeSameAsClient.WebsocketServerProfileChoice = websocketServerProfileChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+											websocketServerProfileChoiceInt.WebsocketServerProfile.Name = v.(string)
+
+										}
+
+										if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+											websocketServerProfileChoiceInt.WebsocketServerProfile.Namespace = v.(string)
+
+										}
+
+										if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+											websocketServerProfileChoiceInt.WebsocketServerProfile.Tenant = v.(string)
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["websocket_server_profile_same_as_client"]; ok && !isIntfNil(v) && !websocketServerProfileChoiceTypeFound {
+
+								websocketServerProfileChoiceTypeFound = true
+
+								if v.(bool) {
+									websocketServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_WebsocketServerProfileSameAsClient{}
+									websocketServerProfileChoiceInt.WebsocketServerProfileSameAsClient = &ves_io_schema.Empty{}
+									serverAppTypeChoiceInt.ServerAppTypeSameAsClient.WebsocketServerProfileChoice = websocketServerProfileChoiceInt
+								}
+
+							}
+
+						}
+					}
+
+				}
 
 				if v, ok := cs["services"]; ok && !isIntfNil(v) {
 
@@ -2826,6 +4675,132 @@ func resourceVolterraVirtualServerCreate(d *schema.ResourceData, meta interface{
 
 				}
 
+				if v, ok := cs["ssl_client_profiles"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					sslClientProfilesInt := make([]*ves_io_schema_views.ObjectRefType, len(sl))
+					virtualServerTypeInt.Https.SslClientProfiles = sslClientProfilesInt
+					for i, ps := range sl {
+						if ps != nil {
+
+							scpMapToStrVal := ps.(map[string]interface{})
+							sslClientProfilesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+							if v, ok := scpMapToStrVal["name"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Name = v.(string)
+							}
+
+							if v, ok := scpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Namespace = v.(string)
+							}
+
+							if v, ok := scpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Tenant = v.(string)
+							}
+
+						}
+					}
+
+				}
+
+				streamProfileChoiceTypeFound := false
+
+				if v, ok := cs["stream_profile"]; ok && !isIntfNil(v) && !streamProfileChoiceTypeFound {
+
+					streamProfileChoiceTypeFound = true
+					streamProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_StreamProfile{}
+					streamProfileChoiceInt.StreamProfile = &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Https.StreamProfileChoice = streamProfileChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+								streamProfileChoiceInt.StreamProfile.Name = v.(string)
+
+							}
+
+							if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+								streamProfileChoiceInt.StreamProfile.Namespace = v.(string)
+
+							}
+
+							if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+								streamProfileChoiceInt.StreamProfile.Tenant = v.(string)
+
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := cs["stream_profile_none"]; ok && !isIntfNil(v) && !streamProfileChoiceTypeFound {
+
+					streamProfileChoiceTypeFound = true
+
+					if v.(bool) {
+						streamProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_StreamProfileNone{}
+						streamProfileChoiceInt.StreamProfileNone = &ves_io_schema.Empty{}
+						virtualServerTypeInt.Https.StreamProfileChoice = streamProfileChoiceInt
+					}
+
+				}
+
+				websocketClientProfileChoiceTypeFound := false
+
+				if v, ok := cs["websocket_client_profile"]; ok && !isIntfNil(v) && !websocketClientProfileChoiceTypeFound {
+
+					websocketClientProfileChoiceTypeFound = true
+					websocketClientProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_WebsocketClientProfile{}
+					websocketClientProfileChoiceInt.WebsocketClientProfile = &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Https.WebsocketClientProfileChoice = websocketClientProfileChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+								websocketClientProfileChoiceInt.WebsocketClientProfile.Name = v.(string)
+
+							}
+
+							if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+								websocketClientProfileChoiceInt.WebsocketClientProfile.Namespace = v.(string)
+
+							}
+
+							if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+								websocketClientProfileChoiceInt.WebsocketClientProfile.Tenant = v.(string)
+
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := cs["websocket_client_profile_none"]; ok && !isIntfNil(v) && !websocketClientProfileChoiceTypeFound {
+
+					websocketClientProfileChoiceTypeFound = true
+
+					if v.(bool) {
+						websocketClientProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_WebsocketClientProfileNone{}
+						websocketClientProfileChoiceInt.WebsocketClientProfileNone = &ves_io_schema.Empty{}
+						virtualServerTypeInt.Https.WebsocketClientProfileChoice = websocketClientProfileChoiceInt
+					}
+
+				}
+
 			}
 		}
 
@@ -2835,13 +4810,133 @@ func resourceVolterraVirtualServerCreate(d *schema.ResourceData, meta interface{
 
 		virtualServerTypeTypeFound = true
 		virtualServerTypeInt := &ves_io_schema_views_virtual_server.CreateSpecType_Tcp{}
-		virtualServerTypeInt.Tcp = &ves_io_schema_views_virtual_server.Services{}
+		virtualServerTypeInt.Tcp = &ves_io_schema_views_virtual_server.TCPServices{}
 		createSpec.VirtualServerType = virtualServerTypeInt
 
 		sl := v.([]interface{})
 		for _, set := range sl {
 			if set != nil {
 				cs := set.(map[string]interface{})
+
+				if v, ok := cs["protocol_client_profile"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					protocolClientProfileInt := &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Tcp.ProtocolClientProfile = protocolClientProfileInt
+
+					for _, set := range sl {
+						if set != nil {
+							pcpMapToStrVal := set.(map[string]interface{})
+							if val, ok := pcpMapToStrVal["name"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Name = val.(string)
+							}
+							if val, ok := pcpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Namespace = val.(string)
+							}
+
+							if val, ok := pcpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Tenant = val.(string)
+							}
+						}
+					}
+
+				}
+
+				serverAppTypeChoiceTypeFound := false
+
+				if v, ok := cs["server_app_type_same_as_client"]; ok && !isIntfNil(v) && !serverAppTypeChoiceTypeFound {
+
+					serverAppTypeChoiceTypeFound = true
+					serverAppTypeChoiceInt := &ves_io_schema_views_virtual_server.TCPServices_ServerAppTypeSameAsClient{}
+					serverAppTypeChoiceInt.ServerAppTypeSameAsClient = &ves_io_schema_views_virtual_server.TCPDefaultServerSelection{}
+					virtualServerTypeInt.Tcp.ServerAppTypeChoice = serverAppTypeChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							if v, ok := cs["ssl_server_profiles"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								sslServerProfilesInt := make([]*ves_io_schema_views.ObjectRefType, len(sl))
+								serverAppTypeChoiceInt.ServerAppTypeSameAsClient.SslServerProfiles = sslServerProfilesInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										sspMapToStrVal := ps.(map[string]interface{})
+										sslServerProfilesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+										if v, ok := sspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Name = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Tenant = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							tcpServerProfileChoiceTypeFound := false
+
+							if v, ok := cs["tcp_server_profile"]; ok && !isIntfNil(v) && !tcpServerProfileChoiceTypeFound {
+
+								tcpServerProfileChoiceTypeFound = true
+								tcpServerProfileChoiceInt := &ves_io_schema_views_virtual_server.TCPDefaultServerSelection_TcpServerProfile{}
+								tcpServerProfileChoiceInt.TcpServerProfile = &ves_io_schema_views.ObjectRefType{}
+								serverAppTypeChoiceInt.ServerAppTypeSameAsClient.TcpServerProfileChoice = tcpServerProfileChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+											tcpServerProfileChoiceInt.TcpServerProfile.Name = v.(string)
+
+										}
+
+										if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+											tcpServerProfileChoiceInt.TcpServerProfile.Namespace = v.(string)
+
+										}
+
+										if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+											tcpServerProfileChoiceInt.TcpServerProfile.Tenant = v.(string)
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["tcp_server_profile_use_client"]; ok && !isIntfNil(v) && !tcpServerProfileChoiceTypeFound {
+
+								tcpServerProfileChoiceTypeFound = true
+
+								if v.(bool) {
+									tcpServerProfileChoiceInt := &ves_io_schema_views_virtual_server.TCPDefaultServerSelection_TcpServerProfileUseClient{}
+									tcpServerProfileChoiceInt.TcpServerProfileUseClient = &ves_io_schema.Empty{}
+									serverAppTypeChoiceInt.ServerAppTypeSameAsClient.TcpServerProfileChoice = tcpServerProfileChoiceInt
+								}
+
+							}
+
+						}
+					}
+
+				}
 
 				if v, ok := cs["services"]; ok && !isIntfNil(v) {
 
@@ -2882,6 +4977,34 @@ func resourceVolterraVirtualServerCreate(d *schema.ResourceData, meta interface{
 
 				}
 
+				if v, ok := cs["ssl_client_profiles"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					sslClientProfilesInt := make([]*ves_io_schema_views.ObjectRefType, len(sl))
+					virtualServerTypeInt.Tcp.SslClientProfiles = sslClientProfilesInt
+					for i, ps := range sl {
+						if ps != nil {
+
+							scpMapToStrVal := ps.(map[string]interface{})
+							sslClientProfilesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+							if v, ok := scpMapToStrVal["name"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Name = v.(string)
+							}
+
+							if v, ok := scpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Namespace = v.(string)
+							}
+
+							if v, ok := scpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Tenant = v.(string)
+							}
+
+						}
+					}
+
+				}
+
 			}
 		}
 
@@ -2891,13 +5014,133 @@ func resourceVolterraVirtualServerCreate(d *schema.ResourceData, meta interface{
 
 		virtualServerTypeTypeFound = true
 		virtualServerTypeInt := &ves_io_schema_views_virtual_server.CreateSpecType_Udp{}
-		virtualServerTypeInt.Udp = &ves_io_schema_views_virtual_server.Services{}
+		virtualServerTypeInt.Udp = &ves_io_schema_views_virtual_server.UDPServices{}
 		createSpec.VirtualServerType = virtualServerTypeInt
 
 		sl := v.([]interface{})
 		for _, set := range sl {
 			if set != nil {
 				cs := set.(map[string]interface{})
+
+				if v, ok := cs["protocol_client_profile"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					protocolClientProfileInt := &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Udp.ProtocolClientProfile = protocolClientProfileInt
+
+					for _, set := range sl {
+						if set != nil {
+							pcpMapToStrVal := set.(map[string]interface{})
+							if val, ok := pcpMapToStrVal["name"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Name = val.(string)
+							}
+							if val, ok := pcpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Namespace = val.(string)
+							}
+
+							if val, ok := pcpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Tenant = val.(string)
+							}
+						}
+					}
+
+				}
+
+				serverAppTypeChoiceTypeFound := false
+
+				if v, ok := cs["server_app_type_same_as_client"]; ok && !isIntfNil(v) && !serverAppTypeChoiceTypeFound {
+
+					serverAppTypeChoiceTypeFound = true
+					serverAppTypeChoiceInt := &ves_io_schema_views_virtual_server.UDPServices_ServerAppTypeSameAsClient{}
+					serverAppTypeChoiceInt.ServerAppTypeSameAsClient = &ves_io_schema_views_virtual_server.UDPDefaultServerSelection{}
+					virtualServerTypeInt.Udp.ServerAppTypeChoice = serverAppTypeChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							if v, ok := cs["ssl_server_profiles"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								sslServerProfilesInt := make([]*ves_io_schema_views.ObjectRefType, len(sl))
+								serverAppTypeChoiceInt.ServerAppTypeSameAsClient.SslServerProfiles = sslServerProfilesInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										sspMapToStrVal := ps.(map[string]interface{})
+										sslServerProfilesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+										if v, ok := sspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Name = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Tenant = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							udpServerProfileChoiceTypeFound := false
+
+							if v, ok := cs["udp_server_profile"]; ok && !isIntfNil(v) && !udpServerProfileChoiceTypeFound {
+
+								udpServerProfileChoiceTypeFound = true
+								udpServerProfileChoiceInt := &ves_io_schema_views_virtual_server.UDPDefaultServerSelection_UdpServerProfile{}
+								udpServerProfileChoiceInt.UdpServerProfile = &ves_io_schema_views.ObjectRefType{}
+								serverAppTypeChoiceInt.ServerAppTypeSameAsClient.UdpServerProfileChoice = udpServerProfileChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+											udpServerProfileChoiceInt.UdpServerProfile.Name = v.(string)
+
+										}
+
+										if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+											udpServerProfileChoiceInt.UdpServerProfile.Namespace = v.(string)
+
+										}
+
+										if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+											udpServerProfileChoiceInt.UdpServerProfile.Tenant = v.(string)
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["udp_server_profile_use_client"]; ok && !isIntfNil(v) && !udpServerProfileChoiceTypeFound {
+
+								udpServerProfileChoiceTypeFound = true
+
+								if v.(bool) {
+									udpServerProfileChoiceInt := &ves_io_schema_views_virtual_server.UDPDefaultServerSelection_UdpServerProfileUseClient{}
+									udpServerProfileChoiceInt.UdpServerProfileUseClient = &ves_io_schema.Empty{}
+									serverAppTypeChoiceInt.ServerAppTypeSameAsClient.UdpServerProfileChoice = udpServerProfileChoiceInt
+								}
+
+							}
+
+						}
+					}
+
+				}
 
 				if v, ok := cs["services"]; ok && !isIntfNil(v) {
 
@@ -2931,6 +5174,34 @@ func resourceVolterraVirtualServerCreate(d *schema.ResourceData, meta interface{
 
 								portChoiceInt.PortRanges = v.(string)
 
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := cs["ssl_client_profiles"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					sslClientProfilesInt := make([]*ves_io_schema_views.ObjectRefType, len(sl))
+					virtualServerTypeInt.Udp.SslClientProfiles = sslClientProfilesInt
+					for i, ps := range sl {
+						if ps != nil {
+
+							scpMapToStrVal := ps.(map[string]interface{})
+							sslClientProfilesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+							if v, ok := scpMapToStrVal["name"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Name = v.(string)
+							}
+
+							if v, ok := scpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Namespace = v.(string)
+							}
+
+							if v, ok := scpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Tenant = v.(string)
 							}
 
 						}
@@ -2976,6 +5247,7 @@ func resourceVolterraVirtualServerRead(d *schema.ResourceData, meta interface{})
 		}
 		return fmt.Errorf("Error finding Volterra VirtualServer %q: %s", d.Id(), err)
 	}
+
 	return setVirtualServerFields(client, d, resp)
 }
 
@@ -3500,97 +5772,18 @@ func resourceVolterraVirtualServerUpdate(d *schema.ResourceData, meta interface{
 
 	}
 
-	domainChoiceTypeFound := false
+	if v, ok := d.GetOk("domains"); ok && !isIntfNil(v) {
 
-	if v, ok := d.GetOk("managed"); ok && !isIntfNil(v) && !domainChoiceTypeFound {
-
-		domainChoiceTypeFound = true
-		domainChoiceInt := &ves_io_schema_views_virtual_server.ReplaceSpecType_Managed{}
-		domainChoiceInt.Managed = &ves_io_schema_views_virtual_server.DomainsManagedByF5XC{}
-		updateSpec.DomainChoice = domainChoiceInt
-
-		sl := v.([]interface{})
-		for _, set := range sl {
-			if set != nil {
-				cs := set.(map[string]interface{})
-
-				if v, ok := cs["domains"]; ok && !isIntfNil(v) {
-
-					sl := v.([]interface{})
-					domains := make([]*ves_io_schema_views_virtual_server.ManagedDomain, len(sl))
-					domainChoiceInt.Managed.Domains = domains
-					for i, set := range sl {
-						if set != nil {
-							domains[i] = &ves_io_schema_views_virtual_server.ManagedDomain{}
-							domainsMapStrToI := set.(map[string]interface{})
-
-							if v, ok := domainsMapStrToI["dns_zone"]; ok && !isIntfNil(v) {
-
-								sl := v.([]interface{})
-								dnsZoneInt := &ves_io_schema_views.ObjectRefType{}
-								domains[i].DnsZone = dnsZoneInt
-
-								for _, set := range sl {
-									if set != nil {
-										dzMapToStrVal := set.(map[string]interface{})
-										if val, ok := dzMapToStrVal["name"]; ok && !isIntfNil(v) {
-											dnsZoneInt.Name = val.(string)
-										}
-										if val, ok := dzMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-											dnsZoneInt.Namespace = val.(string)
-										}
-
-										if val, ok := dzMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-											dnsZoneInt.Tenant = val.(string)
-										}
-									}
-								}
-
-							}
-
-							if w, ok := domainsMapStrToI["prefix"]; ok && !isIntfNil(w) {
-								domains[i].Prefix = w.(string)
-							}
-
-						}
-					}
-
-				}
-
+		ls := make([]string, len(v.([]interface{})))
+		for i, v := range v.([]interface{}) {
+			if v == nil {
+				return fmt.Errorf("please provide valid non-empty string value of field domains")
+			}
+			if str, ok := v.(string); ok {
+				ls[i] = str
 			}
 		}
-
-	}
-
-	if v, ok := d.GetOk("not_managed"); ok && !isIntfNil(v) && !domainChoiceTypeFound {
-
-		domainChoiceTypeFound = true
-		domainChoiceInt := &ves_io_schema_views_virtual_server.ReplaceSpecType_NotManaged{}
-		domainChoiceInt.NotManaged = &ves_io_schema_views_virtual_server.NotManagedDomainsType{}
-		updateSpec.DomainChoice = domainChoiceInt
-
-		sl := v.([]interface{})
-		for _, set := range sl {
-			if set != nil {
-				cs := set.(map[string]interface{})
-
-				if v, ok := cs["domains"]; ok && !isIntfNil(v) {
-
-					ls := make([]string, len(v.([]interface{})))
-					for i, v := range v.([]interface{}) {
-						if v == nil {
-							return fmt.Errorf("please provide valid non-empty string value of field domains")
-						}
-						if str, ok := v.(string); ok {
-							ls[i] = str
-						}
-					}
-					domainChoiceInt.NotManaged.Domains = ls
-
-				}
-
-			}
-		}
+		updateSpec.Domains = ls
 
 	}
 
@@ -3717,6 +5910,12 @@ func resourceVolterraVirtualServerUpdate(d *schema.ResourceData, meta interface{
 
 			}
 		}
+
+	}
+
+	if v, ok := d.GetOk("json"); ok && !isIntfNil(v) {
+
+		updateSpec.Json = ves_io_schema_vs_profiles.TrueFalseChoice(ves_io_schema_vs_profiles.TrueFalseChoice_value[v.(string)])
 
 	}
 
@@ -3852,6 +6051,12 @@ func resourceVolterraVirtualServerUpdate(d *schema.ResourceData, meta interface{
 
 	}
 
+	if v, ok := d.GetOk("sse"); ok && !isIntfNil(v) {
+
+		updateSpec.Sse = ves_io_schema_vs_profiles.TrueFalseChoice(ves_io_schema_vs_profiles.TrueFalseChoice_value[v.(string)])
+
+	}
+
 	if v, ok := d.GetOk("state"); ok && !isIntfNil(v) {
 
 		sl := v.([]interface{})
@@ -3882,6 +6087,55 @@ func resourceVolterraVirtualServerUpdate(d *schema.ResourceData, meta interface{
 				}
 
 			}
+		}
+
+	}
+
+	statisticsProfileChoiceTypeFound := false
+
+	if v, ok := d.GetOk("statistics_profile"); ok && !isIntfNil(v) && !statisticsProfileChoiceTypeFound {
+
+		statisticsProfileChoiceTypeFound = true
+		statisticsProfileChoiceInt := &ves_io_schema_views_virtual_server.ReplaceSpecType_StatisticsProfile{}
+		statisticsProfileChoiceInt.StatisticsProfile = &ves_io_schema_views.ObjectRefType{}
+		updateSpec.StatisticsProfileChoice = statisticsProfileChoiceInt
+
+		sl := v.([]interface{})
+		for _, set := range sl {
+			if set != nil {
+				cs := set.(map[string]interface{})
+
+				if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+					statisticsProfileChoiceInt.StatisticsProfile.Name = v.(string)
+
+				}
+
+				if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+					statisticsProfileChoiceInt.StatisticsProfile.Namespace = v.(string)
+
+				}
+
+				if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+					statisticsProfileChoiceInt.StatisticsProfile.Tenant = v.(string)
+
+				}
+
+			}
+		}
+
+	}
+
+	if v, ok := d.GetOk("statistics_profile_none"); ok && !statisticsProfileChoiceTypeFound {
+
+		statisticsProfileChoiceTypeFound = true
+
+		if v.(bool) {
+			statisticsProfileChoiceInt := &ves_io_schema_views_virtual_server.ReplaceSpecType_StatisticsProfileNone{}
+			statisticsProfileChoiceInt.StatisticsProfileNone = &ves_io_schema.Empty{}
+			updateSpec.StatisticsProfileChoice = statisticsProfileChoiceInt
 		}
 
 	}
@@ -4136,47 +6390,174 @@ func resourceVolterraVirtualServerUpdate(d *schema.ResourceData, meta interface{
 
 				}
 
-				if v, ok := cs["http_profiles"]; ok && !isIntfNil(v) {
+				http2ClientProfileChoiceTypeFound := false
+
+				if v, ok := cs["http2_client_profile"]; ok && !isIntfNil(v) && !http2ClientProfileChoiceTypeFound {
+
+					http2ClientProfileChoiceTypeFound = true
+					http2ClientProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_Http2ClientProfile{}
+					http2ClientProfileChoiceInt.Http2ClientProfile = &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Http.Http2ClientProfileChoice = http2ClientProfileChoiceInt
 
 					sl := v.([]interface{})
-					httpProfiles := &ves_io_schema_views_virtual_server.HTTPProfileType{}
-					virtualServerTypeInt.Http.HttpProfiles = httpProfiles
 					for _, set := range sl {
 						if set != nil {
-							httpProfilesMapStrToI := set.(map[string]interface{})
+							cs := set.(map[string]interface{})
 
-							if v, ok := httpProfilesMapStrToI["client_profile"]; ok && !isIntfNil(v) {
+							if v, ok := cs["name"]; ok && !isIntfNil(v) {
 
-								sl := v.([]interface{})
-								clientProfileInt := &ves_io_schema_views.ObjectRefType{}
-								httpProfiles.ClientProfile = clientProfileInt
-
-								for _, set := range sl {
-									if set != nil {
-										cpMapToStrVal := set.(map[string]interface{})
-										if val, ok := cpMapToStrVal["name"]; ok && !isIntfNil(v) {
-											clientProfileInt.Name = val.(string)
-										}
-										if val, ok := cpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-											clientProfileInt.Namespace = val.(string)
-										}
-
-										if val, ok := cpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-											clientProfileInt.Tenant = val.(string)
-										}
-									}
-								}
+								http2ClientProfileChoiceInt.Http2ClientProfile.Name = v.(string)
 
 							}
 
-							httpServerProfileChoiceTypeFound := false
+							if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
 
-							if v, ok := httpProfilesMapStrToI["server_profile"]; ok && !isIntfNil(v) && !httpServerProfileChoiceTypeFound {
+								http2ClientProfileChoiceInt.Http2ClientProfile.Namespace = v.(string)
 
-								httpServerProfileChoiceTypeFound = true
-								httpServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPProfileType_ServerProfile{}
-								httpServerProfileChoiceInt.ServerProfile = &ves_io_schema_views.ObjectRefType{}
-								httpProfiles.HttpServerProfileChoice = httpServerProfileChoiceInt
+							}
+
+							if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+								http2ClientProfileChoiceInt.Http2ClientProfile.Tenant = v.(string)
+
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := cs["http2_client_profile_none"]; ok && !isIntfNil(v) && !http2ClientProfileChoiceTypeFound {
+
+					http2ClientProfileChoiceTypeFound = true
+
+					if v.(bool) {
+						http2ClientProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_Http2ClientProfileNone{}
+						http2ClientProfileChoiceInt.Http2ClientProfileNone = &ves_io_schema.Empty{}
+						virtualServerTypeInt.Http.Http2ClientProfileChoice = http2ClientProfileChoiceInt
+					}
+
+				}
+
+				if v, ok := cs["http_client_profile"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					httpClientProfileInt := &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Http.HttpClientProfile = httpClientProfileInt
+
+					for _, set := range sl {
+						if set != nil {
+							hcpMapToStrVal := set.(map[string]interface{})
+							if val, ok := hcpMapToStrVal["name"]; ok && !isIntfNil(v) {
+								httpClientProfileInt.Name = val.(string)
+							}
+							if val, ok := hcpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								httpClientProfileInt.Namespace = val.(string)
+							}
+
+							if val, ok := hcpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								httpClientProfileInt.Tenant = val.(string)
+							}
+						}
+					}
+
+				}
+
+				ocspProfileChoiceTypeFound := false
+
+				if v, ok := cs["ocsp_profile"]; ok && !isIntfNil(v) && !ocspProfileChoiceTypeFound {
+
+					ocspProfileChoiceTypeFound = true
+					ocspProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_OcspProfile{}
+					ocspProfileChoiceInt.OcspProfile = &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Http.OcspProfileChoice = ocspProfileChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+								ocspProfileChoiceInt.OcspProfile.Name = v.(string)
+
+							}
+
+							if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+								ocspProfileChoiceInt.OcspProfile.Namespace = v.(string)
+
+							}
+
+							if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+								ocspProfileChoiceInt.OcspProfile.Tenant = v.(string)
+
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := cs["ocsp_profile_none"]; ok && !isIntfNil(v) && !ocspProfileChoiceTypeFound {
+
+					ocspProfileChoiceTypeFound = true
+
+					if v.(bool) {
+						ocspProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_OcspProfileNone{}
+						ocspProfileChoiceInt.OcspProfileNone = &ves_io_schema.Empty{}
+						virtualServerTypeInt.Http.OcspProfileChoice = ocspProfileChoiceInt
+					}
+
+				}
+
+				if v, ok := cs["protocol_client_profile"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					protocolClientProfileInt := &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Http.ProtocolClientProfile = protocolClientProfileInt
+
+					for _, set := range sl {
+						if set != nil {
+							pcpMapToStrVal := set.(map[string]interface{})
+							if val, ok := pcpMapToStrVal["name"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Name = val.(string)
+							}
+							if val, ok := pcpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Namespace = val.(string)
+							}
+
+							if val, ok := pcpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Tenant = val.(string)
+							}
+						}
+					}
+
+				}
+
+				serverAppTypeChoiceTypeFound := false
+
+				if v, ok := cs["server_app_type_same_as_client"]; ok && !isIntfNil(v) && !serverAppTypeChoiceTypeFound {
+
+					serverAppTypeChoiceTypeFound = true
+					serverAppTypeChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_ServerAppTypeSameAsClient{}
+					serverAppTypeChoiceInt.ServerAppTypeSameAsClient = &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection{}
+					virtualServerTypeInt.Http.ServerAppTypeChoice = serverAppTypeChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							http2ServerProfileChoiceTypeFound := false
+
+							if v, ok := cs["http2_server_profile"]; ok && !isIntfNil(v) && !http2ServerProfileChoiceTypeFound {
+
+								http2ServerProfileChoiceTypeFound = true
+								http2ServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_Http2ServerProfile{}
+								http2ServerProfileChoiceInt.Http2ServerProfile = &ves_io_schema_views.ObjectRefType{}
+								serverAppTypeChoiceInt.ServerAppTypeSameAsClient.Http2ServerProfileChoice = http2ServerProfileChoiceInt
 
 								sl := v.([]interface{})
 								for _, set := range sl {
@@ -4185,19 +6566,19 @@ func resourceVolterraVirtualServerUpdate(d *schema.ResourceData, meta interface{
 
 										if v, ok := cs["name"]; ok && !isIntfNil(v) {
 
-											httpServerProfileChoiceInt.ServerProfile.Name = v.(string)
+											http2ServerProfileChoiceInt.Http2ServerProfile.Name = v.(string)
 
 										}
 
 										if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
 
-											httpServerProfileChoiceInt.ServerProfile.Namespace = v.(string)
+											http2ServerProfileChoiceInt.Http2ServerProfile.Namespace = v.(string)
 
 										}
 
 										if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
 
-											httpServerProfileChoiceInt.ServerProfile.Tenant = v.(string)
+											http2ServerProfileChoiceInt.Http2ServerProfile.Tenant = v.(string)
 
 										}
 
@@ -4206,14 +6587,189 @@ func resourceVolterraVirtualServerUpdate(d *schema.ResourceData, meta interface{
 
 							}
 
-							if v, ok := httpProfilesMapStrToI["server_profile_same_as_client"]; ok && !isIntfNil(v) && !httpServerProfileChoiceTypeFound {
+							if v, ok := cs["http2_server_profile_none"]; ok && !isIntfNil(v) && !http2ServerProfileChoiceTypeFound {
+
+								http2ServerProfileChoiceTypeFound = true
+
+								if v.(bool) {
+									http2ServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_Http2ServerProfileNone{}
+									http2ServerProfileChoiceInt.Http2ServerProfileNone = &ves_io_schema.Empty{}
+									serverAppTypeChoiceInt.ServerAppTypeSameAsClient.Http2ServerProfileChoice = http2ServerProfileChoiceInt
+								}
+
+							}
+
+							httpServerProfileChoiceTypeFound := false
+
+							if v, ok := cs["http_server_profile"]; ok && !isIntfNil(v) && !httpServerProfileChoiceTypeFound {
+
+								httpServerProfileChoiceTypeFound = true
+								httpServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_HttpServerProfile{}
+								httpServerProfileChoiceInt.HttpServerProfile = &ves_io_schema_views.ObjectRefType{}
+								serverAppTypeChoiceInt.ServerAppTypeSameAsClient.HttpServerProfileChoice = httpServerProfileChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+											httpServerProfileChoiceInt.HttpServerProfile.Name = v.(string)
+
+										}
+
+										if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+											httpServerProfileChoiceInt.HttpServerProfile.Namespace = v.(string)
+
+										}
+
+										if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+											httpServerProfileChoiceInt.HttpServerProfile.Tenant = v.(string)
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["http_server_profile_same_as_client"]; ok && !isIntfNil(v) && !httpServerProfileChoiceTypeFound {
 
 								httpServerProfileChoiceTypeFound = true
 
 								if v.(bool) {
-									httpServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPProfileType_ServerProfileSameAsClient{}
-									httpServerProfileChoiceInt.ServerProfileSameAsClient = &ves_io_schema.Empty{}
-									httpProfiles.HttpServerProfileChoice = httpServerProfileChoiceInt
+									httpServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_HttpServerProfileSameAsClient{}
+									httpServerProfileChoiceInt.HttpServerProfileSameAsClient = &ves_io_schema.Empty{}
+									serverAppTypeChoiceInt.ServerAppTypeSameAsClient.HttpServerProfileChoice = httpServerProfileChoiceInt
+								}
+
+							}
+
+							protocolServerProfileChoiceTypeFound := false
+
+							if v, ok := cs["protocol_server_profile"]; ok && !isIntfNil(v) && !protocolServerProfileChoiceTypeFound {
+
+								protocolServerProfileChoiceTypeFound = true
+								protocolServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_ProtocolServerProfile{}
+								protocolServerProfileChoiceInt.ProtocolServerProfile = &ves_io_schema_views.ObjectRefType{}
+								serverAppTypeChoiceInt.ServerAppTypeSameAsClient.ProtocolServerProfileChoice = protocolServerProfileChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+											protocolServerProfileChoiceInt.ProtocolServerProfile.Name = v.(string)
+
+										}
+
+										if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+											protocolServerProfileChoiceInt.ProtocolServerProfile.Namespace = v.(string)
+
+										}
+
+										if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+											protocolServerProfileChoiceInt.ProtocolServerProfile.Tenant = v.(string)
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["protocol_server_profile_same_as_client"]; ok && !isIntfNil(v) && !protocolServerProfileChoiceTypeFound {
+
+								protocolServerProfileChoiceTypeFound = true
+
+								if v.(bool) {
+									protocolServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_ProtocolServerProfileSameAsClient{}
+									protocolServerProfileChoiceInt.ProtocolServerProfileSameAsClient = &ves_io_schema.Empty{}
+									serverAppTypeChoiceInt.ServerAppTypeSameAsClient.ProtocolServerProfileChoice = protocolServerProfileChoiceInt
+								}
+
+							}
+
+							if v, ok := cs["ssl_server_profiles"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								sslServerProfilesInt := make([]*ves_io_schema_views.ObjectRefType, len(sl))
+								serverAppTypeChoiceInt.ServerAppTypeSameAsClient.SslServerProfiles = sslServerProfilesInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										sspMapToStrVal := ps.(map[string]interface{})
+										sslServerProfilesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+										if v, ok := sspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Name = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Tenant = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							websocketServerProfileChoiceTypeFound := false
+
+							if v, ok := cs["websocket_server_profile"]; ok && !isIntfNil(v) && !websocketServerProfileChoiceTypeFound {
+
+								websocketServerProfileChoiceTypeFound = true
+								websocketServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_WebsocketServerProfile{}
+								websocketServerProfileChoiceInt.WebsocketServerProfile = &ves_io_schema_views.ObjectRefType{}
+								serverAppTypeChoiceInt.ServerAppTypeSameAsClient.WebsocketServerProfileChoice = websocketServerProfileChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+											websocketServerProfileChoiceInt.WebsocketServerProfile.Name = v.(string)
+
+										}
+
+										if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+											websocketServerProfileChoiceInt.WebsocketServerProfile.Namespace = v.(string)
+
+										}
+
+										if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+											websocketServerProfileChoiceInt.WebsocketServerProfile.Tenant = v.(string)
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["websocket_server_profile_same_as_client"]; ok && !isIntfNil(v) && !websocketServerProfileChoiceTypeFound {
+
+								websocketServerProfileChoiceTypeFound = true
+
+								if v.(bool) {
+									websocketServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_WebsocketServerProfileSameAsClient{}
+									websocketServerProfileChoiceInt.WebsocketServerProfileSameAsClient = &ves_io_schema.Empty{}
+									serverAppTypeChoiceInt.ServerAppTypeSameAsClient.WebsocketServerProfileChoice = websocketServerProfileChoiceInt
 								}
 
 							}
@@ -4255,6 +6811,34 @@ func resourceVolterraVirtualServerUpdate(d *schema.ResourceData, meta interface{
 
 								portChoiceInt.PortRanges = v.(string)
 
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := cs["ssl_client_profiles"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					sslClientProfilesInt := make([]*ves_io_schema_views.ObjectRefType, len(sl))
+					virtualServerTypeInt.Http.SslClientProfiles = sslClientProfilesInt
+					for i, ps := range sl {
+						if ps != nil {
+
+							scpMapToStrVal := ps.(map[string]interface{})
+							sslClientProfilesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+							if v, ok := scpMapToStrVal["name"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Name = v.(string)
+							}
+
+							if v, ok := scpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Namespace = v.(string)
+							}
+
+							if v, ok := scpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Tenant = v.(string)
 							}
 
 						}
@@ -4311,47 +6895,215 @@ func resourceVolterraVirtualServerUpdate(d *schema.ResourceData, meta interface{
 
 				}
 
-				if v, ok := cs["tcp_profiles"]; ok && !isIntfNil(v) {
+				websocketClientProfileChoiceTypeFound := false
+
+				if v, ok := cs["websocket_client_profile"]; ok && !isIntfNil(v) && !websocketClientProfileChoiceTypeFound {
+
+					websocketClientProfileChoiceTypeFound = true
+					websocketClientProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_WebsocketClientProfile{}
+					websocketClientProfileChoiceInt.WebsocketClientProfile = &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Http.WebsocketClientProfileChoice = websocketClientProfileChoiceInt
 
 					sl := v.([]interface{})
-					tcpProfiles := &ves_io_schema_views_virtual_server.TCPProfileType{}
-					virtualServerTypeInt.Http.TcpProfiles = tcpProfiles
 					for _, set := range sl {
 						if set != nil {
-							tcpProfilesMapStrToI := set.(map[string]interface{})
+							cs := set.(map[string]interface{})
 
-							if v, ok := tcpProfilesMapStrToI["client_profile"]; ok && !isIntfNil(v) {
+							if v, ok := cs["name"]; ok && !isIntfNil(v) {
 
-								sl := v.([]interface{})
-								clientProfileInt := &ves_io_schema_views.ObjectRefType{}
-								tcpProfiles.ClientProfile = clientProfileInt
-
-								for _, set := range sl {
-									if set != nil {
-										cpMapToStrVal := set.(map[string]interface{})
-										if val, ok := cpMapToStrVal["name"]; ok && !isIntfNil(v) {
-											clientProfileInt.Name = val.(string)
-										}
-										if val, ok := cpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-											clientProfileInt.Namespace = val.(string)
-										}
-
-										if val, ok := cpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-											clientProfileInt.Tenant = val.(string)
-										}
-									}
-								}
+								websocketClientProfileChoiceInt.WebsocketClientProfile.Name = v.(string)
 
 							}
 
-							tcpServerProfileChoiceTypeFound := false
+							if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
 
-							if v, ok := tcpProfilesMapStrToI["server_profile"]; ok && !isIntfNil(v) && !tcpServerProfileChoiceTypeFound {
+								websocketClientProfileChoiceInt.WebsocketClientProfile.Namespace = v.(string)
 
-								tcpServerProfileChoiceTypeFound = true
-								tcpServerProfileChoiceInt := &ves_io_schema_views_virtual_server.TCPProfileType_ServerProfile{}
-								tcpServerProfileChoiceInt.ServerProfile = &ves_io_schema_views.ObjectRefType{}
-								tcpProfiles.TcpServerProfileChoice = tcpServerProfileChoiceInt
+							}
+
+							if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+								websocketClientProfileChoiceInt.WebsocketClientProfile.Tenant = v.(string)
+
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := cs["websocket_client_profile_none"]; ok && !isIntfNil(v) && !websocketClientProfileChoiceTypeFound {
+
+					websocketClientProfileChoiceTypeFound = true
+
+					if v.(bool) {
+						websocketClientProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_WebsocketClientProfileNone{}
+						websocketClientProfileChoiceInt.WebsocketClientProfileNone = &ves_io_schema.Empty{}
+						virtualServerTypeInt.Http.WebsocketClientProfileChoice = websocketClientProfileChoiceInt
+					}
+
+				}
+
+			}
+		}
+
+	}
+
+	if v, ok := d.GetOk("http3"); ok && !isIntfNil(v) && !virtualServerTypeTypeFound {
+
+		virtualServerTypeTypeFound = true
+		virtualServerTypeInt := &ves_io_schema_views_virtual_server.ReplaceSpecType_Http3{}
+		virtualServerTypeInt.Http3 = &ves_io_schema_views_virtual_server.HTTP3Services{}
+		updateSpec.VirtualServerType = virtualServerTypeInt
+
+		sl := v.([]interface{})
+		for _, set := range sl {
+			if set != nil {
+				cs := set.(map[string]interface{})
+
+				if v, ok := cs["http3_client_profile"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					http3ClientProfileInt := &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Http3.Http3ClientProfile = http3ClientProfileInt
+
+					for _, set := range sl {
+						if set != nil {
+							hcpMapToStrVal := set.(map[string]interface{})
+							if val, ok := hcpMapToStrVal["name"]; ok && !isIntfNil(v) {
+								http3ClientProfileInt.Name = val.(string)
+							}
+							if val, ok := hcpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								http3ClientProfileInt.Namespace = val.(string)
+							}
+
+							if val, ok := hcpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								http3ClientProfileInt.Tenant = val.(string)
+							}
+						}
+					}
+
+				}
+
+				if v, ok := cs["http_client_profile"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					httpClientProfileInt := &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Http3.HttpClientProfile = httpClientProfileInt
+
+					for _, set := range sl {
+						if set != nil {
+							hcpMapToStrVal := set.(map[string]interface{})
+							if val, ok := hcpMapToStrVal["name"]; ok && !isIntfNil(v) {
+								httpClientProfileInt.Name = val.(string)
+							}
+							if val, ok := hcpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								httpClientProfileInt.Namespace = val.(string)
+							}
+
+							if val, ok := hcpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								httpClientProfileInt.Tenant = val.(string)
+							}
+						}
+					}
+
+				}
+
+				if v, ok := cs["protocol_client_profile"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					protocolClientProfileInt := &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Http3.ProtocolClientProfile = protocolClientProfileInt
+
+					for _, set := range sl {
+						if set != nil {
+							pcpMapToStrVal := set.(map[string]interface{})
+							if val, ok := pcpMapToStrVal["name"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Name = val.(string)
+							}
+							if val, ok := pcpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Namespace = val.(string)
+							}
+
+							if val, ok := pcpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Tenant = val.(string)
+							}
+						}
+					}
+
+				}
+
+				quicProfileChoiceTypeFound := false
+
+				if v, ok := cs["quic_client_profile"]; ok && !isIntfNil(v) && !quicProfileChoiceTypeFound {
+
+					quicProfileChoiceTypeFound = true
+					quicProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTP3Services_QuicClientProfile{}
+					quicProfileChoiceInt.QuicClientProfile = &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Http3.QuicProfileChoice = quicProfileChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+								quicProfileChoiceInt.QuicClientProfile.Name = v.(string)
+
+							}
+
+							if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+								quicProfileChoiceInt.QuicClientProfile.Namespace = v.(string)
+
+							}
+
+							if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+								quicProfileChoiceInt.QuicClientProfile.Tenant = v.(string)
+
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := cs["quic_client_profile_none"]; ok && !isIntfNil(v) && !quicProfileChoiceTypeFound {
+
+					quicProfileChoiceTypeFound = true
+
+					if v.(bool) {
+						quicProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTP3Services_QuicClientProfileNone{}
+						quicProfileChoiceInt.QuicClientProfileNone = &ves_io_schema.Empty{}
+						virtualServerTypeInt.Http3.QuicProfileChoice = quicProfileChoiceInt
+					}
+
+				}
+
+				serverAppTypeChoiceTypeFound := false
+
+				if v, ok := cs["server_app_type_default"]; ok && !isIntfNil(v) && !serverAppTypeChoiceTypeFound {
+
+					serverAppTypeChoiceTypeFound = true
+					serverAppTypeChoiceInt := &ves_io_schema_views_virtual_server.HTTP3Services_ServerAppTypeDefault{}
+					serverAppTypeChoiceInt.ServerAppTypeDefault = &ves_io_schema_views_virtual_server.HTTP3DefaultServerSelection{}
+					virtualServerTypeInt.Http3.ServerAppTypeChoice = serverAppTypeChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							httpServerProfileChoiceTypeFound := false
+
+							if v, ok := cs["http_server_profile"]; ok && !isIntfNil(v) && !httpServerProfileChoiceTypeFound {
+
+								httpServerProfileChoiceTypeFound = true
+								httpServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTP3DefaultServerSelection_HttpServerProfile{}
+								httpServerProfileChoiceInt.HttpServerProfile = &ves_io_schema_views.ObjectRefType{}
+								serverAppTypeChoiceInt.ServerAppTypeDefault.HttpServerProfileChoice = httpServerProfileChoiceInt
 
 								sl := v.([]interface{})
 								for _, set := range sl {
@@ -4360,19 +7112,19 @@ func resourceVolterraVirtualServerUpdate(d *schema.ResourceData, meta interface{
 
 										if v, ok := cs["name"]; ok && !isIntfNil(v) {
 
-											tcpServerProfileChoiceInt.ServerProfile.Name = v.(string)
+											httpServerProfileChoiceInt.HttpServerProfile.Name = v.(string)
 
 										}
 
 										if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
 
-											tcpServerProfileChoiceInt.ServerProfile.Namespace = v.(string)
+											httpServerProfileChoiceInt.HttpServerProfile.Namespace = v.(string)
 
 										}
 
 										if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
 
-											tcpServerProfileChoiceInt.ServerProfile.Tenant = v.(string)
+											httpServerProfileChoiceInt.HttpServerProfile.Tenant = v.(string)
 
 										}
 
@@ -4381,14 +7133,66 @@ func resourceVolterraVirtualServerUpdate(d *schema.ResourceData, meta interface{
 
 							}
 
-							if v, ok := tcpProfilesMapStrToI["server_profile_same_as_client"]; ok && !isIntfNil(v) && !tcpServerProfileChoiceTypeFound {
+							if v, ok := cs["http_server_profile_same_as_client"]; ok && !isIntfNil(v) && !httpServerProfileChoiceTypeFound {
 
-								tcpServerProfileChoiceTypeFound = true
+								httpServerProfileChoiceTypeFound = true
 
 								if v.(bool) {
-									tcpServerProfileChoiceInt := &ves_io_schema_views_virtual_server.TCPProfileType_ServerProfileSameAsClient{}
-									tcpServerProfileChoiceInt.ServerProfileSameAsClient = &ves_io_schema.Empty{}
-									tcpProfiles.TcpServerProfileChoice = tcpServerProfileChoiceInt
+									httpServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTP3DefaultServerSelection_HttpServerProfileSameAsClient{}
+									httpServerProfileChoiceInt.HttpServerProfileSameAsClient = &ves_io_schema.Empty{}
+									serverAppTypeChoiceInt.ServerAppTypeDefault.HttpServerProfileChoice = httpServerProfileChoiceInt
+								}
+
+							}
+
+							if v, ok := cs["ssl_server_profiles"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								sslServerProfilesInt := make([]*ves_io_schema_views.ObjectRefType, len(sl))
+								serverAppTypeChoiceInt.ServerAppTypeDefault.SslServerProfiles = sslServerProfilesInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										sspMapToStrVal := ps.(map[string]interface{})
+										sslServerProfilesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+										if v, ok := sspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Name = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Tenant = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["tcp_server_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								tcpServerProfileInt := &ves_io_schema_views.ObjectRefType{}
+								serverAppTypeChoiceInt.ServerAppTypeDefault.TcpServerProfile = tcpServerProfileInt
+
+								for _, set := range sl {
+									if set != nil {
+										tspMapToStrVal := set.(map[string]interface{})
+										if val, ok := tspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											tcpServerProfileInt.Name = val.(string)
+										}
+										if val, ok := tspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											tcpServerProfileInt.Namespace = val.(string)
+										}
+
+										if val, ok := tspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											tcpServerProfileInt.Tenant = val.(string)
+										}
+									}
 								}
 
 							}
@@ -4398,111 +7202,66 @@ func resourceVolterraVirtualServerUpdate(d *schema.ResourceData, meta interface{
 
 				}
 
-				if v, ok := cs["websocket_profiles"]; ok && !isIntfNil(v) {
+				if v, ok := cs["services"]; ok && !isIntfNil(v) {
 
 					sl := v.([]interface{})
-					websocketProfiles := &ves_io_schema_views_virtual_server.WebsocketProfileType{}
-					virtualServerTypeInt.Http.WebsocketProfiles = websocketProfiles
-					for _, set := range sl {
+					services := make([]*ves_io_schema_views_virtual_server.ServiceType, len(sl))
+					virtualServerTypeInt.Http3.Services = services
+					for i, set := range sl {
 						if set != nil {
-							websocketProfilesMapStrToI := set.(map[string]interface{})
+							services[i] = &ves_io_schema_views_virtual_server.ServiceType{}
+							servicesMapStrToI := set.(map[string]interface{})
 
-							websocketClientProfileChoiceTypeFound := false
+							portChoiceTypeFound := false
 
-							if v, ok := websocketProfilesMapStrToI["client_profile"]; ok && !isIntfNil(v) && !websocketClientProfileChoiceTypeFound {
+							if v, ok := servicesMapStrToI["port"]; ok && !isIntfNil(v) && !portChoiceTypeFound {
 
-								websocketClientProfileChoiceTypeFound = true
-								websocketClientProfileChoiceInt := &ves_io_schema_views_virtual_server.WebsocketProfileType_ClientProfile{}
-								websocketClientProfileChoiceInt.ClientProfile = &ves_io_schema_views.ObjectRefType{}
-								websocketProfiles.WebsocketClientProfileChoice = websocketClientProfileChoiceInt
+								portChoiceTypeFound = true
+								portChoiceInt := &ves_io_schema_views_virtual_server.ServiceType_Port{}
 
-								sl := v.([]interface{})
-								for _, set := range sl {
-									if set != nil {
-										cs := set.(map[string]interface{})
+								services[i].PortChoice = portChoiceInt
 
-										if v, ok := cs["name"]; ok && !isIntfNil(v) {
-
-											websocketClientProfileChoiceInt.ClientProfile.Name = v.(string)
-
-										}
-
-										if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
-
-											websocketClientProfileChoiceInt.ClientProfile.Namespace = v.(string)
-
-										}
-
-										if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
-
-											websocketClientProfileChoiceInt.ClientProfile.Tenant = v.(string)
-
-										}
-
-									}
-								}
+								portChoiceInt.Port = uint32(v.(int))
 
 							}
 
-							if v, ok := websocketProfilesMapStrToI["client_profile_none"]; ok && !isIntfNil(v) && !websocketClientProfileChoiceTypeFound {
+							if v, ok := servicesMapStrToI["port_ranges"]; ok && !isIntfNil(v) && !portChoiceTypeFound {
 
-								websocketClientProfileChoiceTypeFound = true
+								portChoiceTypeFound = true
+								portChoiceInt := &ves_io_schema_views_virtual_server.ServiceType_PortRanges{}
 
-								if v.(bool) {
-									websocketClientProfileChoiceInt := &ves_io_schema_views_virtual_server.WebsocketProfileType_ClientProfileNone{}
-									websocketClientProfileChoiceInt.ClientProfileNone = &ves_io_schema.Empty{}
-									websocketProfiles.WebsocketClientProfileChoice = websocketClientProfileChoiceInt
-								}
+								services[i].PortChoice = portChoiceInt
 
-							}
-
-							websocketServerProfileChoiceTypeFound := false
-
-							if v, ok := websocketProfilesMapStrToI["server_profile"]; ok && !isIntfNil(v) && !websocketServerProfileChoiceTypeFound {
-
-								websocketServerProfileChoiceTypeFound = true
-								websocketServerProfileChoiceInt := &ves_io_schema_views_virtual_server.WebsocketProfileType_ServerProfile{}
-								websocketServerProfileChoiceInt.ServerProfile = &ves_io_schema_views.ObjectRefType{}
-								websocketProfiles.WebsocketServerProfileChoice = websocketServerProfileChoiceInt
-
-								sl := v.([]interface{})
-								for _, set := range sl {
-									if set != nil {
-										cs := set.(map[string]interface{})
-
-										if v, ok := cs["name"]; ok && !isIntfNil(v) {
-
-											websocketServerProfileChoiceInt.ServerProfile.Name = v.(string)
-
-										}
-
-										if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
-
-											websocketServerProfileChoiceInt.ServerProfile.Namespace = v.(string)
-
-										}
-
-										if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
-
-											websocketServerProfileChoiceInt.ServerProfile.Tenant = v.(string)
-
-										}
-
-									}
-								}
+								portChoiceInt.PortRanges = v.(string)
 
 							}
 
-							if v, ok := websocketProfilesMapStrToI["server_profile_same_as_client"]; ok && !isIntfNil(v) && !websocketServerProfileChoiceTypeFound {
+						}
+					}
 
-								websocketServerProfileChoiceTypeFound = true
+				}
 
-								if v.(bool) {
-									websocketServerProfileChoiceInt := &ves_io_schema_views_virtual_server.WebsocketProfileType_ServerProfileSameAsClient{}
-									websocketServerProfileChoiceInt.ServerProfileSameAsClient = &ves_io_schema.Empty{}
-									websocketProfiles.WebsocketServerProfileChoice = websocketServerProfileChoiceInt
-								}
+				if v, ok := cs["ssl_client_profiles"]; ok && !isIntfNil(v) {
 
+					sl := v.([]interface{})
+					sslClientProfilesInt := make([]*ves_io_schema_views.ObjectRefType, len(sl))
+					virtualServerTypeInt.Http3.SslClientProfiles = sslClientProfilesInt
+					for i, ps := range sl {
+						if ps != nil {
+
+							scpMapToStrVal := ps.(map[string]interface{})
+							sslClientProfilesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+							if v, ok := scpMapToStrVal["name"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Name = v.(string)
+							}
+
+							if v, ok := scpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Namespace = v.(string)
+							}
+
+							if v, ok := scpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Tenant = v.(string)
 							}
 
 						}
@@ -4519,13 +7278,451 @@ func resourceVolterraVirtualServerUpdate(d *schema.ResourceData, meta interface{
 
 		virtualServerTypeTypeFound = true
 		virtualServerTypeInt := &ves_io_schema_views_virtual_server.ReplaceSpecType_Https{}
-		virtualServerTypeInt.Https = &ves_io_schema_views_virtual_server.Services{}
+		virtualServerTypeInt.Https = &ves_io_schema_views_virtual_server.HTTPServices{}
 		updateSpec.VirtualServerType = virtualServerTypeInt
 
 		sl := v.([]interface{})
 		for _, set := range sl {
 			if set != nil {
 				cs := set.(map[string]interface{})
+
+				fixProfileChoiceTypeFound := false
+
+				if v, ok := cs["fix_profile"]; ok && !isIntfNil(v) && !fixProfileChoiceTypeFound {
+
+					fixProfileChoiceTypeFound = true
+					fixProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_FixProfile{}
+					fixProfileChoiceInt.FixProfile = &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Https.FixProfileChoice = fixProfileChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+								fixProfileChoiceInt.FixProfile.Name = v.(string)
+
+							}
+
+							if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+								fixProfileChoiceInt.FixProfile.Namespace = v.(string)
+
+							}
+
+							if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+								fixProfileChoiceInt.FixProfile.Tenant = v.(string)
+
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := cs["fix_profile_none"]; ok && !isIntfNil(v) && !fixProfileChoiceTypeFound {
+
+					fixProfileChoiceTypeFound = true
+
+					if v.(bool) {
+						fixProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_FixProfileNone{}
+						fixProfileChoiceInt.FixProfileNone = &ves_io_schema.Empty{}
+						virtualServerTypeInt.Https.FixProfileChoice = fixProfileChoiceInt
+					}
+
+				}
+
+				http2ClientProfileChoiceTypeFound := false
+
+				if v, ok := cs["http2_client_profile"]; ok && !isIntfNil(v) && !http2ClientProfileChoiceTypeFound {
+
+					http2ClientProfileChoiceTypeFound = true
+					http2ClientProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_Http2ClientProfile{}
+					http2ClientProfileChoiceInt.Http2ClientProfile = &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Https.Http2ClientProfileChoice = http2ClientProfileChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+								http2ClientProfileChoiceInt.Http2ClientProfile.Name = v.(string)
+
+							}
+
+							if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+								http2ClientProfileChoiceInt.Http2ClientProfile.Namespace = v.(string)
+
+							}
+
+							if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+								http2ClientProfileChoiceInt.Http2ClientProfile.Tenant = v.(string)
+
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := cs["http2_client_profile_none"]; ok && !isIntfNil(v) && !http2ClientProfileChoiceTypeFound {
+
+					http2ClientProfileChoiceTypeFound = true
+
+					if v.(bool) {
+						http2ClientProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_Http2ClientProfileNone{}
+						http2ClientProfileChoiceInt.Http2ClientProfileNone = &ves_io_schema.Empty{}
+						virtualServerTypeInt.Https.Http2ClientProfileChoice = http2ClientProfileChoiceInt
+					}
+
+				}
+
+				if v, ok := cs["http_client_profile"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					httpClientProfileInt := &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Https.HttpClientProfile = httpClientProfileInt
+
+					for _, set := range sl {
+						if set != nil {
+							hcpMapToStrVal := set.(map[string]interface{})
+							if val, ok := hcpMapToStrVal["name"]; ok && !isIntfNil(v) {
+								httpClientProfileInt.Name = val.(string)
+							}
+							if val, ok := hcpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								httpClientProfileInt.Namespace = val.(string)
+							}
+
+							if val, ok := hcpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								httpClientProfileInt.Tenant = val.(string)
+							}
+						}
+					}
+
+				}
+
+				ocspProfileChoiceTypeFound := false
+
+				if v, ok := cs["ocsp_profile"]; ok && !isIntfNil(v) && !ocspProfileChoiceTypeFound {
+
+					ocspProfileChoiceTypeFound = true
+					ocspProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_OcspProfile{}
+					ocspProfileChoiceInt.OcspProfile = &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Https.OcspProfileChoice = ocspProfileChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+								ocspProfileChoiceInt.OcspProfile.Name = v.(string)
+
+							}
+
+							if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+								ocspProfileChoiceInt.OcspProfile.Namespace = v.(string)
+
+							}
+
+							if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+								ocspProfileChoiceInt.OcspProfile.Tenant = v.(string)
+
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := cs["ocsp_profile_none"]; ok && !isIntfNil(v) && !ocspProfileChoiceTypeFound {
+
+					ocspProfileChoiceTypeFound = true
+
+					if v.(bool) {
+						ocspProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_OcspProfileNone{}
+						ocspProfileChoiceInt.OcspProfileNone = &ves_io_schema.Empty{}
+						virtualServerTypeInt.Https.OcspProfileChoice = ocspProfileChoiceInt
+					}
+
+				}
+
+				if v, ok := cs["protocol_client_profile"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					protocolClientProfileInt := &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Https.ProtocolClientProfile = protocolClientProfileInt
+
+					for _, set := range sl {
+						if set != nil {
+							pcpMapToStrVal := set.(map[string]interface{})
+							if val, ok := pcpMapToStrVal["name"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Name = val.(string)
+							}
+							if val, ok := pcpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Namespace = val.(string)
+							}
+
+							if val, ok := pcpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Tenant = val.(string)
+							}
+						}
+					}
+
+				}
+
+				serverAppTypeChoiceTypeFound := false
+
+				if v, ok := cs["server_app_type_same_as_client"]; ok && !isIntfNil(v) && !serverAppTypeChoiceTypeFound {
+
+					serverAppTypeChoiceTypeFound = true
+					serverAppTypeChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_ServerAppTypeSameAsClient{}
+					serverAppTypeChoiceInt.ServerAppTypeSameAsClient = &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection{}
+					virtualServerTypeInt.Https.ServerAppTypeChoice = serverAppTypeChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							http2ServerProfileChoiceTypeFound := false
+
+							if v, ok := cs["http2_server_profile"]; ok && !isIntfNil(v) && !http2ServerProfileChoiceTypeFound {
+
+								http2ServerProfileChoiceTypeFound = true
+								http2ServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_Http2ServerProfile{}
+								http2ServerProfileChoiceInt.Http2ServerProfile = &ves_io_schema_views.ObjectRefType{}
+								serverAppTypeChoiceInt.ServerAppTypeSameAsClient.Http2ServerProfileChoice = http2ServerProfileChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+											http2ServerProfileChoiceInt.Http2ServerProfile.Name = v.(string)
+
+										}
+
+										if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+											http2ServerProfileChoiceInt.Http2ServerProfile.Namespace = v.(string)
+
+										}
+
+										if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+											http2ServerProfileChoiceInt.Http2ServerProfile.Tenant = v.(string)
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["http2_server_profile_none"]; ok && !isIntfNil(v) && !http2ServerProfileChoiceTypeFound {
+
+								http2ServerProfileChoiceTypeFound = true
+
+								if v.(bool) {
+									http2ServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_Http2ServerProfileNone{}
+									http2ServerProfileChoiceInt.Http2ServerProfileNone = &ves_io_schema.Empty{}
+									serverAppTypeChoiceInt.ServerAppTypeSameAsClient.Http2ServerProfileChoice = http2ServerProfileChoiceInt
+								}
+
+							}
+
+							httpServerProfileChoiceTypeFound := false
+
+							if v, ok := cs["http_server_profile"]; ok && !isIntfNil(v) && !httpServerProfileChoiceTypeFound {
+
+								httpServerProfileChoiceTypeFound = true
+								httpServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_HttpServerProfile{}
+								httpServerProfileChoiceInt.HttpServerProfile = &ves_io_schema_views.ObjectRefType{}
+								serverAppTypeChoiceInt.ServerAppTypeSameAsClient.HttpServerProfileChoice = httpServerProfileChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+											httpServerProfileChoiceInt.HttpServerProfile.Name = v.(string)
+
+										}
+
+										if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+											httpServerProfileChoiceInt.HttpServerProfile.Namespace = v.(string)
+
+										}
+
+										if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+											httpServerProfileChoiceInt.HttpServerProfile.Tenant = v.(string)
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["http_server_profile_same_as_client"]; ok && !isIntfNil(v) && !httpServerProfileChoiceTypeFound {
+
+								httpServerProfileChoiceTypeFound = true
+
+								if v.(bool) {
+									httpServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_HttpServerProfileSameAsClient{}
+									httpServerProfileChoiceInt.HttpServerProfileSameAsClient = &ves_io_schema.Empty{}
+									serverAppTypeChoiceInt.ServerAppTypeSameAsClient.HttpServerProfileChoice = httpServerProfileChoiceInt
+								}
+
+							}
+
+							protocolServerProfileChoiceTypeFound := false
+
+							if v, ok := cs["protocol_server_profile"]; ok && !isIntfNil(v) && !protocolServerProfileChoiceTypeFound {
+
+								protocolServerProfileChoiceTypeFound = true
+								protocolServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_ProtocolServerProfile{}
+								protocolServerProfileChoiceInt.ProtocolServerProfile = &ves_io_schema_views.ObjectRefType{}
+								serverAppTypeChoiceInt.ServerAppTypeSameAsClient.ProtocolServerProfileChoice = protocolServerProfileChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+											protocolServerProfileChoiceInt.ProtocolServerProfile.Name = v.(string)
+
+										}
+
+										if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+											protocolServerProfileChoiceInt.ProtocolServerProfile.Namespace = v.(string)
+
+										}
+
+										if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+											protocolServerProfileChoiceInt.ProtocolServerProfile.Tenant = v.(string)
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["protocol_server_profile_same_as_client"]; ok && !isIntfNil(v) && !protocolServerProfileChoiceTypeFound {
+
+								protocolServerProfileChoiceTypeFound = true
+
+								if v.(bool) {
+									protocolServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_ProtocolServerProfileSameAsClient{}
+									protocolServerProfileChoiceInt.ProtocolServerProfileSameAsClient = &ves_io_schema.Empty{}
+									serverAppTypeChoiceInt.ServerAppTypeSameAsClient.ProtocolServerProfileChoice = protocolServerProfileChoiceInt
+								}
+
+							}
+
+							if v, ok := cs["ssl_server_profiles"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								sslServerProfilesInt := make([]*ves_io_schema_views.ObjectRefType, len(sl))
+								serverAppTypeChoiceInt.ServerAppTypeSameAsClient.SslServerProfiles = sslServerProfilesInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										sspMapToStrVal := ps.(map[string]interface{})
+										sslServerProfilesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+										if v, ok := sspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Name = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Tenant = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							websocketServerProfileChoiceTypeFound := false
+
+							if v, ok := cs["websocket_server_profile"]; ok && !isIntfNil(v) && !websocketServerProfileChoiceTypeFound {
+
+								websocketServerProfileChoiceTypeFound = true
+								websocketServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_WebsocketServerProfile{}
+								websocketServerProfileChoiceInt.WebsocketServerProfile = &ves_io_schema_views.ObjectRefType{}
+								serverAppTypeChoiceInt.ServerAppTypeSameAsClient.WebsocketServerProfileChoice = websocketServerProfileChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+											websocketServerProfileChoiceInt.WebsocketServerProfile.Name = v.(string)
+
+										}
+
+										if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+											websocketServerProfileChoiceInt.WebsocketServerProfile.Namespace = v.(string)
+
+										}
+
+										if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+											websocketServerProfileChoiceInt.WebsocketServerProfile.Tenant = v.(string)
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["websocket_server_profile_same_as_client"]; ok && !isIntfNil(v) && !websocketServerProfileChoiceTypeFound {
+
+								websocketServerProfileChoiceTypeFound = true
+
+								if v.(bool) {
+									websocketServerProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPDefaultServerSelection_WebsocketServerProfileSameAsClient{}
+									websocketServerProfileChoiceInt.WebsocketServerProfileSameAsClient = &ves_io_schema.Empty{}
+									serverAppTypeChoiceInt.ServerAppTypeSameAsClient.WebsocketServerProfileChoice = websocketServerProfileChoiceInt
+								}
+
+							}
+
+						}
+					}
+
+				}
 
 				if v, ok := cs["services"]; ok && !isIntfNil(v) {
 
@@ -4566,6 +7763,132 @@ func resourceVolterraVirtualServerUpdate(d *schema.ResourceData, meta interface{
 
 				}
 
+				if v, ok := cs["ssl_client_profiles"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					sslClientProfilesInt := make([]*ves_io_schema_views.ObjectRefType, len(sl))
+					virtualServerTypeInt.Https.SslClientProfiles = sslClientProfilesInt
+					for i, ps := range sl {
+						if ps != nil {
+
+							scpMapToStrVal := ps.(map[string]interface{})
+							sslClientProfilesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+							if v, ok := scpMapToStrVal["name"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Name = v.(string)
+							}
+
+							if v, ok := scpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Namespace = v.(string)
+							}
+
+							if v, ok := scpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Tenant = v.(string)
+							}
+
+						}
+					}
+
+				}
+
+				streamProfileChoiceTypeFound := false
+
+				if v, ok := cs["stream_profile"]; ok && !isIntfNil(v) && !streamProfileChoiceTypeFound {
+
+					streamProfileChoiceTypeFound = true
+					streamProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_StreamProfile{}
+					streamProfileChoiceInt.StreamProfile = &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Https.StreamProfileChoice = streamProfileChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+								streamProfileChoiceInt.StreamProfile.Name = v.(string)
+
+							}
+
+							if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+								streamProfileChoiceInt.StreamProfile.Namespace = v.(string)
+
+							}
+
+							if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+								streamProfileChoiceInt.StreamProfile.Tenant = v.(string)
+
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := cs["stream_profile_none"]; ok && !isIntfNil(v) && !streamProfileChoiceTypeFound {
+
+					streamProfileChoiceTypeFound = true
+
+					if v.(bool) {
+						streamProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_StreamProfileNone{}
+						streamProfileChoiceInt.StreamProfileNone = &ves_io_schema.Empty{}
+						virtualServerTypeInt.Https.StreamProfileChoice = streamProfileChoiceInt
+					}
+
+				}
+
+				websocketClientProfileChoiceTypeFound := false
+
+				if v, ok := cs["websocket_client_profile"]; ok && !isIntfNil(v) && !websocketClientProfileChoiceTypeFound {
+
+					websocketClientProfileChoiceTypeFound = true
+					websocketClientProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_WebsocketClientProfile{}
+					websocketClientProfileChoiceInt.WebsocketClientProfile = &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Https.WebsocketClientProfileChoice = websocketClientProfileChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+								websocketClientProfileChoiceInt.WebsocketClientProfile.Name = v.(string)
+
+							}
+
+							if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+								websocketClientProfileChoiceInt.WebsocketClientProfile.Namespace = v.(string)
+
+							}
+
+							if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+								websocketClientProfileChoiceInt.WebsocketClientProfile.Tenant = v.(string)
+
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := cs["websocket_client_profile_none"]; ok && !isIntfNil(v) && !websocketClientProfileChoiceTypeFound {
+
+					websocketClientProfileChoiceTypeFound = true
+
+					if v.(bool) {
+						websocketClientProfileChoiceInt := &ves_io_schema_views_virtual_server.HTTPServices_WebsocketClientProfileNone{}
+						websocketClientProfileChoiceInt.WebsocketClientProfileNone = &ves_io_schema.Empty{}
+						virtualServerTypeInt.Https.WebsocketClientProfileChoice = websocketClientProfileChoiceInt
+					}
+
+				}
+
 			}
 		}
 
@@ -4575,13 +7898,133 @@ func resourceVolterraVirtualServerUpdate(d *schema.ResourceData, meta interface{
 
 		virtualServerTypeTypeFound = true
 		virtualServerTypeInt := &ves_io_schema_views_virtual_server.ReplaceSpecType_Tcp{}
-		virtualServerTypeInt.Tcp = &ves_io_schema_views_virtual_server.Services{}
+		virtualServerTypeInt.Tcp = &ves_io_schema_views_virtual_server.TCPServices{}
 		updateSpec.VirtualServerType = virtualServerTypeInt
 
 		sl := v.([]interface{})
 		for _, set := range sl {
 			if set != nil {
 				cs := set.(map[string]interface{})
+
+				if v, ok := cs["protocol_client_profile"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					protocolClientProfileInt := &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Tcp.ProtocolClientProfile = protocolClientProfileInt
+
+					for _, set := range sl {
+						if set != nil {
+							pcpMapToStrVal := set.(map[string]interface{})
+							if val, ok := pcpMapToStrVal["name"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Name = val.(string)
+							}
+							if val, ok := pcpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Namespace = val.(string)
+							}
+
+							if val, ok := pcpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Tenant = val.(string)
+							}
+						}
+					}
+
+				}
+
+				serverAppTypeChoiceTypeFound := false
+
+				if v, ok := cs["server_app_type_same_as_client"]; ok && !isIntfNil(v) && !serverAppTypeChoiceTypeFound {
+
+					serverAppTypeChoiceTypeFound = true
+					serverAppTypeChoiceInt := &ves_io_schema_views_virtual_server.TCPServices_ServerAppTypeSameAsClient{}
+					serverAppTypeChoiceInt.ServerAppTypeSameAsClient = &ves_io_schema_views_virtual_server.TCPDefaultServerSelection{}
+					virtualServerTypeInt.Tcp.ServerAppTypeChoice = serverAppTypeChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							if v, ok := cs["ssl_server_profiles"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								sslServerProfilesInt := make([]*ves_io_schema_views.ObjectRefType, len(sl))
+								serverAppTypeChoiceInt.ServerAppTypeSameAsClient.SslServerProfiles = sslServerProfilesInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										sspMapToStrVal := ps.(map[string]interface{})
+										sslServerProfilesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+										if v, ok := sspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Name = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Tenant = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							tcpServerProfileChoiceTypeFound := false
+
+							if v, ok := cs["tcp_server_profile"]; ok && !isIntfNil(v) && !tcpServerProfileChoiceTypeFound {
+
+								tcpServerProfileChoiceTypeFound = true
+								tcpServerProfileChoiceInt := &ves_io_schema_views_virtual_server.TCPDefaultServerSelection_TcpServerProfile{}
+								tcpServerProfileChoiceInt.TcpServerProfile = &ves_io_schema_views.ObjectRefType{}
+								serverAppTypeChoiceInt.ServerAppTypeSameAsClient.TcpServerProfileChoice = tcpServerProfileChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+											tcpServerProfileChoiceInt.TcpServerProfile.Name = v.(string)
+
+										}
+
+										if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+											tcpServerProfileChoiceInt.TcpServerProfile.Namespace = v.(string)
+
+										}
+
+										if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+											tcpServerProfileChoiceInt.TcpServerProfile.Tenant = v.(string)
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["tcp_server_profile_use_client"]; ok && !isIntfNil(v) && !tcpServerProfileChoiceTypeFound {
+
+								tcpServerProfileChoiceTypeFound = true
+
+								if v.(bool) {
+									tcpServerProfileChoiceInt := &ves_io_schema_views_virtual_server.TCPDefaultServerSelection_TcpServerProfileUseClient{}
+									tcpServerProfileChoiceInt.TcpServerProfileUseClient = &ves_io_schema.Empty{}
+									serverAppTypeChoiceInt.ServerAppTypeSameAsClient.TcpServerProfileChoice = tcpServerProfileChoiceInt
+								}
+
+							}
+
+						}
+					}
+
+				}
 
 				if v, ok := cs["services"]; ok && !isIntfNil(v) {
 
@@ -4622,6 +8065,34 @@ func resourceVolterraVirtualServerUpdate(d *schema.ResourceData, meta interface{
 
 				}
 
+				if v, ok := cs["ssl_client_profiles"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					sslClientProfilesInt := make([]*ves_io_schema_views.ObjectRefType, len(sl))
+					virtualServerTypeInt.Tcp.SslClientProfiles = sslClientProfilesInt
+					for i, ps := range sl {
+						if ps != nil {
+
+							scpMapToStrVal := ps.(map[string]interface{})
+							sslClientProfilesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+							if v, ok := scpMapToStrVal["name"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Name = v.(string)
+							}
+
+							if v, ok := scpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Namespace = v.(string)
+							}
+
+							if v, ok := scpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Tenant = v.(string)
+							}
+
+						}
+					}
+
+				}
+
 			}
 		}
 
@@ -4631,13 +8102,133 @@ func resourceVolterraVirtualServerUpdate(d *schema.ResourceData, meta interface{
 
 		virtualServerTypeTypeFound = true
 		virtualServerTypeInt := &ves_io_schema_views_virtual_server.ReplaceSpecType_Udp{}
-		virtualServerTypeInt.Udp = &ves_io_schema_views_virtual_server.Services{}
+		virtualServerTypeInt.Udp = &ves_io_schema_views_virtual_server.UDPServices{}
 		updateSpec.VirtualServerType = virtualServerTypeInt
 
 		sl := v.([]interface{})
 		for _, set := range sl {
 			if set != nil {
 				cs := set.(map[string]interface{})
+
+				if v, ok := cs["protocol_client_profile"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					protocolClientProfileInt := &ves_io_schema_views.ObjectRefType{}
+					virtualServerTypeInt.Udp.ProtocolClientProfile = protocolClientProfileInt
+
+					for _, set := range sl {
+						if set != nil {
+							pcpMapToStrVal := set.(map[string]interface{})
+							if val, ok := pcpMapToStrVal["name"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Name = val.(string)
+							}
+							if val, ok := pcpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Namespace = val.(string)
+							}
+
+							if val, ok := pcpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								protocolClientProfileInt.Tenant = val.(string)
+							}
+						}
+					}
+
+				}
+
+				serverAppTypeChoiceTypeFound := false
+
+				if v, ok := cs["server_app_type_same_as_client"]; ok && !isIntfNil(v) && !serverAppTypeChoiceTypeFound {
+
+					serverAppTypeChoiceTypeFound = true
+					serverAppTypeChoiceInt := &ves_io_schema_views_virtual_server.UDPServices_ServerAppTypeSameAsClient{}
+					serverAppTypeChoiceInt.ServerAppTypeSameAsClient = &ves_io_schema_views_virtual_server.UDPDefaultServerSelection{}
+					virtualServerTypeInt.Udp.ServerAppTypeChoice = serverAppTypeChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							if v, ok := cs["ssl_server_profiles"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								sslServerProfilesInt := make([]*ves_io_schema_views.ObjectRefType, len(sl))
+								serverAppTypeChoiceInt.ServerAppTypeSameAsClient.SslServerProfiles = sslServerProfilesInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										sspMapToStrVal := ps.(map[string]interface{})
+										sslServerProfilesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+										if v, ok := sspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Name = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											sslServerProfilesInt[i].Tenant = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							udpServerProfileChoiceTypeFound := false
+
+							if v, ok := cs["udp_server_profile"]; ok && !isIntfNil(v) && !udpServerProfileChoiceTypeFound {
+
+								udpServerProfileChoiceTypeFound = true
+								udpServerProfileChoiceInt := &ves_io_schema_views_virtual_server.UDPDefaultServerSelection_UdpServerProfile{}
+								udpServerProfileChoiceInt.UdpServerProfile = &ves_io_schema_views.ObjectRefType{}
+								serverAppTypeChoiceInt.ServerAppTypeSameAsClient.UdpServerProfileChoice = udpServerProfileChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+											udpServerProfileChoiceInt.UdpServerProfile.Name = v.(string)
+
+										}
+
+										if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+											udpServerProfileChoiceInt.UdpServerProfile.Namespace = v.(string)
+
+										}
+
+										if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+											udpServerProfileChoiceInt.UdpServerProfile.Tenant = v.(string)
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["udp_server_profile_use_client"]; ok && !isIntfNil(v) && !udpServerProfileChoiceTypeFound {
+
+								udpServerProfileChoiceTypeFound = true
+
+								if v.(bool) {
+									udpServerProfileChoiceInt := &ves_io_schema_views_virtual_server.UDPDefaultServerSelection_UdpServerProfileUseClient{}
+									udpServerProfileChoiceInt.UdpServerProfileUseClient = &ves_io_schema.Empty{}
+									serverAppTypeChoiceInt.ServerAppTypeSameAsClient.UdpServerProfileChoice = udpServerProfileChoiceInt
+								}
+
+							}
+
+						}
+					}
+
+				}
 
 				if v, ok := cs["services"]; ok && !isIntfNil(v) {
 
@@ -4671,6 +8262,34 @@ func resourceVolterraVirtualServerUpdate(d *schema.ResourceData, meta interface{
 
 								portChoiceInt.PortRanges = v.(string)
 
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := cs["ssl_client_profiles"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					sslClientProfilesInt := make([]*ves_io_schema_views.ObjectRefType, len(sl))
+					virtualServerTypeInt.Udp.SslClientProfiles = sslClientProfilesInt
+					for i, ps := range sl {
+						if ps != nil {
+
+							scpMapToStrVal := ps.(map[string]interface{})
+							sslClientProfilesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+							if v, ok := scpMapToStrVal["name"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Name = v.(string)
+							}
+
+							if v, ok := scpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Namespace = v.(string)
+							}
+
+							if v, ok := scpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								sslClientProfilesInt[i].Tenant = v.(string)
 							}
 
 						}
@@ -4719,5 +8338,11 @@ func resourceVolterraVirtualServerDelete(d *schema.ResourceData, meta interface{
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_views_virtual_server.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_views_virtual_server.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting VirtualServer: %w", err)
+	}
+	return nil
+
 }

@@ -173,6 +173,8 @@ Ordered list of rules applied to connections to policy endpoints..
 
 Enable or disable logging..
 
+`action` - (Optional) Enable or disable logging. (`String`).
+
 ### Egress Rules Label Matcher
 
 not specified here, just the label keys. This facilitates reuse of policies across multiple dimensions such as deployment, environment, and location..
@@ -218,6 +220,8 @@ For Ingress rules: To this endpoints from remote endpoints these ip prefixes are
 ### Ingress Rules Adv Action
 
 Enable or disable logging..
+
+`action` - (Optional) Enable or disable logging. (`String`).
 
 ### Ingress Rules Label Matcher
 

@@ -614,6 +614,7 @@ func resourceVolterraWafExclusionPolicyRead(d *schema.ResourceData, meta interfa
 		}
 		return fmt.Errorf("Error finding Volterra WafExclusionPolicy %q: %s", d.Id(), err)
 	}
+
 	return setWafExclusionPolicyFields(client, d, resp)
 }
 
@@ -992,5 +993,11 @@ func resourceVolterraWafExclusionPolicyDelete(d *schema.ResourceData, meta inter
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_waf_exclusion_policy.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_waf_exclusion_policy.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting WafExclusionPolicy: %w", err)
+	}
+	return nil
+
 }

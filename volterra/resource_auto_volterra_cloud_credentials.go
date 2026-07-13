@@ -1823,6 +1823,7 @@ func resourceVolterraCloudCredentialsRead(d *schema.ResourceData, meta interface
 		}
 		return fmt.Errorf("Error finding Volterra CloudCredentials %q: %s", d.Id(), err)
 	}
+
 	return setCloudCredentialsFields(client, d, resp)
 }
 
@@ -2853,5 +2854,11 @@ func resourceVolterraCloudCredentialsDelete(d *schema.ResourceData, meta interfa
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_cloud_credentials.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_cloud_credentials.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting CloudCredentials: %w", err)
+	}
+	return nil
+
 }

@@ -46,6 +46,7 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.discovery.DiscoveredServiceType"] = DiscoveredServiceTypeValidator()
 	vr["ves.io.schema.discovery.GetSpecType"] = GetSpecTypeValidator()
 	vr["ves.io.schema.discovery.GlobalSpecType"] = GlobalSpecTypeValidator()
+	vr["ves.io.schema.discovery.HASync"] = HASyncValidator()
 	vr["ves.io.schema.discovery.K8SAccessInfo"] = K8SAccessInfoValidator()
 	vr["ves.io.schema.discovery.K8SDelegationType"] = K8SDelegationTypeValidator()
 	vr["ves.io.schema.discovery.K8SDiscoveryType"] = K8SDiscoveryTypeValidator()

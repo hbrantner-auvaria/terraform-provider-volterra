@@ -23,10 +23,6 @@ resource "volterra_virtual_host" "example" {
   // One of the arguments from this list "captcha_challenge js_challenge no_challenge" must be set
 
   no_challenge = true
-
-  // One of the arguments from this list "max_requests_per_connection no_request_limit_per_connection" must be set
-
-  no_request_limit_per_connection = true
 }
 ```
 
@@ -117,7 +113,7 @@ Argument Reference
 
 `max_request_header_size` - (Optional) on any of the virtual hosts (`Int`).
 
-###### One of the arguments from this list "max_requests_per_connection, no_request_limit_per_connection" must be set
+###### One of the arguments from this list "max_requests_per_connection, no_request_limit_per_connection" can be set
 
 `max_requests_per_connection` - (Optional) Enter a value >=1 to define the request limit per connection. (`Int`).
 

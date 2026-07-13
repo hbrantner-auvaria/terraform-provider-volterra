@@ -24,7 +24,7 @@ resource "volterra_virtual_site" "example" {
     expressions = ["region in (us-west1, us-west2),tier in (staging)"]
   }
 
-  site_type = "site_type"
+  site_type = ["site_type"]
 }
 ```
 

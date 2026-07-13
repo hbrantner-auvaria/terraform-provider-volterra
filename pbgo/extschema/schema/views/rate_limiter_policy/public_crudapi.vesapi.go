@@ -4000,10 +4000,11 @@ var APISwaggerJSON string = `{
             "properties": {
                 "encoded_path_matcher": {
                     "type": "boolean",
-                    "description": "Match against the encoded, escaped path",
+                    "description": "Match against the encoded, escaped path\n\nExample: - \"match \\\"/path/%20another%20path\\\" instead of default \\\"/path/ another path\\\"\"-",
                     "title": "Encoded_Path",
                     "format": "boolean",
-                    "x-displayname": "Match Encoded Path"
+                    "x-displayname": "Match Encoded Path",
+                    "x-ves-example": "match \\\"/path/%20another%20path\\\" instead of default \\\"/path/ another path\\\""
                 },
                 "exact_values": {
                     "type": "array",

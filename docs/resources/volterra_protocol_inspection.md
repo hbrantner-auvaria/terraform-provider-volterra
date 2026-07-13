@@ -33,7 +33,7 @@ resource "volterra_protocol_inspection" "example" {
   enable_disable_signatures {
     // One of the arguments from this list "disable_signature enable_signature" must be set
 
-    enable_signature = true
+    disable_signature = true
   }
 }
 ```

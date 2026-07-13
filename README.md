@@ -20,7 +20,7 @@ terraform {
   required_providers {
     volterra = {
       source  = "volterraedge/volterra"
-      version = ">=0.11.48"
+      version = ">=0.11.47"
     }
   }
 }
@@ -36,3 +36,43 @@ provider "volterra" {
 }
 ```
 
+# Support & Community Resources
+
+This guide helps you quickly find support, community resources, and share new ideas related to the F5 XC platform.
+
+**Please do not open GitHub issues for support requests or feature ideas**. Please use the channels below instead.
+
+---
+
+## Report an Issue
+
+Create a support ticket through the **F5 XC Console** by following these steps:
+
+1. Log in to the [F5 XC Console](https://console.ves.volterra.io/) (F5 customer access required)
+2. Navigate to **Support** in the top right and select **Contact Support**
+3. Select **Automation** as the workspace.
+4. Set **Type** to **Technical Support**.
+5. Choose **Topic** as **Terraform Provider**.
+
+If you do not have F5 customer access, contact your account manager or visit [F5 Support](https://my.f5.com/manage/s/createcase) to get started.
+
+---
+
+## Feature Ideas & Feedback
+
+If you have a suggestion for the Terraform provider or the XC platform please share it on the **F5 Cloud Ideas Portal**:
+
+- **Link:** https://www.f5cloudideas.com/ideas/new
+- **Workspace:** XC Console
+- **Category:** Tools
+
+---
+
+## Community Support
+
+For examples, best practices, troubleshooting guidance, or peer discussions please visit **F5 DevCentral** for community-driven content:
+https://community.f5.com/
+
+---
+
+Your feedback and participation help improve the platform for everyone.

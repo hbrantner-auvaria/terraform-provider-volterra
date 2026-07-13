@@ -26,7 +26,17 @@ resource "volterra_http_loadbalancer" "example" {
 
   // One of the arguments from this list "api_definition api_definitions api_specification disable_api_definition" must be set
 
-  disable_api_definition = true
+  api_specification {
+    api_definition {
+      name      = "test1"
+      namespace = "staging"
+      tenant    = "acmecorp"
+    }
+
+    // One of the arguments from this list "validation_all_spec_endpoints validation_custom_list validation_disabled" must be set
+
+    validation_disabled = true
+  }
 
   // One of the arguments from this list "disable_api_discovery enable_api_discovery" must be set
 
@@ -78,18 +88,10 @@ resource "volterra_http_loadbalancer" "example" {
 
           // One of the arguments from this list "key_pattern key_value_pattern value_pattern" must be set
 
-          key_value_pattern {
-            key_pattern {
-              // One of the arguments from this list "exact_value regex_value" must be set
+          value_pattern {
+            // One of the arguments from this list "exact_value regex_value" must be set
 
-              exact_value = "x-volt-header"
-            }
-
-            value_pattern {
-              // One of the arguments from this list "exact_value regex_value" must be set
-
-              exact_value = "x-volt-header"
-            }
+            exact_value = "x-volt-header"
           }
 
           // One of the arguments from this list "all_request_sections all_response_sections all_sections custom_sections" must be set
@@ -98,7 +100,7 @@ resource "volterra_http_loadbalancer" "example" {
 
           // One of the arguments from this list "any_target api_endpoint_target api_group base_path" must be set
 
-          api_group = "oas-all-operations"
+          any_target = true
         }
 
         sensitive_data_type {
@@ -118,16 +120,162 @@ resource "volterra_http_loadbalancer" "example" {
 
   // One of the arguments from this list "captcha_challenge enable_challenge js_challenge no_challenge policy_based_challenge" must be set
 
-  captcha_challenge {
-    cookie_expiry = "1000"
+  policy_based_challenge {
+    // One of the arguments from this list "captcha_challenge_parameters default_captcha_challenge_parameters" can be set
 
-    custom_page = "string:///PHA+IFBsZWFzZSBXYWl0IDwvcD4="
+    default_captcha_challenge_parameters = true
+
+    // One of the arguments from this list "always_enable_captcha_challenge always_enable_js_challenge no_challenge" must be set
+
+    no_challenge = true
+
+    // One of the arguments from this list "default_js_challenge_parameters js_challenge_parameters" can be set
+
+    js_challenge_parameters {
+      cookie_expiry = "1000"
+
+      custom_page = "string:///PHA+IFBsZWFzZSBXYWl0IDwvcD4="
+
+      js_script_delay = "1000"
+    }
+
+    // One of the arguments from this list "default_mitigation_settings malicious_user_mitigation" can be set
+
+    default_mitigation_settings = true
+    rule_list {
+      rules {
+        metadata {
+          description = "Virtual Host for acmecorp website"
+
+          disable = true
+
+          name = "acmecorp-web"
+        }
+
+        spec {
+          arg_matchers {
+            invert_matcher = true
+
+            // One of the arguments from this list "check_not_present check_present item presence" must be set
+
+            presence = true
+            name = "name"
+          }
+
+          // One of the arguments from this list "any_asn asn_list asn_matcher" can be set
+
+          any_asn = true
+          body_matcher {
+            exact_values = ["['new york', 'london', 'sydney', 'tokyo', 'cairo']"]
+
+            regex_values = ["['^new .*$', 'san f.*', '.* del .*']"]
+
+            transformers = ["transformers"]
+          }
+
+          // One of the arguments from this list "disable_challenge enable_captcha_challenge enable_javascript_challenge" must be set
+
+          disable_challenge = true
+
+          // One of the arguments from this list "any_client client_name client_name_matcher client_selector" can be set
+
+          any_client = true
+          cookie_matchers {
+            invert_matcher = true
+
+            // One of the arguments from this list "check_not_present check_present item presence" must be set
+
+            presence = true
+            name = "Session"
+          }
+          domain_matcher {
+            exact_values = ["['new york', 'london', 'sydney', 'tokyo', 'cairo']"]
+
+            regex_values = ["['^new .*$', 'san f.*', '.* del .*']"]
+          }
+          expiration_timestamp = "0001-01-01T00:00:00Z"
+          headers {
+            invert_matcher = true
+
+            // One of the arguments from this list "check_not_present check_present item presence" must be set
+
+            item {
+              exact_values = ["['new york', 'london', 'sydney', 'tokyo', 'cairo']"]
+
+              regex_values = ["['^new .*$', 'san f.*', '.* del .*']"]
+
+              transformers = ["transformers"]
+            }
+            name = "Accept-Encoding"
+          }
+          http_method {
+            invert_matcher = true
+
+            methods = ["['GET', 'POST', 'DELETE']"]
+          }
+
+          // One of the arguments from this list "any_ip ip_matcher ip_prefix_list" can be set
+
+          ip_matcher {
+            invert_matcher = true
+
+            prefix_sets {
+              name      = "test1"
+              namespace = "staging"
+              tenant    = "acmecorp"
+            }
+          }
+          path {
+            encoded_path_matcher = true
+
+            exact_values = ["['/api/web/namespaces/project179/users/user1', '/api/config/namespaces/accounting/bgps', '/api/data/namespaces/project443/virtual_host_101']"]
+
+            invert_matcher = true
+
+            prefix_values = ["['/api/web/namespaces/project179/users/', '/api/config/namespaces/', '/api/data/namespaces/']"]
+
+            regex_values = ["['^/api/web/namespaces/abc/users/([a-z]([-a-z0-9]*[a-z0-9])?)$', '/api/data/namespaces/proj404/virtual_hosts/([a-z]([-a-z0-9]*[a-z0-9])?)$']"]
+
+            suffix_values = ["['.exe', '.shtml', '.wmz']"]
+
+            transformers = ["transformers"]
+          }
+          query_params {
+            invert_matcher = true
+
+            key = "sourceid"
+
+            // One of the arguments from this list "check_not_present check_present item presence" must be set
+
+            presence = true
+          }
+
+          // One of the arguments from this list "ja4_tls_fingerprint tls_fingerprint_matcher" can be set
+
+          ja4_tls_fingerprint {
+            exact_values = ["exact_values"]
+          }
+        }
+      }
+    }
+
+    // One of the arguments from this list "default_temporary_blocking_parameters temporary_user_blocking" can be set
+
+    default_temporary_blocking_parameters = true
   }
   domains = ["www.foo.com"]
 
   // One of the arguments from this list "cookie_stickiness least_active random ring_hash round_robin source_ip_stickiness" must be set
 
-  round_robin = true
+  ring_hash {
+    hash_policy {
+      // One of the arguments from this list "cookie header_name source_ip" must be set
+
+      header_name = "host"
+
+      terminal = true
+    }
+  }
 
   // One of the arguments from this list "http https https_auto_cert" must be set
 
@@ -161,7 +309,7 @@ resource "volterra_http_loadbalancer" "example" {
 
   // One of the arguments from this list "disable_threat_mesh enable_threat_mesh" must be set
 
-  disable_threat_mesh = true
+  enable_threat_mesh = true
 
   // One of the arguments from this list "disable_trust_client_ip_headers enable_trust_client_ip_headers" must be set
 
@@ -169,15 +317,15 @@ resource "volterra_http_loadbalancer" "example" {
 
   // One of the arguments from this list "user_id_client_ip user_identification" must be set
 
-  user_id_client_ip = true
-
-  // One of the arguments from this list "app_firewall disable_waf" must be set
-
-  app_firewall {
+  user_identification {
     name      = "test1"
     namespace = "staging"
     tenant    = "acmecorp"
   }
+
+  // One of the arguments from this list "app_firewall disable_waf" must be set
+
+  disable_waf = true
 }
 ```
 
@@ -250,7 +398,7 @@ Argument Reference
 
 ###### One of the arguments from this list "caching_policy, disable_caching" can be set
 
-`caching_policy` - (Required) Caching Policies for the CDN.. See [Cache Options Caching Policy ](#cache-options-caching-policy) below for details.
+`caching_policy` - (Optional) Caching Policies for the CDN.. See [Cache Options Caching Policy ](#cache-options-caching-policy) below for details.
 
 `disable_caching` - (Optional) x-displayName: "Disable" (`Bool`).
 
@@ -460,7 +608,7 @@ Define rules to block IP Prefixes or AS numbers..
 
 `waf_skip_processing` - (Optional) Skip WAF processing for clients matching this rule. (`Bool`).(Deprecated)
 
-`actions` - (Optional) Actions that should be taken when client identifier matches the rule (`List of Strings`).
+`actions` - (Required) Actions that should be taken when client identifier matches the rule (`List of Strings`).
 
 ###### One of the arguments from this list "as_number, http_header, ip_prefix, ipv6_prefix, user_identifier" must be set
 
@@ -660,7 +808,7 @@ More options like header manipulation, compression etc..
 
 `cookies_to_modify` - (Optional) List of cookies to be modified from the HTTP response being sent towards downstream.. See [More Option Cookies To Modify ](#more-option-cookies-to-modify) below for details.(Deprecated)
 
-`custom_errors` - (Optional) Map of integer error codes as keys and string values that can be used to provide custom http pages for each error code. Key of the map can be either response code class or HTTP Error code. Response code classes for key is configured as follows 3 -- for 3xx response code class, 4 -- for 4xx response code class, 5 -- for 5xx response code class. Value of the map is string which represents custom HTTP responses. Specific response code takes preference when both response code and response code class matches for a request.(`map(string)`).
+`custom_errors` - (Optional) Map of integer error codes as keys and string values that can be used to provide custom http pages for each error code. Key of the map can be either response code class or HTTP Error code. Response code classes for key is configured as follows 3 -- for 3xx response code class, 4 -- for 4xx response code class, 5 -- for 5xx response code class. Value of the map is string which represents custom HTTP responses. Specific response code takes preference when both response code and response code class matches for a request.(map(string)).
 
 `disable_default_error_pages` - (Optional) Disable the use of default F5XC error pages. (`Bool`).
 
@@ -790,7 +938,7 @@ Define rules to skip processing of one or more features such as WAF, Bot Defense
 
 `waf_skip_processing` - (Optional) Skip WAF processing for clients matching this rule. (`Bool`).(Deprecated)
 
-`actions` - (Optional) Actions that should be taken when client identifier matches the rule (`List of Strings`).
+`actions` - (Required) Actions that should be taken when client identifier matches the rule (`List of Strings`).
 
 ###### One of the arguments from this list "as_number, http_header, ip_prefix, ipv6_prefix, user_identifier" must be set
 
@@ -816,7 +964,7 @@ The WAF Exclusion is evaluated sequentially and can only be matched once per req
 
 `waf_exclusion_inline_rules` - (Optional) An ordered list of rules specific to this Load Balancer.. See [Waf Exclusion Choice Waf Exclusion Inline Rules ](#waf-exclusion-choice-waf-exclusion-inline-rules) below for details.
 
-`waf_exclusion_policy` - (Required) A policy containing an ordered list of rules that can be applied to one or more Load Balancers or Routes.. See [ref](#ref) below for details.
+`waf_exclusion_policy` - (Optional) A policy containing an ordered list of rules that can be applied to one or more Load Balancers or Routes.. See [ref](#ref) below for details.
 
 ### Waf Exclusion Rules
 
@@ -1242,9 +1390,9 @@ x-displayName: "Enable".
 
 ###### One of the arguments from this list "custom_api_auth_discovery, default_api_auth_discovery" must be set
 
-`custom_api_auth_discovery` - (Optional) Apply custom API discovery settings. See [Api Discovery Settings Choice Custom Api Auth Discovery ](#api-discovery-settings-choice-custom-api-auth-discovery) below for details.
+`custom_api_auth_discovery` - (Optional) Define classification rules to better match your application architecture and reduce noise.. See [Api Discovery Settings Choice Custom Api Auth Discovery ](#api-discovery-settings-choice-custom-api-auth-discovery) below for details.
 
-`default_api_auth_discovery` - (Optional) Apply system default API discovery settings (`Bool`).
+`default_api_auth_discovery` - (Optional) Automatically discovers APIs from traffic and auth signals. No setup needed and recommended for most environments. (`Bool`).
 
 `discovered_api_settings` - (Optional) Configure Discovered API Settings.. See [Enable Api Discovery Discovered Api Settings ](#enable-api-discovery-discovered-api-settings) below for details.
 
@@ -1266,9 +1414,9 @@ x-displayName: "Enable".
 
 ###### One of the arguments from this list "custom_api_auth_discovery, default_api_auth_discovery" must be set
 
-`custom_api_auth_discovery` - (Optional) Apply custom API discovery settings. See [Api Discovery Settings Choice Custom Api Auth Discovery ](#api-discovery-settings-choice-custom-api-auth-discovery) below for details.
+`custom_api_auth_discovery` - (Optional) Define classification rules to better match your application architecture and reduce noise.. See [Api Discovery Settings Choice Custom Api Auth Discovery ](#api-discovery-settings-choice-custom-api-auth-discovery) below for details.
 
-`default_api_auth_discovery` - (Optional) Apply system default API discovery settings (`Bool`).
+`default_api_auth_discovery` - (Optional) Automatically discovers APIs from traffic and auth signals. No setup needed and recommended for most environments. (`Bool`).
 
 `discovered_api_settings` - (Optional) Configure Discovered API Settings.. See [Enable Discovery Discovered Api Settings ](#enable-discovery-discovered-api-settings) below for details.
 
@@ -1294,13 +1442,13 @@ x-required.
 
 ### Api Discovery Settings Choice Custom Api Auth Discovery
 
-Apply custom API discovery settings.
+Define classification rules to better match your application architecture and reduce noise..
 
-`api_discovery_ref` - (Required) API Discovery Settings Object. See [ref](#ref) below for details.
+`api_discovery_ref` - (Required) Defines how discovery operates and how traffic is analyzed. Use policies to customize discovery behavior, authentication handling, and other related settings.. See [ref](#ref) below for details.
 
 ### Api Discovery Settings Choice Default Api Auth Discovery
 
-Apply system default API discovery settings.
+Automatically discovers APIs from traffic and auth signals. No setup needed and recommended for most environments..
 
 ### Api Endpoint Rules Action
 
@@ -3298,7 +3446,7 @@ GraphQL configuration..
 
 `max_total_length` - (Required) Specify maximum length in bytes for the GraphQL query. (`Int`).
 
-`max_value_length` - (Required) Specify maximum value length in bytes for the GraphQL query. (`Int`).(Deprecated)
+`max_value_length` - (Optional) Specify maximum value length in bytes for the GraphQL query. (`Int`).(Deprecated)
 
 `policy_name` - (Optional) Sets the BD Policy to use (`String`).(Deprecated)
 
@@ -3844,7 +3992,7 @@ Define endpoints for which JWT token validation will be performed.
 
 ###### One of the arguments from this list "all_endpoint, api_groups, base_paths" must be set
 
-`all_endpoint` - (Optional) Validation will be performed for all requests on this LB (`Bool`).
+`all_endpoint` - (Optional) JWT validation is applied to all requests handled by this Load Balancer. If JWT is missing or invalid, the configured action (Block or Report) will be applied. (`Bool`).
 
 `api_groups` - (Optional) Validation will be performed for the endpoints mentioned in the API Groups. See [Target Api Groups ](#target-api-groups) below for details.
 
@@ -6252,7 +6400,7 @@ Subset load balancing is enabled. Based on route, subset of origin servers will 
 
 ### Target All Endpoint
 
-Validation will be performed for all requests on this LB.
+JWT validation is applied to all requests handled by this Load Balancer. If JWT is missing or invalid, the configured action (Block or Report) will be applied..
 
 ### Target Api Groups
 

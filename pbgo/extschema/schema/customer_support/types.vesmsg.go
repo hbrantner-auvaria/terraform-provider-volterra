@@ -413,6 +413,12 @@ func (v *ValidateCreateSpecType) Validate(ctx context.Context, pm interface{}, o
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["timezone"]; exists {
+		vOpts := append(opts, db.WithValidateField("timezone"))
+		if err := fv(ctx, m.GetTimezone(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["topic"]; exists {
 		vOpts := append(opts, db.WithValidateField("topic"))
 		if err := fv(ctx, m.GetTopic(), vOpts...); err != nil {
@@ -766,6 +772,12 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 	if fv, exists := v.FldValidators["timeline"]; exists {
 		vOpts := append(opts, db.WithValidateField("timeline"))
 		if err := fv(ctx, m.GetTimeline(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["timezone"]; exists {
+		vOpts := append(opts, db.WithValidateField("timezone"))
+		if err := fv(ctx, m.GetTimezone(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -1167,6 +1179,12 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["timezone"]; exists {
+		vOpts := append(opts, db.WithValidateField("timezone"))
+		if err := fv(ctx, m.GetTimezone(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["topic"]; exists {
 		vOpts := append(opts, db.WithValidateField("topic"))
 		if err := fv(ctx, m.GetTopic(), vOpts...); err != nil {
@@ -1238,6 +1256,7 @@ func (m *CreateSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool
 	m.Status = f.GetStatus()
 	m.Subject = f.GetSubject()
 	m.Timeline = f.GetTimeline()
+	m.Timezone = f.GetTimezone()
 	m.Topic = f.GetTopic()
 	m.TpId = f.GetTpId()
 	m.Type = f.GetType()
@@ -1269,6 +1288,7 @@ func (m *CreateSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) 
 	f.Status = m1.Status
 	f.Subject = m1.Subject
 	f.Timeline = m1.Timeline
+	f.Timezone = m1.Timezone
 	f.Topic = m1.Topic
 	f.TpId = m1.TpId
 	f.Type = m1.Type
@@ -1303,6 +1323,7 @@ func (m *GetSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	m.Subject = f.GetSubject()
 	m.Tags = f.GetTags()
 	m.Timeline = f.GetTimeline()
+	m.Timezone = f.GetTimezone()
 	m.Topic = f.GetTopic()
 	m.TpId = f.GetTpId()
 	m.Type = f.GetType()
@@ -1343,6 +1364,7 @@ func (m *GetSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	f.Subject = m1.Subject
 	f.Tags = m1.Tags
 	f.Timeline = m1.Timeline
+	f.Timezone = m1.Timezone
 	f.Topic = m1.Topic
 	f.TpId = m1.TpId
 	f.Type = m1.Type

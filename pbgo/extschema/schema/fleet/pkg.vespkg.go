@@ -7,6 +7,7 @@ import (
 	"reflect"
 
 	"gopkg.volterra.us/stdlib/db"
+	"gopkg.volterra.us/stdlib/server"
 	"gopkg.volterra.us/stdlib/store"
 	"gopkg.volterra.us/stdlib/svcfw"
 )
@@ -25,6 +26,8 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.fleet.ListResponseItem"] = ListResponseItemValidator()
 	vr["ves.io.schema.fleet.ReplaceRequest"] = ReplaceRequestValidator()
 	vr["ves.io.schema.fleet.ReplaceResponse"] = ReplaceResponseValidator()
+	vr["ves.io.schema.fleet.SetLogAnonymizationRequest"] = SetLogAnonymizationRequestValidator()
+	vr["ves.io.schema.fleet.SetLogAnonymizationResponse"] = SetLogAnonymizationResponseValidator()
 	vr["ves.io.schema.fleet.BGPConfiguration"] = BGPConfigurationValidator()
 	vr["ves.io.schema.fleet.BlockedServices"] = BlockedServicesValidator()
 	vr["ves.io.schema.fleet.BlockedServicesListType"] = BlockedServicesListTypeValidator()
@@ -229,6 +232,7 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 
 func initializeAPIGwServiceSlugsRegistry(sm map[string]string) {
 	sm["ves.io.schema.fleet.API"] = "config"
+	sm["ves.io.schema.fleet.CustomAPI"] = "config"
 }
 
 func initializeP0PolicyRegistry(sm map[string]svcfw.P0PolicyInfo) {
@@ -258,6 +262,21 @@ func initializeCRUDServiceRegistry(mdr *svcfw.MDRegistry, isExternal bool) {
 		mdr.SvcRegisterHandlers["ves.io.schema.fleet.API"] = RegisterAPIServer
 		mdr.SvcGwRegisterHandlers["ves.io.schema.fleet.API"] = RegisterGwAPIHandler
 		csr.CRUDServerRegistry["ves.io.schema.fleet.Object"] = NewCRUDAPIServer
+	}()
+	customCSR = mdr.PubCustomServiceRegistry
+	func() {
+		// set swagger jsons for our and external schemas
+		customCSR.SwaggerRegistry["ves.io.schema.fleet.Object"] = CustomAPISwaggerJSON
+		customCSR.GrpcClientRegistry["ves.io.schema.fleet.CustomAPI"] = NewCustomAPIGrpcClient
+		customCSR.RestClientRegistry["ves.io.schema.fleet.CustomAPI"] = NewCustomAPIRestClient
+		if isExternal {
+			return
+		}
+		mdr.SvcRegisterHandlers["ves.io.schema.fleet.CustomAPI"] = RegisterCustomAPIServer
+		mdr.SvcGwRegisterHandlers["ves.io.schema.fleet.CustomAPI"] = RegisterGwCustomAPIHandler
+		customCSR.ServerRegistry["ves.io.schema.fleet.CustomAPI"] = func(svc svcfw.Service) server.APIHandler {
+			return NewCustomAPIServer(svc)
+		}
 	}()
 }
 

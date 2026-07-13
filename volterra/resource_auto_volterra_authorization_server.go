@@ -155,6 +155,7 @@ func resourceVolterraAuthorizationServerRead(d *schema.ResourceData, meta interf
 		}
 		return fmt.Errorf("Error finding Volterra AuthorizationServer %q: %s", d.Id(), err)
 	}
+
 	return setAuthorizationServerFields(client, d, resp)
 }
 
@@ -265,5 +266,11 @@ func resourceVolterraAuthorizationServerDelete(d *schema.ResourceData, meta inte
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_authorization_server.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_authorization_server.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting AuthorizationServer: %w", err)
+	}
+	return nil
+
 }

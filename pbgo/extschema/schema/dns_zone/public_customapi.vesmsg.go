@@ -593,6 +593,163 @@ func GetLocalZoneFileResponseValidator() db.Validator {
 
 // augmented methods on protoc/std generated struct
 
+func (m *GetLocalZoneRecordNamesRequest) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *GetLocalZoneRecordNamesRequest) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *GetLocalZoneRecordNamesRequest) DeepCopy() *GetLocalZoneRecordNamesRequest {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &GetLocalZoneRecordNamesRequest{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *GetLocalZoneRecordNamesRequest) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *GetLocalZoneRecordNamesRequest) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return GetLocalZoneRecordNamesRequestValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateGetLocalZoneRecordNamesRequest struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateGetLocalZoneRecordNamesRequest) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*GetLocalZoneRecordNamesRequest)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *GetLocalZoneRecordNamesRequest got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["dns_zone_name"]; exists {
+		vOpts := append(opts, db.WithValidateField("dns_zone_name"))
+		if err := fv(ctx, m.GetDnsZoneName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["namespace"]; exists {
+		vOpts := append(opts, db.WithValidateField("namespace"))
+		if err := fv(ctx, m.GetNamespace(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultGetLocalZoneRecordNamesRequestValidator = func() *ValidateGetLocalZoneRecordNamesRequest {
+	v := &ValidateGetLocalZoneRecordNamesRequest{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func GetLocalZoneRecordNamesRequestValidator() db.Validator {
+	return DefaultGetLocalZoneRecordNamesRequestValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *GetLocalZoneRecordNamesResponse) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *GetLocalZoneRecordNamesResponse) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *GetLocalZoneRecordNamesResponse) DeepCopy() *GetLocalZoneRecordNamesResponse {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &GetLocalZoneRecordNamesResponse{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *GetLocalZoneRecordNamesResponse) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *GetLocalZoneRecordNamesResponse) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return GetLocalZoneRecordNamesResponseValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateGetLocalZoneRecordNamesResponse struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateGetLocalZoneRecordNamesResponse) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*GetLocalZoneRecordNamesResponse)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *GetLocalZoneRecordNamesResponse got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["record_names"]; exists {
+		vOpts := append(opts, db.WithValidateField("record_names"))
+		for idx, item := range m.GetRecordNames() {
+			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
+			if err := fv(ctx, item, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultGetLocalZoneRecordNamesResponseValidator = func() *ValidateGetLocalZoneRecordNamesResponse {
+	v := &ValidateGetLocalZoneRecordNamesResponse{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func GetLocalZoneRecordNamesResponseValidator() db.Validator {
+	return DefaultGetLocalZoneRecordNamesResponseValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *GetRemoteZoneFileRequest) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
@@ -1560,6 +1717,181 @@ var DefaultImportF5CSZoneResponseValidator = func() *ValidateImportF5CSZoneRespo
 
 func ImportF5CSZoneResponseValidator() db.Validator {
 	return DefaultImportF5CSZoneResponseValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *InitiateZoneTransferRequest) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *InitiateZoneTransferRequest) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *InitiateZoneTransferRequest) DeepCopy() *InitiateZoneTransferRequest {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &InitiateZoneTransferRequest{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *InitiateZoneTransferRequest) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *InitiateZoneTransferRequest) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return InitiateZoneTransferRequestValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateInitiateZoneTransferRequest struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateInitiateZoneTransferRequest) ZoneNameValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for zone_name")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateInitiateZoneTransferRequest) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*InitiateZoneTransferRequest)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *InitiateZoneTransferRequest got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["namespace"]; exists {
+		vOpts := append(opts, db.WithValidateField("namespace"))
+		if err := fv(ctx, m.GetNamespace(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["zone_name"]; exists {
+		vOpts := append(opts, db.WithValidateField("zone_name"))
+		if err := fv(ctx, m.GetZoneName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultInitiateZoneTransferRequestValidator = func() *ValidateInitiateZoneTransferRequest {
+	v := &ValidateInitiateZoneTransferRequest{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhZoneName := v.ZoneNameValidationRuleHandler
+	rulesZoneName := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhZoneName(rulesZoneName)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for InitiateZoneTransferRequest.zone_name: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["zone_name"] = vFn
+
+	return v
+}()
+
+func InitiateZoneTransferRequestValidator() db.Validator {
+	return DefaultInitiateZoneTransferRequestValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *InitiateZoneTransferResponse) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *InitiateZoneTransferResponse) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *InitiateZoneTransferResponse) DeepCopy() *InitiateZoneTransferResponse {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &InitiateZoneTransferResponse{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *InitiateZoneTransferResponse) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *InitiateZoneTransferResponse) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return InitiateZoneTransferResponseValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateInitiateZoneTransferResponse struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateInitiateZoneTransferResponse) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*InitiateZoneTransferResponse)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *InitiateZoneTransferResponse got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultInitiateZoneTransferResponseValidator = func() *ValidateInitiateZoneTransferResponse {
+	v := &ValidateInitiateZoneTransferResponse{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func InitiateZoneTransferResponseValidator() db.Validator {
+	return DefaultInitiateZoneTransferResponseValidator
 }
 
 // augmented methods on protoc/std generated struct

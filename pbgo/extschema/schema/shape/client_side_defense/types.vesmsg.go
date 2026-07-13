@@ -1097,6 +1097,174 @@ func AnalysisValidator() db.Validator {
 
 // augmented methods on protoc/std generated struct
 
+func (m *ApprovalStatusFilter) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *ApprovalStatusFilter) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *ApprovalStatusFilter) DeepCopy() *ApprovalStatusFilter {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &ApprovalStatusFilter{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *ApprovalStatusFilter) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *ApprovalStatusFilter) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return ApprovalStatusFilterValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateApprovalStatusFilter struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateApprovalStatusFilter) OpValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	var conv db.EnumConvFn
+	conv = func(v interface{}) int32 {
+		i := v.(FilterOperator)
+		return int32(i)
+	}
+	// FilterOperator_name is generated in .pb.go
+	validatorFn, err := db.NewEnumValidationRuleHandler(rules, FilterOperator_name, conv)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for op")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateApprovalStatusFilter) ApprovalStatusStringsValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepStringItemRules(rules)
+	itemValFn, err := db.NewStringValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Item ValidationRuleHandler for approval_status_strings")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []string, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for approval_status_strings")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]string)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []string, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal := fmt.Sprintf("%v", elem)
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated approval_status_strings")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items approval_status_strings")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateApprovalStatusFilter) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*ApprovalStatusFilter)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *ApprovalStatusFilter got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["approval_status_strings"]; exists {
+		vOpts := append(opts, db.WithValidateField("approval_status_strings"))
+		if err := fv(ctx, m.GetApprovalStatusStrings(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["op"]; exists {
+		vOpts := append(opts, db.WithValidateField("op"))
+		if err := fv(ctx, m.GetOp(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultApprovalStatusFilterValidator = func() *ValidateApprovalStatusFilter {
+	v := &ValidateApprovalStatusFilter{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhOp := v.OpValidationRuleHandler
+	rulesOp := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhOp(rulesOp)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for ApprovalStatusFilter.op: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["op"] = vFn
+
+	vrhApprovalStatusStrings := v.ApprovalStatusStringsValidationRuleHandler
+	rulesApprovalStatusStrings := map[string]string{
+		"ves.io.schema.rules.message.required":              "true",
+		"ves.io.schema.rules.repeated.items.string.max_len": "32",
+		"ves.io.schema.rules.repeated.max_items":            "10",
+		"ves.io.schema.rules.repeated.min_items":            "1",
+		"ves.io.schema.rules.repeated.unique":               "true",
+	}
+	vFn, err = vrhApprovalStatusStrings(rulesApprovalStatusStrings)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for ApprovalStatusFilter.approval_status_strings: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["approval_status_strings"] = vFn
+
+	return v
+}()
+
+func ApprovalStatusFilterValidator() db.Validator {
+	return DefaultApprovalStatusFilterValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *AssociatedScript) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
@@ -2035,6 +2203,12 @@ func (v *ValidateFilters) Validate(ctx context.Context, pm interface{}, opts ...
 	if m == nil {
 		return nil
 	}
+	if fv, exists := v.FldValidators["approval_status_filter"]; exists {
+		vOpts := append(opts, db.WithValidateField("approval_status_filter"))
+		if err := fv(ctx, m.GetApprovalStatusFilter(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["device_id_filter"]; exists {
 		vOpts := append(opts, db.WithValidateField("device_id_filter"))
 		if err := fv(ctx, m.GetDeviceIdFilter(), vOpts...); err != nil {
@@ -2076,6 +2250,7 @@ var DefaultFiltersValidator = func() *ValidateFilters {
 	v.FldValidators["script_status_filter"] = ScriptStatusFilterValidator().Validate
 	v.FldValidators["ip_filter"] = IPFilterValidator().Validate
 	v.FldValidators["device_id_filter"] = DeviceIDFilterValidator().Validate
+	v.FldValidators["approval_status_filter"] = ApprovalStatusFilterValidator().Validate
 
 	return v
 }()
@@ -5376,6 +5551,15 @@ func (v *ValidateListDetectedDomainsRequest) Validate(ctx context.Context, pm in
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["sorts"]; exists {
+		vOpts := append(opts, db.WithValidateField("sorts"))
+		for idx, item := range m.GetSorts() {
+			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
+			if err := fv(ctx, item, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
 	if fv, exists := v.FldValidators["start_time"]; exists {
 		vOpts := append(opts, db.WithValidateField("start_time"))
 		if err := fv(ctx, m.GetStartTime(), vOpts...); err != nil {
@@ -7460,6 +7644,12 @@ func (v *ValidateScriptInfo) Validate(ctx context.Context, pm interface{}, opts 
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["approval_status"]; exists {
+		vOpts := append(opts, db.WithValidateField("approval_status"))
+		if err := fv(ctx, m.GetApprovalStatus(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["first_seen"]; exists {
 		vOpts := append(opts, db.WithValidateField("first_seen"))
 		if err := fv(ctx, m.GetFirstSeen(), vOpts...); err != nil {
@@ -7475,6 +7665,12 @@ func (v *ValidateScriptInfo) Validate(ctx context.Context, pm interface{}, opts 
 	if fv, exists := v.FldValidators["id"]; exists {
 		vOpts := append(opts, db.WithValidateField("id"))
 		if err := fv(ctx, m.GetId(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["inline_scripts_count"]; exists {
+		vOpts := append(opts, db.WithValidateField("inline_scripts_count"))
+		if err := fv(ctx, m.GetInlineScriptsCount(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -8328,29 +8524,16 @@ func (v *ValidateUpdateDomainsRequest) Validate(ctx context.Context, pm interfac
 	if m == nil {
 		return nil
 	}
-
-	switch m.GetAllowedOrMitigatedDomains().(type) {
-	case *UpdateDomainsRequest_AddToAllowedDomains:
-		if fv, exists := v.FldValidators["allowed_or_mitigated_domains.add_to_allowed_domains"]; exists {
-			val := m.GetAllowedOrMitigatedDomains().(*UpdateDomainsRequest_AddToAllowedDomains).AddToAllowedDomains
-			vOpts := append(opts,
-				db.WithValidateField("allowed_or_mitigated_domains"),
-				db.WithValidateField("add_to_allowed_domains"),
-			)
-			if err := fv(ctx, val, vOpts...); err != nil {
-				return err
-			}
+	if fv, exists := v.FldValidators["add_to_allowed_domains"]; exists {
+		vOpts := append(opts, db.WithValidateField("add_to_allowed_domains"))
+		if err := fv(ctx, m.GetAddToAllowedDomains(), vOpts...); err != nil {
+			return err
 		}
-	case *UpdateDomainsRequest_AddToMitigatedDomains:
-		if fv, exists := v.FldValidators["allowed_or_mitigated_domains.add_to_mitigated_domains"]; exists {
-			val := m.GetAllowedOrMitigatedDomains().(*UpdateDomainsRequest_AddToMitigatedDomains).AddToMitigatedDomains
-			vOpts := append(opts,
-				db.WithValidateField("allowed_or_mitigated_domains"),
-				db.WithValidateField("add_to_mitigated_domains"),
-			)
-			if err := fv(ctx, val, vOpts...); err != nil {
-				return err
-			}
+	}
+	if fv, exists := v.FldValidators["add_to_mitigated_domains"]; exists {
+		vOpts := append(opts, db.WithValidateField("add_to_mitigated_domains"))
+		if err := fv(ctx, m.GetAddToMitigatedDomains(), vOpts...); err != nil {
+			return err
 		}
 	}
 	if fv, exists := v.FldValidators["namespace"]; exists {
@@ -8365,8 +8548,8 @@ func (v *ValidateUpdateDomainsRequest) Validate(ctx context.Context, pm interfac
 // Well-known symbol for default validator implementation
 var DefaultUpdateDomainsRequestValidator = func() *ValidateUpdateDomainsRequest {
 	v := &ValidateUpdateDomainsRequest{FldValidators: map[string]db.ValidatorFunc{}}
-	v.FldValidators["allowed_or_mitigated_domains.add_to_allowed_domains"] = AddToAllowedDomainsValidator().Validate
-	v.FldValidators["allowed_or_mitigated_domains.add_to_mitigated_domains"] = AddToMitigatedDomainsValidator().Validate
+	v.FldValidators["add_to_allowed_domains"] = AddToAllowedDomainsValidator().Validate
+	v.FldValidators["add_to_mitigated_domains"] = AddToMitigatedDomainsValidator().Validate
 
 	return v
 }()

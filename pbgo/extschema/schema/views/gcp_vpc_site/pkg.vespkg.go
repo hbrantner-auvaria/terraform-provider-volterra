@@ -87,10 +87,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 			FieldPath:           "spec.custom_dns.outside_nameserver_v6",
 			AllowedEnvironments: []string{"crt", "prod", "softbank_mec", "staging", "test"},
 		},
-		{
-			FieldPath:           "spec.encryption_choice",
-			AllowedEnvironments: []string{"crt", "demo1"},
-		},
 	}
 	mdr.RPCAvailableInResFieldRegistry["ves.io.schema.views.gcp_vpc_site.API.Create"] = []svcfw.EnvironmentField{
 		{
@@ -111,10 +107,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		{
 			FieldPath:           "create_form.spec.custom_dns.outside_nameserver_v6",
 			AllowedEnvironments: []string{"crt", "prod", "softbank_mec", "staging", "test"},
-		},
-		{
-			FieldPath:           "create_form.spec.encryption_choice",
-			AllowedEnvironments: []string{"crt", "demo1"},
 		},
 		{
 			FieldPath:           "replace_form.spec.custom_dns.inside_nameserver_v6",

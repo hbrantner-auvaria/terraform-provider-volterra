@@ -353,11 +353,6 @@ func resourceVolterraVirtualAddress() *schema.Resource {
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
 
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
-
 															"name": {
 																Type:     schema.TypeString,
 																Optional: true,
@@ -445,11 +440,6 @@ func resourceVolterraVirtualAddress() *schema.Resource {
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
 
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
-
 																		"name": {
 																			Type:     schema.TypeString,
 																			Optional: true,
@@ -497,11 +487,6 @@ func resourceVolterraVirtualAddress() *schema.Resource {
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
 
-												"kind": {
-													Type:     schema.TypeString,
-													Computed: true,
-												},
-
 												"name": {
 													Type:     schema.TypeString,
 													Optional: true,
@@ -525,11 +510,6 @@ func resourceVolterraVirtualAddress() *schema.Resource {
 										Optional: true,
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
-
-												"kind": {
-													Type:     schema.TypeString,
-													Computed: true,
-												},
 
 												"name": {
 													Type:     schema.TypeString,
@@ -1094,24 +1074,22 @@ func resourceVolterraVirtualAddressCreate(d *schema.ResourceData, meta interface
 										if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
 
 											sl := v.([]interface{})
-											publicIp := &ves_io_schema_views.ObjectRefType{}
-											vipChoiceInt.SpecificVip.PublicIp = publicIp
+											publicIpInt := &ves_io_schema_views.ObjectRefType{}
+											vipChoiceInt.SpecificVip.PublicIp = publicIpInt
+
 											for _, set := range sl {
 												if set != nil {
-													publicIpMapStrToI := set.(map[string]interface{})
-
-													if w, ok := publicIpMapStrToI["name"]; ok && !isIntfNil(w) {
-														publicIp.Name = w.(string)
+													piMapToStrVal := set.(map[string]interface{})
+													if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+														publicIpInt.Name = val.(string)
+													}
+													if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+														publicIpInt.Namespace = val.(string)
 													}
 
-													if w, ok := publicIpMapStrToI["namespace"]; ok && !isIntfNil(w) {
-														publicIp.Namespace = w.(string)
+													if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+														publicIpInt.Tenant = val.(string)
 													}
-
-													if w, ok := publicIpMapStrToI["tenant"]; ok && !isIntfNil(w) {
-														publicIp.Tenant = w.(string)
-													}
-
 												}
 											}
 
@@ -1224,24 +1202,22 @@ func resourceVolterraVirtualAddressCreate(d *schema.ResourceData, meta interface
 													if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														publicIp := &ves_io_schema_views.ObjectRefType{}
-														vipChoiceInt.SpecificVip.PublicIp = publicIp
+														publicIpInt := &ves_io_schema_views.ObjectRefType{}
+														vipChoiceInt.SpecificVip.PublicIp = publicIpInt
+
 														for _, set := range sl {
 															if set != nil {
-																publicIpMapStrToI := set.(map[string]interface{})
-
-																if w, ok := publicIpMapStrToI["name"]; ok && !isIntfNil(w) {
-																	publicIp.Name = w.(string)
+																piMapToStrVal := set.(map[string]interface{})
+																if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	publicIpInt.Name = val.(string)
+																}
+																if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	publicIpInt.Namespace = val.(string)
 																}
 
-																if w, ok := publicIpMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	publicIp.Namespace = w.(string)
+																if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	publicIpInt.Tenant = val.(string)
 																}
-
-																if w, ok := publicIpMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	publicIp.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -1428,6 +1404,7 @@ func resourceVolterraVirtualAddressRead(d *schema.ResourceData, meta interface{}
 		}
 		return fmt.Errorf("Error finding Volterra VirtualAddress %q: %s", d.Id(), err)
 	}
+
 	return setVirtualAddressFields(client, d, resp)
 }
 
@@ -1954,24 +1931,22 @@ func resourceVolterraVirtualAddressUpdate(d *schema.ResourceData, meta interface
 										if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
 
 											sl := v.([]interface{})
-											publicIp := &ves_io_schema_views.ObjectRefType{}
-											vipChoiceInt.SpecificVip.PublicIp = publicIp
+											publicIpInt := &ves_io_schema_views.ObjectRefType{}
+											vipChoiceInt.SpecificVip.PublicIp = publicIpInt
+
 											for _, set := range sl {
 												if set != nil {
-													publicIpMapStrToI := set.(map[string]interface{})
-
-													if w, ok := publicIpMapStrToI["name"]; ok && !isIntfNil(w) {
-														publicIp.Name = w.(string)
+													piMapToStrVal := set.(map[string]interface{})
+													if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+														publicIpInt.Name = val.(string)
+													}
+													if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+														publicIpInt.Namespace = val.(string)
 													}
 
-													if w, ok := publicIpMapStrToI["namespace"]; ok && !isIntfNil(w) {
-														publicIp.Namespace = w.(string)
+													if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+														publicIpInt.Tenant = val.(string)
 													}
-
-													if w, ok := publicIpMapStrToI["tenant"]; ok && !isIntfNil(w) {
-														publicIp.Tenant = w.(string)
-													}
-
 												}
 											}
 
@@ -2084,24 +2059,22 @@ func resourceVolterraVirtualAddressUpdate(d *schema.ResourceData, meta interface
 													if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														publicIp := &ves_io_schema_views.ObjectRefType{}
-														vipChoiceInt.SpecificVip.PublicIp = publicIp
+														publicIpInt := &ves_io_schema_views.ObjectRefType{}
+														vipChoiceInt.SpecificVip.PublicIp = publicIpInt
+
 														for _, set := range sl {
 															if set != nil {
-																publicIpMapStrToI := set.(map[string]interface{})
-
-																if w, ok := publicIpMapStrToI["name"]; ok && !isIntfNil(w) {
-																	publicIp.Name = w.(string)
+																piMapToStrVal := set.(map[string]interface{})
+																if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	publicIpInt.Name = val.(string)
+																}
+																if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	publicIpInt.Namespace = val.(string)
 																}
 
-																if w, ok := publicIpMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	publicIp.Namespace = w.(string)
+																if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	publicIpInt.Tenant = val.(string)
 																}
-
-																if w, ok := publicIpMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	publicIp.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -2291,5 +2264,11 @@ func resourceVolterraVirtualAddressDelete(d *schema.ResourceData, meta interface
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_views_virtual_address.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_views_virtual_address.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting VirtualAddress: %w", err)
+	}
+	return nil
+
 }

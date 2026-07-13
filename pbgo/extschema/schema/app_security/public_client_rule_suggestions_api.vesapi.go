@@ -2156,15 +2156,17 @@ var AppSecurityClientRuleAPISwaggerJSON string = `{
             "properties": {
                 "actions": {
                     "type": "array",
-                    "description": " Actions that should be taken when client identifier matches the rule\n\nValidation Rules:\n  ves.io.schema.rules.enum.defined_only: true\n  ves.io.schema.rules.repeated.max_items: 10\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "description": " Actions that should be taken when client identifier matches the rule\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.enum.defined_only: true\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 10\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "actions",
                     "maxItems": 10,
                     "items": {
                         "$ref": "#/definitions/common_wafClientSrcRuleAction"
                     },
                     "x-displayname": "Actions",
+                    "x-ves-required": "true",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.enum.defined_only": "true",
+                        "ves.io.schema.rules.message.required": "true",
                         "ves.io.schema.rules.repeated.max_items": "10",
                         "ves.io.schema.rules.repeated.unique": "true"
                     }

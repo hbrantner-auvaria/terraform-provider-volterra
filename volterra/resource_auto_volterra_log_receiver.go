@@ -2512,6 +2512,7 @@ func resourceVolterraLogReceiverRead(d *schema.ResourceData, meta interface{}) e
 		}
 		return fmt.Errorf("Error finding Volterra LogReceiver %q: %s", d.Id(), err)
 	}
+
 	return setLogReceiverFields(client, d, resp)
 }
 
@@ -3950,5 +3951,11 @@ func resourceVolterraLogReceiverDelete(d *schema.ResourceData, meta interface{})
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_log_receiver.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_log_receiver.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting LogReceiver: %w", err)
+	}
+	return nil
+
 }

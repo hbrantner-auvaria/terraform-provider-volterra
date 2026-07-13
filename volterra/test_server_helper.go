@@ -706,13 +706,13 @@ func makeCustomTestServer(t *testing.T, objectTypes []string) (*generic.Fixture,
 	return f, stop
 }
 
-func getTestClientOpts(url, tenant string) ([]vesapi.ConfigOpt, error) {
+func getTestClientOpts(url, tenant, userAgent string) ([]vesapi.ConfigOpt, error) {
 
 	clKey := fmt.Sprintf("file:///%s/tls/client.examplesvc.ves.io.key", tdRoot)
 	clCert := fmt.Sprintf("file:///%s/tls/client.examplesvc.ves.io.crt", tdRoot)
 	clCACert := fmt.Sprintf("file:///%s/tls/client.ca.crt", tdRoot)
 
-	remapperFn := uriRemapperFn(url, tenant)
+	remapperFn := uriRemapperFn(url, tenant, userAgent)
 
 	clOpts := []vesapi.ConfigOpt{
 		vesapi.WithCfgKey(clKey),

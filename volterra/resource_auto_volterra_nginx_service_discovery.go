@@ -392,6 +392,7 @@ func resourceVolterraNginxServiceDiscoveryRead(d *schema.ResourceData, meta inte
 		}
 		return fmt.Errorf("Error finding Volterra NginxServiceDiscovery %q: %s", d.Id(), err)
 	}
+
 	return setNginxServiceDiscoveryFields(client, d, resp)
 }
 
@@ -636,5 +637,11 @@ func resourceVolterraNginxServiceDiscoveryDelete(d *schema.ResourceData, meta in
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_nginx_one_nginx_service_discovery.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_nginx_one_nginx_service_discovery.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting NginxServiceDiscovery: %w", err)
+	}
+	return nil
+
 }

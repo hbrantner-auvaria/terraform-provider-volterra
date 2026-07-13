@@ -155,6 +155,7 @@ func resourceVolterraTrustedCaListRead(d *schema.ResourceData, meta interface{})
 		}
 		return fmt.Errorf("Error finding Volterra TrustedCaList %q: %s", d.Id(), err)
 	}
+
 	return setTrustedCaListFields(client, d, resp)
 }
 
@@ -265,5 +266,11 @@ func resourceVolterraTrustedCaListDelete(d *schema.ResourceData, meta interface{
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_trusted_ca_list.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_trusted_ca_list.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting TrustedCaList: %w", err)
+	}
+	return nil
+
 }

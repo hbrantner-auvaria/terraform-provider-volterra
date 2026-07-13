@@ -82,7 +82,13 @@ func resourceVolterraNetworkPolicyView() *schema.Resource {
 							MaxItems: 1,
 							Optional: true,
 							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{},
+								Schema: map[string]*schema.Schema{
+
+									"action": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
 							},
 						},
 
@@ -464,7 +470,13 @@ func resourceVolterraNetworkPolicyView() *schema.Resource {
 							MaxItems: 1,
 							Optional: true,
 							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{},
+								Schema: map[string]*schema.Schema{
+
+									"action": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
 							},
 						},
 
@@ -795,7 +807,13 @@ func resourceVolterraNetworkPolicyViewCreate(d *schema.ResourceData, meta interf
 					egressRules[i].AdvAction = advAction
 					for _, set := range sl {
 						if set != nil {
-							_ = set.(map[string]interface{})
+							advActionMapStrToI := set.(map[string]interface{})
+
+							if v, ok := advActionMapStrToI["action"]; ok && !isIntfNil(v) {
+
+								advAction.Action = ves_io_schema_network_policy_rule.LogAction(ves_io_schema_network_policy_rule.LogAction_value[v.(string)])
+
+							}
 
 						}
 					}
@@ -1368,7 +1386,13 @@ func resourceVolterraNetworkPolicyViewCreate(d *schema.ResourceData, meta interf
 					ingressRules[i].AdvAction = advAction
 					for _, set := range sl {
 						if set != nil {
-							_ = set.(map[string]interface{})
+							advActionMapStrToI := set.(map[string]interface{})
+
+							if v, ok := advActionMapStrToI["action"]; ok && !isIntfNil(v) {
+
+								advAction.Action = ves_io_schema_network_policy_rule.LogAction(ves_io_schema_network_policy_rule.LogAction_value[v.(string)])
+
+							}
 
 						}
 					}
@@ -1764,6 +1788,7 @@ func resourceVolterraNetworkPolicyViewRead(d *schema.ResourceData, meta interfac
 		}
 		return fmt.Errorf("Error finding Volterra NetworkPolicyView %q: %s", d.Id(), err)
 	}
+
 	return setNetworkPolicyViewFields(client, d, resp)
 }
 
@@ -1861,7 +1886,13 @@ func resourceVolterraNetworkPolicyViewUpdate(d *schema.ResourceData, meta interf
 					egressRules[i].AdvAction = advAction
 					for _, set := range sl {
 						if set != nil {
-							_ = set.(map[string]interface{})
+							advActionMapStrToI := set.(map[string]interface{})
+
+							if v, ok := advActionMapStrToI["action"]; ok && !isIntfNil(v) {
+
+								advAction.Action = ves_io_schema_network_policy_rule.LogAction(ves_io_schema_network_policy_rule.LogAction_value[v.(string)])
+
+							}
 
 						}
 					}
@@ -2432,7 +2463,13 @@ func resourceVolterraNetworkPolicyViewUpdate(d *schema.ResourceData, meta interf
 					ingressRules[i].AdvAction = advAction
 					for _, set := range sl {
 						if set != nil {
-							_ = set.(map[string]interface{})
+							advActionMapStrToI := set.(map[string]interface{})
+
+							if v, ok := advActionMapStrToI["action"]; ok && !isIntfNil(v) {
+
+								advAction.Action = ves_io_schema_network_policy_rule.LogAction(ves_io_schema_network_policy_rule.LogAction_value[v.(string)])
+
+							}
 
 						}
 					}
@@ -2832,5 +2869,11 @@ func resourceVolterraNetworkPolicyViewDelete(d *schema.ResourceData, meta interf
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_views_network_policy_view.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_views_network_policy_view.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting NetworkPolicyView: %w", err)
+	}
+	return nil
+
 }

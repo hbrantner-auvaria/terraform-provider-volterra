@@ -15,6 +15,8 @@ import (
 
 	"gopkg.volterra.us/stdlib/client/vesapi"
 
+	statemigration "github.com/volterraedge/terraform-provider-volterra/volterra/state_migration"
+
 	ves_io_schema "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema"
 	ves_io_schema_global_log_receiver "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/global_log_receiver"
 	ves_io_schema_views "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/views"
@@ -27,6 +29,15 @@ func resourceVolterraGlobalLogReceiver() *schema.Resource {
 		Read:   resourceVolterraGlobalLogReceiverRead,
 		Update: resourceVolterraGlobalLogReceiverUpdate,
 		Delete: resourceVolterraGlobalLogReceiverDelete,
+
+		SchemaVersion: 1,
+		StateUpgraders: []schema.StateUpgrader{
+			{
+				Type:    statemigration.ResourceGlobalLogReceiverInstanceResourceV1().CoreConfigSchema().ImpliedType(),
+				Upgrade: statemigration.ResourceGlobalLogReceiverInstanceStateUpgradeV1,
+				Version: 0,
+			},
+		},
 
 		Schema: map[string]*schema.Schema{
 
@@ -115,8 +126,25 @@ func resourceVolterraGlobalLogReceiver() *schema.Resource {
 
 			"request_logs": {
 
-				Type:     schema.TypeBool,
+				Type:     schema.TypeList,
+				MaxItems: 1,
 				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+
+						"sampled": {
+
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+
+						"unsampled": {
+
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+					},
+				},
 			},
 
 			"security_events": {
@@ -1748,6 +1776,13 @@ func resourceVolterraGlobalLogReceiver() *schema.Resource {
 						},
 					},
 				},
+			},
+
+			"file_receiver": {
+
+				Type:       schema.TypeBool,
+				Optional:   true,
+				Deprecated: "This field is deprecated and will be removed in future release.",
 			},
 
 			"gcp_bucket_receiver": {
@@ -4329,14 +4364,45 @@ func resourceVolterraGlobalLogReceiverCreate(d *schema.ResourceData, meta interf
 
 	}
 
-	if v, ok := d.GetOk("request_logs"); ok && !logTypeTypeFound {
+	if v, ok := d.GetOk("request_logs"); ok && !isIntfNil(v) && !logTypeTypeFound {
 
 		logTypeTypeFound = true
+		logTypeInt := &ves_io_schema_global_log_receiver.CreateSpecType_RequestLogs{}
+		logTypeInt.RequestLogs = &ves_io_schema_global_log_receiver.RequestLogsConfig{}
+		createSpec.LogType = logTypeInt
 
-		if v.(bool) {
-			logTypeInt := &ves_io_schema_global_log_receiver.CreateSpecType_RequestLogs{}
-			logTypeInt.RequestLogs = &ves_io_schema.Empty{}
-			createSpec.LogType = logTypeInt
+		sl := v.([]interface{})
+		for _, set := range sl {
+			if set != nil {
+				cs := set.(map[string]interface{})
+
+				samplingChoiceTypeFound := false
+
+				if v, ok := cs["sampled"]; ok && !isIntfNil(v) && !samplingChoiceTypeFound {
+
+					samplingChoiceTypeFound = true
+
+					if v.(bool) {
+						samplingChoiceInt := &ves_io_schema_global_log_receiver.RequestLogsConfig_Sampled{}
+						samplingChoiceInt.Sampled = &ves_io_schema.Empty{}
+						logTypeInt.RequestLogs.SamplingChoice = samplingChoiceInt
+					}
+
+				}
+
+				if v, ok := cs["unsampled"]; ok && !isIntfNil(v) && !samplingChoiceTypeFound {
+
+					samplingChoiceTypeFound = true
+
+					if v.(bool) {
+						samplingChoiceInt := &ves_io_schema_global_log_receiver.RequestLogsConfig_Unsampled{}
+						samplingChoiceInt.Unsampled = &ves_io_schema.Empty{}
+						logTypeInt.RequestLogs.SamplingChoice = samplingChoiceInt
+					}
+
+				}
+
+			}
 		}
 
 	}
@@ -6597,6 +6663,18 @@ func resourceVolterraGlobalLogReceiverCreate(d *schema.ResourceData, meta interf
 				}
 
 			}
+		}
+
+	}
+
+	if v, ok := d.GetOk("file_receiver"); ok && !receiverTypeFound {
+
+		receiverTypeFound = true
+
+		if v.(bool) {
+			receiverInt := &ves_io_schema_global_log_receiver.CreateSpecType_FileReceiver{}
+			receiverInt.FileReceiver = &ves_io_schema.Empty{}
+			createSpec.Receiver = receiverInt
 		}
 
 	}
@@ -10113,6 +10191,7 @@ func resourceVolterraGlobalLogReceiverRead(d *schema.ResourceData, meta interfac
 		}
 		return fmt.Errorf("Error finding Volterra GlobalLogReceiver %q: %s", d.Id(), err)
 	}
+
 	return setGlobalLogReceiverFields(client, d, resp)
 }
 
@@ -10283,14 +10362,45 @@ func resourceVolterraGlobalLogReceiverUpdate(d *schema.ResourceData, meta interf
 
 	}
 
-	if v, ok := d.GetOk("request_logs"); ok && !logTypeTypeFound {
+	if v, ok := d.GetOk("request_logs"); ok && !isIntfNil(v) && !logTypeTypeFound {
 
 		logTypeTypeFound = true
+		logTypeInt := &ves_io_schema_global_log_receiver.ReplaceSpecType_RequestLogs{}
+		logTypeInt.RequestLogs = &ves_io_schema_global_log_receiver.RequestLogsConfig{}
+		updateSpec.LogType = logTypeInt
 
-		if v.(bool) {
-			logTypeInt := &ves_io_schema_global_log_receiver.ReplaceSpecType_RequestLogs{}
-			logTypeInt.RequestLogs = &ves_io_schema.Empty{}
-			updateSpec.LogType = logTypeInt
+		sl := v.([]interface{})
+		for _, set := range sl {
+			if set != nil {
+				cs := set.(map[string]interface{})
+
+				samplingChoiceTypeFound := false
+
+				if v, ok := cs["sampled"]; ok && !isIntfNil(v) && !samplingChoiceTypeFound {
+
+					samplingChoiceTypeFound = true
+
+					if v.(bool) {
+						samplingChoiceInt := &ves_io_schema_global_log_receiver.RequestLogsConfig_Sampled{}
+						samplingChoiceInt.Sampled = &ves_io_schema.Empty{}
+						logTypeInt.RequestLogs.SamplingChoice = samplingChoiceInt
+					}
+
+				}
+
+				if v, ok := cs["unsampled"]; ok && !isIntfNil(v) && !samplingChoiceTypeFound {
+
+					samplingChoiceTypeFound = true
+
+					if v.(bool) {
+						samplingChoiceInt := &ves_io_schema_global_log_receiver.RequestLogsConfig_Unsampled{}
+						samplingChoiceInt.Unsampled = &ves_io_schema.Empty{}
+						logTypeInt.RequestLogs.SamplingChoice = samplingChoiceInt
+					}
+
+				}
+
+			}
 		}
 
 	}
@@ -12549,6 +12659,18 @@ func resourceVolterraGlobalLogReceiverUpdate(d *schema.ResourceData, meta interf
 				}
 
 			}
+		}
+
+	}
+
+	if v, ok := d.GetOk("file_receiver"); ok && !receiverTypeFound {
+
+		receiverTypeFound = true
+
+		if v.(bool) {
+			receiverInt := &ves_io_schema_global_log_receiver.ReplaceSpecType_FileReceiver{}
+			receiverInt.FileReceiver = &ves_io_schema.Empty{}
+			updateSpec.Receiver = receiverInt
 		}
 
 	}
@@ -16069,5 +16191,11 @@ func resourceVolterraGlobalLogReceiverDelete(d *schema.ResourceData, meta interf
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_global_log_receiver.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_global_log_receiver.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting GlobalLogReceiver: %w", err)
+	}
+	return nil
+
 }

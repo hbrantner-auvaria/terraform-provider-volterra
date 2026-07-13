@@ -22,15 +22,11 @@ resource "volterra_healthcheck" "example" {
 
   // One of the arguments from this list "dns_health_check dns_proxy_icmp_health_check dns_proxy_tcp_health_check dns_proxy_udp_health_check http_health_check tcp_health_check udp_icmp_health_check" must be set
 
-  tcp_health_check {
-    expected_response = "00000034"
-
-    send_payload = "000000FF"
-  }
-  healthy_threshold   = ["2"]
-  interval            = ["10"]
-  timeout             = ["1"]
-  unhealthy_threshold = ["5"]
+  udp_icmp_health_check = true
+  healthy_threshold     = ["2"]
+  interval              = ["10"]
+  timeout               = ["1"]
+  unhealthy_threshold   = ["5"]
 }
 ```
 

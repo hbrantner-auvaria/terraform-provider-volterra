@@ -3636,7 +3636,7 @@ var APISwaggerJSON string = `{
                 },
                 "regex_value": {
                     "type": "string",
-                    "description": "x-displayName: \"Regex Values of Domains\"\nx-example: \"([a-z]([-a-z0-9]*[a-z0-9])?)\\.com$'\"\nRegular Expression value for the domain name",
+                    "description": "x-displayName: \"Regex Values of Domains\"\nx-example: \"([a-z]([-a-z0-9]*[a-z0-9])?)\\\\.com$\"\nRegular Expression value for the domain name",
                     "title": "regex values of Domains"
                 },
                 "suffix_value": {

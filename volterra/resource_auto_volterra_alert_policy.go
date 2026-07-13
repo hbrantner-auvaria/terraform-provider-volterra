@@ -1044,6 +1044,7 @@ func resourceVolterraAlertPolicyRead(d *schema.ResourceData, meta interface{}) e
 		}
 		return fmt.Errorf("Error finding Volterra AlertPolicy %q: %s", d.Id(), err)
 	}
+
 	return setAlertPolicyFields(client, d, resp)
 }
 
@@ -1694,5 +1695,11 @@ func resourceVolterraAlertPolicyDelete(d *schema.ResourceData, meta interface{})
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_alert_policy.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_alert_policy.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting AlertPolicy: %w", err)
+	}
+	return nil
+
 }

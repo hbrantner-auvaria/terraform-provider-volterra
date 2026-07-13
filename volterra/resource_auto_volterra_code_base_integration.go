@@ -2817,6 +2817,7 @@ func resourceVolterraCodeBaseIntegrationRead(d *schema.ResourceData, meta interf
 		}
 		return fmt.Errorf("Error finding Volterra CodeBaseIntegration %q: %s", d.Id(), err)
 	}
+
 	return setCodeBaseIntegrationFields(client, d, resp)
 }
 
@@ -4383,5 +4384,11 @@ func resourceVolterraCodeBaseIntegrationDelete(d *schema.ResourceData, meta inte
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_api_sec_code_base_integration.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_api_sec_code_base_integration.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting CodeBaseIntegration: %w", err)
+	}
+	return nil
+
 }

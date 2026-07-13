@@ -355,7 +355,7 @@ var DefaultCDNAccessLogFilterValidator = func() *ValidateCDNAccessLogFilter {
 	vrhValues := v.ValuesValidationRuleHandler
 	rulesValues := map[string]string{
 		"ves.io.schema.rules.message.required":              "true",
-		"ves.io.schema.rules.repeated.items.string.max_len": "128",
+		"ves.io.schema.rules.repeated.items.string.max_len": "256",
 		"ves.io.schema.rules.repeated.max_items":            "32",
 		"ves.io.schema.rules.repeated.unique":               "true",
 	}

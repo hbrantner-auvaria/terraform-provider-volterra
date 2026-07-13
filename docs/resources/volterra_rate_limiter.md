@@ -28,9 +28,9 @@ resource "volterra_rate_limiter" "example" {
     // One of the arguments from this list "leaky_bucket token_bucket" can be set
 
     leaky_bucket {}
-    burst_multiplier = 1
-    period_multiplier = 1
-    total_number = 1
+    burst_multiplier = "1"
+    period_multiplier = "1"
+    total_number = "1"
     unit = "unit"
   }
 }

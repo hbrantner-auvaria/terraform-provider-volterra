@@ -7,7 +7,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"io"
+	io "io"
 	"net/http"
 	"strings"
 
@@ -34,6 +34,22 @@ type CustomAPIGrpcClient struct {
 	rpcFns map[string]func(context.Context, string, ...grpc.CallOption) (proto.Message, error)
 }
 
+func (c *CustomAPIGrpcClient) doRPCBulkDeleteDomains(ctx context.Context, yamlReq string, opts ...grpc.CallOption) (proto.Message, error) {
+	req := &BulkDeleteDomainsRequest{}
+	if err := codec.FromYAML(yamlReq, req); err != nil {
+		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.shape.client_side_defense.BulkDeleteDomainsRequest", yamlReq)
+	}
+	rsp, err := c.grpcClient.BulkDeleteDomains(ctx, req, opts...)
+	return rsp, err
+}
+func (c *CustomAPIGrpcClient) doRPCCreateReport(ctx context.Context, yamlReq string, opts ...grpc.CallOption) (proto.Message, error) {
+	req := &CreateReportRequest{}
+	if err := codec.FromYAML(yamlReq, req); err != nil {
+		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.shape.client_side_defense.CreateReportRequest", yamlReq)
+	}
+	rsp, err := c.grpcClient.CreateReport(ctx, req, opts...)
+	return rsp, err
+}
 func (c *CustomAPIGrpcClient) doRPCDeleteScriptJustification(ctx context.Context, yamlReq string, opts ...grpc.CallOption) (proto.Message, error) {
 	req := &DeleteScriptJustificationRequest{}
 	if err := codec.FromYAML(yamlReq, req); err != nil {
@@ -58,6 +74,14 @@ func (c *CustomAPIGrpcClient) doRPCGetDomainDetails(ctx context.Context, yamlReq
 	rsp, err := c.grpcClient.GetDomainDetails(ctx, req, opts...)
 	return rsp, err
 }
+func (c *CustomAPIGrpcClient) doRPCGetDownloadReportPresignedUrl(ctx context.Context, yamlReq string, opts ...grpc.CallOption) (proto.Message, error) {
+	req := &GetDownloadReportPresignedUrlRequest{}
+	if err := codec.FromYAML(yamlReq, req); err != nil {
+		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.shape.client_side_defense.GetDownloadReportPresignedUrlRequest", yamlReq)
+	}
+	rsp, err := c.grpcClient.GetDownloadReportPresignedUrl(ctx, req, opts...)
+	return rsp, err
+}
 func (c *CustomAPIGrpcClient) doRPCGetFormField(ctx context.Context, yamlReq string, opts ...grpc.CallOption) (proto.Message, error) {
 	req := &GetFormFieldRequest{}
 	if err := codec.FromYAML(yamlReq, req); err != nil {
@@ -80,6 +104,14 @@ func (c *CustomAPIGrpcClient) doRPCGetScriptOverview(ctx context.Context, yamlRe
 		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.shape.client_side_defense.GetScriptOverviewRequest", yamlReq)
 	}
 	rsp, err := c.grpcClient.GetScriptOverview(ctx, req, opts...)
+	return rsp, err
+}
+func (c *CustomAPIGrpcClient) doRPCGetScriptsOverview(ctx context.Context, yamlReq string, opts ...grpc.CallOption) (proto.Message, error) {
+	req := &GetScriptsOverviewRequest{}
+	if err := codec.FromYAML(yamlReq, req); err != nil {
+		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.shape.client_side_defense.GetScriptsOverviewRequest", yamlReq)
+	}
+	rsp, err := c.grpcClient.GetScriptsOverview(ctx, req, opts...)
 	return rsp, err
 }
 func (c *CustomAPIGrpcClient) doRPCGetStatus(ctx context.Context, yamlReq string, opts ...grpc.CallOption) (proto.Message, error) {
@@ -154,12 +186,28 @@ func (c *CustomAPIGrpcClient) doRPCListFormFieldsGet(ctx context.Context, yamlRe
 	rsp, err := c.grpcClient.ListFormFieldsGet(ctx, req, opts...)
 	return rsp, err
 }
+func (c *CustomAPIGrpcClient) doRPCListInlineScripts(ctx context.Context, yamlReq string, opts ...grpc.CallOption) (proto.Message, error) {
+	req := &ListInlineScriptsRequest{}
+	if err := codec.FromYAML(yamlReq, req); err != nil {
+		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.shape.client_side_defense.ListInlineScriptsRequest", yamlReq)
+	}
+	rsp, err := c.grpcClient.ListInlineScripts(ctx, req, opts...)
+	return rsp, err
+}
 func (c *CustomAPIGrpcClient) doRPCListNetworkInteractionsByScript(ctx context.Context, yamlReq string, opts ...grpc.CallOption) (proto.Message, error) {
 	req := &ListNetworkInteractionsByScriptRequest{}
 	if err := codec.FromYAML(yamlReq, req); err != nil {
 		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.shape.client_side_defense.ListNetworkInteractionsByScriptRequest", yamlReq)
 	}
 	rsp, err := c.grpcClient.ListNetworkInteractionsByScript(ctx, req, opts...)
+	return rsp, err
+}
+func (c *CustomAPIGrpcClient) doRPCListReportsWithHistory(ctx context.Context, yamlReq string, opts ...grpc.CallOption) (proto.Message, error) {
+	req := &ListReportsWithHistoryRequest{}
+	if err := codec.FromYAML(yamlReq, req); err != nil {
+		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.shape.client_side_defense.ListReportsWithHistoryRequest", yamlReq)
+	}
+	rsp, err := c.grpcClient.ListReportsWithHistory(ctx, req, opts...)
 	return rsp, err
 }
 func (c *CustomAPIGrpcClient) doRPCListScripts(ctx context.Context, yamlReq string, opts ...grpc.CallOption) (proto.Message, error) {
@@ -200,6 +248,14 @@ func (c *CustomAPIGrpcClient) doRPCUpdateFieldAnalysis(ctx context.Context, yaml
 		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.shape.client_side_defense.UpdateFieldAnalysisRequest", yamlReq)
 	}
 	rsp, err := c.grpcClient.UpdateFieldAnalysis(ctx, req, opts...)
+	return rsp, err
+}
+func (c *CustomAPIGrpcClient) doRPCUpdateScriptApprovalStatus(ctx context.Context, yamlReq string, opts ...grpc.CallOption) (proto.Message, error) {
+	req := &UpdateScriptApprovalStatusRequest{}
+	if err := codec.FromYAML(yamlReq, req); err != nil {
+		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.shape.client_side_defense.UpdateScriptApprovalStatusRequest", yamlReq)
+	}
+	rsp, err := c.grpcClient.UpdateScriptApprovalStatus(ctx, req, opts...)
 	return rsp, err
 }
 func (c *CustomAPIGrpcClient) doRPCUpdateScriptJustification(ctx context.Context, yamlReq string, opts ...grpc.CallOption) (proto.Message, error) {
@@ -249,12 +305,16 @@ func NewCustomAPIGrpcClient(cc *grpc.ClientConn) server.CustomClient {
 		grpcClient: NewCustomAPIClient(cc),
 	}
 	rpcFns := make(map[string]func(context.Context, string, ...grpc.CallOption) (proto.Message, error))
+	rpcFns["BulkDeleteDomains"] = ccl.doRPCBulkDeleteDomains
+	rpcFns["CreateReport"] = ccl.doRPCCreateReport
 	rpcFns["DeleteScriptJustification"] = ccl.doRPCDeleteScriptJustification
 	rpcFns["GetDetectedDomains"] = ccl.doRPCGetDetectedDomains
 	rpcFns["GetDomainDetails"] = ccl.doRPCGetDomainDetails
+	rpcFns["GetDownloadReportPresignedUrl"] = ccl.doRPCGetDownloadReportPresignedUrl
 	rpcFns["GetFormField"] = ccl.doRPCGetFormField
 	rpcFns["GetJsInjectionConfiguration"] = ccl.doRPCGetJsInjectionConfiguration
 	rpcFns["GetScriptOverview"] = ccl.doRPCGetScriptOverview
+	rpcFns["GetScriptsOverview"] = ccl.doRPCGetScriptsOverview
 	rpcFns["GetStatus"] = ccl.doRPCGetStatus
 	rpcFns["GetSummary"] = ccl.doRPCGetSummary
 	rpcFns["Init"] = ccl.doRPCInit
@@ -264,12 +324,15 @@ func NewCustomAPIGrpcClient(cc *grpc.ClientConn) server.CustomClient {
 	rpcFns["ListFormFields"] = ccl.doRPCListFormFields
 	rpcFns["ListFormFieldsByScript"] = ccl.doRPCListFormFieldsByScript
 	rpcFns["ListFormFieldsGet"] = ccl.doRPCListFormFieldsGet
+	rpcFns["ListInlineScripts"] = ccl.doRPCListInlineScripts
 	rpcFns["ListNetworkInteractionsByScript"] = ccl.doRPCListNetworkInteractionsByScript
+	rpcFns["ListReportsWithHistory"] = ccl.doRPCListReportsWithHistory
 	rpcFns["ListScripts"] = ccl.doRPCListScripts
 	rpcFns["ListScriptsLegacy"] = ccl.doRPCListScriptsLegacy
 	rpcFns["TestJS"] = ccl.doRPCTestJS
 	rpcFns["UpdateDomains"] = ccl.doRPCUpdateDomains
 	rpcFns["UpdateFieldAnalysis"] = ccl.doRPCUpdateFieldAnalysis
+	rpcFns["UpdateScriptApprovalStatus"] = ccl.doRPCUpdateScriptApprovalStatus
 	rpcFns["UpdateScriptJustification"] = ccl.doRPCUpdateScriptJustification
 	rpcFns["UpdateScriptReadStatus"] = ccl.doRPCUpdateScriptReadStatus
 	ccl.rpcFns = rpcFns
@@ -284,6 +347,178 @@ type CustomAPIRestClient struct {
 	rpcFns map[string]func(context.Context, *server.CustomCallOpts) (proto.Message, error)
 }
 
+func (c *CustomAPIRestClient) doRPCBulkDeleteDomains(ctx context.Context, callOpts *server.CustomCallOpts) (proto.Message, error) {
+	if callOpts.URI == "" {
+		return nil, fmt.Errorf("Error, URI should be specified, got empty")
+	}
+	url := fmt.Sprintf("%s%s", c.baseURL, callOpts.URI)
+
+	yamlReq := callOpts.YAMLReq
+	req := &BulkDeleteDomainsRequest{}
+	if err := codec.FromYAML(yamlReq, req); err != nil {
+		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.shape.client_side_defense.BulkDeleteDomainsRequest: %s", yamlReq, err)
+	}
+
+	var hReq *http.Request
+	hm := strings.ToLower(callOpts.HTTPMethod)
+	switch hm {
+	case "post", "put":
+		jsn, err := codec.ToJSON(req, codec.ToWithUseProtoFieldName())
+		if err != nil {
+			return nil, errors.Wrap(err, "Custom RestClient converting YAML to JSON")
+		}
+		var op string
+		if hm == "post" {
+			op = http.MethodPost
+		} else {
+			op = http.MethodPut
+		}
+		newReq, err := http.NewRequest(op, url, bytes.NewBuffer([]byte(jsn)))
+		if err != nil {
+			return nil, errors.Wrapf(err, "Creating new HTTP %s request for custom API", op)
+		}
+		hReq = newReq
+	case "get":
+		newReq, err := http.NewRequest(http.MethodGet, url, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "Creating new HTTP GET request for custom API")
+		}
+		hReq = newReq
+		q := hReq.URL.Query()
+		_ = q
+		for _, item := range req.AllowList {
+			q.Add("allow_list", fmt.Sprintf("%v", item))
+		}
+		for _, item := range req.MitigatedList {
+			q.Add("mitigated_list", fmt.Sprintf("%v", item))
+		}
+		q.Add("namespace", fmt.Sprintf("%v", req.Namespace))
+
+		hReq.URL.RawQuery += q.Encode()
+	case "delete":
+		newReq, err := http.NewRequest(http.MethodDelete, url, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "Creating new HTTP DELETE request for custom API")
+		}
+		hReq = newReq
+	default:
+		return nil, fmt.Errorf("Error, invalid/empty HTTPMethod(%s) specified, should be POST|DELETE|GET", callOpts.HTTPMethod)
+	}
+	hReq = hReq.WithContext(ctx)
+	hReq.Header.Set("Content-Type", "application/json")
+	client.AddHdrsToReq(callOpts.Headers, hReq)
+
+	rsp, err := c.client.Do(hReq)
+	if err != nil {
+		return nil, errors.Wrap(err, "Custom API RestClient")
+	}
+	defer rsp.Body.Close()
+
+	// checking whether the status code is a successful status code (2xx series)
+	if rsp.StatusCode < 200 || rsp.StatusCode > 299 {
+		body, err := io.ReadAll(rsp.Body)
+		return nil, fmt.Errorf("Unsuccessful custom API %s on %s, status code %d, body %s, err %s", callOpts.HTTPMethod, callOpts.URI, rsp.StatusCode, body, err)
+	}
+
+	body, err := io.ReadAll(rsp.Body)
+	if err != nil {
+		return nil, errors.Wrap(err, "Custom API RestClient read body")
+	}
+	pbRsp := &BulkDeleteDomainsResponse{}
+	if err := codec.FromJSON(string(body), pbRsp); err != nil {
+		return nil, errors.Wrapf(err, "JSON Response %s is not of type *ves.io.schema.shape.client_side_defense.BulkDeleteDomainsResponse", body)
+	}
+	if callOpts.OutCallResponse != nil {
+		callOpts.OutCallResponse.ProtoMsg = pbRsp
+		callOpts.OutCallResponse.JSON = string(body)
+	}
+	return pbRsp, nil
+}
+func (c *CustomAPIRestClient) doRPCCreateReport(ctx context.Context, callOpts *server.CustomCallOpts) (proto.Message, error) {
+	if callOpts.URI == "" {
+		return nil, fmt.Errorf("Error, URI should be specified, got empty")
+	}
+	url := fmt.Sprintf("%s%s", c.baseURL, callOpts.URI)
+
+	yamlReq := callOpts.YAMLReq
+	req := &CreateReportRequest{}
+	if err := codec.FromYAML(yamlReq, req); err != nil {
+		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.shape.client_side_defense.CreateReportRequest: %s", yamlReq, err)
+	}
+
+	var hReq *http.Request
+	hm := strings.ToLower(callOpts.HTTPMethod)
+	switch hm {
+	case "post", "put":
+		jsn, err := codec.ToJSON(req, codec.ToWithUseProtoFieldName())
+		if err != nil {
+			return nil, errors.Wrap(err, "Custom RestClient converting YAML to JSON")
+		}
+		var op string
+		if hm == "post" {
+			op = http.MethodPost
+		} else {
+			op = http.MethodPut
+		}
+		newReq, err := http.NewRequest(op, url, bytes.NewBuffer([]byte(jsn)))
+		if err != nil {
+			return nil, errors.Wrapf(err, "Creating new HTTP %s request for custom API", op)
+		}
+		hReq = newReq
+	case "get":
+		newReq, err := http.NewRequest(http.MethodGet, url, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "Creating new HTTP GET request for custom API")
+		}
+		hReq = newReq
+		q := hReq.URL.Query()
+		_ = q
+		q.Add("generate_on_create", fmt.Sprintf("%v", req.GenerateOnCreate))
+		q.Add("namespace", fmt.Sprintf("%v", req.Namespace))
+		q.Add("report_criteria", fmt.Sprintf("%v", req.ReportCriteria))
+		q.Add("report_name", fmt.Sprintf("%v", req.ReportName))
+		q.Add("report_type", fmt.Sprintf("%v", req.ReportType))
+
+		hReq.URL.RawQuery += q.Encode()
+	case "delete":
+		newReq, err := http.NewRequest(http.MethodDelete, url, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "Creating new HTTP DELETE request for custom API")
+		}
+		hReq = newReq
+	default:
+		return nil, fmt.Errorf("Error, invalid/empty HTTPMethod(%s) specified, should be POST|DELETE|GET", callOpts.HTTPMethod)
+	}
+	hReq = hReq.WithContext(ctx)
+	hReq.Header.Set("Content-Type", "application/json")
+	client.AddHdrsToReq(callOpts.Headers, hReq)
+
+	rsp, err := c.client.Do(hReq)
+	if err != nil {
+		return nil, errors.Wrap(err, "Custom API RestClient")
+	}
+	defer rsp.Body.Close()
+
+	// checking whether the status code is a successful status code (2xx series)
+	if rsp.StatusCode < 200 || rsp.StatusCode > 299 {
+		body, err := io.ReadAll(rsp.Body)
+		return nil, fmt.Errorf("Unsuccessful custom API %s on %s, status code %d, body %s, err %s", callOpts.HTTPMethod, callOpts.URI, rsp.StatusCode, body, err)
+	}
+
+	body, err := io.ReadAll(rsp.Body)
+	if err != nil {
+		return nil, errors.Wrap(err, "Custom API RestClient read body")
+	}
+	pbRsp := &CreateReportResponse{}
+	if err := codec.FromJSON(string(body), pbRsp); err != nil {
+		return nil, errors.Wrapf(err, "JSON Response %s is not of type *ves.io.schema.shape.client_side_defense.CreateReportResponse", body)
+	}
+	if callOpts.OutCallResponse != nil {
+		callOpts.OutCallResponse.ProtoMsg = pbRsp
+		callOpts.OutCallResponse.JSON = string(body)
+	}
+	return pbRsp, nil
+}
 func (c *CustomAPIRestClient) doRPCDeleteScriptJustification(ctx context.Context, callOpts *server.CustomCallOpts) (proto.Message, error) {
 	if callOpts.URI == "" {
 		return nil, fmt.Errorf("Error, URI should be specified, got empty")
@@ -537,6 +772,88 @@ func (c *CustomAPIRestClient) doRPCGetDomainDetails(ctx context.Context, callOpt
 	}
 	return pbRsp, nil
 }
+func (c *CustomAPIRestClient) doRPCGetDownloadReportPresignedUrl(ctx context.Context, callOpts *server.CustomCallOpts) (proto.Message, error) {
+	if callOpts.URI == "" {
+		return nil, fmt.Errorf("Error, URI should be specified, got empty")
+	}
+	url := fmt.Sprintf("%s%s", c.baseURL, callOpts.URI)
+
+	yamlReq := callOpts.YAMLReq
+	req := &GetDownloadReportPresignedUrlRequest{}
+	if err := codec.FromYAML(yamlReq, req); err != nil {
+		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.shape.client_side_defense.GetDownloadReportPresignedUrlRequest: %s", yamlReq, err)
+	}
+
+	var hReq *http.Request
+	hm := strings.ToLower(callOpts.HTTPMethod)
+	switch hm {
+	case "post", "put":
+		jsn, err := codec.ToJSON(req, codec.ToWithUseProtoFieldName())
+		if err != nil {
+			return nil, errors.Wrap(err, "Custom RestClient converting YAML to JSON")
+		}
+		var op string
+		if hm == "post" {
+			op = http.MethodPost
+		} else {
+			op = http.MethodPut
+		}
+		newReq, err := http.NewRequest(op, url, bytes.NewBuffer([]byte(jsn)))
+		if err != nil {
+			return nil, errors.Wrapf(err, "Creating new HTTP %s request for custom API", op)
+		}
+		hReq = newReq
+	case "get":
+		newReq, err := http.NewRequest(http.MethodGet, url, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "Creating new HTTP GET request for custom API")
+		}
+		hReq = newReq
+		q := hReq.URL.Query()
+		_ = q
+		q.Add("job_id", fmt.Sprintf("%v", req.JobId))
+		q.Add("namespace", fmt.Sprintf("%v", req.Namespace))
+
+		hReq.URL.RawQuery += q.Encode()
+	case "delete":
+		newReq, err := http.NewRequest(http.MethodDelete, url, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "Creating new HTTP DELETE request for custom API")
+		}
+		hReq = newReq
+	default:
+		return nil, fmt.Errorf("Error, invalid/empty HTTPMethod(%s) specified, should be POST|DELETE|GET", callOpts.HTTPMethod)
+	}
+	hReq = hReq.WithContext(ctx)
+	hReq.Header.Set("Content-Type", "application/json")
+	client.AddHdrsToReq(callOpts.Headers, hReq)
+
+	rsp, err := c.client.Do(hReq)
+	if err != nil {
+		return nil, errors.Wrap(err, "Custom API RestClient")
+	}
+	defer rsp.Body.Close()
+
+	// checking whether the status code is a successful status code (2xx series)
+	if rsp.StatusCode < 200 || rsp.StatusCode > 299 {
+		body, err := io.ReadAll(rsp.Body)
+		return nil, fmt.Errorf("Unsuccessful custom API %s on %s, status code %d, body %s, err %s", callOpts.HTTPMethod, callOpts.URI, rsp.StatusCode, body, err)
+	}
+
+	body, err := io.ReadAll(rsp.Body)
+	if err != nil {
+		return nil, errors.Wrap(err, "Custom API RestClient read body")
+	}
+	pbRsp := &GetDownloadReportPresignedUrlResponse{}
+	if err := codec.FromJSON(string(body), pbRsp); err != nil {
+		return nil, errors.Wrapf(err, "JSON Response %s is not of type *ves.io.schema.shape.client_side_defense.GetDownloadReportPresignedUrlResponse", body)
+	}
+	if callOpts.OutCallResponse != nil {
+		callOpts.OutCallResponse.ProtoMsg = pbRsp
+		callOpts.OutCallResponse.JSON = string(body)
+	}
+	return pbRsp, nil
+}
 func (c *CustomAPIRestClient) doRPCGetFormField(ctx context.Context, callOpts *server.CustomCallOpts) (proto.Message, error) {
 	if callOpts.URI == "" {
 		return nil, fmt.Errorf("Error, URI should be specified, got empty")
@@ -779,6 +1096,89 @@ func (c *CustomAPIRestClient) doRPCGetScriptOverview(ctx context.Context, callOp
 	pbRsp := &GetScriptOverviewResponse{}
 	if err := codec.FromJSON(string(body), pbRsp); err != nil {
 		return nil, errors.Wrapf(err, "JSON Response %s is not of type *ves.io.schema.shape.client_side_defense.GetScriptOverviewResponse", body)
+	}
+	if callOpts.OutCallResponse != nil {
+		callOpts.OutCallResponse.ProtoMsg = pbRsp
+		callOpts.OutCallResponse.JSON = string(body)
+	}
+	return pbRsp, nil
+}
+func (c *CustomAPIRestClient) doRPCGetScriptsOverview(ctx context.Context, callOpts *server.CustomCallOpts) (proto.Message, error) {
+	if callOpts.URI == "" {
+		return nil, fmt.Errorf("Error, URI should be specified, got empty")
+	}
+	url := fmt.Sprintf("%s%s", c.baseURL, callOpts.URI)
+
+	yamlReq := callOpts.YAMLReq
+	req := &GetScriptsOverviewRequest{}
+	if err := codec.FromYAML(yamlReq, req); err != nil {
+		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.shape.client_side_defense.GetScriptsOverviewRequest: %s", yamlReq, err)
+	}
+
+	var hReq *http.Request
+	hm := strings.ToLower(callOpts.HTTPMethod)
+	switch hm {
+	case "post", "put":
+		jsn, err := codec.ToJSON(req, codec.ToWithUseProtoFieldName())
+		if err != nil {
+			return nil, errors.Wrap(err, "Custom RestClient converting YAML to JSON")
+		}
+		var op string
+		if hm == "post" {
+			op = http.MethodPost
+		} else {
+			op = http.MethodPut
+		}
+		newReq, err := http.NewRequest(op, url, bytes.NewBuffer([]byte(jsn)))
+		if err != nil {
+			return nil, errors.Wrapf(err, "Creating new HTTP %s request for custom API", op)
+		}
+		hReq = newReq
+	case "get":
+		newReq, err := http.NewRequest(http.MethodGet, url, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "Creating new HTTP GET request for custom API")
+		}
+		hReq = newReq
+		q := hReq.URL.Query()
+		_ = q
+		q.Add("end_time", fmt.Sprintf("%v", req.EndTime))
+		q.Add("namespace", fmt.Sprintf("%v", req.Namespace))
+		q.Add("start_time", fmt.Sprintf("%v", req.StartTime))
+
+		hReq.URL.RawQuery += q.Encode()
+	case "delete":
+		newReq, err := http.NewRequest(http.MethodDelete, url, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "Creating new HTTP DELETE request for custom API")
+		}
+		hReq = newReq
+	default:
+		return nil, fmt.Errorf("Error, invalid/empty HTTPMethod(%s) specified, should be POST|DELETE|GET", callOpts.HTTPMethod)
+	}
+	hReq = hReq.WithContext(ctx)
+	hReq.Header.Set("Content-Type", "application/json")
+	client.AddHdrsToReq(callOpts.Headers, hReq)
+
+	rsp, err := c.client.Do(hReq)
+	if err != nil {
+		return nil, errors.Wrap(err, "Custom API RestClient")
+	}
+	defer rsp.Body.Close()
+
+	// checking whether the status code is a successful status code (2xx series)
+	if rsp.StatusCode < 200 || rsp.StatusCode > 299 {
+		body, err := io.ReadAll(rsp.Body)
+		return nil, fmt.Errorf("Unsuccessful custom API %s on %s, status code %d, body %s, err %s", callOpts.HTTPMethod, callOpts.URI, rsp.StatusCode, body, err)
+	}
+
+	body, err := io.ReadAll(rsp.Body)
+	if err != nil {
+		return nil, errors.Wrap(err, "Custom API RestClient read body")
+	}
+	pbRsp := &GetScriptsOverviewResponse{}
+	if err := codec.FromJSON(string(body), pbRsp); err != nil {
+		return nil, errors.Wrapf(err, "JSON Response %s is not of type *ves.io.schema.shape.client_side_defense.GetScriptsOverviewResponse", body)
 	}
 	if callOpts.OutCallResponse != nil {
 		callOpts.OutCallResponse.ProtoMsg = pbRsp
@@ -1254,6 +1654,9 @@ func (c *CustomAPIRestClient) doRPCListDetectedDomains(ctx context.Context, call
 		q.Add("page_size", fmt.Sprintf("%v", req.PageSize))
 		q.Add("page_token", fmt.Sprintf("%v", req.PageToken))
 		q.Add("risk", fmt.Sprintf("%v", req.Risk))
+		for _, item := range req.Sorts {
+			q.Add("sorts", fmt.Sprintf("%v", item))
+		}
 		q.Add("start_time", fmt.Sprintf("%v", req.StartTime))
 
 		hReq.URL.RawQuery += q.Encode()
@@ -1553,6 +1956,90 @@ func (c *CustomAPIRestClient) doRPCListFormFieldsGet(ctx context.Context, callOp
 	}
 	return pbRsp, nil
 }
+func (c *CustomAPIRestClient) doRPCListInlineScripts(ctx context.Context, callOpts *server.CustomCallOpts) (proto.Message, error) {
+	if callOpts.URI == "" {
+		return nil, fmt.Errorf("Error, URI should be specified, got empty")
+	}
+	url := fmt.Sprintf("%s%s", c.baseURL, callOpts.URI)
+
+	yamlReq := callOpts.YAMLReq
+	req := &ListInlineScriptsRequest{}
+	if err := codec.FromYAML(yamlReq, req); err != nil {
+		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.shape.client_side_defense.ListInlineScriptsRequest: %s", yamlReq, err)
+	}
+
+	var hReq *http.Request
+	hm := strings.ToLower(callOpts.HTTPMethod)
+	switch hm {
+	case "post", "put":
+		jsn, err := codec.ToJSON(req, codec.ToWithUseProtoFieldName())
+		if err != nil {
+			return nil, errors.Wrap(err, "Custom RestClient converting YAML to JSON")
+		}
+		var op string
+		if hm == "post" {
+			op = http.MethodPost
+		} else {
+			op = http.MethodPut
+		}
+		newReq, err := http.NewRequest(op, url, bytes.NewBuffer([]byte(jsn)))
+		if err != nil {
+			return nil, errors.Wrapf(err, "Creating new HTTP %s request for custom API", op)
+		}
+		hReq = newReq
+	case "get":
+		newReq, err := http.NewRequest(http.MethodGet, url, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "Creating new HTTP GET request for custom API")
+		}
+		hReq = newReq
+		q := hReq.URL.Query()
+		_ = q
+		q.Add("end_time", fmt.Sprintf("%v", req.EndTime))
+		q.Add("namespace", fmt.Sprintf("%v", req.Namespace))
+		q.Add("script_id", fmt.Sprintf("%v", req.ScriptId))
+		q.Add("start_time", fmt.Sprintf("%v", req.StartTime))
+
+		hReq.URL.RawQuery += q.Encode()
+	case "delete":
+		newReq, err := http.NewRequest(http.MethodDelete, url, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "Creating new HTTP DELETE request for custom API")
+		}
+		hReq = newReq
+	default:
+		return nil, fmt.Errorf("Error, invalid/empty HTTPMethod(%s) specified, should be POST|DELETE|GET", callOpts.HTTPMethod)
+	}
+	hReq = hReq.WithContext(ctx)
+	hReq.Header.Set("Content-Type", "application/json")
+	client.AddHdrsToReq(callOpts.Headers, hReq)
+
+	rsp, err := c.client.Do(hReq)
+	if err != nil {
+		return nil, errors.Wrap(err, "Custom API RestClient")
+	}
+	defer rsp.Body.Close()
+
+	// checking whether the status code is a successful status code (2xx series)
+	if rsp.StatusCode < 200 || rsp.StatusCode > 299 {
+		body, err := io.ReadAll(rsp.Body)
+		return nil, fmt.Errorf("Unsuccessful custom API %s on %s, status code %d, body %s, err %s", callOpts.HTTPMethod, callOpts.URI, rsp.StatusCode, body, err)
+	}
+
+	body, err := io.ReadAll(rsp.Body)
+	if err != nil {
+		return nil, errors.Wrap(err, "Custom API RestClient read body")
+	}
+	pbRsp := &ListInlineScriptsResponse{}
+	if err := codec.FromJSON(string(body), pbRsp); err != nil {
+		return nil, errors.Wrapf(err, "JSON Response %s is not of type *ves.io.schema.shape.client_side_defense.ListInlineScriptsResponse", body)
+	}
+	if callOpts.OutCallResponse != nil {
+		callOpts.OutCallResponse.ProtoMsg = pbRsp
+		callOpts.OutCallResponse.JSON = string(body)
+	}
+	return pbRsp, nil
+}
 func (c *CustomAPIRestClient) doRPCListNetworkInteractionsByScript(ctx context.Context, callOpts *server.CustomCallOpts) (proto.Message, error) {
 	if callOpts.URI == "" {
 		return nil, fmt.Errorf("Error, URI should be specified, got empty")
@@ -1630,6 +2117,87 @@ func (c *CustomAPIRestClient) doRPCListNetworkInteractionsByScript(ctx context.C
 	pbRsp := &ListNetworkInteractionsByScriptResponse{}
 	if err := codec.FromJSON(string(body), pbRsp); err != nil {
 		return nil, errors.Wrapf(err, "JSON Response %s is not of type *ves.io.schema.shape.client_side_defense.ListNetworkInteractionsByScriptResponse", body)
+	}
+	if callOpts.OutCallResponse != nil {
+		callOpts.OutCallResponse.ProtoMsg = pbRsp
+		callOpts.OutCallResponse.JSON = string(body)
+	}
+	return pbRsp, nil
+}
+func (c *CustomAPIRestClient) doRPCListReportsWithHistory(ctx context.Context, callOpts *server.CustomCallOpts) (proto.Message, error) {
+	if callOpts.URI == "" {
+		return nil, fmt.Errorf("Error, URI should be specified, got empty")
+	}
+	url := fmt.Sprintf("%s%s", c.baseURL, callOpts.URI)
+
+	yamlReq := callOpts.YAMLReq
+	req := &ListReportsWithHistoryRequest{}
+	if err := codec.FromYAML(yamlReq, req); err != nil {
+		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.shape.client_side_defense.ListReportsWithHistoryRequest: %s", yamlReq, err)
+	}
+
+	var hReq *http.Request
+	hm := strings.ToLower(callOpts.HTTPMethod)
+	switch hm {
+	case "post", "put":
+		jsn, err := codec.ToJSON(req, codec.ToWithUseProtoFieldName())
+		if err != nil {
+			return nil, errors.Wrap(err, "Custom RestClient converting YAML to JSON")
+		}
+		var op string
+		if hm == "post" {
+			op = http.MethodPost
+		} else {
+			op = http.MethodPut
+		}
+		newReq, err := http.NewRequest(op, url, bytes.NewBuffer([]byte(jsn)))
+		if err != nil {
+			return nil, errors.Wrapf(err, "Creating new HTTP %s request for custom API", op)
+		}
+		hReq = newReq
+	case "get":
+		newReq, err := http.NewRequest(http.MethodGet, url, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "Creating new HTTP GET request for custom API")
+		}
+		hReq = newReq
+		q := hReq.URL.Query()
+		_ = q
+		q.Add("namespace", fmt.Sprintf("%v", req.Namespace))
+
+		hReq.URL.RawQuery += q.Encode()
+	case "delete":
+		newReq, err := http.NewRequest(http.MethodDelete, url, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "Creating new HTTP DELETE request for custom API")
+		}
+		hReq = newReq
+	default:
+		return nil, fmt.Errorf("Error, invalid/empty HTTPMethod(%s) specified, should be POST|DELETE|GET", callOpts.HTTPMethod)
+	}
+	hReq = hReq.WithContext(ctx)
+	hReq.Header.Set("Content-Type", "application/json")
+	client.AddHdrsToReq(callOpts.Headers, hReq)
+
+	rsp, err := c.client.Do(hReq)
+	if err != nil {
+		return nil, errors.Wrap(err, "Custom API RestClient")
+	}
+	defer rsp.Body.Close()
+
+	// checking whether the status code is a successful status code (2xx series)
+	if rsp.StatusCode < 200 || rsp.StatusCode > 299 {
+		body, err := io.ReadAll(rsp.Body)
+		return nil, fmt.Errorf("Unsuccessful custom API %s on %s, status code %d, body %s, err %s", callOpts.HTTPMethod, callOpts.URI, rsp.StatusCode, body, err)
+	}
+
+	body, err := io.ReadAll(rsp.Body)
+	if err != nil {
+		return nil, errors.Wrap(err, "Custom API RestClient read body")
+	}
+	pbRsp := &ListReportsWithHistoryResponse{}
+	if err := codec.FromJSON(string(body), pbRsp); err != nil {
+		return nil, errors.Wrapf(err, "JSON Response %s is not of type *ves.io.schema.shape.client_side_defense.ListReportsWithHistoryResponse", body)
 	}
 	if callOpts.OutCallResponse != nil {
 		callOpts.OutCallResponse.ProtoMsg = pbRsp
@@ -1935,7 +2503,8 @@ func (c *CustomAPIRestClient) doRPCUpdateDomains(ctx context.Context, callOpts *
 		hReq = newReq
 		q := hReq.URL.Query()
 		_ = q
-		q.Add("allowed_or_mitigated_domains", fmt.Sprintf("%v", req.AllowedOrMitigatedDomains))
+		q.Add("add_to_allowed_domains", fmt.Sprintf("%v", req.AddToAllowedDomains))
+		q.Add("add_to_mitigated_domains", fmt.Sprintf("%v", req.AddToMitigatedDomains))
 		q.Add("namespace", fmt.Sprintf("%v", req.Namespace))
 
 		hReq.URL.RawQuery += q.Encode()
@@ -2054,6 +2623,89 @@ func (c *CustomAPIRestClient) doRPCUpdateFieldAnalysis(ctx context.Context, call
 	pbRsp := &UpdateFieldAnalysisResponse{}
 	if err := codec.FromJSON(string(body), pbRsp); err != nil {
 		return nil, errors.Wrapf(err, "JSON Response %s is not of type *ves.io.schema.shape.client_side_defense.UpdateFieldAnalysisResponse", body)
+	}
+	if callOpts.OutCallResponse != nil {
+		callOpts.OutCallResponse.ProtoMsg = pbRsp
+		callOpts.OutCallResponse.JSON = string(body)
+	}
+	return pbRsp, nil
+}
+func (c *CustomAPIRestClient) doRPCUpdateScriptApprovalStatus(ctx context.Context, callOpts *server.CustomCallOpts) (proto.Message, error) {
+	if callOpts.URI == "" {
+		return nil, fmt.Errorf("Error, URI should be specified, got empty")
+	}
+	url := fmt.Sprintf("%s%s", c.baseURL, callOpts.URI)
+
+	yamlReq := callOpts.YAMLReq
+	req := &UpdateScriptApprovalStatusRequest{}
+	if err := codec.FromYAML(yamlReq, req); err != nil {
+		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.shape.client_side_defense.UpdateScriptApprovalStatusRequest: %s", yamlReq, err)
+	}
+
+	var hReq *http.Request
+	hm := strings.ToLower(callOpts.HTTPMethod)
+	switch hm {
+	case "post", "put":
+		jsn, err := codec.ToJSON(req, codec.ToWithUseProtoFieldName())
+		if err != nil {
+			return nil, errors.Wrap(err, "Custom RestClient converting YAML to JSON")
+		}
+		var op string
+		if hm == "post" {
+			op = http.MethodPost
+		} else {
+			op = http.MethodPut
+		}
+		newReq, err := http.NewRequest(op, url, bytes.NewBuffer([]byte(jsn)))
+		if err != nil {
+			return nil, errors.Wrapf(err, "Creating new HTTP %s request for custom API", op)
+		}
+		hReq = newReq
+	case "get":
+		newReq, err := http.NewRequest(http.MethodGet, url, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "Creating new HTTP GET request for custom API")
+		}
+		hReq = newReq
+		q := hReq.URL.Query()
+		_ = q
+		q.Add("id", fmt.Sprintf("%v", req.Id))
+		q.Add("namespace", fmt.Sprintf("%v", req.Namespace))
+		q.Add("status", fmt.Sprintf("%v", req.Status))
+
+		hReq.URL.RawQuery += q.Encode()
+	case "delete":
+		newReq, err := http.NewRequest(http.MethodDelete, url, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "Creating new HTTP DELETE request for custom API")
+		}
+		hReq = newReq
+	default:
+		return nil, fmt.Errorf("Error, invalid/empty HTTPMethod(%s) specified, should be POST|DELETE|GET", callOpts.HTTPMethod)
+	}
+	hReq = hReq.WithContext(ctx)
+	hReq.Header.Set("Content-Type", "application/json")
+	client.AddHdrsToReq(callOpts.Headers, hReq)
+
+	rsp, err := c.client.Do(hReq)
+	if err != nil {
+		return nil, errors.Wrap(err, "Custom API RestClient")
+	}
+	defer rsp.Body.Close()
+
+	// checking whether the status code is a successful status code (2xx series)
+	if rsp.StatusCode < 200 || rsp.StatusCode > 299 {
+		body, err := io.ReadAll(rsp.Body)
+		return nil, fmt.Errorf("Unsuccessful custom API %s on %s, status code %d, body %s, err %s", callOpts.HTTPMethod, callOpts.URI, rsp.StatusCode, body, err)
+	}
+
+	body, err := io.ReadAll(rsp.Body)
+	if err != nil {
+		return nil, errors.Wrap(err, "Custom API RestClient read body")
+	}
+	pbRsp := &UpdateScriptApprovalStatusResponse{}
+	if err := codec.FromJSON(string(body), pbRsp); err != nil {
+		return nil, errors.Wrapf(err, "JSON Response %s is not of type *ves.io.schema.shape.client_side_defense.UpdateScriptApprovalStatusResponse", body)
 	}
 	if callOpts.OutCallResponse != nil {
 		callOpts.OutCallResponse.ProtoMsg = pbRsp
@@ -2253,12 +2905,16 @@ func NewCustomAPIRestClient(baseURL string, hc http.Client) server.CustomClient 
 	}
 
 	rpcFns := make(map[string]func(context.Context, *server.CustomCallOpts) (proto.Message, error))
+	rpcFns["BulkDeleteDomains"] = ccl.doRPCBulkDeleteDomains
+	rpcFns["CreateReport"] = ccl.doRPCCreateReport
 	rpcFns["DeleteScriptJustification"] = ccl.doRPCDeleteScriptJustification
 	rpcFns["GetDetectedDomains"] = ccl.doRPCGetDetectedDomains
 	rpcFns["GetDomainDetails"] = ccl.doRPCGetDomainDetails
+	rpcFns["GetDownloadReportPresignedUrl"] = ccl.doRPCGetDownloadReportPresignedUrl
 	rpcFns["GetFormField"] = ccl.doRPCGetFormField
 	rpcFns["GetJsInjectionConfiguration"] = ccl.doRPCGetJsInjectionConfiguration
 	rpcFns["GetScriptOverview"] = ccl.doRPCGetScriptOverview
+	rpcFns["GetScriptsOverview"] = ccl.doRPCGetScriptsOverview
 	rpcFns["GetStatus"] = ccl.doRPCGetStatus
 	rpcFns["GetSummary"] = ccl.doRPCGetSummary
 	rpcFns["Init"] = ccl.doRPCInit
@@ -2268,12 +2924,15 @@ func NewCustomAPIRestClient(baseURL string, hc http.Client) server.CustomClient 
 	rpcFns["ListFormFields"] = ccl.doRPCListFormFields
 	rpcFns["ListFormFieldsByScript"] = ccl.doRPCListFormFieldsByScript
 	rpcFns["ListFormFieldsGet"] = ccl.doRPCListFormFieldsGet
+	rpcFns["ListInlineScripts"] = ccl.doRPCListInlineScripts
 	rpcFns["ListNetworkInteractionsByScript"] = ccl.doRPCListNetworkInteractionsByScript
+	rpcFns["ListReportsWithHistory"] = ccl.doRPCListReportsWithHistory
 	rpcFns["ListScripts"] = ccl.doRPCListScripts
 	rpcFns["ListScriptsLegacy"] = ccl.doRPCListScriptsLegacy
 	rpcFns["TestJS"] = ccl.doRPCTestJS
 	rpcFns["UpdateDomains"] = ccl.doRPCUpdateDomains
 	rpcFns["UpdateFieldAnalysis"] = ccl.doRPCUpdateFieldAnalysis
+	rpcFns["UpdateScriptApprovalStatus"] = ccl.doRPCUpdateScriptApprovalStatus
 	rpcFns["UpdateScriptJustification"] = ccl.doRPCUpdateScriptJustification
 	rpcFns["UpdateScriptReadStatus"] = ccl.doRPCUpdateScriptReadStatus
 	ccl.rpcFns = rpcFns
@@ -2287,6 +2946,14 @@ type customAPIInprocClient struct {
 	CustomAPIServer
 }
 
+func (c *customAPIInprocClient) BulkDeleteDomains(ctx context.Context, in *BulkDeleteDomainsRequest, opts ...grpc.CallOption) (*BulkDeleteDomainsResponse, error) {
+	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.shape.client_side_defense.CustomAPI.BulkDeleteDomains")
+	return c.CustomAPIServer.BulkDeleteDomains(ctx, in)
+}
+func (c *customAPIInprocClient) CreateReport(ctx context.Context, in *CreateReportRequest, opts ...grpc.CallOption) (*CreateReportResponse, error) {
+	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.shape.client_side_defense.CustomAPI.CreateReport")
+	return c.CustomAPIServer.CreateReport(ctx, in)
+}
 func (c *customAPIInprocClient) DeleteScriptJustification(ctx context.Context, in *DeleteScriptJustificationRequest, opts ...grpc.CallOption) (*DeleteScriptJustificationResponse, error) {
 	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.shape.client_side_defense.CustomAPI.DeleteScriptJustification")
 	return c.CustomAPIServer.DeleteScriptJustification(ctx, in)
@@ -2299,6 +2966,10 @@ func (c *customAPIInprocClient) GetDomainDetails(ctx context.Context, in *GetDom
 	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.shape.client_side_defense.CustomAPI.GetDomainDetails")
 	return c.CustomAPIServer.GetDomainDetails(ctx, in)
 }
+func (c *customAPIInprocClient) GetDownloadReportPresignedUrl(ctx context.Context, in *GetDownloadReportPresignedUrlRequest, opts ...grpc.CallOption) (*GetDownloadReportPresignedUrlResponse, error) {
+	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.shape.client_side_defense.CustomAPI.GetDownloadReportPresignedUrl")
+	return c.CustomAPIServer.GetDownloadReportPresignedUrl(ctx, in)
+}
 func (c *customAPIInprocClient) GetFormField(ctx context.Context, in *GetFormFieldRequest, opts ...grpc.CallOption) (*GetFormFieldResponse, error) {
 	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.shape.client_side_defense.CustomAPI.GetFormField")
 	return c.CustomAPIServer.GetFormField(ctx, in)
@@ -2310,6 +2981,10 @@ func (c *customAPIInprocClient) GetJsInjectionConfiguration(ctx context.Context,
 func (c *customAPIInprocClient) GetScriptOverview(ctx context.Context, in *GetScriptOverviewRequest, opts ...grpc.CallOption) (*GetScriptOverviewResponse, error) {
 	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.shape.client_side_defense.CustomAPI.GetScriptOverview")
 	return c.CustomAPIServer.GetScriptOverview(ctx, in)
+}
+func (c *customAPIInprocClient) GetScriptsOverview(ctx context.Context, in *GetScriptsOverviewRequest, opts ...grpc.CallOption) (*GetScriptsOverviewResponse, error) {
+	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.shape.client_side_defense.CustomAPI.GetScriptsOverview")
+	return c.CustomAPIServer.GetScriptsOverview(ctx, in)
 }
 func (c *customAPIInprocClient) GetStatus(ctx context.Context, in *GetStatusRequest, opts ...grpc.CallOption) (*GetStatusResponse, error) {
 	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.shape.client_side_defense.CustomAPI.GetStatus")
@@ -2347,9 +3022,17 @@ func (c *customAPIInprocClient) ListFormFieldsGet(ctx context.Context, in *ListF
 	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.shape.client_side_defense.CustomAPI.ListFormFieldsGet")
 	return c.CustomAPIServer.ListFormFieldsGet(ctx, in)
 }
+func (c *customAPIInprocClient) ListInlineScripts(ctx context.Context, in *ListInlineScriptsRequest, opts ...grpc.CallOption) (*ListInlineScriptsResponse, error) {
+	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.shape.client_side_defense.CustomAPI.ListInlineScripts")
+	return c.CustomAPIServer.ListInlineScripts(ctx, in)
+}
 func (c *customAPIInprocClient) ListNetworkInteractionsByScript(ctx context.Context, in *ListNetworkInteractionsByScriptRequest, opts ...grpc.CallOption) (*ListNetworkInteractionsByScriptResponse, error) {
 	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.shape.client_side_defense.CustomAPI.ListNetworkInteractionsByScript")
 	return c.CustomAPIServer.ListNetworkInteractionsByScript(ctx, in)
+}
+func (c *customAPIInprocClient) ListReportsWithHistory(ctx context.Context, in *ListReportsWithHistoryRequest, opts ...grpc.CallOption) (*ListReportsWithHistoryResponse, error) {
+	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.shape.client_side_defense.CustomAPI.ListReportsWithHistory")
+	return c.CustomAPIServer.ListReportsWithHistory(ctx, in)
 }
 func (c *customAPIInprocClient) ListScripts(ctx context.Context, in *ListScriptsRequest, opts ...grpc.CallOption) (*ListScriptsResponse, error) {
 	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.shape.client_side_defense.CustomAPI.ListScripts")
@@ -2370,6 +3053,10 @@ func (c *customAPIInprocClient) UpdateDomains(ctx context.Context, in *UpdateDom
 func (c *customAPIInprocClient) UpdateFieldAnalysis(ctx context.Context, in *UpdateFieldAnalysisRequest, opts ...grpc.CallOption) (*UpdateFieldAnalysisResponse, error) {
 	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.shape.client_side_defense.CustomAPI.UpdateFieldAnalysis")
 	return c.CustomAPIServer.UpdateFieldAnalysis(ctx, in)
+}
+func (c *customAPIInprocClient) UpdateScriptApprovalStatus(ctx context.Context, in *UpdateScriptApprovalStatusRequest, opts ...grpc.CallOption) (*UpdateScriptApprovalStatusResponse, error) {
+	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.shape.client_side_defense.CustomAPI.UpdateScriptApprovalStatus")
+	return c.CustomAPIServer.UpdateScriptApprovalStatus(ctx, in)
 }
 func (c *customAPIInprocClient) UpdateScriptJustification(ctx context.Context, in *UpdateScriptJustificationRequest, opts ...grpc.CallOption) (*UpdateScriptJustificationResponse, error) {
 	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.shape.client_side_defense.CustomAPI.UpdateScriptJustification")
@@ -2401,6 +3088,102 @@ type customAPISrv struct {
 	svc svcfw.Service
 }
 
+func (s *customAPISrv) BulkDeleteDomains(ctx context.Context, in *BulkDeleteDomainsRequest) (*BulkDeleteDomainsResponse, error) {
+	ah := s.svc.GetAPIHandler("ves.io.schema.shape.client_side_defense.CustomAPI")
+	cah, ok := ah.(CustomAPIServer)
+	if !ok {
+		return nil, fmt.Errorf("ah %v is not of type *CustomAPIServer", ah)
+	}
+
+	var (
+		rsp *BulkDeleteDomainsResponse
+		err error
+	)
+
+	bodyFields := svcfw.GenAuditReqBodyFields(ctx, s.svc, "ves.io.schema.shape.client_side_defense.BulkDeleteDomainsRequest", in)
+	defer func() {
+		if len(bodyFields) > 0 {
+			server.ExtendAPIAudit(ctx, svcfw.PublicAPIBodyLog.Uid, bodyFields)
+		}
+		userMsg := "The 'CustomAPI.BulkDeleteDomains' operation on 'client_side_defense'"
+		if err == nil {
+			userMsg += " was successfully performed."
+		} else {
+			userMsg += " failed to be performed."
+		}
+		server.AddUserMsgToAPIAudit(ctx, userMsg)
+	}()
+
+	if err := svcfw.FillOneofDefaultChoice(ctx, s.svc, in); err != nil {
+		err = server.MaybePublicRestError(ctx, errors.Wrapf(err, "Filling oneof default choice"))
+		return nil, server.GRPCStatusFromError(err).Err()
+	}
+
+	if s.svc.Config().EnableAPIValidation {
+		if rvFn := s.svc.GetRPCValidator("ves.io.schema.shape.client_side_defense.CustomAPI.BulkDeleteDomains"); rvFn != nil {
+			if verr := rvFn(ctx, in); verr != nil {
+				err = server.MaybePublicRestError(ctx, errors.Wrapf(verr, "Validating Request"))
+				return nil, server.GRPCStatusFromError(err).Err()
+			}
+		}
+	}
+
+	rsp, err = cah.BulkDeleteDomains(ctx, in)
+	if err != nil {
+		return rsp, server.GRPCStatusFromError(server.MaybePublicRestError(ctx, err)).Err()
+	}
+	bodyFields = append(bodyFields, svcfw.GenAuditRspBodyFields(ctx, s.svc, "ves.io.schema.shape.client_side_defense.BulkDeleteDomainsResponse", rsp)...)
+
+	return rsp, nil
+}
+func (s *customAPISrv) CreateReport(ctx context.Context, in *CreateReportRequest) (*CreateReportResponse, error) {
+	ah := s.svc.GetAPIHandler("ves.io.schema.shape.client_side_defense.CustomAPI")
+	cah, ok := ah.(CustomAPIServer)
+	if !ok {
+		return nil, fmt.Errorf("ah %v is not of type *CustomAPIServer", ah)
+	}
+
+	var (
+		rsp *CreateReportResponse
+		err error
+	)
+
+	bodyFields := svcfw.GenAuditReqBodyFields(ctx, s.svc, "ves.io.schema.shape.client_side_defense.CreateReportRequest", in)
+	defer func() {
+		if len(bodyFields) > 0 {
+			server.ExtendAPIAudit(ctx, svcfw.PublicAPIBodyLog.Uid, bodyFields)
+		}
+		userMsg := "The 'CustomAPI.CreateReport' operation on 'client_side_defense'"
+		if err == nil {
+			userMsg += " was successfully performed."
+		} else {
+			userMsg += " failed to be performed."
+		}
+		server.AddUserMsgToAPIAudit(ctx, userMsg)
+	}()
+
+	if err := svcfw.FillOneofDefaultChoice(ctx, s.svc, in); err != nil {
+		err = server.MaybePublicRestError(ctx, errors.Wrapf(err, "Filling oneof default choice"))
+		return nil, server.GRPCStatusFromError(err).Err()
+	}
+
+	if s.svc.Config().EnableAPIValidation {
+		if rvFn := s.svc.GetRPCValidator("ves.io.schema.shape.client_side_defense.CustomAPI.CreateReport"); rvFn != nil {
+			if verr := rvFn(ctx, in); verr != nil {
+				err = server.MaybePublicRestError(ctx, errors.Wrapf(verr, "Validating Request"))
+				return nil, server.GRPCStatusFromError(err).Err()
+			}
+		}
+	}
+
+	rsp, err = cah.CreateReport(ctx, in)
+	if err != nil {
+		return rsp, server.GRPCStatusFromError(server.MaybePublicRestError(ctx, err)).Err()
+	}
+	bodyFields = append(bodyFields, svcfw.GenAuditRspBodyFields(ctx, s.svc, "ves.io.schema.shape.client_side_defense.CreateReportResponse", rsp)...)
+
+	return rsp, nil
+}
 func (s *customAPISrv) DeleteScriptJustification(ctx context.Context, in *DeleteScriptJustificationRequest) (*DeleteScriptJustificationResponse, error) {
 	ah := s.svc.GetAPIHandler("ves.io.schema.shape.client_side_defense.CustomAPI")
 	cah, ok := ah.(CustomAPIServer)
@@ -2545,6 +3328,54 @@ func (s *customAPISrv) GetDomainDetails(ctx context.Context, in *GetDomainDetail
 
 	return rsp, nil
 }
+func (s *customAPISrv) GetDownloadReportPresignedUrl(ctx context.Context, in *GetDownloadReportPresignedUrlRequest) (*GetDownloadReportPresignedUrlResponse, error) {
+	ah := s.svc.GetAPIHandler("ves.io.schema.shape.client_side_defense.CustomAPI")
+	cah, ok := ah.(CustomAPIServer)
+	if !ok {
+		return nil, fmt.Errorf("ah %v is not of type *CustomAPIServer", ah)
+	}
+
+	var (
+		rsp *GetDownloadReportPresignedUrlResponse
+		err error
+	)
+
+	bodyFields := svcfw.GenAuditReqBodyFields(ctx, s.svc, "ves.io.schema.shape.client_side_defense.GetDownloadReportPresignedUrlRequest", in)
+	defer func() {
+		if len(bodyFields) > 0 {
+			server.ExtendAPIAudit(ctx, svcfw.PublicAPIBodyLog.Uid, bodyFields)
+		}
+		userMsg := "The 'CustomAPI.GetDownloadReportPresignedUrl' operation on 'client_side_defense'"
+		if err == nil {
+			userMsg += " was successfully performed."
+		} else {
+			userMsg += " failed to be performed."
+		}
+		server.AddUserMsgToAPIAudit(ctx, userMsg)
+	}()
+
+	if err := svcfw.FillOneofDefaultChoice(ctx, s.svc, in); err != nil {
+		err = server.MaybePublicRestError(ctx, errors.Wrapf(err, "Filling oneof default choice"))
+		return nil, server.GRPCStatusFromError(err).Err()
+	}
+
+	if s.svc.Config().EnableAPIValidation {
+		if rvFn := s.svc.GetRPCValidator("ves.io.schema.shape.client_side_defense.CustomAPI.GetDownloadReportPresignedUrl"); rvFn != nil {
+			if verr := rvFn(ctx, in); verr != nil {
+				err = server.MaybePublicRestError(ctx, errors.Wrapf(verr, "Validating Request"))
+				return nil, server.GRPCStatusFromError(err).Err()
+			}
+		}
+	}
+
+	rsp, err = cah.GetDownloadReportPresignedUrl(ctx, in)
+	if err != nil {
+		return rsp, server.GRPCStatusFromError(server.MaybePublicRestError(ctx, err)).Err()
+	}
+	bodyFields = append(bodyFields, svcfw.GenAuditRspBodyFields(ctx, s.svc, "ves.io.schema.shape.client_side_defense.GetDownloadReportPresignedUrlResponse", rsp)...)
+
+	return rsp, nil
+}
 func (s *customAPISrv) GetFormField(ctx context.Context, in *GetFormFieldRequest) (*GetFormFieldResponse, error) {
 	ah := s.svc.GetAPIHandler("ves.io.schema.shape.client_side_defense.CustomAPI")
 	cah, ok := ah.(CustomAPIServer)
@@ -2686,6 +3517,54 @@ func (s *customAPISrv) GetScriptOverview(ctx context.Context, in *GetScriptOverv
 		return rsp, server.GRPCStatusFromError(server.MaybePublicRestError(ctx, err)).Err()
 	}
 	bodyFields = append(bodyFields, svcfw.GenAuditRspBodyFields(ctx, s.svc, "ves.io.schema.shape.client_side_defense.GetScriptOverviewResponse", rsp)...)
+
+	return rsp, nil
+}
+func (s *customAPISrv) GetScriptsOverview(ctx context.Context, in *GetScriptsOverviewRequest) (*GetScriptsOverviewResponse, error) {
+	ah := s.svc.GetAPIHandler("ves.io.schema.shape.client_side_defense.CustomAPI")
+	cah, ok := ah.(CustomAPIServer)
+	if !ok {
+		return nil, fmt.Errorf("ah %v is not of type *CustomAPIServer", ah)
+	}
+
+	var (
+		rsp *GetScriptsOverviewResponse
+		err error
+	)
+
+	bodyFields := svcfw.GenAuditReqBodyFields(ctx, s.svc, "ves.io.schema.shape.client_side_defense.GetScriptsOverviewRequest", in)
+	defer func() {
+		if len(bodyFields) > 0 {
+			server.ExtendAPIAudit(ctx, svcfw.PublicAPIBodyLog.Uid, bodyFields)
+		}
+		userMsg := "The 'CustomAPI.GetScriptsOverview' operation on 'client_side_defense'"
+		if err == nil {
+			userMsg += " was successfully performed."
+		} else {
+			userMsg += " failed to be performed."
+		}
+		server.AddUserMsgToAPIAudit(ctx, userMsg)
+	}()
+
+	if err := svcfw.FillOneofDefaultChoice(ctx, s.svc, in); err != nil {
+		err = server.MaybePublicRestError(ctx, errors.Wrapf(err, "Filling oneof default choice"))
+		return nil, server.GRPCStatusFromError(err).Err()
+	}
+
+	if s.svc.Config().EnableAPIValidation {
+		if rvFn := s.svc.GetRPCValidator("ves.io.schema.shape.client_side_defense.CustomAPI.GetScriptsOverview"); rvFn != nil {
+			if verr := rvFn(ctx, in); verr != nil {
+				err = server.MaybePublicRestError(ctx, errors.Wrapf(verr, "Validating Request"))
+				return nil, server.GRPCStatusFromError(err).Err()
+			}
+		}
+	}
+
+	rsp, err = cah.GetScriptsOverview(ctx, in)
+	if err != nil {
+		return rsp, server.GRPCStatusFromError(server.MaybePublicRestError(ctx, err)).Err()
+	}
+	bodyFields = append(bodyFields, svcfw.GenAuditRspBodyFields(ctx, s.svc, "ves.io.schema.shape.client_side_defense.GetScriptsOverviewResponse", rsp)...)
 
 	return rsp, nil
 }
@@ -3121,6 +4000,54 @@ func (s *customAPISrv) ListFormFieldsGet(ctx context.Context, in *ListFormFields
 
 	return rsp, nil
 }
+func (s *customAPISrv) ListInlineScripts(ctx context.Context, in *ListInlineScriptsRequest) (*ListInlineScriptsResponse, error) {
+	ah := s.svc.GetAPIHandler("ves.io.schema.shape.client_side_defense.CustomAPI")
+	cah, ok := ah.(CustomAPIServer)
+	if !ok {
+		return nil, fmt.Errorf("ah %v is not of type *CustomAPIServer", ah)
+	}
+
+	var (
+		rsp *ListInlineScriptsResponse
+		err error
+	)
+
+	bodyFields := svcfw.GenAuditReqBodyFields(ctx, s.svc, "ves.io.schema.shape.client_side_defense.ListInlineScriptsRequest", in)
+	defer func() {
+		if len(bodyFields) > 0 {
+			server.ExtendAPIAudit(ctx, svcfw.PublicAPIBodyLog.Uid, bodyFields)
+		}
+		userMsg := "The 'CustomAPI.ListInlineScripts' operation on 'client_side_defense'"
+		if err == nil {
+			userMsg += " was successfully performed."
+		} else {
+			userMsg += " failed to be performed."
+		}
+		server.AddUserMsgToAPIAudit(ctx, userMsg)
+	}()
+
+	if err := svcfw.FillOneofDefaultChoice(ctx, s.svc, in); err != nil {
+		err = server.MaybePublicRestError(ctx, errors.Wrapf(err, "Filling oneof default choice"))
+		return nil, server.GRPCStatusFromError(err).Err()
+	}
+
+	if s.svc.Config().EnableAPIValidation {
+		if rvFn := s.svc.GetRPCValidator("ves.io.schema.shape.client_side_defense.CustomAPI.ListInlineScripts"); rvFn != nil {
+			if verr := rvFn(ctx, in); verr != nil {
+				err = server.MaybePublicRestError(ctx, errors.Wrapf(verr, "Validating Request"))
+				return nil, server.GRPCStatusFromError(err).Err()
+			}
+		}
+	}
+
+	rsp, err = cah.ListInlineScripts(ctx, in)
+	if err != nil {
+		return rsp, server.GRPCStatusFromError(server.MaybePublicRestError(ctx, err)).Err()
+	}
+	bodyFields = append(bodyFields, svcfw.GenAuditRspBodyFields(ctx, s.svc, "ves.io.schema.shape.client_side_defense.ListInlineScriptsResponse", rsp)...)
+
+	return rsp, nil
+}
 func (s *customAPISrv) ListNetworkInteractionsByScript(ctx context.Context, in *ListNetworkInteractionsByScriptRequest) (*ListNetworkInteractionsByScriptResponse, error) {
 	ah := s.svc.GetAPIHandler("ves.io.schema.shape.client_side_defense.CustomAPI")
 	cah, ok := ah.(CustomAPIServer)
@@ -3166,6 +4093,54 @@ func (s *customAPISrv) ListNetworkInteractionsByScript(ctx context.Context, in *
 		return rsp, server.GRPCStatusFromError(server.MaybePublicRestError(ctx, err)).Err()
 	}
 	bodyFields = append(bodyFields, svcfw.GenAuditRspBodyFields(ctx, s.svc, "ves.io.schema.shape.client_side_defense.ListNetworkInteractionsByScriptResponse", rsp)...)
+
+	return rsp, nil
+}
+func (s *customAPISrv) ListReportsWithHistory(ctx context.Context, in *ListReportsWithHistoryRequest) (*ListReportsWithHistoryResponse, error) {
+	ah := s.svc.GetAPIHandler("ves.io.schema.shape.client_side_defense.CustomAPI")
+	cah, ok := ah.(CustomAPIServer)
+	if !ok {
+		return nil, fmt.Errorf("ah %v is not of type *CustomAPIServer", ah)
+	}
+
+	var (
+		rsp *ListReportsWithHistoryResponse
+		err error
+	)
+
+	bodyFields := svcfw.GenAuditReqBodyFields(ctx, s.svc, "ves.io.schema.shape.client_side_defense.ListReportsWithHistoryRequest", in)
+	defer func() {
+		if len(bodyFields) > 0 {
+			server.ExtendAPIAudit(ctx, svcfw.PublicAPIBodyLog.Uid, bodyFields)
+		}
+		userMsg := "The 'CustomAPI.ListReportsWithHistory' operation on 'client_side_defense'"
+		if err == nil {
+			userMsg += " was successfully performed."
+		} else {
+			userMsg += " failed to be performed."
+		}
+		server.AddUserMsgToAPIAudit(ctx, userMsg)
+	}()
+
+	if err := svcfw.FillOneofDefaultChoice(ctx, s.svc, in); err != nil {
+		err = server.MaybePublicRestError(ctx, errors.Wrapf(err, "Filling oneof default choice"))
+		return nil, server.GRPCStatusFromError(err).Err()
+	}
+
+	if s.svc.Config().EnableAPIValidation {
+		if rvFn := s.svc.GetRPCValidator("ves.io.schema.shape.client_side_defense.CustomAPI.ListReportsWithHistory"); rvFn != nil {
+			if verr := rvFn(ctx, in); verr != nil {
+				err = server.MaybePublicRestError(ctx, errors.Wrapf(verr, "Validating Request"))
+				return nil, server.GRPCStatusFromError(err).Err()
+			}
+		}
+	}
+
+	rsp, err = cah.ListReportsWithHistory(ctx, in)
+	if err != nil {
+		return rsp, server.GRPCStatusFromError(server.MaybePublicRestError(ctx, err)).Err()
+	}
+	bodyFields = append(bodyFields, svcfw.GenAuditRspBodyFields(ctx, s.svc, "ves.io.schema.shape.client_side_defense.ListReportsWithHistoryResponse", rsp)...)
 
 	return rsp, nil
 }
@@ -3406,6 +4381,54 @@ func (s *customAPISrv) UpdateFieldAnalysis(ctx context.Context, in *UpdateFieldA
 		return rsp, server.GRPCStatusFromError(server.MaybePublicRestError(ctx, err)).Err()
 	}
 	bodyFields = append(bodyFields, svcfw.GenAuditRspBodyFields(ctx, s.svc, "ves.io.schema.shape.client_side_defense.UpdateFieldAnalysisResponse", rsp)...)
+
+	return rsp, nil
+}
+func (s *customAPISrv) UpdateScriptApprovalStatus(ctx context.Context, in *UpdateScriptApprovalStatusRequest) (*UpdateScriptApprovalStatusResponse, error) {
+	ah := s.svc.GetAPIHandler("ves.io.schema.shape.client_side_defense.CustomAPI")
+	cah, ok := ah.(CustomAPIServer)
+	if !ok {
+		return nil, fmt.Errorf("ah %v is not of type *CustomAPIServer", ah)
+	}
+
+	var (
+		rsp *UpdateScriptApprovalStatusResponse
+		err error
+	)
+
+	bodyFields := svcfw.GenAuditReqBodyFields(ctx, s.svc, "ves.io.schema.shape.client_side_defense.UpdateScriptApprovalStatusRequest", in)
+	defer func() {
+		if len(bodyFields) > 0 {
+			server.ExtendAPIAudit(ctx, svcfw.PublicAPIBodyLog.Uid, bodyFields)
+		}
+		userMsg := "The 'CustomAPI.UpdateScriptApprovalStatus' operation on 'client_side_defense'"
+		if err == nil {
+			userMsg += " was successfully performed."
+		} else {
+			userMsg += " failed to be performed."
+		}
+		server.AddUserMsgToAPIAudit(ctx, userMsg)
+	}()
+
+	if err := svcfw.FillOneofDefaultChoice(ctx, s.svc, in); err != nil {
+		err = server.MaybePublicRestError(ctx, errors.Wrapf(err, "Filling oneof default choice"))
+		return nil, server.GRPCStatusFromError(err).Err()
+	}
+
+	if s.svc.Config().EnableAPIValidation {
+		if rvFn := s.svc.GetRPCValidator("ves.io.schema.shape.client_side_defense.CustomAPI.UpdateScriptApprovalStatus"); rvFn != nil {
+			if verr := rvFn(ctx, in); verr != nil {
+				err = server.MaybePublicRestError(ctx, errors.Wrapf(verr, "Validating Request"))
+				return nil, server.GRPCStatusFromError(err).Err()
+			}
+		}
+	}
+
+	rsp, err = cah.UpdateScriptApprovalStatus(ctx, in)
+	if err != nil {
+		return rsp, server.GRPCStatusFromError(server.MaybePublicRestError(ctx, err)).Err()
+	}
+	bodyFields = append(bodyFields, svcfw.GenAuditRspBodyFields(ctx, s.svc, "ves.io.schema.shape.client_side_defense.UpdateScriptApprovalStatusResponse", rsp)...)
 
 	return rsp, nil
 }
@@ -3948,6 +4971,98 @@ var CustomAPISwaggerJSON string = `{
             "x-ves-proto-service": "ves.io.schema.shape.client_side_defense.CustomAPI",
             "x-ves-proto-service-type": "CUSTOM_PUBLIC"
         },
+        "/public/namespaces/{namespace}/domains": {
+            "delete": {
+                "summary": "Bulk Delete Domains",
+                "description": "Delete multiple domains from allow list or mitigated list",
+                "operationId": "ves.io.schema.shape.client_side_defense.CustomAPI.BulkDeleteDomains",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/client_side_defenseBulkDeleteDomainsResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Returned when operation is not authorized",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "Returned when there is no permission to access resource",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Returned when resource is not found",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Returned when operation on resource is conflicting with current value",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "429": {
+                        "description": "Returned when operation has been rejected as it is happening too frequently",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Returned when server encountered an error in processing API",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "503": {
+                        "description": "Returned when service is unavailable temporarily",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "504": {
+                        "description": "Returned when server timed out processing request",
+                        "schema": {
+                            "format": "string"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "namespace",
+                        "description": "namespace\n\nx-example: \"default\"\nNamespace",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "x-displayname": "Namespace"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/client_side_defenseBulkDeleteDomainsRequest"
+                        }
+                    }
+                ],
+                "tags": [
+                    "CustomAPI"
+                ],
+                "externalDocs": {
+                    "description": "Examples of this operation",
+                    "url": "https://docs.cloud.f5.com/docs-v2/platform/reference/api-ref/ves-io-schema-shape-client_side_defense-customapi-bulkdeletedomains"
+                },
+                "x-ves-proto-rpc": "ves.io.schema.shape.client_side_defense.CustomAPI.BulkDeleteDomains"
+            },
+            "x-displayname": "CustomAPI",
+            "x-ves-proto-service": "ves.io.schema.shape.client_side_defense.CustomAPI",
+            "x-ves-proto-service-type": "CUSTOM_PUBLIC"
+        },
         "/public/namespaces/{namespace}/formFields": {
             "get": {
                 "summary": "List All Form Fields with GET method",
@@ -4411,6 +5526,274 @@ var CustomAPISwaggerJSON string = `{
             "x-ves-proto-service": "ves.io.schema.shape.client_side_defense.CustomAPI",
             "x-ves-proto-service-type": "CUSTOM_PUBLIC"
         },
+        "/public/namespaces/{namespace}/reports": {
+            "post": {
+                "summary": "Create Report",
+                "description": "Create a report configuration",
+                "operationId": "ves.io.schema.shape.client_side_defense.CustomAPI.CreateReport",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/client_side_defenseCreateReportResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Returned when operation is not authorized",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "Returned when there is no permission to access resource",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Returned when resource is not found",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Returned when operation on resource is conflicting with current value",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "429": {
+                        "description": "Returned when operation has been rejected as it is happening too frequently",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Returned when server encountered an error in processing API",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "503": {
+                        "description": "Returned when service is unavailable temporarily",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "504": {
+                        "description": "Returned when server timed out processing request",
+                        "schema": {
+                            "format": "string"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "namespace",
+                        "description": "namespace\n\nx-example: \"default\"\nNamespace",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "x-displayname": "Namespace"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/client_side_defenseCreateReportRequest"
+                        }
+                    }
+                ],
+                "tags": [
+                    "CustomAPI"
+                ],
+                "externalDocs": {
+                    "description": "Examples of this operation",
+                    "url": "https://docs.cloud.f5.com/docs-v2/platform/reference/api-ref/ves-io-schema-shape-client_side_defense-customapi-createreport"
+                },
+                "x-ves-proto-rpc": "ves.io.schema.shape.client_side_defense.CustomAPI.CreateReport"
+            },
+            "x-displayname": "CustomAPI",
+            "x-ves-proto-service": "ves.io.schema.shape.client_side_defense.CustomAPI",
+            "x-ves-proto-service-type": "CUSTOM_PUBLIC"
+        },
+        "/public/namespaces/{namespace}/reports-history": {
+            "get": {
+                "summary": "List Reports With History",
+                "description": "List report configurations with their generation job history",
+                "operationId": "ves.io.schema.shape.client_side_defense.CustomAPI.ListReportsWithHistory",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/client_side_defenseListReportsWithHistoryResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Returned when operation is not authorized",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "Returned when there is no permission to access resource",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Returned when resource is not found",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Returned when operation on resource is conflicting with current value",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "429": {
+                        "description": "Returned when operation has been rejected as it is happening too frequently",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Returned when server encountered an error in processing API",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "503": {
+                        "description": "Returned when service is unavailable temporarily",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "504": {
+                        "description": "Returned when server timed out processing request",
+                        "schema": {
+                            "format": "string"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "namespace",
+                        "description": "namespace\n\nx-example: \"default\"\nNamespace",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "x-displayname": "Namespace"
+                    }
+                ],
+                "tags": [
+                    "CustomAPI"
+                ],
+                "externalDocs": {
+                    "description": "Examples of this operation",
+                    "url": "https://docs.cloud.f5.com/docs-v2/platform/reference/api-ref/ves-io-schema-shape-client_side_defense-customapi-listreportswithhistory"
+                },
+                "x-ves-proto-rpc": "ves.io.schema.shape.client_side_defense.CustomAPI.ListReportsWithHistory"
+            },
+            "x-displayname": "CustomAPI",
+            "x-ves-proto-service": "ves.io.schema.shape.client_side_defense.CustomAPI",
+            "x-ves-proto-service-type": "CUSTOM_PUBLIC"
+        },
+        "/public/namespaces/{namespace}/reports/metadata/{job_id}/download": {
+            "get": {
+                "summary": "Get Report Download URL",
+                "description": "Get a presigned URL to download a report artifact",
+                "operationId": "ves.io.schema.shape.client_side_defense.CustomAPI.GetDownloadReportPresignedUrl",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/client_side_defenseGetDownloadReportPresignedUrlResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Returned when operation is not authorized",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "Returned when there is no permission to access resource",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Returned when resource is not found",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Returned when operation on resource is conflicting with current value",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "429": {
+                        "description": "Returned when operation has been rejected as it is happening too frequently",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Returned when server encountered an error in processing API",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "503": {
+                        "description": "Returned when service is unavailable temporarily",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "504": {
+                        "description": "Returned when server timed out processing request",
+                        "schema": {
+                            "format": "string"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "namespace",
+                        "description": "namespace\n\nx-example: \"default\"\nNamespace",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "x-displayname": "Namespace"
+                    },
+                    {
+                        "name": "job_id",
+                        "description": "job_id\n\nx-example: \"j-1234567\"\nx-required\nReport generation job identifier",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "x-displayname": "Job ID"
+                    }
+                ],
+                "tags": [
+                    "CustomAPI"
+                ],
+                "externalDocs": {
+                    "description": "Examples of this operation",
+                    "url": "https://docs.cloud.f5.com/docs-v2/platform/reference/api-ref/ves-io-schema-shape-client_side_defense-customapi-getdownloadreportpresignedurl"
+                },
+                "x-ves-proto-rpc": "ves.io.schema.shape.client_side_defense.CustomAPI.GetDownloadReportPresignedUrl"
+            },
+            "x-displayname": "CustomAPI",
+            "x-ves-proto-service": "ves.io.schema.shape.client_side_defense.CustomAPI",
+            "x-ves-proto-service-type": "CUSTOM_PUBLIC"
+        },
         "/public/namespaces/{namespace}/script/justification/{justification_id}": {
             "delete": {
                 "summary": "Delete Script Justification",
@@ -4711,6 +6094,206 @@ var CustomAPISwaggerJSON string = `{
                     "url": "https://docs.cloud.f5.com/docs-v2/platform/reference/api-ref/ves-io-schema-shape-client_side_defense-customapi-listscripts"
                 },
                 "x-ves-proto-rpc": "ves.io.schema.shape.client_side_defense.CustomAPI.ListScripts"
+            },
+            "x-displayname": "CustomAPI",
+            "x-ves-proto-service": "ves.io.schema.shape.client_side_defense.CustomAPI",
+            "x-ves-proto-service-type": "CUSTOM_PUBLIC"
+        },
+        "/public/namespaces/{namespace}/scripts/overview": {
+            "get": {
+                "summary": "Get Scripts Overview",
+                "description": "Get aggregated overview metrics for all scripts including approval status, mitigation status, and behavior metrics",
+                "operationId": "ves.io.schema.shape.client_side_defense.CustomAPI.GetScriptsOverview",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/client_side_defenseGetScriptsOverviewResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Returned when operation is not authorized",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "Returned when there is no permission to access resource",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Returned when resource is not found",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Returned when operation on resource is conflicting with current value",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "429": {
+                        "description": "Returned when operation has been rejected as it is happening too frequently",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Returned when server encountered an error in processing API",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "503": {
+                        "description": "Returned when service is unavailable temporarily",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "504": {
+                        "description": "Returned when server timed out processing request",
+                        "schema": {
+                            "format": "string"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "namespace",
+                        "description": "namespace\n\nx-example: \"default\"\nNamespace",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "x-displayname": "Namespace"
+                    },
+                    {
+                        "name": "start_time",
+                        "description": "x-example: \"1570194000\"\nformat: unix epoch timestamp in seconds\nFetch scripts whose timestamp \u003e= start_time",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "x-displayname": "Start Time"
+                    },
+                    {
+                        "name": "end_time",
+                        "description": "x-example: \"1570194300\"\nformat: unix epoch timestamp in seconds\nFetch scripts whose timestamp \u003c= end_time",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "x-displayname": "End Time"
+                    }
+                ],
+                "tags": [
+                    "CustomAPI"
+                ],
+                "externalDocs": {
+                    "description": "Examples of this operation",
+                    "url": "https://docs.cloud.f5.com/docs-v2/platform/reference/api-ref/ves-io-schema-shape-client_side_defense-customapi-getscriptsoverview"
+                },
+                "x-ves-proto-rpc": "ves.io.schema.shape.client_side_defense.CustomAPI.GetScriptsOverview"
+            },
+            "x-displayname": "CustomAPI",
+            "x-ves-proto-service": "ves.io.schema.shape.client_side_defense.CustomAPI",
+            "x-ves-proto-service-type": "CUSTOM_PUBLIC"
+        },
+        "/public/namespaces/{namespace}/scripts/{id}/approval-status": {
+            "post": {
+                "summary": "Update Script Approval Status",
+                "description": "Update the approval status of a script",
+                "operationId": "ves.io.schema.shape.client_side_defense.CustomAPI.UpdateScriptApprovalStatus",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/client_side_defenseUpdateScriptApprovalStatusResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Returned when operation is not authorized",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "Returned when there is no permission to access resource",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Returned when resource is not found",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Returned when operation on resource is conflicting with current value",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "429": {
+                        "description": "Returned when operation has been rejected as it is happening too frequently",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Returned when server encountered an error in processing API",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "503": {
+                        "description": "Returned when service is unavailable temporarily",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "504": {
+                        "description": "Returned when server timed out processing request",
+                        "schema": {
+                            "format": "string"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "namespace",
+                        "description": "namespace\n\nx-example: \"default\"\nNamespace",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "x-displayname": "Namespace"
+                    },
+                    {
+                        "name": "id",
+                        "description": "id\n\nx-example: \"s-ssAH-Ji-oC\"\nScript id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "x-displayname": "Script ID"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/client_side_defenseUpdateScriptApprovalStatusRequest"
+                        }
+                    }
+                ],
+                "tags": [
+                    "CustomAPI"
+                ],
+                "externalDocs": {
+                    "description": "Examples of this operation",
+                    "url": "https://docs.cloud.f5.com/docs-v2/platform/reference/api-ref/ves-io-schema-shape-client_side_defense-customapi-updatescriptapprovalstatus"
+                },
+                "x-ves-proto-rpc": "ves.io.schema.shape.client_side_defense.CustomAPI.UpdateScriptApprovalStatus"
             },
             "x-displayname": "CustomAPI",
             "x-ves-proto-service": "ves.io.schema.shape.client_side_defense.CustomAPI",
@@ -5369,6 +6952,114 @@ var CustomAPISwaggerJSON string = `{
                     "url": "https://docs.cloud.f5.com/docs-v2/platform/reference/api-ref/ves-io-schema-shape-client_side_defense-customapi-listaffectedusers"
                 },
                 "x-ves-proto-rpc": "ves.io.schema.shape.client_side_defense.CustomAPI.ListAffectedUsers"
+            },
+            "x-displayname": "CustomAPI",
+            "x-ves-proto-service": "ves.io.schema.shape.client_side_defense.CustomAPI",
+            "x-ves-proto-service-type": "CUSTOM_PUBLIC"
+        },
+        "/public/namespaces/{namespace}/scripts/{script_id}/inline": {
+            "get": {
+                "summary": "List Inline Scripts",
+                "description": "List all inline scripts with hash values for a given script ID",
+                "operationId": "ves.io.schema.shape.client_side_defense.CustomAPI.ListInlineScripts",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/client_side_defenseListInlineScriptsResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Returned when operation is not authorized",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "Returned when there is no permission to access resource",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Returned when resource is not found",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Returned when operation on resource is conflicting with current value",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "429": {
+                        "description": "Returned when operation has been rejected as it is happening too frequently",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Returned when server encountered an error in processing API",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "503": {
+                        "description": "Returned when service is unavailable temporarily",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "504": {
+                        "description": "Returned when server timed out processing request",
+                        "schema": {
+                            "format": "string"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "namespace",
+                        "description": "namespace\n\nx-example: \"default\"\nNamespace",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "x-displayname": "Namespace"
+                    },
+                    {
+                        "name": "script_id",
+                        "description": "script_id\n\nx-example: \"s-1234567\"\nscript id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "x-displayname": "Script ID"
+                    },
+                    {
+                        "name": "start_time",
+                        "description": "x-example: \"1570194000\"\nformat: unix epoch timestamp in seconds\nfetch inline scripts whose timestamp \u003e= start_time",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "x-displayname": "Start Time"
+                    },
+                    {
+                        "name": "end_time",
+                        "description": "x-example: \"1570194300\"\nformat: unix epoch timestamp in seconds\nfetch inline scripts whose timestamp \u003c= end_time",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "x-displayname": "End Time"
+                    }
+                ],
+                "tags": [
+                    "CustomAPI"
+                ],
+                "externalDocs": {
+                    "description": "Examples of this operation",
+                    "url": "https://docs.cloud.f5.com/docs-v2/platform/reference/api-ref/ves-io-schema-shape-client_side_defense-customapi-listinlinescripts"
+                },
+                "x-ves-proto-rpc": "ves.io.schema.shape.client_side_defense.CustomAPI.ListInlineScripts"
             },
             "x-displayname": "CustomAPI",
             "x-ves-proto-service": "ves.io.schema.shape.client_side_defense.CustomAPI",
@@ -6105,6 +7796,51 @@ var CustomAPISwaggerJSON string = `{
                 }
             }
         },
+        "client_side_defenseAffectedUsersReportCriteria": {
+            "type": "object",
+            "description": "Criteria to generate an affected users report",
+            "title": "AffectedUsersReportCriteria",
+            "x-displayname": "Affected Users Report Criteria",
+            "x-ves-proto-message": "ves.io.schema.shape.client_side_defense.AffectedUsersReportCriteria",
+            "properties": {
+                "end_time": {
+                    "type": "string",
+                    "description": " format: unix epoch timestamp in seconds\n Fetch users whose timestamp \u003c= end_time\n\nExample: - \"1570194300\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.query_time: true\n",
+                    "title": "end_time",
+                    "x-displayname": "End Time",
+                    "x-ves-example": "1570194300",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.string.query_time": "true"
+                    }
+                },
+                "filters": {
+                    "type": "array",
+                    "description": " Additional filters for the query",
+                    "title": "filters",
+                    "items": {
+                        "$ref": "#/definitions/client_side_defenseReportFilter"
+                    },
+                    "x-displayname": "Filters"
+                },
+                "script_id": {
+                    "type": "string",
+                    "description": " Script ID to filter affected users by\n\nExample: - \"s-1234567\"-",
+                    "title": "script_id",
+                    "x-displayname": "Script ID",
+                    "x-ves-example": "s-1234567"
+                },
+                "start_time": {
+                    "type": "string",
+                    "description": " format: unix epoch timestamp in seconds\n Fetch users whose timestamp \u003e= start_time\n\nExample: - \"1570194000\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.query_time: true\n",
+                    "title": "start_time",
+                    "x-displayname": "Start Time",
+                    "x-ves-example": "1570194000",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.string.query_time": "true"
+                    }
+                }
+            }
+        },
         "client_side_defenseAnalysis": {
             "type": "object",
             "description": "Analysis of the form field by Client Side Defense",
@@ -6125,6 +7861,80 @@ var CustomAPISwaggerJSON string = `{
                     "title": "value",
                     "x-displayname": "Value",
                     "x-ves-example": "Sensitive"
+                }
+            }
+        },
+        "client_side_defenseApprovalStatusCounts": {
+            "type": "object",
+            "description": "Count of scripts by approval status",
+            "title": "ApprovalStatusCounts",
+            "x-displayname": "Approval Status Counts",
+            "x-ves-proto-message": "ves.io.schema.shape.client_side_defense.ApprovalStatusCounts",
+            "properties": {
+                "approved": {
+                    "type": "integer",
+                    "description": " Number of approved scripts\n\nExample: - \"50\"-",
+                    "title": "approved",
+                    "format": "int32",
+                    "x-displayname": "Approved",
+                    "x-ves-example": "50"
+                },
+                "rejected": {
+                    "type": "integer",
+                    "description": " Number of rejected scripts\n\nExample: - \"10\"-",
+                    "title": "rejected",
+                    "format": "int32",
+                    "x-displayname": "Rejected",
+                    "x-ves-example": "10"
+                },
+                "unapproved": {
+                    "type": "integer",
+                    "description": " Number of unapproved scripts (null or not set)\n\nExample: - \"40\"-",
+                    "title": "unapproved",
+                    "format": "int32",
+                    "x-displayname": "Unapproved",
+                    "x-ves-example": "40"
+                }
+            }
+        },
+        "client_side_defenseApprovalStatusFilter": {
+            "type": "object",
+            "description": "Query Filter by approval status filter strings",
+            "title": "Approval Status Filter",
+            "x-displayname": "Approval Status Filter",
+            "x-ves-proto-message": "ves.io.schema.shape.client_side_defense.ApprovalStatusFilter",
+            "properties": {
+                "approval_status_strings": {
+                    "type": "array",
+                    "description": " An unordered list of approval status strings\n\nExample: - \"['APPROVED', 'REJECTED']\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.items.string.max_len: 32\n  ves.io.schema.rules.repeated.max_items: 10\n  ves.io.schema.rules.repeated.min_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "title": "Approval Status Strings",
+                    "minItems": 1,
+                    "maxItems": 10,
+                    "items": {
+                        "type": "string",
+                        "maxLength": 32
+                    },
+                    "x-displayname": "Approval Status Strings",
+                    "x-ves-example": "['APPROVED', 'REJECTED']",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.repeated.items.string.max_len": "32",
+                        "ves.io.schema.rules.repeated.max_items": "10",
+                        "ves.io.schema.rules.repeated.min_items": "1",
+                        "ves.io.schema.rules.repeated.unique": "true"
+                    }
+                },
+                "op": {
+                    "description": " Specify filter operator\n\nExample: - \"IN\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "title": "Filter Operator",
+                    "$ref": "#/definitions/client_side_defenseFilterOperator",
+                    "x-displayname": "Filter Operator",
+                    "x-ves-example": "IN",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true"
+                    }
                 }
             }
         },
@@ -6193,6 +8003,176 @@ var CustomAPISwaggerJSON string = `{
                     "title": "users_affected",
                     "format": "int32",
                     "x-displayname": "Users Affected"
+                }
+            }
+        },
+        "client_side_defenseBehaviorMetrics": {
+            "type": "object",
+            "description": "Script behavior metrics from summary tables",
+            "title": "BehaviorMetrics",
+            "x-displayname": "Behavior Metrics",
+            "x-ves-proto-message": "ves.io.schema.shape.client_side_defense.BehaviorMetrics",
+            "properties": {
+                "scripts_with_form_field_reads": {
+                    "type": "integer",
+                    "description": " Number of scripts that read form fields\n\nExample: - \"25\"-",
+                    "title": "scripts_with_form_field_reads",
+                    "format": "int32",
+                    "x-displayname": "Scripts With Form Field Reads",
+                    "x-ves-example": "25"
+                },
+                "scripts_with_network_interactions": {
+                    "type": "integer",
+                    "description": " Number of scripts with network interactions\n\nExample: - \"45\"-",
+                    "title": "scripts_with_network_interactions",
+                    "format": "int32",
+                    "x-displayname": "Scripts With Network Interactions",
+                    "x-ves-example": "45"
+                },
+                "scripts_with_new_behaviors": {
+                    "type": "integer",
+                    "description": " Number of scripts with new behaviors detected\n\nExample: - \"15\"-",
+                    "title": "scripts_with_new_behaviors",
+                    "format": "int32",
+                    "x-displayname": "Scripts With New Behaviors",
+                    "x-ves-example": "15"
+                }
+            }
+        },
+        "client_side_defenseBulkDeleteDomainsRequest": {
+            "type": "object",
+            "description": "Request to bulk delete domains from allow list or mitigated list",
+            "title": "BulkDeleteDomainsRequest",
+            "x-displayname": "Bulk Delete Domains Request",
+            "x-ves-proto-message": "ves.io.schema.shape.client_side_defense.BulkDeleteDomainsRequest",
+            "properties": {
+                "allow_list": {
+                    "type": "array",
+                    "description": " List of domains to delete from allow list\n\nValidation Rules:\n  ves.io.schema.rules.repeated.items.string.hostname: true\n  ves.io.schema.rules.repeated.items.string.max_len: 256\n",
+                    "title": "allow_list",
+                    "items": {
+                        "type": "string",
+                        "maxLength": 256
+                    },
+                    "x-displayname": "Allow List Domains",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.repeated.items.string.hostname": "true",
+                        "ves.io.schema.rules.repeated.items.string.max_len": "256"
+                    }
+                },
+                "mitigated_list": {
+                    "type": "array",
+                    "description": " List of domains to delete from mitigated list\n\nValidation Rules:\n  ves.io.schema.rules.repeated.items.string.hostname: true\n  ves.io.schema.rules.repeated.items.string.max_len: 256\n",
+                    "title": "mitigated_list",
+                    "items": {
+                        "type": "string",
+                        "maxLength": 256
+                    },
+                    "x-displayname": "Mitigated List Domains",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.repeated.items.string.hostname": "true",
+                        "ves.io.schema.rules.repeated.items.string.max_len": "256"
+                    }
+                },
+                "namespace": {
+                    "type": "string",
+                    "description": " Namespace\n\nExample: - \"default\"-",
+                    "title": "namespace",
+                    "x-displayname": "Namespace",
+                    "x-ves-example": "default"
+                }
+            }
+        },
+        "client_side_defenseBulkDeleteDomainsResponse": {
+            "type": "object",
+            "description": "Response after bulk deleting domains",
+            "title": "BulkDeleteDomainsResponse",
+            "x-displayname": "Bulk Delete Domains Response",
+            "x-ves-proto-message": "ves.io.schema.shape.client_side_defense.BulkDeleteDomainsResponse",
+            "properties": {
+                "deleted": {
+                    "type": "boolean",
+                    "description": " Indicates whether the domains were successfully deleted\n\nExample: - \"true\"-",
+                    "title": "deleted",
+                    "format": "boolean",
+                    "x-displayname": "Deleted",
+                    "x-ves-example": "true"
+                }
+            }
+        },
+        "client_side_defenseCreateReportRequest": {
+            "type": "object",
+            "description": "Request to create a report configuration",
+            "title": "CreateReportRequest",
+            "x-displayname": "Create Report Request",
+            "x-ves-proto-message": "ves.io.schema.shape.client_side_defense.CreateReportRequest",
+            "properties": {
+                "generate_on_create": {
+                    "type": "boolean",
+                    "description": " Automatically generate report upon creation\n\nExample: - \"true\"-",
+                    "title": "generate_on_create",
+                    "format": "boolean",
+                    "x-displayname": "Generate On Create",
+                    "x-ves-example": "true"
+                },
+                "namespace": {
+                    "type": "string",
+                    "description": " Namespace\n\nExample: - \"default\"-",
+                    "title": "namespace",
+                    "x-displayname": "Namespace",
+                    "x-ves-example": "default"
+                },
+                "report_criteria": {
+                    "description": " Criteria definition for report generation\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "title": "report_criteria",
+                    "$ref": "#/definitions/client_side_defenseReportCriteria",
+                    "x-displayname": "Report Criteria",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true"
+                    }
+                },
+                "report_name": {
+                    "type": "string",
+                    "description": " Human-readable name for the report\n\nExample: - \"Monthly Script Analysis\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.max_len: 255\n  ves.io.schema.rules.string.min_len: 1\n",
+                    "title": "report_name",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "x-displayname": "Report Name",
+                    "x-ves-example": "Monthly Script Analysis",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.string.max_len": "255",
+                        "ves.io.schema.rules.string.min_len": "1"
+                    }
+                },
+                "report_type": {
+                    "description": " Report type to create\n\nExample: - \"REPORT_TYPE_SCRIPTS\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.enum.defined_only: true\n  ves.io.schema.rules.message.required: true\n",
+                    "title": "report_type",
+                    "$ref": "#/definitions/client_side_defenseReportType",
+                    "x-displayname": "Report Type",
+                    "x-ves-example": "REPORT_TYPE_SCRIPTS",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.enum.defined_only": "true",
+                        "ves.io.schema.rules.message.required": "true"
+                    }
+                }
+            }
+        },
+        "client_side_defenseCreateReportResponse": {
+            "type": "object",
+            "description": "Response after creating a report",
+            "title": "CreateReportResponse",
+            "x-displayname": "Create Report Response",
+            "x-ves-proto-message": "ves.io.schema.shape.client_side_defense.CreateReportResponse",
+            "properties": {
+                "report": {
+                    "description": " Created report configuration",
+                    "title": "report",
+                    "$ref": "#/definitions/client_side_defenseReport",
+                    "x-displayname": "Report"
                 }
             }
         },
@@ -6419,6 +8399,12 @@ var CustomAPISwaggerJSON string = `{
             "x-displayname": "Filters",
             "x-ves-proto-message": "ves.io.schema.shape.client_side_defense.Filters",
             "properties": {
+                "approval_status_filter": {
+                    "description": " Query filter by Approval Status",
+                    "title": "Approval Status Filter",
+                    "$ref": "#/definitions/client_side_defenseApprovalStatusFilter",
+                    "x-displayname": "Approval Status Filter"
+                },
                 "device_id_filter": {
                     "description": " Query filter by Device IDs",
                     "title": "Device ID Filter",
@@ -6815,6 +8801,30 @@ var CustomAPISwaggerJSON string = `{
                 }
             }
         },
+        "client_side_defenseGetDownloadReportPresignedUrlResponse": {
+            "type": "object",
+            "description": "Response with a presigned download URL",
+            "title": "GetDownloadReportPresignedUrlResponse",
+            "x-displayname": "Get Report Download URL Response",
+            "x-ves-proto-message": "ves.io.schema.shape.client_side_defense.GetDownloadReportPresignedUrlResponse",
+            "properties": {
+                "expires_in_seconds": {
+                    "type": "string",
+                    "description": " URL expiration in seconds\n\nExample: - \"600\"-",
+                    "title": "expires_in_seconds",
+                    "format": "int64",
+                    "x-displayname": "Expires In Seconds",
+                    "x-ves-example": "600"
+                },
+                "presigned_url": {
+                    "type": "string",
+                    "description": " Presigned URL for report download\n\nExample: - \"https://storage.googleapis.com/...\"-",
+                    "title": "presigned_url",
+                    "x-displayname": "Presigned URL",
+                    "x-ves-example": "https://storage.googleapis.com/..."
+                }
+            }
+        },
         "client_side_defenseGetFormFieldResponse": {
             "type": "object",
             "description": "Response to get form field",
@@ -6885,6 +8895,41 @@ var CustomAPISwaggerJSON string = `{
                     "title": "summary",
                     "$ref": "#/definitions/client_side_defenseSummary",
                     "x-displayname": "Summary"
+                }
+            }
+        },
+        "client_side_defenseGetScriptsOverviewResponse": {
+            "type": "object",
+            "description": "Response with aggregated script metrics and counts",
+            "title": "GetScriptsOverviewResponse",
+            "x-displayname": "Get Scripts Overview Response",
+            "x-ves-proto-message": "ves.io.schema.shape.client_side_defense.GetScriptsOverviewResponse",
+            "properties": {
+                "approval_status_counts": {
+                    "description": " Aggregated counts by approval status",
+                    "title": "approval_status_counts",
+                    "$ref": "#/definitions/client_side_defenseApprovalStatusCounts",
+                    "x-displayname": "Approval Status Counts"
+                },
+                "behavior_metrics": {
+                    "description": " Aggregated behavior metrics",
+                    "title": "behavior_metrics",
+                    "$ref": "#/definitions/client_side_defenseBehaviorMetrics",
+                    "x-displayname": "Behavior Metrics"
+                },
+                "mitigation_status_counts": {
+                    "description": " Aggregated counts by mitigation status",
+                    "title": "mitigation_status_counts",
+                    "$ref": "#/definitions/client_side_defenseMitigationStatusCounts",
+                    "x-displayname": "Mitigation Status Counts"
+                },
+                "total_scripts": {
+                    "type": "integer",
+                    "description": " Total number of scripts in the time range\n\nExample: - \"100\"-",
+                    "title": "total_scripts",
+                    "format": "int32",
+                    "x-displayname": "Total Scripts",
+                    "x-ves-example": "100"
                 }
             }
         },
@@ -7035,6 +9080,75 @@ var CustomAPISwaggerJSON string = `{
                     "title": "IsConfigured",
                     "format": "boolean",
                     "x-displayname": "Is Configured"
+                }
+            }
+        },
+        "client_side_defenseInlineScript": {
+            "type": "object",
+            "description": "Inline script information with hash and selector",
+            "title": "InlineScript",
+            "x-displayname": "Inline script",
+            "x-ves-proto-message": "ves.io.schema.shape.client_side_defense.InlineScript",
+            "properties": {
+                "first_seen": {
+                    "type": "string",
+                    "description": " Unix epoch timestamp when inline script was first detected\n\nExample: - \"1570194000\"-",
+                    "title": "first_seen",
+                    "format": "int64",
+                    "x-displayname": "First Seen",
+                    "x-ves-example": "1570194000"
+                },
+                "handlers": {
+                    "type": "array",
+                    "description": " List of event handlers associated with the inline script",
+                    "title": "handlers",
+                    "items": {
+                        "type": "string"
+                    },
+                    "x-displayname": "Handlers"
+                },
+                "hash": {
+                    "type": "string",
+                    "description": " Hash value of the inline script\n\nExample: - \"abc123hash\"-",
+                    "title": "hash",
+                    "x-displayname": "Hash",
+                    "x-ves-example": "abc123hash"
+                },
+                "integrity": {
+                    "type": "string",
+                    "description": " Subresource integrity value\n\nExample: - \"sha384-abc123\"-",
+                    "title": "integrity",
+                    "x-displayname": "Integrity",
+                    "x-ves-example": "sha384-abc123"
+                },
+                "last_seen": {
+                    "type": "string",
+                    "description": " Unix epoch timestamp when inline script was last detected\n\nExample: - \"1570194300\"-",
+                    "title": "last_seen",
+                    "format": "int64",
+                    "x-displayname": "Last Seen",
+                    "x-ves-example": "1570194300"
+                },
+                "script_id": {
+                    "type": "string",
+                    "description": " Unique identifier for the inline script\n\nExample: - \"s-1234567\"-",
+                    "title": "script_id",
+                    "x-displayname": "Script ID",
+                    "x-ves-example": "s-1234567"
+                },
+                "script_name": {
+                    "type": "string",
+                    "description": " Name of the inline script (composite: baseScriptName::hash)\n\nExample: - \"analytics.js::abc123hash\"-",
+                    "title": "script_name",
+                    "x-displayname": "Script Name",
+                    "x-ves-example": "analytics.js::abc123hash"
+                },
+                "selector": {
+                    "type": "string",
+                    "description": " CSS selector path where the inline script was found\n\nExample: - \"div.container \u003e script[src]\"-",
+                    "title": "selector",
+                    "x-displayname": "Selector",
+                    "x-ves-example": "div.container \u003e script[src]"
                 }
             }
         },
@@ -7325,6 +9439,16 @@ var CustomAPISwaggerJSON string = `{
                         "ves.io.schema.rules.string.in": "[\\\"high\\\", \\\"\\\"]"
                     }
                 },
+                "sorts": {
+                    "type": "array",
+                    "description": " Additional sort criteria. Supported fields: domain, last_seen, first_seen, category, risk_score.\n\nExample: - \"[{field'domain', order: 'ASCENDING'}, {field: 'last_seen', order: 'DESCENDING'}]\"-",
+                    "title": "sorts",
+                    "items": {
+                        "$ref": "#/definitions/client_side_defenseSort"
+                    },
+                    "x-displayname": "Sorts",
+                    "x-ves-example": "[{field: 'domain', order: 'ASCENDING'}, {field: 'last_seen', order: 'DESCENDING'}]"
+                },
                 "start_time": {
                     "type": "string",
                     "description": " format: unix epoch timestamp in seconds\n fetch domains with timestamp \u003e= start_time\n\nExample: - \"1570194000\"-",
@@ -7607,6 +9731,24 @@ var CustomAPISwaggerJSON string = `{
                 }
             }
         },
+        "client_side_defenseListInlineScriptsResponse": {
+            "type": "object",
+            "description": "Response to list inline scripts",
+            "title": "ListInlineScriptsResponse",
+            "x-displayname": "List inline scripts response",
+            "x-ves-proto-message": "ves.io.schema.shape.client_side_defense.ListInlineScriptsResponse",
+            "properties": {
+                "scripts": {
+                    "type": "array",
+                    "description": " List of inline scripts with hash values",
+                    "title": "scripts",
+                    "items": {
+                        "$ref": "#/definitions/client_side_defenseInlineScript"
+                    },
+                    "x-displayname": "Inline Scripts"
+                }
+            }
+        },
         "client_side_defenseListNetworkInteractionsByScriptResponse": {
             "type": "object",
             "description": "Response to list network interactions by script",
@@ -7629,6 +9771,24 @@ var CustomAPISwaggerJSON string = `{
                     "title": "total_size",
                     "format": "int32",
                     "x-displayname": "Total Size"
+                }
+            }
+        },
+        "client_side_defenseListReportsWithHistoryResponse": {
+            "type": "object",
+            "description": "Response with report configurations and their generation job history",
+            "title": "ListReportsWithHistoryResponse",
+            "x-displayname": "List Reports With History Response",
+            "x-ves-proto-message": "ves.io.schema.shape.client_side_defense.ListReportsWithHistoryResponse",
+            "properties": {
+                "reports": {
+                    "type": "array",
+                    "description": " List of report configurations with history",
+                    "title": "reports",
+                    "items": {
+                        "$ref": "#/definitions/client_side_defenseReportWithHistory"
+                    },
+                    "x-displayname": "Reports"
                 }
             }
         },
@@ -7822,6 +9982,39 @@ var CustomAPISwaggerJSON string = `{
                 }
             }
         },
+        "client_side_defenseMitigationStatusCounts": {
+            "type": "object",
+            "description": "Count of scripts by mitigation status",
+            "title": "MitigationStatusCounts",
+            "x-displayname": "Mitigation Status Counts",
+            "x-ves-proto-message": "ves.io.schema.shape.client_side_defense.MitigationStatusCounts",
+            "properties": {
+                "action_needed": {
+                    "type": "integer",
+                    "description": " Number of scripts with \"AN - Action Needed\" status\n\nExample: - \"30\"-",
+                    "title": "action_needed",
+                    "format": "int32",
+                    "x-displayname": "Action Needed",
+                    "x-ves-example": "30"
+                },
+                "no_action_needed": {
+                    "type": "integer",
+                    "description": " Number of scripts with \"NA - No Action Needed\" status\n\nExample: - \"50\"-",
+                    "title": "no_action_needed",
+                    "format": "int32",
+                    "x-displayname": "No Action Needed",
+                    "x-ves-example": "50"
+                },
+                "resolved": {
+                    "type": "integer",
+                    "description": " Number of scripts with \"Resolved - No Action Needed\" status\n\nExample: - \"20\"-",
+                    "title": "resolved",
+                    "format": "int32",
+                    "x-displayname": "Resolved",
+                    "x-ves-example": "20"
+                }
+            }
+        },
         "client_side_defenseNetworkInteractionByScript": {
             "type": "object",
             "description": "Network interaction information by script",
@@ -7866,6 +10059,284 @@ var CustomAPISwaggerJSON string = `{
                 }
             }
         },
+        "client_side_defenseReport": {
+            "type": "object",
+            "description": "Report configuration",
+            "title": "Report",
+            "x-displayname": "Report",
+            "x-ves-proto-message": "ves.io.schema.shape.client_side_defense.Report",
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "description": " Creation timestamp\n\nExample: - \"2024-01-01T00:00:00Z\"-",
+                    "title": "created_at",
+                    "format": "date-time",
+                    "x-displayname": "Created At",
+                    "x-ves-example": "2024-01-01T00:00:00Z"
+                },
+                "created_by": {
+                    "type": "string",
+                    "description": " User who created the report\n\nExample: - \"user@example.com\"-",
+                    "title": "created_by",
+                    "x-displayname": "Created By",
+                    "x-ves-example": "user@example.com"
+                },
+                "namespace": {
+                    "type": "string",
+                    "description": " Namespace\n\nExample: - \"default\"-",
+                    "title": "namespace",
+                    "x-displayname": "Namespace",
+                    "x-ves-example": "default"
+                },
+                "report_criteria": {
+                    "description": " Criteria definition for report generation",
+                    "title": "report_criteria",
+                    "$ref": "#/definitions/client_side_defenseReportCriteria",
+                    "x-displayname": "Report Criteria"
+                },
+                "report_id": {
+                    "type": "string",
+                    "description": " Unique report identifier\n\nExample: - \"r-1234567\"-",
+                    "title": "report_id",
+                    "x-displayname": "Report ID",
+                    "x-ves-example": "r-1234567"
+                },
+                "report_name": {
+                    "type": "string",
+                    "description": " Human-readable name for the report\n\nExample: - \"Monthly Script Analysis\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.max_len: 255\n  ves.io.schema.rules.string.min_len: 1\n",
+                    "title": "report_name",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "x-displayname": "Report Name",
+                    "x-ves-example": "Monthly Script Analysis",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.string.max_len": "255",
+                        "ves.io.schema.rules.string.min_len": "1"
+                    }
+                },
+                "report_type": {
+                    "description": " Report type\n\nExample: - \"REPORT_TYPE_SCRIPTS\"-\n\nValidation Rules:\n  ves.io.schema.rules.enum.defined_only: true\n",
+                    "title": "report_type",
+                    "$ref": "#/definitions/client_side_defenseReportType",
+                    "x-displayname": "Report Type",
+                    "x-ves-example": "REPORT_TYPE_SCRIPTS",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.enum.defined_only": "true"
+                    }
+                },
+                "updated_at": {
+                    "type": "string",
+                    "description": " Update timestamp\n\nExample: - \"2024-01-02T00:00:00Z\"-",
+                    "title": "updated_at",
+                    "format": "date-time",
+                    "x-displayname": "Updated At",
+                    "x-ves-example": "2024-01-02T00:00:00Z"
+                },
+                "updated_by": {
+                    "type": "string",
+                    "description": " User who last updated the report\n\nExample: - \"user@example.com\"-",
+                    "title": "updated_by",
+                    "x-displayname": "Updated By",
+                    "x-ves-example": "user@example.com"
+                }
+            }
+        },
+        "client_side_defenseReportCriteria": {
+            "type": "object",
+            "description": "Criteria definition for a report",
+            "title": "ReportCriteria",
+            "x-displayname": "Report Criteria",
+            "x-ves-oneof-field-criteria": "[\"affected_users\",\"scripts\"]",
+            "x-ves-proto-message": "ves.io.schema.shape.client_side_defense.ReportCriteria",
+            "properties": {
+                "affected_users": {
+                    "description": "Exclusive with [scripts]\n",
+                    "title": "affected_users",
+                    "$ref": "#/definitions/client_side_defenseAffectedUsersReportCriteria",
+                    "x-displayname": "Affected Users"
+                },
+                "scripts": {
+                    "description": "Exclusive with [affected_users]\n",
+                    "title": "scripts",
+                    "$ref": "#/definitions/client_side_defenseScriptsReportCriteria",
+                    "x-displayname": "Scripts"
+                }
+            }
+        },
+        "client_side_defenseReportFilter": {
+            "type": "object",
+            "description": "Filter definition for report criteria",
+            "title": "ReportFilter",
+            "x-displayname": "Report Filter",
+            "x-ves-proto-message": "ves.io.schema.shape.client_side_defense.ReportFilter",
+            "properties": {
+                "column_name": {
+                    "type": "string",
+                    "description": " Column name to filter\n\nExample: - \"script_name\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.not_empty: true\n",
+                    "title": "column_name",
+                    "x-displayname": "Column Name",
+                    "x-ves-example": "script_name",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.string.not_empty": "true"
+                    }
+                },
+                "operator": {
+                    "description": " Filter operator\n\nExample: - \"REPORT_FILTER_OPERATOR_IN\"-\n\nValidation Rules:\n  ves.io.schema.rules.enum.defined_only: true\n",
+                    "title": "operator",
+                    "$ref": "#/definitions/client_side_defenseReportFilterOperator",
+                    "x-displayname": "Operator",
+                    "x-ves-example": "REPORT_FILTER_OPERATOR_IN",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.enum.defined_only": "true"
+                    }
+                },
+                "values": {
+                    "type": "array",
+                    "description": " Filter values\n\nExample: - \"['analytics.js']\"-\n\nValidation Rules:\n  ves.io.schema.rules.repeated.items.string.max_len: 256\n",
+                    "title": "values",
+                    "items": {
+                        "type": "string",
+                        "maxLength": 256
+                    },
+                    "x-displayname": "Values",
+                    "x-ves-example": "['analytics.js']",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.repeated.items.string.max_len": "256"
+                    }
+                }
+            }
+        },
+        "client_side_defenseReportFilterOperator": {
+            "type": "string",
+            "description": "x-example: \"REPORT_FILTER_OPERATOR_IN\"\nFilter operator for report criteria\n\n - REPORT_FILTER_OPERATOR_UNSPECIFIED: REPORT_FILTER_OPERATOR_UNSPECIFIED\n\nx-example: \"REPORT_FILTER_OPERATOR_UNSPECIFIED\"\n - REPORT_FILTER_OPERATOR_IN: REPORT_FILTER_OPERATOR_IN\n\nx-example: \"REPORT_FILTER_OPERATOR_IN\"\n - REPORT_FILTER_OPERATOR_NOT_IN: REPORT_FILTER_OPERATOR_NOT_IN\n\nx-example: \"REPORT_FILTER_OPERATOR_NOT_IN\"",
+            "title": "ReportFilterOperator",
+            "enum": [
+                "REPORT_FILTER_OPERATOR_UNSPECIFIED",
+                "REPORT_FILTER_OPERATOR_IN",
+                "REPORT_FILTER_OPERATOR_NOT_IN"
+            ],
+            "default": "REPORT_FILTER_OPERATOR_UNSPECIFIED",
+            "x-displayname": "Report Filter Operator",
+            "x-ves-proto-enum": "ves.io.schema.shape.client_side_defense.ReportFilterOperator"
+        },
+        "client_side_defenseReportStatus": {
+            "type": "string",
+            "description": "x-example: \"REPORT_STATUS_COMPLETED\"\nStatus of a report generation job\n\n - REPORT_STATUS_UNSPECIFIED: REPORT_STATUS_UNSPECIFIED\n\nx-example: \"REPORT_STATUS_UNSPECIFIED\"\n - REPORT_STATUS_QUEUED: REPORT_STATUS_QUEUED\n\nx-example: \"REPORT_STATUS_QUEUED\"\n - REPORT_STATUS_IN_PROGRESS: REPORT_STATUS_IN_PROGRESS\n\nx-example: \"REPORT_STATUS_IN_PROGRESS\"\n - REPORT_STATUS_COMPLETED: REPORT_STATUS_COMPLETED\n\nx-example: \"REPORT_STATUS_COMPLETED\"\n - REPORT_STATUS_ERRORED: REPORT_STATUS_ERRORED\n\nx-example: \"REPORT_STATUS_ERRORED\"\n - REPORT_STATUS_TIMED_OUT: REPORT_STATUS_TIMED_OUT\n\nx-example: \"REPORT_STATUS_TIMED_OUT\"",
+            "title": "ReportStatus",
+            "enum": [
+                "REPORT_STATUS_UNSPECIFIED",
+                "REPORT_STATUS_QUEUED",
+                "REPORT_STATUS_IN_PROGRESS",
+                "REPORT_STATUS_COMPLETED",
+                "REPORT_STATUS_ERRORED",
+                "REPORT_STATUS_TIMED_OUT"
+            ],
+            "default": "REPORT_STATUS_UNSPECIFIED",
+            "x-displayname": "Report Status",
+            "x-ves-proto-enum": "ves.io.schema.shape.client_side_defense.ReportStatus"
+        },
+        "client_side_defenseReportType": {
+            "type": "string",
+            "description": "x-example: \"REPORT_TYPE_SCRIPTS\"\nType of report to generate\n\n - REPORT_TYPE_UNSPECIFIED: REPORT_TYPE_UNSPECIFIED\n\nx-example: \"REPORT_TYPE_UNSPECIFIED\"\n - REPORT_TYPE_SCRIPTS: REPORT_TYPE_SCRIPTS\n\nx-example: \"REPORT_TYPE_SCRIPTS\"\n - REPORT_TYPE_AFFECTED_USERS: REPORT_TYPE_AFFECTED_USERS\n\nx-example: \"REPORT_TYPE_AFFECTED_USERS\"",
+            "title": "ReportType",
+            "enum": [
+                "REPORT_TYPE_UNSPECIFIED",
+                "REPORT_TYPE_SCRIPTS",
+                "REPORT_TYPE_AFFECTED_USERS"
+            ],
+            "default": "REPORT_TYPE_UNSPECIFIED",
+            "x-displayname": "Report Type",
+            "x-ves-proto-enum": "ves.io.schema.shape.client_side_defense.ReportType"
+        },
+        "client_side_defenseReportWithHistory": {
+            "type": "object",
+            "description": "Report configuration with its generation job history",
+            "title": "ReportWithHistory",
+            "x-displayname": "Report With History",
+            "x-ves-proto-message": "ves.io.schema.shape.client_side_defense.ReportWithHistory",
+            "properties": {
+                "completed_at": {
+                    "type": "string",
+                    "description": " Report completion timestamp\n\nExample: - \"2024-01-01T01:00:00Z\"-",
+                    "title": "completed_at",
+                    "format": "date-time",
+                    "x-displayname": "Completed At",
+                    "x-ves-example": "2024-01-01T01:00:00Z"
+                },
+                "created_at": {
+                    "type": "string",
+                    "description": " Creation timestamp\n\nExample: - \"2024-01-01T00:00:00Z\"-",
+                    "title": "created_at",
+                    "format": "date-time",
+                    "x-displayname": "Created At",
+                    "x-ves-example": "2024-01-01T00:00:00Z"
+                },
+                "created_by": {
+                    "type": "string",
+                    "description": " User who created the report\n\nExample: - \"user@example.com\"-",
+                    "title": "created_by",
+                    "x-displayname": "Created By",
+                    "x-ves-example": "user@example.com"
+                },
+                "job_id": {
+                    "type": "string",
+                    "description": " Report generation job identifier\n\nExample: - \"j-1234567\"-",
+                    "title": "job_id",
+                    "x-displayname": "Job ID",
+                    "x-ves-example": "j-1234567"
+                },
+                "namespace": {
+                    "type": "string",
+                    "description": " Namespace\n\nExample: - \"default\"-",
+                    "title": "namespace",
+                    "x-displayname": "Namespace",
+                    "x-ves-example": "default"
+                },
+                "report_criteria": {
+                    "description": " Criteria definition for report generation\n\nExample: - \"{\"filter\"{\"status\": \"COMPLETED\"}}\"-",
+                    "title": "report_criteria",
+                    "$ref": "#/definitions/client_side_defenseReportCriteria",
+                    "x-displayname": "Report Criteria",
+                    "x-ves-example": "{\"filter\": {\"status\": \"COMPLETED\"}}"
+                },
+                "report_id": {
+                    "type": "string",
+                    "description": " Report identifier\n\nExample: - \"r-1234567\"-",
+                    "title": "report_id",
+                    "x-displayname": "Report ID",
+                    "x-ves-example": "r-1234567"
+                },
+                "report_name": {
+                    "type": "string",
+                    "description": " Human-readable name for the report\n\nExample: - \"Monthly Script Analysis\"-",
+                    "title": "report_name",
+                    "x-displayname": "Report Name",
+                    "x-ves-example": "Monthly Script Analysis"
+                },
+                "report_type": {
+                    "description": " Report type\n\nValidation Rules:\n  ves.io.schema.rules.enum.defined_only: true\n",
+                    "title": "x-displayName: \"Report Type\"\nx-example: \"REPORT_TYPE_SCRIPTS\"\nReport type",
+                    "$ref": "#/definitions/client_side_defenseReportType",
+                    "x-displayname": "Report Type",
+                    "x-ves-example": "REPORT_TYPE_SCRIPTS",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.enum.defined_only": "true"
+                    }
+                },
+                "status": {
+                    "description": " Report generation status\n\nExample: - \"REPORT_STATUS_COMPLETED\"-\n\nValidation Rules:\n  ves.io.schema.rules.enum.defined_only: true\n",
+                    "title": "status",
+                    "$ref": "#/definitions/client_side_defenseReportStatus",
+                    "x-displayname": "Status",
+                    "x-ves-example": "REPORT_STATUS_COMPLETED",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.enum.defined_only": "true"
+                    }
+                }
+            }
+        },
         "client_side_defenseRiskLevelFilter": {
             "type": "object",
             "description": "Query Filter by risk level filter strings",
@@ -7905,6 +10376,19 @@ var CustomAPISwaggerJSON string = `{
                 }
             }
         },
+        "client_side_defenseScriptApprovalStatus": {
+            "type": "string",
+            "description": "x-example: \"APPROVED\"\nType of Script Approval Status\n\n - UNKNOWN: UNKNOWN\n\nx-example: \"UNKNOWN\"\nUnknown approval status - default value\n - APPROVED: APPROVED\n\nx-example: \"APPROVED\"\nScript is approved\n - REJECTED: REJECTED\n\nx-example: \"REJECTED\"\nScript is rejected",
+            "title": "ScriptApprovalStatus",
+            "enum": [
+                "UNKNOWN",
+                "APPROVED",
+                "REJECTED"
+            ],
+            "default": "UNKNOWN",
+            "x-displayname": "Script Approval Status",
+            "x-ves-proto-enum": "ves.io.schema.shape.client_side_defense.ScriptApprovalStatus"
+        },
         "client_side_defenseScriptInfo": {
             "type": "object",
             "description": "Script information",
@@ -7918,6 +10402,13 @@ var CustomAPISwaggerJSON string = `{
                     "title": "affected_users_count",
                     "format": "int32",
                     "x-displayname": "Affected Users Count"
+                },
+                "approval_status": {
+                    "type": "string",
+                    "description": " Status of script\n\nExample: - \"Approved\"-",
+                    "title": "approval_status",
+                    "x-displayname": "Approval Status",
+                    "x-ves-example": "Approved"
                 },
                 "first_seen": {
                     "type": "string",
@@ -7939,6 +10430,13 @@ var CustomAPISwaggerJSON string = `{
                     "title": "id",
                     "x-displayname": "Script Id",
                     "x-ves-example": "s-1234567"
+                },
+                "inline_scripts_count": {
+                    "type": "integer",
+                    "description": " Number of inline scripts tagged to the script having different hash\n\nExample: - 10-",
+                    "title": "scripts_count",
+                    "format": "int32",
+                    "x-displayname": "Scripts Count"
                 },
                 "justifications": {
                     "type": "array",
@@ -8081,6 +10579,44 @@ var CustomAPISwaggerJSON string = `{
                         "ves.io.schema.rules.repeated.max_items": "10",
                         "ves.io.schema.rules.repeated.min_items": "1",
                         "ves.io.schema.rules.repeated.unique": "true"
+                    }
+                }
+            }
+        },
+        "client_side_defenseScriptsReportCriteria": {
+            "type": "object",
+            "description": "Criteria to generate a scripts report",
+            "title": "ScriptsReportCriteria",
+            "x-displayname": "Scripts Report Criteria",
+            "x-ves-proto-message": "ves.io.schema.shape.client_side_defense.ScriptsReportCriteria",
+            "properties": {
+                "end_time": {
+                    "type": "string",
+                    "description": " format: unix epoch timestamp in seconds\n Fetch scripts whose timestamp \u003c= end_time\n\nExample: - \"1570194300\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.query_time: true\n",
+                    "title": "end_time",
+                    "x-displayname": "End Time",
+                    "x-ves-example": "1570194300",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.string.query_time": "true"
+                    }
+                },
+                "filters": {
+                    "type": "array",
+                    "description": " Additional filters for the query",
+                    "title": "filters",
+                    "items": {
+                        "$ref": "#/definitions/client_side_defenseReportFilter"
+                    },
+                    "x-displayname": "Filters"
+                },
+                "start_time": {
+                    "type": "string",
+                    "description": " format: unix epoch timestamp in seconds\n Fetch scripts whose timestamp \u003e= start_time\n\nExample: - \"1570194000\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.query_time: true\n",
+                    "title": "start_time",
+                    "x-displayname": "Start Time",
+                    "x-ves-example": "1570194000",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.string.query_time": "true"
                     }
                 }
             }
@@ -8232,18 +10768,17 @@ var CustomAPISwaggerJSON string = `{
             "description": "Request to update domain",
             "title": "UpdateDomainsRequest",
             "x-displayname": "Update domain request",
-            "x-ves-oneof-field-allowed_or_mitigated_domains": "[\"add_to_allowed_domains\",\"add_to_mitigated_domains\"]",
             "x-ves-proto-message": "ves.io.schema.shape.client_side_defense.UpdateDomainsRequest",
             "properties": {
                 "add_to_allowed_domains": {
-                    "description": "Exclusive with [add_to_mitigated_domains]\n Domains are added to allowed list\n\nExample: - \"['company1.com', 'company2.com']\"-",
+                    "description": " Domains are added to allowed list\n\nExample: - \"['company1.com', 'company2.com']\"-",
                     "title": "Add To Allowed Domains",
                     "$ref": "#/definitions/client_side_defenseAddToAllowedDomains",
                     "x-displayname": "Add To Allowed Domains",
                     "x-ves-example": "['company1.com', 'company2.com']"
                 },
                 "add_to_mitigated_domains": {
-                    "description": "Exclusive with [add_to_allowed_domains]\n Domains are added to mitigated list\n\nExample: - \"['example1.com', 'example2.com']\"-",
+                    "description": " Domains are added to mitigated list\n\nExample: - \"['example1.com', 'example2.com']\"-",
                     "title": "Add To Mitigated Domains",
                     "$ref": "#/definitions/client_side_defenseAddToMitigatedDomains",
                     "x-displayname": "Add To Mitigated Domains",
@@ -8315,6 +10850,58 @@ var CustomAPISwaggerJSON string = `{
                     "title": "status",
                     "x-displayname": "Status",
                     "x-ves-example": "not_modified"
+                }
+            }
+        },
+        "client_side_defenseUpdateScriptApprovalStatusRequest": {
+            "type": "object",
+            "description": "Request to update script approval status",
+            "title": "UpdateScriptApprovalStatusRequest",
+            "x-displayname": "Update Script Approval Status Request",
+            "x-ves-proto-message": "ves.io.schema.shape.client_side_defense.UpdateScriptApprovalStatusRequest",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": " Script id\n\nExample: - \"s-ssAH-Ji-oC\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.not_empty: true\n",
+                    "title": "id",
+                    "x-displayname": "Script ID",
+                    "x-ves-example": "s-ssAH-Ji-oC",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.string.not_empty": "true"
+                    }
+                },
+                "namespace": {
+                    "type": "string",
+                    "description": " Namespace\n\nExample: - \"default\"-",
+                    "title": "namespace",
+                    "x-displayname": "Namespace",
+                    "x-ves-example": "default"
+                },
+                "status": {
+                    "description": " Approval status to set for the script\n\nExample: - \"APPROVED\"-\n\nValidation Rules:\n  ves.io.schema.rules.enum.defined_only: true\n",
+                    "title": "status",
+                    "$ref": "#/definitions/client_side_defenseScriptApprovalStatus",
+                    "x-displayname": "Approval Status",
+                    "x-ves-example": "APPROVED",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.enum.defined_only": "true"
+                    }
+                }
+            }
+        },
+        "client_side_defenseUpdateScriptApprovalStatusResponse": {
+            "type": "object",
+            "description": "Response after updating script approval status",
+            "title": "UpdateScriptApprovalStatusResponse",
+            "x-displayname": "Update Script Approval Status Response",
+            "x-ves-proto-message": "ves.io.schema.shape.client_side_defense.UpdateScriptApprovalStatusResponse",
+            "properties": {
+                "script_id": {
+                    "type": "string",
+                    "description": " ID of the script that was updated\n\nExample: - \"s-ssAH-Ji-oC\"-",
+                    "title": "script_id",
+                    "x-displayname": "Script ID",
+                    "x-ves-example": "s-ssAH-Ji-oC"
                 }
             }
         },

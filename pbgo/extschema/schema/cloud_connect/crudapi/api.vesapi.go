@@ -1791,7 +1791,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2015,7 +2015,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2269,7 +2269,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2594,29 +2594,21 @@ var APISwaggerJSON string = `{
                 },
                 "connect_attachment_status": {
                     "type": "array",
-                    "description": " AWS Connect Attachment Status Type\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 1\n",
+                    "description": " AWS Connect Attachment Status Type",
                     "title": "AWS Connect Attachment Status Type",
-                    "maxItems": 1,
                     "items": {
                         "$ref": "#/definitions/cloud_connectAWSConnectAttachmentStatusType"
                     },
-                    "x-displayname": "AWS Connect Attachment Status",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.repeated.max_items": "1"
-                    }
+                    "x-displayname": "AWS Connect Attachment Status"
                 },
                 "tgw_route_table_status": {
                     "type": "array",
-                    "description": " AWS Transit Gateway Route Table Status Type\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 2\n",
+                    "description": " AWS Transit Gateway Route Table Status Type",
                     "title": "AWS Transit Gateway Route Table Status Type",
-                    "maxItems": 2,
                     "items": {
                         "$ref": "#/definitions/cloud_connectAWSTGWRouteTableStatusType"
                     },
-                    "x-displayname": "AWS Transit Gateway Route Table Status",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.repeated.max_items": "2"
-                    }
+                    "x-displayname": "AWS Transit Gateway Route Table Status"
                 },
                 "tgw_status": {
                     "description": " AWS Transit Gateway Status Type",
@@ -2795,6 +2787,12 @@ var APISwaggerJSON string = `{
                     "title": "Deployment Status",
                     "x-displayname": "Deployment Status"
                 },
+                "f5xc_site_asn": {
+                    "type": "string",
+                    "description": " F5XC Site ASN",
+                    "title": "F5XC Site ASN",
+                    "x-displayname": "F5XC Site ASN"
+                },
                 "peers": {
                     "type": "array",
                     "description": " Connect Peers",
@@ -2943,16 +2941,17 @@ var APISwaggerJSON string = `{
             "description": "Cloud Connect with AWS",
             "title": "Cloud Connect with AWS",
             "x-displayname": "AWS",
-            "x-ves-oneof-field-site_type": "[\"aws_tgw_site\"]",
+            "x-ves-oneof-field-site_type": "[\"aws_tgw_site\",\"securemesh_site_v2\"]",
             "x-ves-proto-message": "ves.io.schema.cloud_connect.AWSProviderType",
             "properties": {
                 "aws_tgw_site": {
-                    "description": "Exclusive with []\n",
+                    "description": "Exclusive with [securemesh_site_v2]\n",
                     "title": "AWS TGW Site",
                     "$ref": "#/definitions/cloud_connectAWSTGWSiteType",
                     "x-displayname": "AWS TGW Site"
                 },
                 "securemesh_site_v2": {
+                    "description": "Exclusive with [aws_tgw_site]\n",
                     "title": "AWS SecureMesh Site Type",
                     "$ref": "#/definitions/cloud_connectAWSSecureMeshSiteType",
                     "x-displayname": "Secure Mesh Site v2"
@@ -3399,6 +3398,17 @@ var APISwaggerJSON string = `{
                     "title": "TGW ARN",
                     "x-displayname": "ARN"
                 },
+                "association_default_route_table_id": {
+                    "type": "string",
+                    "description": " x-displayName \"Default Association Route Table ID\"\n AssociationDefaultRouteTableId",
+                    "title": "AssociationDefaultRouteTableId"
+                },
+                "auto_accept_shared_attachments": {
+                    "type": "boolean",
+                    "description": " x-displayName \"Auto Accept Shared Attachments\"\n AutoAcceptSharedAttachments",
+                    "title": "AutoAcceptSharedAttachments",
+                    "format": "boolean"
+                },
                 "cidrs": {
                     "type": "array",
                     "description": " x-displayName \"CIDRs\"\n TGW CIDRs",
@@ -3406,6 +3416,18 @@ var APISwaggerJSON string = `{
                     "items": {
                         "type": "string"
                     }
+                },
+                "default_route_table_association": {
+                    "type": "boolean",
+                    "description": " x-displayName \"Default Route Table Association\"\n DefaultRouteTableAssociation",
+                    "title": "DefaultRouteTableAssociation",
+                    "format": "boolean"
+                },
+                "default_route_table_propagation": {
+                    "type": "boolean",
+                    "description": " x-displayName \"Default Route Table Propagation\"\n DefaultRouteTablePropagation",
+                    "title": "DefaultRouteTablePropagation",
+                    "format": "boolean"
                 },
                 "id": {
                     "type": "string",
@@ -3418,6 +3440,11 @@ var APISwaggerJSON string = `{
                     "description": " TGW Owner Account",
                     "title": "TGW Owner",
                     "x-displayname": "Owner Account"
+                },
+                "propagation_default_route_table_id": {
+                    "type": "string",
+                    "description": " x-displayName \"Default Propagation Route Table ID\"\n PropagationDefaultRouteTableId",
+                    "title": "PropagationDefaultRouteTableId"
                 },
                 "region": {
                     "type": "string",
@@ -3438,9 +3465,14 @@ var APISwaggerJSON string = `{
                 },
                 "tags": {
                     "type": "object",
-                    "description": " TGW Tags",
+                    "description": " TGW Tags\n\nValidation Rules:\n  ves.io.schema.rules.map.keys.string.max_len: 127\n  ves.io.schema.rules.map.max_pairs: 20\n  ves.io.schema.rules.map.values.string.max_len: 255\n",
                     "title": "TGW Tags",
-                    "x-displayname": "Tags"
+                    "x-displayname": "Tags",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.map.keys.string.max_len": "127",
+                        "ves.io.schema.rules.map.max_pairs": "20",
+                        "ves.io.schema.rules.map.values.string.max_len": "255"
+                    }
                 }
             }
         },
@@ -3912,23 +3944,23 @@ var APISwaggerJSON string = `{
             "description": "Cloud Connect Status",
             "title": "Cloud Connect Status",
             "x-displayname": "Status",
-            "x-ves-oneof-field-cloud_connect_deployment": "[\"cloud_connect_aws_site\",\"cloud_connect_azure_site\"]",
+            "x-ves-oneof-field-cloud_connect_deployment": "[\"cloud_connect_aws_securemesh_site\",\"cloud_connect_aws_site\",\"cloud_connect_azure_site\"]",
             "x-ves-proto-message": "ves.io.schema.cloud_connect.CloudConnectStatusType",
             "properties": {
                 "cloud_connect_aws_securemesh_site": {
-                    "description": " Cloud Connect status attached with AWS SecureMesh Site",
+                    "description": "Exclusive with [cloud_connect_aws_site cloud_connect_azure_site]\n Cloud Connect status attached with AWS SecureMesh Site",
                     "title": "Cloud Connect Attached to AWS SecureMesh Site v2",
                     "$ref": "#/definitions/cloud_connectAWSSecureMeshSiteStatusType",
                     "x-displayname": "Cloud Connect to AWS Secure Mesh Site v2"
                 },
                 "cloud_connect_aws_site": {
-                    "description": "Exclusive with [cloud_connect_azure_site]\n Cloud Connect to AWS Sites",
+                    "description": "Exclusive with [cloud_connect_aws_securemesh_site cloud_connect_azure_site]\n Cloud Connect to AWS Sites",
                     "title": "Cloud Connect Attached to AWS TGW Site",
                     "$ref": "#/definitions/cloud_connectAWSAttachmentsListStatusType",
                     "x-displayname": "Cloud Connect to AWS TGW Site"
                 },
                 "cloud_connect_azure_site": {
-                    "description": "Exclusive with [cloud_connect_aws_site]\n Cloud Connect to Azure VNET Sites",
+                    "description": "Exclusive with [cloud_connect_aws_securemesh_site cloud_connect_aws_site]\n Cloud Connect to Azure VNET Sites",
                     "title": "Cloud Connect Attached to Azure VNET Site",
                     "$ref": "#/definitions/cloud_connectAzureAttachmentsListStatusType",
                     "x-displayname": "Cloud Connect to Azure VNET Site"

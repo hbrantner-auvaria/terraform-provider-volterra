@@ -1791,7 +1791,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2015,7 +2015,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2269,7 +2269,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -3492,10 +3492,14 @@ var APISwaggerJSON string = `{
             "x-ves-proto-message": "ves.io.schema.sensitive_data_policy.CustomDataTypeRef",
             "properties": {
                 "custom_data_type_ref": {
-                    "description": " List of custom data types to monitor",
+                    "description": " List of custom data types to monitor\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
                     "title": "custom_data_type_ref",
                     "$ref": "#/definitions/schemaviewsObjectRefType",
-                    "x-displayname": "Defined Custom Sensitive Data Type"
+                    "x-displayname": "Defined Custom Sensitive Data Type",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true"
+                    }
                 }
             }
         },

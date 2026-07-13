@@ -429,6 +429,15 @@ func (v *ValidateAWSTGWAttachment) Validate(ctx context.Context, pm interface{},
 			}
 		}
 	}
+	if fv, exists := v.FldValidators["tags"]; exists {
+		vOpts := append(opts, db.WithValidateField("tags"))
+		for key, value := range m.GetTags() {
+			vOpts := append(vOpts, db.WithValidateMapKey(key))
+			if err := fv(ctx, value, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
 	return nil
 }
 
@@ -1490,7 +1499,61 @@ func (m *MetaType) GetDRefInfo() ([]db.DRefInfo, error) {
 		return nil, nil
 	}
 
-	return m.GetCredsDRefInfo()
+	var drInfos []db.DRefInfo
+	if fdrInfos, err := m.GetCloudUserAccountsDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetCloudUserAccountsDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetCredsDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetCredsDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	return drInfos, nil
+}
+
+func (m *MetaType) GetCloudUserAccountsDRefInfo() ([]db.DRefInfo, error) {
+	refs := m.GetCloudUserAccounts()
+	if len(refs) == 0 {
+		return nil, nil
+	}
+	drInfos := make([]db.DRefInfo, 0, len(refs))
+	for i, ref := range refs {
+		if ref == nil {
+			return nil, fmt.Errorf("MetaType.cloud_user_accounts[%d] has a nil value", i)
+		}
+		// resolve kind to type if needed at DBObject.GetDRefInfo()
+		drInfos = append(drInfos, db.DRefInfo{
+			RefdType:   "cloud_user_account.Object",
+			RefdUID:    ref.Uid,
+			RefdTenant: ref.Tenant,
+			RefdNS:     ref.Namespace,
+			RefdName:   ref.Name,
+			DRField:    "cloud_user_accounts",
+			Ref:        ref,
+		})
+	}
+	return drInfos, nil
+}
+
+// GetCloudUserAccountsDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *MetaType) GetCloudUserAccountsDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "cloud_user_account.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: cloud_user_account")
+	}
+	for _, ref := range m.GetCloudUserAccounts() {
+		refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+		if err != nil {
+			return nil, errors.Wrap(err, "Getting referred entry")
+		}
+		if refdEnt != nil {
+			entries = append(entries, refdEnt)
+		}
+	}
+	return entries, nil
 }
 
 func (m *MetaType) GetCredsDRefInfo() ([]db.DRefInfo, error) {
@@ -1552,6 +1615,15 @@ func (v *ValidateMetaType) Validate(ctx context.Context, pm interface{}, opts ..
 	}
 	if m == nil {
 		return nil
+	}
+	if fv, exists := v.FldValidators["cloud_user_accounts"]; exists {
+		vOpts := append(opts, db.WithValidateField("cloud_user_accounts"))
+		for idx, item := range m.GetCloudUserAccounts() {
+			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
+			if err := fv(ctx, item, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 	if fv, exists := v.FldValidators["creds"]; exists {
 		vOpts := append(opts, db.WithValidateField("creds"))

@@ -1218,6 +1218,8 @@ func (m *CreateSpecType) GetReceiverDRefInfo() ([]db.DRefInfo, error) {
 			dri.DRField = "gcp_bucket_receiver." + dri.DRField
 		}
 		return drInfos, err
+	case *CreateSpecType_FileReceiver:
+		return nil, nil
 	default:
 		return nil, nil
 	}
@@ -1531,6 +1533,17 @@ func (v *ValidateCreateSpecType) Validate(ctx context.Context, pm interface{}, o
 				return err
 			}
 		}
+	case *CreateSpecType_FileReceiver:
+		if fv, exists := v.FldValidators["receiver.file_receiver"]; exists {
+			val := m.GetReceiver().(*CreateSpecType_FileReceiver).FileReceiver
+			vOpts := append(opts,
+				db.WithValidateField("receiver"),
+				db.WithValidateField("file_receiver"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 	return nil
 }
@@ -1576,6 +1589,7 @@ var DefaultCreateSpecTypeValidator = func() *ValidateCreateSpecType {
 	}
 	v.FldValidators["receiver"] = vFn
 	v.FldValidators["filter_choice.ns_list"] = NSListValidator().Validate
+	v.FldValidators["log_type.request_logs"] = RequestLogsConfigValidator().Validate
 	v.FldValidators["receiver.s3_receiver"] = S3ConfigValidator().Validate
 	v.FldValidators["receiver.http_receiver"] = HTTPConfigValidator().Validate
 	v.FldValidators["receiver.datadog_receiver"] = DatadogConfigValidator().Validate
@@ -2668,6 +2682,8 @@ func (m *GetSpecType) GetReceiverDRefInfo() ([]db.DRefInfo, error) {
 			dri.DRField = "gcp_bucket_receiver." + dri.DRField
 		}
 		return drInfos, err
+	case *GetSpecType_FileReceiver:
+		return nil, nil
 	default:
 		return nil, nil
 	}
@@ -2981,6 +2997,17 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 				return err
 			}
 		}
+	case *GetSpecType_FileReceiver:
+		if fv, exists := v.FldValidators["receiver.file_receiver"]; exists {
+			val := m.GetReceiver().(*GetSpecType_FileReceiver).FileReceiver
+			vOpts := append(opts,
+				db.WithValidateField("receiver"),
+				db.WithValidateField("file_receiver"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 	return nil
 }
@@ -3026,6 +3053,7 @@ var DefaultGetSpecTypeValidator = func() *ValidateGetSpecType {
 	}
 	v.FldValidators["receiver"] = vFn
 	v.FldValidators["filter_choice.ns_list"] = NSListValidator().Validate
+	v.FldValidators["log_type.request_logs"] = RequestLogsConfigValidator().Validate
 	v.FldValidators["receiver.s3_receiver"] = S3ConfigValidator().Validate
 	v.FldValidators["receiver.http_receiver"] = HTTPConfigValidator().Validate
 	v.FldValidators["receiver.datadog_receiver"] = DatadogConfigValidator().Validate
@@ -3207,6 +3235,8 @@ func (m *GlobalSpecType) GetReceiverDRefInfo() ([]db.DRefInfo, error) {
 			dri.DRField = "gcp_bucket_receiver." + dri.DRField
 		}
 		return drInfos, err
+	case *GlobalSpecType_FileReceiver:
+		return nil, nil
 	default:
 		return nil, nil
 	}
@@ -3565,6 +3595,17 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 				return err
 			}
 		}
+	case *GlobalSpecType_FileReceiver:
+		if fv, exists := v.FldValidators["receiver.file_receiver"]; exists {
+			val := m.GetReceiver().(*GlobalSpecType_FileReceiver).FileReceiver
+			vOpts := append(opts,
+				db.WithValidateField("receiver"),
+				db.WithValidateField("file_receiver"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 	if fv, exists := v.FldValidators["view_internal"]; exists {
 		vOpts := append(opts, db.WithValidateField("view_internal"))
@@ -3616,6 +3657,7 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 	}
 	v.FldValidators["receiver"] = vFn
 	v.FldValidators["filter_choice.ns_list"] = NSListValidator().Validate
+	v.FldValidators["log_type.request_logs"] = RequestLogsConfigValidator().Validate
 	v.FldValidators["receiver.s3_receiver"] = S3ConfigValidator().Validate
 	v.FldValidators["receiver.http_receiver"] = HTTPConfigValidator().Validate
 	v.FldValidators["receiver.datadog_receiver"] = DatadogConfigValidator().Validate
@@ -4898,6 +4940,8 @@ func (m *ReplaceSpecType) GetReceiverDRefInfo() ([]db.DRefInfo, error) {
 			dri.DRField = "gcp_bucket_receiver." + dri.DRField
 		}
 		return drInfos, err
+	case *ReplaceSpecType_FileReceiver:
+		return nil, nil
 	default:
 		return nil, nil
 	}
@@ -5211,6 +5255,17 @@ func (v *ValidateReplaceSpecType) Validate(ctx context.Context, pm interface{}, 
 				return err
 			}
 		}
+	case *ReplaceSpecType_FileReceiver:
+		if fv, exists := v.FldValidators["receiver.file_receiver"]; exists {
+			val := m.GetReceiver().(*ReplaceSpecType_FileReceiver).FileReceiver
+			vOpts := append(opts,
+				db.WithValidateField("receiver"),
+				db.WithValidateField("file_receiver"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 	return nil
 }
@@ -5256,6 +5311,7 @@ var DefaultReplaceSpecTypeValidator = func() *ValidateReplaceSpecType {
 	}
 	v.FldValidators["receiver"] = vFn
 	v.FldValidators["filter_choice.ns_list"] = NSListValidator().Validate
+	v.FldValidators["log_type.request_logs"] = RequestLogsConfigValidator().Validate
 	v.FldValidators["receiver.s3_receiver"] = S3ConfigValidator().Validate
 	v.FldValidators["receiver.http_receiver"] = HTTPConfigValidator().Validate
 	v.FldValidators["receiver.datadog_receiver"] = DatadogConfigValidator().Validate
@@ -5275,6 +5331,134 @@ var DefaultReplaceSpecTypeValidator = func() *ValidateReplaceSpecType {
 
 func ReplaceSpecTypeValidator() db.Validator {
 	return DefaultReplaceSpecTypeValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *RequestLogsConfig) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *RequestLogsConfig) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *RequestLogsConfig) DeepCopy() *RequestLogsConfig {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &RequestLogsConfig{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *RequestLogsConfig) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *RequestLogsConfig) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return RequestLogsConfigValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateRequestLogsConfig struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateRequestLogsConfig) SamplingChoiceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for sampling_choice")
+	}
+	return validatorFn, nil
+}
+
+func (v *ValidateRequestLogsConfig) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*RequestLogsConfig)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *RequestLogsConfig got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+
+	if fv, exists := v.FldValidators["sampling_choice"]; exists {
+		val := m.GetSamplingChoice()
+		vOpts := append(opts,
+			db.WithValidateField("sampling_choice"),
+		)
+		if err := fv(ctx, val, vOpts...); err != nil {
+			return err
+		}
+	}
+
+	switch m.GetSamplingChoice().(type) {
+	case *RequestLogsConfig_Sampled:
+		if fv, exists := v.FldValidators["sampling_choice.sampled"]; exists {
+			val := m.GetSamplingChoice().(*RequestLogsConfig_Sampled).Sampled
+			vOpts := append(opts,
+				db.WithValidateField("sampling_choice"),
+				db.WithValidateField("sampled"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *RequestLogsConfig_Unsampled:
+		if fv, exists := v.FldValidators["sampling_choice.unsampled"]; exists {
+			val := m.GetSamplingChoice().(*RequestLogsConfig_Unsampled).Unsampled
+			vOpts := append(opts,
+				db.WithValidateField("sampling_choice"),
+				db.WithValidateField("unsampled"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultRequestLogsConfigValidator = func() *ValidateRequestLogsConfig {
+	v := &ValidateRequestLogsConfig{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+	vrhSamplingChoice := v.SamplingChoiceValidationRuleHandler
+	rulesSamplingChoice := map[string]string{
+		"ves.io.schema.rules.message.required_oneof": "true",
+	}
+	vFn, err = vrhSamplingChoice(rulesSamplingChoice)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for RequestLogsConfig.sampling_choice: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["sampling_choice"] = vFn
+
+	return v
+}()
+
+func RequestLogsConfigValidator() db.Validator {
+	return DefaultRequestLogsConfigValidator
 }
 
 // augmented methods on protoc/std generated struct
@@ -6359,6 +6543,9 @@ func (r *CreateSpecType) SetReceiverToGlobalSpecType(o *GlobalSpecType) error {
 	case *CreateSpecType_ElasticReceiver:
 		o.Receiver = &GlobalSpecType_ElasticReceiver{ElasticReceiver: of.ElasticReceiver}
 
+	case *CreateSpecType_FileReceiver:
+		o.Receiver = &GlobalSpecType_FileReceiver{FileReceiver: of.FileReceiver}
+
 	case *CreateSpecType_GcpBucketReceiver:
 		o.Receiver = &GlobalSpecType_GcpBucketReceiver{GcpBucketReceiver: of.GcpBucketReceiver}
 
@@ -6408,6 +6595,9 @@ func (r *CreateSpecType) GetReceiverFromGlobalSpecType(o *GlobalSpecType) error 
 
 	case *GlobalSpecType_ElasticReceiver:
 		r.Receiver = &CreateSpecType_ElasticReceiver{ElasticReceiver: of.ElasticReceiver}
+
+	case *GlobalSpecType_FileReceiver:
+		r.Receiver = &CreateSpecType_FileReceiver{FileReceiver: of.FileReceiver}
 
 	case *GlobalSpecType_GcpBucketReceiver:
 		r.Receiver = &CreateSpecType_GcpBucketReceiver{GcpBucketReceiver: of.GcpBucketReceiver}
@@ -6591,6 +6781,9 @@ func (r *GetSpecType) SetReceiverToGlobalSpecType(o *GlobalSpecType) error {
 	case *GetSpecType_ElasticReceiver:
 		o.Receiver = &GlobalSpecType_ElasticReceiver{ElasticReceiver: of.ElasticReceiver}
 
+	case *GetSpecType_FileReceiver:
+		o.Receiver = &GlobalSpecType_FileReceiver{FileReceiver: of.FileReceiver}
+
 	case *GetSpecType_GcpBucketReceiver:
 		o.Receiver = &GlobalSpecType_GcpBucketReceiver{GcpBucketReceiver: of.GcpBucketReceiver}
 
@@ -6640,6 +6833,9 @@ func (r *GetSpecType) GetReceiverFromGlobalSpecType(o *GlobalSpecType) error {
 
 	case *GlobalSpecType_ElasticReceiver:
 		r.Receiver = &GetSpecType_ElasticReceiver{ElasticReceiver: of.ElasticReceiver}
+
+	case *GlobalSpecType_FileReceiver:
+		r.Receiver = &GetSpecType_FileReceiver{FileReceiver: of.FileReceiver}
 
 	case *GlobalSpecType_GcpBucketReceiver:
 		r.Receiver = &GetSpecType_GcpBucketReceiver{GcpBucketReceiver: of.GcpBucketReceiver}
@@ -6823,6 +7019,9 @@ func (r *ReplaceSpecType) SetReceiverToGlobalSpecType(o *GlobalSpecType) error {
 	case *ReplaceSpecType_ElasticReceiver:
 		o.Receiver = &GlobalSpecType_ElasticReceiver{ElasticReceiver: of.ElasticReceiver}
 
+	case *ReplaceSpecType_FileReceiver:
+		o.Receiver = &GlobalSpecType_FileReceiver{FileReceiver: of.FileReceiver}
+
 	case *ReplaceSpecType_GcpBucketReceiver:
 		o.Receiver = &GlobalSpecType_GcpBucketReceiver{GcpBucketReceiver: of.GcpBucketReceiver}
 
@@ -6872,6 +7071,9 @@ func (r *ReplaceSpecType) GetReceiverFromGlobalSpecType(o *GlobalSpecType) error
 
 	case *GlobalSpecType_ElasticReceiver:
 		r.Receiver = &ReplaceSpecType_ElasticReceiver{ElasticReceiver: of.ElasticReceiver}
+
+	case *GlobalSpecType_FileReceiver:
+		r.Receiver = &ReplaceSpecType_FileReceiver{FileReceiver: of.FileReceiver}
 
 	case *GlobalSpecType_GcpBucketReceiver:
 		r.Receiver = &ReplaceSpecType_GcpBucketReceiver{GcpBucketReceiver: of.GcpBucketReceiver}

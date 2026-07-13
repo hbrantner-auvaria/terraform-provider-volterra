@@ -40,6 +40,7 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.registration.SuggestValuesReq"] = SuggestValuesReqValidator()
 	vr["ves.io.schema.registration.SuggestValuesResp"] = SuggestValuesRespValidator()
 	vr["ves.io.schema.registration.SuggestedItem"] = SuggestedItemValidator()
+	vr["ves.io.schema.registration.BondConfiguration"] = BondConfigurationValidator()
 	vr["ves.io.schema.registration.CreateSpecType"] = CreateSpecTypeValidator()
 	vr["ves.io.schema.registration.GetSpecType"] = GetSpecTypeValidator()
 	vr["ves.io.schema.registration.GlobalSpecType"] = GlobalSpecTypeValidator()

@@ -299,13 +299,42 @@ func resourceVolterraDiscovery() *schema.Resource {
 											},
 										},
 									},
-									// FIX: removed "cbip_devices" as it is deprecated. ref - XC-12597
+
 									"cbip_mgmt_ips": {
 										Type: schema.TypeList,
 
 										Required: true,
 										Elem: &schema.Schema{
 											Type: schema.TypeString,
+										},
+									},
+
+									"ha_sync": {
+
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"manual_sync": {
+
+													Type:     schema.TypeBool,
+													Optional: true,
+												},
+
+												"not_applicable": {
+
+													Type:     schema.TypeBool,
+													Optional: true,
+												},
+
+												"xc_managed_sync": {
+
+													Type:     schema.TypeBool,
+													Optional: true,
+												},
+											},
 										},
 									},
 
@@ -2698,7 +2727,7 @@ func resourceVolterraDiscoveryCreate(d *schema.ResourceData, meta interface{}) e
 								}
 
 							}
-							// FIX: removed "cbip_devices" as it is deprecated. ref - XC-12597
+
 							if w, ok := cbipClustersMapStrToI["cbip_mgmt_ips"]; ok && !isIntfNil(w) {
 								ls := make([]string, len(w.([]interface{})))
 								for i, v := range w.([]interface{}) {
@@ -2710,6 +2739,58 @@ func resourceVolterraDiscoveryCreate(d *schema.ResourceData, meta interface{}) e
 									}
 								}
 								cbipClusters[i].CbipMgmtIps = ls
+							}
+
+							if v, ok := cbipClustersMapStrToI["ha_sync"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								haSync := &ves_io_schema_discovery.HASync{}
+								cbipClusters[i].HaSync = haSync
+								for _, set := range sl {
+									if set != nil {
+										haSyncMapStrToI := set.(map[string]interface{})
+
+										syncTypeTypeFound := false
+
+										if v, ok := haSyncMapStrToI["manual_sync"]; ok && !isIntfNil(v) && !syncTypeTypeFound {
+
+											syncTypeTypeFound = true
+
+											if v.(bool) {
+												syncTypeInt := &ves_io_schema_discovery.HASync_ManualSync{}
+												syncTypeInt.ManualSync = &ves_io_schema.Empty{}
+												haSync.SyncType = syncTypeInt
+											}
+
+										}
+
+										if v, ok := haSyncMapStrToI["not_applicable"]; ok && !isIntfNil(v) && !syncTypeTypeFound {
+
+											syncTypeTypeFound = true
+
+											if v.(bool) {
+												syncTypeInt := &ves_io_schema_discovery.HASync_NotApplicable{}
+												syncTypeInt.NotApplicable = &ves_io_schema.Empty{}
+												haSync.SyncType = syncTypeInt
+											}
+
+										}
+
+										if v, ok := haSyncMapStrToI["xc_managed_sync"]; ok && !isIntfNil(v) && !syncTypeTypeFound {
+
+											syncTypeTypeFound = true
+
+											if v.(bool) {
+												syncTypeInt := &ves_io_schema_discovery.HASync_XcManagedSync{}
+												syncTypeInt.XcManagedSync = &ves_io_schema.Empty{}
+												haSync.SyncType = syncTypeInt
+											}
+
+										}
+
+									}
+								}
+
 							}
 
 							if v, ok := cbipClustersMapStrToI["metadata"]; ok && !isIntfNil(v) {
@@ -4935,30 +5016,30 @@ func resourceVolterraDiscoveryCreate(d *schema.ResourceData, meta interface{}) e
 							if v, ok := cs["ref"]; ok && !isIntfNil(v) {
 
 								sl := v.([]interface{})
-								refIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
-								refOrSelectorInt.Site.Ref = refIntNew
+								refOrSelectorIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
+								refOrSelectorInt.Site.Ref = refOrSelectorIntNew
 								for i, ps := range sl {
 									if ps != nil {
 
 										rMapToStrVal := ps.(map[string]interface{})
-										refIntNew[i] = &ves_io_schema.ObjectRefType{}
+										refOrSelectorIntNew[i] = &ves_io_schema.ObjectRefType{}
 
-										refIntNew[i].Kind = "site"
+										refOrSelectorIntNew[i].Kind = "site"
 
 										if v, ok := rMapToStrVal["name"]; ok && !isIntfNil(v) {
-											refIntNew[i].Name = v.(string)
+											refOrSelectorIntNew[i].Name = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-											refIntNew[i].Namespace = v.(string)
+											refOrSelectorIntNew[i].Namespace = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-											refIntNew[i].Tenant = v.(string)
+											refOrSelectorIntNew[i].Tenant = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["uid"]; ok && !isIntfNil(v) {
-											refIntNew[i].Uid = v.(string)
+											refOrSelectorIntNew[i].Uid = v.(string)
 										}
 
 									}
@@ -5020,30 +5101,30 @@ func resourceVolterraDiscoveryCreate(d *schema.ResourceData, meta interface{}) e
 							if v, ok := cs["ref"]; ok && !isIntfNil(v) {
 
 								sl := v.([]interface{})
-								refIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
-								refOrSelectorInt.VirtualNetwork.Ref = refIntNew
+								refOrSelectorIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
+								refOrSelectorInt.VirtualNetwork.Ref = refOrSelectorIntNew
 								for i, ps := range sl {
 									if ps != nil {
 
 										rMapToStrVal := ps.(map[string]interface{})
-										refIntNew[i] = &ves_io_schema.ObjectRefType{}
+										refOrSelectorIntNew[i] = &ves_io_schema.ObjectRefType{}
 
-										refIntNew[i].Kind = "virtual_network"
+										refOrSelectorIntNew[i].Kind = "virtual_network"
 
 										if v, ok := rMapToStrVal["name"]; ok && !isIntfNil(v) {
-											refIntNew[i].Name = v.(string)
+											refOrSelectorIntNew[i].Name = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-											refIntNew[i].Namespace = v.(string)
+											refOrSelectorIntNew[i].Namespace = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-											refIntNew[i].Tenant = v.(string)
+											refOrSelectorIntNew[i].Tenant = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["uid"]; ok && !isIntfNil(v) {
-											refIntNew[i].Uid = v.(string)
+											refOrSelectorIntNew[i].Uid = v.(string)
 										}
 
 									}
@@ -5103,30 +5184,30 @@ func resourceVolterraDiscoveryCreate(d *schema.ResourceData, meta interface{}) e
 							if v, ok := cs["ref"]; ok && !isIntfNil(v) {
 
 								sl := v.([]interface{})
-								refIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
-								refOrSelectorInt.VirtualSite.Ref = refIntNew
+								refOrSelectorIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
+								refOrSelectorInt.VirtualSite.Ref = refOrSelectorIntNew
 								for i, ps := range sl {
 									if ps != nil {
 
 										rMapToStrVal := ps.(map[string]interface{})
-										refIntNew[i] = &ves_io_schema.ObjectRefType{}
+										refOrSelectorIntNew[i] = &ves_io_schema.ObjectRefType{}
 
-										refIntNew[i].Kind = "virtual_site"
+										refOrSelectorIntNew[i].Kind = "virtual_site"
 
 										if v, ok := rMapToStrVal["name"]; ok && !isIntfNil(v) {
-											refIntNew[i].Name = v.(string)
+											refOrSelectorIntNew[i].Name = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-											refIntNew[i].Namespace = v.(string)
+											refOrSelectorIntNew[i].Namespace = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-											refIntNew[i].Tenant = v.(string)
+											refOrSelectorIntNew[i].Tenant = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["uid"]; ok && !isIntfNil(v) {
-											refIntNew[i].Uid = v.(string)
+											refOrSelectorIntNew[i].Uid = v.(string)
 										}
 
 									}
@@ -5203,6 +5284,7 @@ func resourceVolterraDiscoveryRead(d *schema.ResourceData, meta interface{}) err
 		}
 		return fmt.Errorf("Error finding Volterra Discovery %q: %s", d.Id(), err)
 	}
+
 	return setDiscoveryFields(client, d, resp)
 }
 
@@ -5588,7 +5670,7 @@ func resourceVolterraDiscoveryUpdate(d *schema.ResourceData, meta interface{}) e
 								}
 
 							}
-							// FIX: removed "cbip_devices" as it is deprecated. ref - XC-12597
+
 							if w, ok := cbipClustersMapStrToI["cbip_mgmt_ips"]; ok && !isIntfNil(w) {
 								ls := make([]string, len(w.([]interface{})))
 								for i, v := range w.([]interface{}) {
@@ -5600,6 +5682,58 @@ func resourceVolterraDiscoveryUpdate(d *schema.ResourceData, meta interface{}) e
 									}
 								}
 								cbipClusters[i].CbipMgmtIps = ls
+							}
+
+							if v, ok := cbipClustersMapStrToI["ha_sync"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								haSync := &ves_io_schema_discovery.HASync{}
+								cbipClusters[i].HaSync = haSync
+								for _, set := range sl {
+									if set != nil {
+										haSyncMapStrToI := set.(map[string]interface{})
+
+										syncTypeTypeFound := false
+
+										if v, ok := haSyncMapStrToI["manual_sync"]; ok && !isIntfNil(v) && !syncTypeTypeFound {
+
+											syncTypeTypeFound = true
+
+											if v.(bool) {
+												syncTypeInt := &ves_io_schema_discovery.HASync_ManualSync{}
+												syncTypeInt.ManualSync = &ves_io_schema.Empty{}
+												haSync.SyncType = syncTypeInt
+											}
+
+										}
+
+										if v, ok := haSyncMapStrToI["not_applicable"]; ok && !isIntfNil(v) && !syncTypeTypeFound {
+
+											syncTypeTypeFound = true
+
+											if v.(bool) {
+												syncTypeInt := &ves_io_schema_discovery.HASync_NotApplicable{}
+												syncTypeInt.NotApplicable = &ves_io_schema.Empty{}
+												haSync.SyncType = syncTypeInt
+											}
+
+										}
+
+										if v, ok := haSyncMapStrToI["xc_managed_sync"]; ok && !isIntfNil(v) && !syncTypeTypeFound {
+
+											syncTypeTypeFound = true
+
+											if v.(bool) {
+												syncTypeInt := &ves_io_schema_discovery.HASync_XcManagedSync{}
+												syncTypeInt.XcManagedSync = &ves_io_schema.Empty{}
+												haSync.SyncType = syncTypeInt
+											}
+
+										}
+
+									}
+								}
+
 							}
 
 							if v, ok := cbipClustersMapStrToI["metadata"]; ok && !isIntfNil(v) {
@@ -7824,30 +7958,30 @@ func resourceVolterraDiscoveryUpdate(d *schema.ResourceData, meta interface{}) e
 							if v, ok := cs["ref"]; ok && !isIntfNil(v) {
 
 								sl := v.([]interface{})
-								refIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
-								refOrSelectorInt.Site.Ref = refIntNew
+								refOrSelectorIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
+								refOrSelectorInt.Site.Ref = refOrSelectorIntNew
 								for i, ps := range sl {
 									if ps != nil {
 
 										rMapToStrVal := ps.(map[string]interface{})
-										refIntNew[i] = &ves_io_schema.ObjectRefType{}
+										refOrSelectorIntNew[i] = &ves_io_schema.ObjectRefType{}
 
-										refIntNew[i].Kind = "site"
+										refOrSelectorIntNew[i].Kind = "site"
 
 										if v, ok := rMapToStrVal["name"]; ok && !isIntfNil(v) {
-											refIntNew[i].Name = v.(string)
+											refOrSelectorIntNew[i].Name = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-											refIntNew[i].Namespace = v.(string)
+											refOrSelectorIntNew[i].Namespace = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-											refIntNew[i].Tenant = v.(string)
+											refOrSelectorIntNew[i].Tenant = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["uid"]; ok && !isIntfNil(v) {
-											refIntNew[i].Uid = v.(string)
+											refOrSelectorIntNew[i].Uid = v.(string)
 										}
 
 									}
@@ -7909,30 +8043,30 @@ func resourceVolterraDiscoveryUpdate(d *schema.ResourceData, meta interface{}) e
 							if v, ok := cs["ref"]; ok && !isIntfNil(v) {
 
 								sl := v.([]interface{})
-								refIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
-								refOrSelectorInt.VirtualNetwork.Ref = refIntNew
+								refOrSelectorIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
+								refOrSelectorInt.VirtualNetwork.Ref = refOrSelectorIntNew
 								for i, ps := range sl {
 									if ps != nil {
 
 										rMapToStrVal := ps.(map[string]interface{})
-										refIntNew[i] = &ves_io_schema.ObjectRefType{}
+										refOrSelectorIntNew[i] = &ves_io_schema.ObjectRefType{}
 
-										refIntNew[i].Kind = "virtual_network"
+										refOrSelectorIntNew[i].Kind = "virtual_network"
 
 										if v, ok := rMapToStrVal["name"]; ok && !isIntfNil(v) {
-											refIntNew[i].Name = v.(string)
+											refOrSelectorIntNew[i].Name = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-											refIntNew[i].Namespace = v.(string)
+											refOrSelectorIntNew[i].Namespace = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-											refIntNew[i].Tenant = v.(string)
+											refOrSelectorIntNew[i].Tenant = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["uid"]; ok && !isIntfNil(v) {
-											refIntNew[i].Uid = v.(string)
+											refOrSelectorIntNew[i].Uid = v.(string)
 										}
 
 									}
@@ -7992,30 +8126,30 @@ func resourceVolterraDiscoveryUpdate(d *schema.ResourceData, meta interface{}) e
 							if v, ok := cs["ref"]; ok && !isIntfNil(v) {
 
 								sl := v.([]interface{})
-								refIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
-								refOrSelectorInt.VirtualSite.Ref = refIntNew
+								refOrSelectorIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
+								refOrSelectorInt.VirtualSite.Ref = refOrSelectorIntNew
 								for i, ps := range sl {
 									if ps != nil {
 
 										rMapToStrVal := ps.(map[string]interface{})
-										refIntNew[i] = &ves_io_schema.ObjectRefType{}
+										refOrSelectorIntNew[i] = &ves_io_schema.ObjectRefType{}
 
-										refIntNew[i].Kind = "virtual_site"
+										refOrSelectorIntNew[i].Kind = "virtual_site"
 
 										if v, ok := rMapToStrVal["name"]; ok && !isIntfNil(v) {
-											refIntNew[i].Name = v.(string)
+											refOrSelectorIntNew[i].Name = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-											refIntNew[i].Namespace = v.(string)
+											refOrSelectorIntNew[i].Namespace = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-											refIntNew[i].Tenant = v.(string)
+											refOrSelectorIntNew[i].Tenant = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["uid"]; ok && !isIntfNil(v) {
-											refIntNew[i].Uid = v.(string)
+											refOrSelectorIntNew[i].Uid = v.(string)
 										}
 
 									}
@@ -8096,5 +8230,11 @@ func resourceVolterraDiscoveryDelete(d *schema.ResourceData, meta interface{}) e
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_discovery.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_discovery.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting Discovery: %w", err)
+	}
+	return nil
+
 }

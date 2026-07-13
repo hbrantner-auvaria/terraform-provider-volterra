@@ -17,10 +17,10 @@ Example Usage
 
 ```hcl
 resource "volterra_irule" "example" {
-  name        = "acmecorp-web"
-  namespace   = "staging"
-  description = "description"
-  irule       = ["when HTTP_REQUEST {if { !([HTTP::host] contains \".example.f5.com\") } {reject}}"]
+  name             = "acmecorp-web"
+  namespace        = "staging"
+  spec_description = "description"
+  irule            = "when HTTP_REQUEST {if { !([HTTP::host] contains \".example.f5.com\") } {reject}}"
 }
 ```
 

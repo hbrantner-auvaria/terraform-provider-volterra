@@ -1470,6 +1470,7 @@ func resourceVolterraAppFirewallRead(d *schema.ResourceData, meta interface{}) e
 		}
 		return fmt.Errorf("Error finding Volterra AppFirewall %q: %s", d.Id(), err)
 	}
+
 	return setAppFirewallFields(client, d, resp)
 }
 
@@ -2377,5 +2378,11 @@ func resourceVolterraAppFirewallDelete(d *schema.ResourceData, meta interface{})
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_app_firewall.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_app_firewall.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting AppFirewall: %w", err)
+	}
+	return nil
+
 }

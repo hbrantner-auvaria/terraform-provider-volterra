@@ -23,28 +23,22 @@ resource "volterra_service_policy_rule" "example" {
 
   // One of the arguments from this list "any_asn asn_list asn_matcher" must be set
 
-  any_asn          = true
+  asn_list {
+    as_numbers = ["[713, 7932, 847325, 4683, 15269, 1000001]"]
+  }
   challenge_action = ["challenge_action"]
 
   // One of the arguments from this list "any_client client_name client_name_matcher client_selector ip_threat_category_list" must be set
 
-  client_selector {
-    expressions = ["region in (us-west1, us-west2),tier in (staging)"]
-  }
+  any_client = true
 
   // One of the arguments from this list "any_ip ip_matcher ip_prefix_list" must be set
 
-  ip_prefix_list {
-    invert_match = true
-
-    ip_prefixes = "192.168.20.0/24"
-
-    ipv6_prefixes = "fd48:fa09:d9d4::/48"
-  }
+  any_ip = true
   waf_action {
     // One of the arguments from this list "app_firewall_detection_control data_guard_control jwt_claims_validation jwt_validation none waf_in_monitoring_mode waf_skip_processing" must be set
 
-    jwt_validation = true
+    none = true
   }
 }
 ```
@@ -86,7 +80,7 @@ Argument Reference
 
 `bot_action` - (Optional) Bot action to be enforced if the input request matches the rule.. See [Bot Action ](#bot-action) below for details.
 
-`challenge_action` - (Required) Select challenge action, enable javascript/captcha challenge or disable challenge (`String`).(Deprecated)
+`challenge_action` - (Optinal) Select challenge action, enable javascript/captcha challenge or disable challenge (`String`).(Deprecated)
 
 ###### One of the arguments from this list "any_client, client_name, client_name_matcher, client_selector, ip_threat_category_list" must be set
 

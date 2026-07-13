@@ -192,6 +192,7 @@ func resourceVolterraPolicerRead(d *schema.ResourceData, meta interface{}) error
 		}
 		return fmt.Errorf("Error finding Volterra Policer %q: %s", d.Id(), err)
 	}
+
 	return setPolicerFields(client, d, resp)
 }
 
@@ -321,5 +322,11 @@ func resourceVolterraPolicerDelete(d *schema.ResourceData, meta interface{}) err
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_policer.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_policer.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting Policer: %w", err)
+	}
+	return nil
+
 }

@@ -511,11 +511,6 @@ func resourceVolterraOriginPool() *schema.Resource {
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
 
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
-
 															"name": {
 																Type:     schema.TypeString,
 																Optional: true,
@@ -539,11 +534,6 @@ func resourceVolterraOriginPool() *schema.Resource {
 													Optional: true,
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
-
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
 
 															"name": {
 																Type:     schema.TypeString,
@@ -722,11 +712,6 @@ func resourceVolterraOriginPool() *schema.Resource {
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
 
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
-
 															"name": {
 																Type:     schema.TypeString,
 																Optional: true,
@@ -750,11 +735,6 @@ func resourceVolterraOriginPool() *schema.Resource {
 													Optional: true,
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
-
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
 
 															"name": {
 																Type:     schema.TypeString,
@@ -896,11 +876,6 @@ func resourceVolterraOriginPool() *schema.Resource {
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
 
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
-
 															"name": {
 																Type:     schema.TypeString,
 																Optional: true,
@@ -924,11 +899,6 @@ func resourceVolterraOriginPool() *schema.Resource {
 													Optional: true,
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
-
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
 
 															"name": {
 																Type:     schema.TypeString,
@@ -1068,11 +1038,6 @@ func resourceVolterraOriginPool() *schema.Resource {
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
 
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
-
 															"name": {
 																Type:     schema.TypeString,
 																Optional: true,
@@ -1096,11 +1061,6 @@ func resourceVolterraOriginPool() *schema.Resource {
 													Optional: true,
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
-
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
 
 															"name": {
 																Type:     schema.TypeString,
@@ -4449,6 +4409,7 @@ func resourceVolterraOriginPoolRead(d *schema.ResourceData, meta interface{}) er
 		}
 		return fmt.Errorf("Error finding Volterra OriginPool %q: %s", d.Id(), err)
 	}
+
 	return setOriginPoolFields(client, d, resp)
 }
 
@@ -7134,5 +7095,11 @@ func resourceVolterraOriginPoolDelete(d *schema.ResourceData, meta interface{}) 
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_views_origin_pool.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_views_origin_pool.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting OriginPool: %w", err)
+	}
+	return nil
+
 }

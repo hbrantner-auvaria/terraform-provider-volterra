@@ -45,6 +45,8 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.discovered_service.TCPLBRequest"] = TCPLBRequestValidator()
 	vr["ves.io.schema.discovered_service.WhereSite"] = WhereSiteValidator()
 	vr["ves.io.schema.discovered_service.WhereVirtualSite"] = WhereVirtualSiteValidator()
+	vr["ves.io.schema.discovered_service.AwsPortInfo"] = AwsPortInfoValidator()
+	vr["ves.io.schema.discovered_service.AwsService"] = AwsServiceValidator()
 	vr["ves.io.schema.discovered_service.ConsulService"] = ConsulServiceValidator()
 	vr["ves.io.schema.discovered_service.CreateSpecType"] = CreateSpecTypeValidator()
 	vr["ves.io.schema.discovered_service.GetSpecType"] = GetSpecTypeValidator()
@@ -94,6 +96,10 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		{
 			FieldPath:     "ves.io.schema.discovered_service.CreateHTTPLoadBalancerRequest.http_lb_request.advertise_choice.advertise_custom.advertise_where.choice.virtual_site_segment.ipv6",
 			AddonServices: []string{"f5xc-ipv6-standard"},
+		},
+		{
+			FieldPath:     "ves.io.schema.discovered_service.CreateHTTPLoadBalancerRequest.http_lb_request.caching.default_caching_enable",
+			AddonServices: []string{"f5xc-content-delivery-network-advanced"},
 		},
 	}
 	mdr.RPCHiddenInternalFieldsRegistry["ves.io.schema.discovered_service.CustomAPI.CreateHTTPLoadBalancer"] = []string{

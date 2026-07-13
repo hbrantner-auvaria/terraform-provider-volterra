@@ -34,6 +34,14 @@ type CustomAPIGrpcClient struct {
 	rpcFns map[string]func(context.Context, string, ...grpc.CallOption) (proto.Message, error)
 }
 
+func (c *CustomAPIGrpcClient) doRPCGetArtifactRegistryToken(ctx context.Context, yamlReq string, opts ...grpc.CallOption) (proto.Message, error) {
+	req := &GetArtifactRegistryTokenReq{}
+	if err := codec.FromYAML(yamlReq, req); err != nil {
+		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.shape.bot_defense.GetArtifactRegistryTokenReq", yamlReq)
+	}
+	rsp, err := c.grpcClient.GetArtifactRegistryToken(ctx, req, opts...)
+	return rsp, err
+}
 func (c *CustomAPIGrpcClient) doRPCSuggestValues(ctx context.Context, yamlReq string, opts ...grpc.CallOption) (proto.Message, error) {
 	req := &SuggestValuesReq{}
 	if err := codec.FromYAML(yamlReq, req); err != nil {
@@ -73,6 +81,7 @@ func NewCustomAPIGrpcClient(cc *grpc.ClientConn) server.CustomClient {
 		grpcClient: NewCustomAPIClient(cc),
 	}
 	rpcFns := make(map[string]func(context.Context, string, ...grpc.CallOption) (proto.Message, error))
+	rpcFns["GetArtifactRegistryToken"] = ccl.doRPCGetArtifactRegistryToken
 	rpcFns["SuggestValues"] = ccl.doRPCSuggestValues
 	ccl.rpcFns = rpcFns
 	return ccl
@@ -86,6 +95,87 @@ type CustomAPIRestClient struct {
 	rpcFns map[string]func(context.Context, *server.CustomCallOpts) (proto.Message, error)
 }
 
+func (c *CustomAPIRestClient) doRPCGetArtifactRegistryToken(ctx context.Context, callOpts *server.CustomCallOpts) (proto.Message, error) {
+	if callOpts.URI == "" {
+		return nil, fmt.Errorf("Error, URI should be specified, got empty")
+	}
+	url := fmt.Sprintf("%s%s", c.baseURL, callOpts.URI)
+
+	yamlReq := callOpts.YAMLReq
+	req := &GetArtifactRegistryTokenReq{}
+	if err := codec.FromYAML(yamlReq, req); err != nil {
+		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.shape.bot_defense.GetArtifactRegistryTokenReq: %s", yamlReq, err)
+	}
+
+	var hReq *http.Request
+	hm := strings.ToLower(callOpts.HTTPMethod)
+	switch hm {
+	case "post", "put":
+		jsn, err := codec.ToJSON(req, codec.ToWithUseProtoFieldName())
+		if err != nil {
+			return nil, errors.Wrap(err, "Custom RestClient converting YAML to JSON")
+		}
+		var op string
+		if hm == "post" {
+			op = http.MethodPost
+		} else {
+			op = http.MethodPut
+		}
+		newReq, err := http.NewRequest(op, url, bytes.NewBuffer([]byte(jsn)))
+		if err != nil {
+			return nil, errors.Wrapf(err, "Creating new HTTP %s request for custom API", op)
+		}
+		hReq = newReq
+	case "get":
+		newReq, err := http.NewRequest(http.MethodGet, url, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "Creating new HTTP GET request for custom API")
+		}
+		hReq = newReq
+		q := hReq.URL.Query()
+		_ = q
+		q.Add("namespace", fmt.Sprintf("%v", req.Namespace))
+
+		hReq.URL.RawQuery += q.Encode()
+	case "delete":
+		newReq, err := http.NewRequest(http.MethodDelete, url, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "Creating new HTTP DELETE request for custom API")
+		}
+		hReq = newReq
+	default:
+		return nil, fmt.Errorf("Error, invalid/empty HTTPMethod(%s) specified, should be POST|DELETE|GET", callOpts.HTTPMethod)
+	}
+	hReq = hReq.WithContext(ctx)
+	hReq.Header.Set("Content-Type", "application/json")
+	client.AddHdrsToReq(callOpts.Headers, hReq)
+
+	rsp, err := c.client.Do(hReq)
+	if err != nil {
+		return nil, errors.Wrap(err, "Custom API RestClient")
+	}
+	defer rsp.Body.Close()
+
+	// checking whether the status code is a successful status code (2xx series)
+	if rsp.StatusCode < 200 || rsp.StatusCode > 299 {
+		body, err := io.ReadAll(rsp.Body)
+		return nil, fmt.Errorf("Unsuccessful custom API %s on %s, status code %d, body %s, err %s", callOpts.HTTPMethod, callOpts.URI, rsp.StatusCode, body, err)
+	}
+
+	body, err := io.ReadAll(rsp.Body)
+	if err != nil {
+		return nil, errors.Wrap(err, "Custom API RestClient read body")
+	}
+	pbRsp := &GetArtifactRegistryTokenResp{}
+	if err := codec.FromJSON(string(body), pbRsp); err != nil {
+		return nil, errors.Wrapf(err, "JSON Response %s is not of type *ves.io.schema.shape.bot_defense.GetArtifactRegistryTokenResp", body)
+	}
+	if callOpts.OutCallResponse != nil {
+		callOpts.OutCallResponse.ProtoMsg = pbRsp
+		callOpts.OutCallResponse.JSON = string(body)
+	}
+	return pbRsp, nil
+}
 func (c *CustomAPIRestClient) doRPCSuggestValues(ctx context.Context, callOpts *server.CustomCallOpts) (proto.Message, error) {
 	if callOpts.URI == "" {
 		return nil, fmt.Errorf("Error, URI should be specified, got empty")
@@ -195,6 +285,7 @@ func NewCustomAPIRestClient(baseURL string, hc http.Client) server.CustomClient 
 	}
 
 	rpcFns := make(map[string]func(context.Context, *server.CustomCallOpts) (proto.Message, error))
+	rpcFns["GetArtifactRegistryToken"] = ccl.doRPCGetArtifactRegistryToken
 	rpcFns["SuggestValues"] = ccl.doRPCSuggestValues
 	ccl.rpcFns = rpcFns
 	return ccl
@@ -207,6 +298,10 @@ type customAPIInprocClient struct {
 	CustomAPIServer
 }
 
+func (c *customAPIInprocClient) GetArtifactRegistryToken(ctx context.Context, in *GetArtifactRegistryTokenReq, opts ...grpc.CallOption) (*GetArtifactRegistryTokenResp, error) {
+	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.shape.bot_defense.CustomAPI.GetArtifactRegistryToken")
+	return c.CustomAPIServer.GetArtifactRegistryToken(ctx, in)
+}
 func (c *customAPIInprocClient) SuggestValues(ctx context.Context, in *SuggestValuesReq, opts ...grpc.CallOption) (*SuggestValuesResp, error) {
 	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.shape.bot_defense.CustomAPI.SuggestValues")
 	return c.CustomAPIServer.SuggestValues(ctx, in)
@@ -233,6 +328,54 @@ type customAPISrv struct {
 	svc svcfw.Service
 }
 
+func (s *customAPISrv) GetArtifactRegistryToken(ctx context.Context, in *GetArtifactRegistryTokenReq) (*GetArtifactRegistryTokenResp, error) {
+	ah := s.svc.GetAPIHandler("ves.io.schema.shape.bot_defense.CustomAPI")
+	cah, ok := ah.(CustomAPIServer)
+	if !ok {
+		return nil, fmt.Errorf("ah %v is not of type *CustomAPIServer", ah)
+	}
+
+	var (
+		rsp *GetArtifactRegistryTokenResp
+		err error
+	)
+
+	bodyFields := svcfw.GenAuditReqBodyFields(ctx, s.svc, "ves.io.schema.shape.bot_defense.GetArtifactRegistryTokenReq", in)
+	defer func() {
+		if len(bodyFields) > 0 {
+			server.ExtendAPIAudit(ctx, svcfw.PublicAPIBodyLog.Uid, bodyFields)
+		}
+		userMsg := "The 'CustomAPI.GetArtifactRegistryToken' operation on 'bot_defense'"
+		if err == nil {
+			userMsg += " was successfully performed."
+		} else {
+			userMsg += " failed to be performed."
+		}
+		server.AddUserMsgToAPIAudit(ctx, userMsg)
+	}()
+
+	if err := svcfw.FillOneofDefaultChoice(ctx, s.svc, in); err != nil {
+		err = server.MaybePublicRestError(ctx, errors.Wrapf(err, "Filling oneof default choice"))
+		return nil, server.GRPCStatusFromError(err).Err()
+	}
+
+	if s.svc.Config().EnableAPIValidation {
+		if rvFn := s.svc.GetRPCValidator("ves.io.schema.shape.bot_defense.CustomAPI.GetArtifactRegistryToken"); rvFn != nil {
+			if verr := rvFn(ctx, in); verr != nil {
+				err = server.MaybePublicRestError(ctx, errors.Wrapf(verr, "Validating Request"))
+				return nil, server.GRPCStatusFromError(err).Err()
+			}
+		}
+	}
+
+	rsp, err = cah.GetArtifactRegistryToken(ctx, in)
+	if err != nil {
+		return rsp, server.GRPCStatusFromError(server.MaybePublicRestError(ctx, err)).Err()
+	}
+	bodyFields = append(bodyFields, svcfw.GenAuditRspBodyFields(ctx, s.svc, "ves.io.schema.shape.bot_defense.GetArtifactRegistryTokenResp", rsp)...)
+
+	return rsp, nil
+}
 func (s *customAPISrv) SuggestValues(ctx context.Context, in *SuggestValuesReq) (*SuggestValuesResp, error) {
 	ah := s.svc.GetAPIHandler("ves.io.schema.shape.bot_defense.CustomAPI")
 	cah, ok := ah.(CustomAPIServer)
@@ -305,6 +448,90 @@ var CustomAPISwaggerJSON string = `{
     ],
     "tags": [],
     "paths": {
+        "/public/namespaces/{namespace}/artifact-registry-token": {
+            "get": {
+                "summary": "Get Artifact Registry Token",
+                "description": "Retrieves an access token for the F5 Artifact Registry (FAR) for only Kubernetes bot infrastructure use case.\nThis token can be used to authenticate with FAR when pulling related images for Kubernetes bot infrastructure.",
+                "operationId": "ves.io.schema.shape.bot_defense.CustomAPI.GetArtifactRegistryToken",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/bot_defenseGetArtifactRegistryTokenResp"
+                        }
+                    },
+                    "401": {
+                        "description": "Returned when operation is not authorized",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "Returned when there is no permission to access resource",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Returned when resource is not found",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Returned when operation on resource is conflicting with current value",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "429": {
+                        "description": "Returned when operation has been rejected as it is happening too frequently",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Returned when server encountered an error in processing API",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "503": {
+                        "description": "Returned when service is unavailable temporarily",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "504": {
+                        "description": "Returned when server timed out processing request",
+                        "schema": {
+                            "format": "string"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "namespace",
+                        "description": "namespace\n\nx-required\nNamespace is used to scope the query",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "x-displayname": "Namespace"
+                    }
+                ],
+                "tags": [
+                    "CustomAPI"
+                ],
+                "externalDocs": {
+                    "description": "Examples of this operation",
+                    "url": "https://docs.cloud.f5.com/docs-v2/platform/reference/api-ref/ves-io-schema-shape-bot_defense-customapi-getartifactregistrytoken"
+                },
+                "x-ves-proto-rpc": "ves.io.schema.shape.bot_defense.CustomAPI.GetArtifactRegistryToken"
+            },
+            "x-displayname": "Bot Defense Custom API",
+            "x-ves-proto-service": "ves.io.schema.shape.bot_defense.CustomAPI",
+            "x-ves-proto-service-type": "CUSTOM_PUBLIC"
+        },
         "/public/namespaces/{namespace}/suggest-values": {
             "post": {
                 "summary": "Suggest Values",
@@ -393,12 +620,34 @@ var CustomAPISwaggerJSON string = `{
                 },
                 "x-ves-proto-rpc": "ves.io.schema.shape.bot_defense.CustomAPI.SuggestValues"
             },
-            "x-displayname": "Suggest Values",
+            "x-displayname": "Bot Defense Custom API",
             "x-ves-proto-service": "ves.io.schema.shape.bot_defense.CustomAPI",
             "x-ves-proto-service-type": "CUSTOM_PUBLIC"
         }
     },
     "definitions": {
+        "bot_defenseGetArtifactRegistryTokenResp": {
+            "type": "object",
+            "description": "Response body of GetArtifactRegistryToken request",
+            "title": "GetArtifactRegistryTokenResp",
+            "x-displayname": "Response for GetArtifactRegistryToken",
+            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.GetArtifactRegistryTokenResp",
+            "properties": {
+                "expiration_time": {
+                    "type": "string",
+                    "description": " Expiration time of the token",
+                    "title": "expiration_time",
+                    "format": "date-time",
+                    "x-displayname": "Expiration Time"
+                },
+                "token": {
+                    "type": "string",
+                    "description": "  Access token for the F5 Artifact Registry (FAR)\n This token can be used to authenticate with FAR when pulling related images for Kubernetes bot infrastructure.",
+                    "title": "token",
+                    "x-displayname": "Token"
+                }
+            }
+        },
         "bot_defenseSuggestValuesReq": {
             "type": "object",
             "description": "Request body of SuggestValues request",

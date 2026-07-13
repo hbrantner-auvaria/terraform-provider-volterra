@@ -22,79 +22,40 @@ resource "volterra_global_log_receiver" "example" {
 
   // One of the arguments from this list "ns_all ns_current ns_list ns_system" must be set
 
-  ns_system = true
+  ns_current = true
 
   // One of the arguments from this list "audit_logs dns_logs request_logs security_events" must be set
 
-  security_events = true
+  dns_logs = true
 
-  // One of the arguments from this list "aws_cloud_watch_receiver azure_event_hubs_receiver azure_receiver datadog_receiver elastic_receiver gcp_bucket_receiver http_receiver kafka_receiver new_relic_receiver qradar_receiver s3_receiver splunk_receiver sumo_logic_receiver" must be set
+  // One of the arguments from this list "aws_cloud_watch_receiver azure_event_hubs_receiver azure_receiver datadog_receiver elastic_receiver file_receiver gcp_bucket_receiver http_receiver kafka_receiver new_relic_receiver qradar_receiver s3_receiver splunk_receiver sumo_logic_receiver" must be set
 
-  http_receiver {
-    // One of the arguments from this list "auth_basic auth_none auth_token" must be set
+  new_relic_receiver {
+    api_key {
+      blindfold_secret_info_internal {
+        decryption_provider = "value"
 
-    auth_basic {
-      password {
-        blindfold_secret_info_internal {
-          decryption_provider = "value"
+        location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
 
-          location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
-
-          store_provider = "value"
-        }
-
-        secret_encoding_type = "secret_encoding_type"
-
-        // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
-
-        wingman_secret_info {
-          name = "ChargeBack-API-Key"
-        }
+        store_provider = "value"
       }
 
-      user_name = "Joe"
+      secret_encoding_type = "secret_encoding_type"
+
+      // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
+
+      blindfold_secret_info {
+        decryption_provider = "value"
+
+        location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
+
+        store_provider = "value"
+      }
     }
 
-    batch {
-      // One of the arguments from this list "max_bytes max_bytes_disabled" can be set
+    // One of the arguments from this list "eu us" must be set
 
-      max_bytes_disabled = true
-
-      // One of the arguments from this list "max_events max_events_disabled" can be set
-
-      max_events_disabled = true
-
-      // One of the arguments from this list "timeout_seconds timeout_seconds_default" can be set
-
-      timeout_seconds_default = true
-    }
-
-    compression {
-      // One of the arguments from this list "compression_default compression_gzip compression_none" must be set
-
-      compression_none = true
-    }
-
-    // One of the arguments from this list "no_tls use_tls" must be set
-
-    use_tls {
-      // One of the arguments from this list "no_ca trusted_ca_url" must be set
-
-      no_ca = true
-
-      // One of the arguments from this list "mtls_disabled mtls_enable" must be set
-
-      mtls_disabled = true
-
-      // One of the arguments from this list "disable_verify_certificate enable_verify_certificate" can be set
-
-      enable_verify_certificate = true
-
-      // One of the arguments from this list "disable_verify_hostname enable_verify_hostname" can be set
-
-      enable_verify_hostname = true
-    }
-    uri = "http://example.com:9000/logs"
+    us = true
   }
 }
 ```
@@ -134,11 +95,11 @@ Argument Reference
 
 `dns_logs` - (Optional) Send DNS Requests Logs (corresponding to DNS requests received) (`Bool`).
 
-`request_logs` - (Optional) Send Request Logs (corresponding to Load Balancer access logs) (`Bool`).
+`request_logs` - (Optional) Allows selection between sampled or unsampled (full) logs.. See [Log Type Request Logs ](#log-type-request-logs) below for details.
 
 `security_events` - (Optional) Send Security Events (corresponding to e.g. WAF blocked events or malicious requests) (`Bool`).
 
-###### One of the arguments from this list "aws_cloud_watch_receiver, azure_event_hubs_receiver, azure_receiver, datadog_receiver, elastic_receiver, gcp_bucket_receiver, http_receiver, kafka_receiver, new_relic_receiver, qradar_receiver, s3_receiver, splunk_receiver, sumo_logic_receiver" must be set
+###### One of the arguments from this list "aws_cloud_watch_receiver, azure_event_hubs_receiver, azure_receiver, datadog_receiver, elastic_receiver, file_receiver, gcp_bucket_receiver, http_receiver, kafka_receiver, new_relic_receiver, qradar_receiver, s3_receiver, splunk_receiver, sumo_logic_receiver" must be set
 
 `aws_cloud_watch_receiver` - (Optional) Send logs to AWS Cloudwatch. See [Receiver Aws Cloud Watch Receiver ](#receiver-aws-cloud-watch-receiver) below for details.
 
@@ -149,6 +110,8 @@ Argument Reference
 `datadog_receiver` - (Optional) Send logs to a Datadog service. See [Receiver Datadog Receiver ](#receiver-datadog-receiver) below for details.
 
 `elastic_receiver` - (Optional) Send logs to an Elasticsearch endpoint. See [Receiver Elastic Receiver ](#receiver-elastic-receiver) below for details.(Deprecated)
+
+`file_receiver` - (Optional) DEPRECATED: Use request_logs.unsampled instead (`Bool`).(Deprecated)
 
 `gcp_bucket_receiver` - (Optional) Send logs to a GCP Bucket. See [Receiver Gcp Bucket Receiver ](#receiver-gcp-bucket-receiver) below for details.
 
@@ -626,6 +589,16 @@ Blindfold Secret Internal is used for the putting re-encrypted blindfold secret.
 
 `store_provider` - (Optional) This field needs to be provided only if the url scheme is not string:/// (`String`).
 
+### Log Type Request Logs
+
+Allows selection between sampled or unsampled (full) logs..
+
+###### One of the arguments from this list "sampled, unsampled" must be set
+
+`sampled` - (Optional) Sampled request logs delivered via Kafka pipeline (default) (`Bool`).
+
+`unsampled` - (Optional) Note: Unsampled logs require additional infrastructure and may have higher latency. (`Bool`).
+
 ### Mtls Choice Mtls Disabled
 
 mTLS is disabled.
@@ -983,6 +956,14 @@ Filename Options allow customization of filename and folder paths for the bucket
 `log_type_folder` - (Optional) depending on LogType selection, this will be one of: access, security, audit or dns (`Bool`).
 
 `no_folder` - (Optional) Do not use a folder path (`Bool`).
+
+### Sampling Choice Sampled
+
+Sampled request logs delivered via Kafka pipeline (default).
+
+### Sampling Choice Unsampled
+
+Note: Unsampled logs require additional infrastructure and may have higher latency..
 
 ### Secret Info Oneof Blindfold Secret Info
 

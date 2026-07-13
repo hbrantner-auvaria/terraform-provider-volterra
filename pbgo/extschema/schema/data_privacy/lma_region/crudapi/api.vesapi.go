@@ -1791,7 +1791,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2015,7 +2015,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2269,7 +2269,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2799,12 +2799,12 @@ var APISwaggerJSON string = `{
                 }
             }
         },
-        "lma_regionAWSParams": {
+        "lma_regionAWSCredentials": {
             "type": "object",
-            "description": "AWS parameters",
-            "title": "AWS Params",
-            "x-displayname": "AWS Params",
-            "x-ves-proto-message": "ves.io.schema.data_privacy.lma_region.AWSParams",
+            "description": "AWS Credentials",
+            "title": "AWS Credentials",
+            "x-displayname": "AWS Credentials",
+            "x-ves-proto-message": "ves.io.schema.data_privacy.lma_region.AWSCredentials",
             "properties": {
                 "access_key_id": {
                     "type": "string",
@@ -2919,11 +2919,11 @@ var APISwaggerJSON string = `{
             "x-displayname": "Specification",
             "x-ves-proto-message": "ves.io.schema.data_privacy.lma_region.GlobalSpecType",
             "properties": {
-                "aws_params": {
-                    "description": " AWS Params",
-                    "title": "AWS params",
-                    "$ref": "#/definitions/lma_regionAWSParams",
-                    "x-displayname": "AWS params"
+                "access_logs_s3_params": {
+                    "description": " AWS S3 params for access logs",
+                    "title": "AWS S3 params for access logs",
+                    "$ref": "#/definitions/lma_regionS3Params",
+                    "x-displayname": "AWS S3 params for access logs"
                 },
                 "clickhouse_params": {
                     "description": " Clickhouse Params\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
@@ -2934,6 +2934,13 @@ var APISwaggerJSON string = `{
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true"
                     }
+                },
+                "country": {
+                    "type": "string",
+                    "description": " Country associated with this LMA region\n\nExample: - \"US\"-",
+                    "title": "Country",
+                    "x-displayname": "Country",
+                    "x-ves-example": "US"
                 },
                 "elastic_params": {
                     "description": " Elastic Params\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
@@ -2984,6 +2991,35 @@ var APISwaggerJSON string = `{
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true",
                         "ves.io.schema.rules.string.max_len": "8096"
+                    }
+                }
+            }
+        },
+        "lma_regionS3Params": {
+            "type": "object",
+            "description": "AWS S3 parameters",
+            "title": "AWS S3 Params",
+            "x-displayname": "AWS S3 Params",
+            "x-ves-proto-message": "ves.io.schema.data_privacy.lma_region.S3Params",
+            "properties": {
+                "aws_credentials": {
+                    "description": " AWS Credentials\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "title": "AWS Credentials",
+                    "$ref": "#/definitions/lma_regionAWSCredentials",
+                    "x-displayname": "AWS Credentials",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true"
+                    }
+                },
+                "bucket": {
+                    "type": "string",
+                    "description": " S3 Bucket Name\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "title": "S3 Bucket Name",
+                    "x-displayname": "S3 Bucket Name",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true"
                     }
                 }
             }

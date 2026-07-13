@@ -48,7 +48,7 @@ resource "volterra_azure_vnet_site" "example" {
     accelerated_networking {
       // One of the arguments from this list "disable enable" must be set
 
-      disable = true
+      enable = true
     }
 
     az_nodes {
@@ -94,7 +94,7 @@ resource "volterra_azure_vnet_site" "example" {
 
   // One of the arguments from this list "no_worker_nodes nodes_per_az total_nodes" must be set
 
-  no_worker_nodes = true
+  nodes_per_az = "2"
 }
 ```
 

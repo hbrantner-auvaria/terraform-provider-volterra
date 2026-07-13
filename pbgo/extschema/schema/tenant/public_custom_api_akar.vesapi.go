@@ -395,6 +395,12 @@ var TenantSummaryCustomAPISwaggerJSON string = `{
             "x-displayname": "Tenant Summary Response",
             "x-ves-proto-message": "ves.io.schema.tenant.SummaryResponse",
             "properties": {
+                "preferred_lma_region": {
+                    "type": "string",
+                    "description": " Preferred LMA Region",
+                    "title": "Preferred LMA Region",
+                    "x-displayname": "Preferred LMA Region"
+                },
                 "type": {
                     "type": "string",
                     "description": " Default VIP Type (dedicated/shared)",

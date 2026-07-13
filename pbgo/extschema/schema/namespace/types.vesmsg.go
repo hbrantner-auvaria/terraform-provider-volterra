@@ -727,6 +727,895 @@ func GlobalSpecTypeValidator() db.Validator {
 
 // augmented methods on protoc/std generated struct
 
+func (m *NamespaceStatusRequest) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *NamespaceStatusRequest) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *NamespaceStatusRequest) DeepCopy() *NamespaceStatusRequest {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &NamespaceStatusRequest{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *NamespaceStatusRequest) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *NamespaceStatusRequest) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return NamespaceStatusRequestValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateNamespaceStatusRequest struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateNamespaceStatusRequest) TenantValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for tenant")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateNamespaceStatusRequest) NamespaceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for namespace")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateNamespaceStatusRequest) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*NamespaceStatusRequest)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *NamespaceStatusRequest got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["namespace"]; exists {
+		vOpts := append(opts, db.WithValidateField("namespace"))
+		if err := fv(ctx, m.GetNamespace(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["tenant"]; exists {
+		vOpts := append(opts, db.WithValidateField("tenant"))
+		if err := fv(ctx, m.GetTenant(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultNamespaceStatusRequestValidator = func() *ValidateNamespaceStatusRequest {
+	v := &ValidateNamespaceStatusRequest{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhTenant := v.TenantValidationRuleHandler
+	rulesTenant := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhTenant(rulesTenant)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for NamespaceStatusRequest.tenant: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["tenant"] = vFn
+
+	vrhNamespace := v.NamespaceValidationRuleHandler
+	rulesNamespace := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhNamespace(rulesNamespace)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for NamespaceStatusRequest.namespace: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["namespace"] = vFn
+
+	return v
+}()
+
+func NamespaceStatusRequestValidator() db.Validator {
+	return DefaultNamespaceStatusRequestValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *NamespaceStatusResponse) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *NamespaceStatusResponse) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *NamespaceStatusResponse) DeepCopy() *NamespaceStatusResponse {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &NamespaceStatusResponse{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *NamespaceStatusResponse) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *NamespaceStatusResponse) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return NamespaceStatusResponseValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateNamespaceStatusResponse struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateNamespaceStatusResponse) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*NamespaceStatusResponse)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *NamespaceStatusResponse got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["message"]; exists {
+		vOpts := append(opts, db.WithValidateField("message"))
+		if err := fv(ctx, m.GetMessage(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["namespace_state"]; exists {
+		vOpts := append(opts, db.WithValidateField("namespace_state"))
+		if err := fv(ctx, m.GetNamespaceState(), vOpts...); err != nil {
+			return err
+		}
+	}
+
+	switch m.GetPendingServices().(type) {
+	case *NamespaceStatusResponse_PendingInitializers:
+		if fv, exists := v.FldValidators["pending_services.pending_initializers"]; exists {
+			val := m.GetPendingServices().(*NamespaceStatusResponse_PendingInitializers).PendingInitializers
+			vOpts := append(opts,
+				db.WithValidateField("pending_services"),
+				db.WithValidateField("pending_initializers"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *NamespaceStatusResponse_PendingFinalizers:
+		if fv, exists := v.FldValidators["pending_services.pending_finalizers"]; exists {
+			val := m.GetPendingServices().(*NamespaceStatusResponse_PendingFinalizers).PendingFinalizers
+			vOpts := append(opts,
+				db.WithValidateField("pending_services"),
+				db.WithValidateField("pending_finalizers"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultNamespaceStatusResponseValidator = func() *ValidateNamespaceStatusResponse {
+	v := &ValidateNamespaceStatusResponse{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func NamespaceStatusResponseValidator() db.Validator {
+	return DefaultNamespaceStatusResponseValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *PendingFinalizerInfo) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *PendingFinalizerInfo) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *PendingFinalizerInfo) DeepCopy() *PendingFinalizerInfo {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &PendingFinalizerInfo{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *PendingFinalizerInfo) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *PendingFinalizerInfo) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return PendingFinalizerInfoValidator().Validate(ctx, m, opts...)
+}
+
+type ValidatePendingFinalizerInfo struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidatePendingFinalizerInfo) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*PendingFinalizerInfo)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *PendingFinalizerInfo got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["last_retry"]; exists {
+		vOpts := append(opts, db.WithValidateField("last_retry"))
+		if err := fv(ctx, m.GetLastRetry(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["message"]; exists {
+		vOpts := append(opts, db.WithValidateField("message"))
+		if err := fv(ctx, m.GetMessage(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["status"]; exists {
+		vOpts := append(opts, db.WithValidateField("status"))
+		if err := fv(ctx, m.GetStatus(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultPendingFinalizerInfoValidator = func() *ValidatePendingFinalizerInfo {
+	v := &ValidatePendingFinalizerInfo{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func PendingFinalizerInfoValidator() db.Validator {
+	return DefaultPendingFinalizerInfoValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *PendingFinalizers) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *PendingFinalizers) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *PendingFinalizers) DeepCopy() *PendingFinalizers {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &PendingFinalizers{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *PendingFinalizers) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *PendingFinalizers) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return PendingFinalizersValidator().Validate(ctx, m, opts...)
+}
+
+type ValidatePendingFinalizers struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidatePendingFinalizers) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*PendingFinalizers)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *PendingFinalizers got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["pending_finalizer_map"]; exists {
+		vOpts := append(opts, db.WithValidateField("pending_finalizer_map"))
+		for key, value := range m.GetPendingFinalizerMap() {
+			vOpts := append(vOpts, db.WithValidateMapKey(key))
+			if err := fv(ctx, value, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultPendingFinalizersValidator = func() *ValidatePendingFinalizers {
+	v := &ValidatePendingFinalizers{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func PendingFinalizersValidator() db.Validator {
+	return DefaultPendingFinalizersValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *PendingInitializerInfo) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *PendingInitializerInfo) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *PendingInitializerInfo) DeepCopy() *PendingInitializerInfo {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &PendingInitializerInfo{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *PendingInitializerInfo) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *PendingInitializerInfo) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return PendingInitializerInfoValidator().Validate(ctx, m, opts...)
+}
+
+type ValidatePendingInitializerInfo struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidatePendingInitializerInfo) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*PendingInitializerInfo)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *PendingInitializerInfo got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["last_retry"]; exists {
+		vOpts := append(opts, db.WithValidateField("last_retry"))
+		if err := fv(ctx, m.GetLastRetry(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["message"]; exists {
+		vOpts := append(opts, db.WithValidateField("message"))
+		if err := fv(ctx, m.GetMessage(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["status"]; exists {
+		vOpts := append(opts, db.WithValidateField("status"))
+		if err := fv(ctx, m.GetStatus(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultPendingInitializerInfoValidator = func() *ValidatePendingInitializerInfo {
+	v := &ValidatePendingInitializerInfo{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func PendingInitializerInfoValidator() db.Validator {
+	return DefaultPendingInitializerInfoValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *PendingInitializers) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *PendingInitializers) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *PendingInitializers) DeepCopy() *PendingInitializers {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &PendingInitializers{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *PendingInitializers) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *PendingInitializers) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return PendingInitializersValidator().Validate(ctx, m, opts...)
+}
+
+type ValidatePendingInitializers struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidatePendingInitializers) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*PendingInitializers)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *PendingInitializers got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["pending_initializer_map"]; exists {
+		vOpts := append(opts, db.WithValidateField("pending_initializer_map"))
+		for key, value := range m.GetPendingInitializerMap() {
+			vOpts := append(vOpts, db.WithValidateMapKey(key))
+			if err := fv(ctx, value, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultPendingInitializersValidator = func() *ValidatePendingInitializers {
+	v := &ValidatePendingInitializers{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func PendingInitializersValidator() db.Validator {
+	return DefaultPendingInitializersValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *RemoveNamespaceFinalizerReq) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *RemoveNamespaceFinalizerReq) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *RemoveNamespaceFinalizerReq) DeepCopy() *RemoveNamespaceFinalizerReq {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &RemoveNamespaceFinalizerReq{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *RemoveNamespaceFinalizerReq) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *RemoveNamespaceFinalizerReq) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return RemoveNamespaceFinalizerReqValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateRemoveNamespaceFinalizerReq struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateRemoveNamespaceFinalizerReq) NamespaceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for namespace")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateRemoveNamespaceFinalizerReq) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*RemoveNamespaceFinalizerReq)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *RemoveNamespaceFinalizerReq got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["namespace"]; exists {
+		vOpts := append(opts, db.WithValidateField("namespace"))
+		if err := fv(ctx, m.GetNamespace(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultRemoveNamespaceFinalizerReqValidator = func() *ValidateRemoveNamespaceFinalizerReq {
+	v := &ValidateRemoveNamespaceFinalizerReq{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhNamespace := v.NamespaceValidationRuleHandler
+	rulesNamespace := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhNamespace(rulesNamespace)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for RemoveNamespaceFinalizerReq.namespace: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["namespace"] = vFn
+
+	return v
+}()
+
+func RemoveNamespaceFinalizerReqValidator() db.Validator {
+	return DefaultRemoveNamespaceFinalizerReqValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *RemoveNamespaceFinalizerResp) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *RemoveNamespaceFinalizerResp) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *RemoveNamespaceFinalizerResp) DeepCopy() *RemoveNamespaceFinalizerResp {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &RemoveNamespaceFinalizerResp{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *RemoveNamespaceFinalizerResp) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *RemoveNamespaceFinalizerResp) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return RemoveNamespaceFinalizerRespValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateRemoveNamespaceFinalizerResp struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateRemoveNamespaceFinalizerResp) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*RemoveNamespaceFinalizerResp)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *RemoveNamespaceFinalizerResp got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["message"]; exists {
+		vOpts := append(opts, db.WithValidateField("message"))
+		if err := fv(ctx, m.GetMessage(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["status"]; exists {
+		vOpts := append(opts, db.WithValidateField("status"))
+		if err := fv(ctx, m.GetStatus(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultRemoveNamespaceFinalizerRespValidator = func() *ValidateRemoveNamespaceFinalizerResp {
+	v := &ValidateRemoveNamespaceFinalizerResp{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func RemoveNamespaceFinalizerRespValidator() db.Validator {
+	return DefaultRemoveNamespaceFinalizerRespValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *RemoveNamespaceFinalizerRestrictedReq) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *RemoveNamespaceFinalizerRestrictedReq) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *RemoveNamespaceFinalizerRestrictedReq) DeepCopy() *RemoveNamespaceFinalizerRestrictedReq {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &RemoveNamespaceFinalizerRestrictedReq{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *RemoveNamespaceFinalizerRestrictedReq) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *RemoveNamespaceFinalizerRestrictedReq) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return RemoveNamespaceFinalizerRestrictedReqValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateRemoveNamespaceFinalizerRestrictedReq struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateRemoveNamespaceFinalizerRestrictedReq) TenantValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for tenant")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateRemoveNamespaceFinalizerRestrictedReq) NamespaceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for namespace")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateRemoveNamespaceFinalizerRestrictedReq) ServiceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for service")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateRemoveNamespaceFinalizerRestrictedReq) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*RemoveNamespaceFinalizerRestrictedReq)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *RemoveNamespaceFinalizerRestrictedReq got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["namespace"]; exists {
+		vOpts := append(opts, db.WithValidateField("namespace"))
+		if err := fv(ctx, m.GetNamespace(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["service"]; exists {
+		vOpts := append(opts, db.WithValidateField("service"))
+		if err := fv(ctx, m.GetService(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["tenant"]; exists {
+		vOpts := append(opts, db.WithValidateField("tenant"))
+		if err := fv(ctx, m.GetTenant(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultRemoveNamespaceFinalizerRestrictedReqValidator = func() *ValidateRemoveNamespaceFinalizerRestrictedReq {
+	v := &ValidateRemoveNamespaceFinalizerRestrictedReq{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhTenant := v.TenantValidationRuleHandler
+	rulesTenant := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhTenant(rulesTenant)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for RemoveNamespaceFinalizerRestrictedReq.tenant: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["tenant"] = vFn
+
+	vrhNamespace := v.NamespaceValidationRuleHandler
+	rulesNamespace := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhNamespace(rulesNamespace)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for RemoveNamespaceFinalizerRestrictedReq.namespace: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["namespace"] = vFn
+
+	vrhService := v.ServiceValidationRuleHandler
+	rulesService := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhService(rulesService)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for RemoveNamespaceFinalizerRestrictedReq.service: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["service"] = vFn
+
+	return v
+}()
+
+func RemoveNamespaceFinalizerRestrictedReqValidator() db.Validator {
+	return DefaultRemoveNamespaceFinalizerRestrictedReqValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *ReplaceSpecType) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }

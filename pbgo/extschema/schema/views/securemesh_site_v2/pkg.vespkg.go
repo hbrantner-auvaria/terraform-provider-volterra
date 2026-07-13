@@ -7,6 +7,7 @@ import (
 	"reflect"
 
 	"gopkg.volterra.us/stdlib/db"
+	"gopkg.volterra.us/stdlib/server"
 	"gopkg.volterra.us/stdlib/store"
 	"gopkg.volterra.us/stdlib/svcfw"
 )
@@ -18,16 +19,18 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.views.securemesh_site_v2.AWSManagedMode"] = AWSManagedModeValidator()
 	vr["ves.io.schema.views.securemesh_site_v2.AWSManagedNode"] = AWSManagedNodeValidator()
 	vr["ves.io.schema.views.securemesh_site_v2.AWSManagedNodeList"] = AWSManagedNodeListValidator()
+	vr["ves.io.schema.views.securemesh_site_v2.AWSNATGatewayListType"] = AWSNATGatewayListTypeValidator()
 	vr["ves.io.schema.views.securemesh_site_v2.AWSNATGatewayType"] = AWSNATGatewayTypeValidator()
-	vr["ves.io.schema.views.securemesh_site_v2.AWSNodeInterfaceConfigurationType"] = AWSNodeInterfaceConfigurationTypeValidator()
 	vr["ves.io.schema.views.securemesh_site_v2.AWSOrchestratedInterface"] = AWSOrchestratedInterfaceValidator()
-	vr["ves.io.schema.views.securemesh_site_v2.AWSOverrideNodeInterfaceConfigurationType"] = AWSOverrideNodeInterfaceConfigurationTypeValidator()
 	vr["ves.io.schema.views.securemesh_site_v2.AWSResourceMappingListType"] = AWSResourceMappingListTypeValidator()
 	vr["ves.io.schema.views.securemesh_site_v2.AWSResourceMappingType"] = AWSResourceMappingTypeValidator()
-	vr["ves.io.schema.views.securemesh_site_v2.AWSResources"] = AWSResourcesValidator()
 	vr["ves.io.schema.views.securemesh_site_v2.AWSTGWType"] = AWSTGWTypeValidator()
+	vr["ves.io.schema.views.securemesh_site_v2.AvailabilityZonesType"] = AvailabilityZonesTypeValidator()
+	vr["ves.io.schema.views.securemesh_site_v2.CustomIpPrefixType"] = CustomIpPrefixTypeValidator()
 	vr["ves.io.schema.views.securemesh_site_v2.EnablePrivateWorkloadRoutingListType"] = EnablePrivateWorkloadRoutingListTypeValidator()
 	vr["ves.io.schema.views.securemesh_site_v2.EnablePrivateWorkloadRoutingType"] = EnablePrivateWorkloadRoutingTypeValidator()
+	vr["ves.io.schema.views.securemesh_site_v2.EnableVIPAutomationType"] = EnableVIPAutomationTypeValidator()
+	vr["ves.io.schema.views.securemesh_site_v2.ForceUpdateRoutingType"] = ForceUpdateRoutingTypeValidator()
 	vr["ves.io.schema.views.securemesh_site_v2.AzureManagedMode"] = AzureManagedModeValidator()
 	vr["ves.io.schema.views.securemesh_site_v2.AzureManagedNode"] = AzureManagedNodeValidator()
 	vr["ves.io.schema.views.securemesh_site_v2.AzureManagedNodeList"] = AzureManagedNodeListValidator()
@@ -60,6 +63,10 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.views.securemesh_site_v2.ListResponseItem"] = ListResponseItemValidator()
 	vr["ves.io.schema.views.securemesh_site_v2.ReplaceRequest"] = ReplaceRequestValidator()
 	vr["ves.io.schema.views.securemesh_site_v2.ReplaceResponse"] = ReplaceResponseValidator()
+	vr["ves.io.schema.views.securemesh_site_v2.AwsCloudResourceListType"] = AwsCloudResourceListTypeValidator()
+	vr["ves.io.schema.views.securemesh_site_v2.AwsCloudResourceType"] = AwsCloudResourceTypeValidator()
+	vr["ves.io.schema.views.securemesh_site_v2.ListCloudResourceResponse"] = ListCloudResourceResponseValidator()
+	vr["ves.io.schema.views.securemesh_site_v2.ListCloudResourcesRequest"] = ListCloudResourcesRequestValidator()
 	vr["ves.io.schema.views.securemesh_site_v2.AWSProviderType"] = AWSProviderTypeValidator()
 	vr["ves.io.schema.views.securemesh_site_v2.AzureProviderType"] = AzureProviderTypeValidator()
 	vr["ves.io.schema.views.securemesh_site_v2.BaremetalProviderType"] = BaremetalProviderTypeValidator()
@@ -338,7 +345,15 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 	}
 	mdr.RPCAvailableInReqFieldRegistry["ves.io.schema.views.securemesh_site_v2.API.Create"] = []svcfw.EnvironmentField{
 		{
+			FieldPath:           "spec.advanced_delivery_choice",
+			AllowedEnvironments: []string{"demo1", "dev1", "test"},
+		},
+		{
 			FieldPath:           "spec.aws.managed",
+			AllowedEnvironments: []string{"demo1", "test"},
+		},
+		{
+			FieldPath:           "spec.aws.managed.vip_automation_choice",
 			AllowedEnvironments: []string{"demo1", "test"},
 		},
 		{
@@ -347,7 +362,7 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:           "spec.azure.managed",
-			AllowedEnvironments: []string{"crt", "demo1", "test"},
+			AllowedEnvironments: []string{"demo1", "test"},
 		},
 		{
 			FieldPath:           "spec.azure.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
@@ -363,7 +378,7 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:           "spec.gcp.managed",
-			AllowedEnvironments: []string{"crt", "demo1", "test"},
+			AllowedEnvironments: []string{"demo1", "test"},
 		},
 		{
 			FieldPath:           "spec.gcp.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
@@ -448,7 +463,15 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 	}
 	mdr.RPCAvailableInResFieldRegistry["ves.io.schema.views.securemesh_site_v2.API.Create"] = []svcfw.EnvironmentField{
 		{
+			FieldPath:           "spec.advanced_delivery_choice",
+			AllowedEnvironments: []string{"demo1", "dev1", "test"},
+		},
+		{
 			FieldPath:           "spec.aws.managed",
+			AllowedEnvironments: []string{"demo1", "test"},
+		},
+		{
+			FieldPath:           "spec.aws.managed.vip_automation_choice",
 			AllowedEnvironments: []string{"demo1", "test"},
 		},
 		{
@@ -457,7 +480,7 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:           "spec.azure.managed",
-			AllowedEnvironments: []string{"crt", "demo1", "test"},
+			AllowedEnvironments: []string{"demo1", "test"},
 		},
 		{
 			FieldPath:           "spec.azure.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
@@ -473,7 +496,7 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:           "spec.gcp.managed",
-			AllowedEnvironments: []string{"crt", "demo1", "test"},
+			AllowedEnvironments: []string{"demo1", "test"},
 		},
 		{
 			FieldPath:           "spec.gcp.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
@@ -559,7 +582,15 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 	mdr.RPCConfidentialRequestRegistry["ves.io.schema.views.securemesh_site_v2.API.Create"] = "ves.io.schema.views.securemesh_site_v2.CreateRequest"
 	mdr.RPCAvailableInResFieldRegistry["ves.io.schema.views.securemesh_site_v2.API.Get"] = []svcfw.EnvironmentField{
 		{
+			FieldPath:           "create_form.spec.advanced_delivery_choice",
+			AllowedEnvironments: []string{"demo1", "dev1", "test"},
+		},
+		{
 			FieldPath:           "create_form.spec.aws.managed",
+			AllowedEnvironments: []string{"demo1", "test"},
+		},
+		{
+			FieldPath:           "create_form.spec.aws.managed.vip_automation_choice",
 			AllowedEnvironments: []string{"demo1", "test"},
 		},
 		{
@@ -568,7 +599,7 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:           "create_form.spec.azure.managed",
-			AllowedEnvironments: []string{"crt", "demo1", "test"},
+			AllowedEnvironments: []string{"demo1", "test"},
 		},
 		{
 			FieldPath:           "create_form.spec.azure.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
@@ -584,7 +615,7 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:           "create_form.spec.gcp.managed",
-			AllowedEnvironments: []string{"crt", "demo1", "test"},
+			AllowedEnvironments: []string{"demo1", "test"},
 		},
 		{
 			FieldPath:           "create_form.spec.gcp.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
@@ -667,7 +698,15 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
+			FieldPath:           "replace_form.spec.advanced_delivery_choice",
+			AllowedEnvironments: []string{"demo1", "dev1", "test"},
+		},
+		{
 			FieldPath:           "replace_form.spec.aws.managed",
+			AllowedEnvironments: []string{"demo1", "test"},
+		},
+		{
+			FieldPath:           "replace_form.spec.aws.managed.vip_automation_choice",
 			AllowedEnvironments: []string{"demo1", "test"},
 		},
 		{
@@ -676,7 +715,7 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:           "replace_form.spec.azure.managed",
-			AllowedEnvironments: []string{"crt", "demo1", "test"},
+			AllowedEnvironments: []string{"demo1", "test"},
 		},
 		{
 			FieldPath:           "replace_form.spec.azure.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
@@ -692,7 +731,7 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:           "replace_form.spec.gcp.managed",
-			AllowedEnvironments: []string{"crt", "demo1", "test"},
+			AllowedEnvironments: []string{"demo1", "test"},
 		},
 		{
 			FieldPath:           "replace_form.spec.gcp.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
@@ -775,7 +814,15 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
+			FieldPath:           "spec.advanced_delivery_choice",
+			AllowedEnvironments: []string{"demo1", "dev1", "test"},
+		},
+		{
 			FieldPath:           "spec.aws.managed",
+			AllowedEnvironments: []string{"demo1", "test"},
+		},
+		{
+			FieldPath:           "spec.aws.managed.vip_automation_choice",
 			AllowedEnvironments: []string{"demo1", "test"},
 		},
 		{
@@ -784,7 +831,7 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:           "spec.azure.managed",
-			AllowedEnvironments: []string{"crt", "demo1", "test"},
+			AllowedEnvironments: []string{"demo1", "test"},
 		},
 		{
 			FieldPath:           "spec.azure.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
@@ -800,7 +847,7 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:           "spec.gcp.managed",
-			AllowedEnvironments: []string{"crt", "demo1", "test"},
+			AllowedEnvironments: []string{"demo1", "test"},
 		},
 		{
 			FieldPath:           "spec.gcp.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
@@ -885,7 +932,15 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 	}
 	mdr.RPCAvailableInResFieldRegistry["ves.io.schema.views.securemesh_site_v2.API.List"] = []svcfw.EnvironmentField{
 		{
+			FieldPath:           "items.#.get_spec.advanced_delivery_choice",
+			AllowedEnvironments: []string{"demo1", "dev1", "test"},
+		},
+		{
 			FieldPath:           "items.#.get_spec.aws.managed",
+			AllowedEnvironments: []string{"demo1", "test"},
+		},
+		{
+			FieldPath:           "items.#.get_spec.aws.managed.vip_automation_choice",
 			AllowedEnvironments: []string{"demo1", "test"},
 		},
 		{
@@ -894,7 +949,7 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:           "items.#.get_spec.azure.managed",
-			AllowedEnvironments: []string{"crt", "demo1", "test"},
+			AllowedEnvironments: []string{"demo1", "test"},
 		},
 		{
 			FieldPath:           "items.#.get_spec.azure.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
@@ -910,7 +965,7 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:           "items.#.get_spec.gcp.managed",
-			AllowedEnvironments: []string{"crt", "demo1", "test"},
+			AllowedEnvironments: []string{"demo1", "test"},
 		},
 		{
 			FieldPath:           "items.#.get_spec.gcp.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
@@ -1220,7 +1275,15 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 	}
 	mdr.RPCAvailableInReqFieldRegistry["ves.io.schema.views.securemesh_site_v2.API.Replace"] = []svcfw.EnvironmentField{
 		{
+			FieldPath:           "spec.advanced_delivery_choice",
+			AllowedEnvironments: []string{"demo1", "dev1", "test"},
+		},
+		{
 			FieldPath:           "spec.aws.managed",
+			AllowedEnvironments: []string{"demo1", "test"},
+		},
+		{
+			FieldPath:           "spec.aws.managed.vip_automation_choice",
 			AllowedEnvironments: []string{"demo1", "test"},
 		},
 		{
@@ -1229,7 +1292,7 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:           "spec.azure.managed",
-			AllowedEnvironments: []string{"crt", "demo1", "test"},
+			AllowedEnvironments: []string{"demo1", "test"},
 		},
 		{
 			FieldPath:           "spec.azure.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
@@ -1245,7 +1308,7 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:           "spec.gcp.managed",
-			AllowedEnvironments: []string{"crt", "demo1", "test"},
+			AllowedEnvironments: []string{"demo1", "test"},
 		},
 		{
 			FieldPath:           "spec.gcp.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
@@ -1333,6 +1396,7 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 
 func initializeAPIGwServiceSlugsRegistry(sm map[string]string) {
 	sm["ves.io.schema.views.securemesh_site_v2.API"] = "config"
+	sm["ves.io.schema.views.securemesh_site_v2.ManagedSecureMeshSiteV2CustomAPI"] = "sync-cloud-data"
 }
 
 func initializeP0PolicyRegistry(sm map[string]svcfw.P0PolicyInfo) {
@@ -1362,6 +1426,21 @@ func initializeCRUDServiceRegistry(mdr *svcfw.MDRegistry, isExternal bool) {
 		mdr.SvcRegisterHandlers["ves.io.schema.views.securemesh_site_v2.API"] = RegisterAPIServer
 		mdr.SvcGwRegisterHandlers["ves.io.schema.views.securemesh_site_v2.API"] = RegisterGwAPIHandler
 		csr.CRUDServerRegistry["ves.io.schema.views.securemesh_site_v2.Object"] = NewCRUDAPIServer
+	}()
+	customCSR = mdr.PubCustomServiceRegistry
+	func() {
+		// set swagger jsons for our and external schemas
+		customCSR.SwaggerRegistry["ves.io.schema.views.securemsh_site_v2.Object"] = ManagedSecureMeshSiteV2CustomAPISwaggerJSON
+		customCSR.GrpcClientRegistry["ves.io.schema.views.securemesh_site_v2.ManagedSecureMeshSiteV2CustomAPI"] = NewManagedSecureMeshSiteV2CustomAPIGrpcClient
+		customCSR.RestClientRegistry["ves.io.schema.views.securemesh_site_v2.ManagedSecureMeshSiteV2CustomAPI"] = NewManagedSecureMeshSiteV2CustomAPIRestClient
+		if isExternal {
+			return
+		}
+		mdr.SvcRegisterHandlers["ves.io.schema.views.securemesh_site_v2.ManagedSecureMeshSiteV2CustomAPI"] = RegisterManagedSecureMeshSiteV2CustomAPIServer
+		mdr.SvcGwRegisterHandlers["ves.io.schema.views.securemesh_site_v2.ManagedSecureMeshSiteV2CustomAPI"] = RegisterGwManagedSecureMeshSiteV2CustomAPIHandler
+		customCSR.ServerRegistry["ves.io.schema.views.securemesh_site_v2.ManagedSecureMeshSiteV2CustomAPI"] = func(svc svcfw.Service) server.APIHandler {
+			return NewManagedSecureMeshSiteV2CustomAPIServer(svc)
+		}
 	}()
 }
 

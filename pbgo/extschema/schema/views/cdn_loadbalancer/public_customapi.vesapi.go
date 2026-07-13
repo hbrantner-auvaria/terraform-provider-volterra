@@ -2178,19 +2178,19 @@ var CustomAPISwaggerJSON string = `{
                 },
                 "values": {
                     "type": "array",
-                    "description": " Filter values\n\nExample: - \"[IN, US]\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.items.string.max_len: 128\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "description": " Filter values\n\nExample: - \"[IN, US]\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.items.string.max_len: 256\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "Filter values",
                     "maxItems": 32,
                     "items": {
                         "type": "string",
-                        "maxLength": 128
+                        "maxLength": 256
                     },
                     "x-displayname": "Filter values",
                     "x-ves-example": "[IN, US]",
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true",
-                        "ves.io.schema.rules.repeated.items.string.max_len": "128",
+                        "ves.io.schema.rules.repeated.items.string.max_len": "256",
                         "ves.io.schema.rules.repeated.max_items": "32",
                         "ves.io.schema.rules.repeated.unique": "true"
                     }
@@ -3084,12 +3084,12 @@ var CustomAPISwaggerJSON string = `{
                 },
                 "pattern": {
                     "type": "string",
-                    "description": "Exclusive with [hostname purge_all url]\n Purge cached content using PCRE 1 compliant regular expression.\n\nExample: - \".*\\.ts\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.max_len: 256\n  ves.io.schema.rules.string.min_len: 1\n",
+                    "description": "Exclusive with [hostname purge_all url]\n Purge cached content using PCRE 1 compliant regular expression.\n\nExample: - \".*\\\\.ts\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.max_len: 256\n  ves.io.schema.rules.string.min_len: 1\n",
                     "title": "Regex Pattern to match",
                     "minLength": 1,
                     "maxLength": 256,
                     "x-displayname": "Pattern",
-                    "x-ves-example": ".*\\.ts",
+                    "x-ves-example": ".*\\\\.ts",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.string.max_len": "256",
                         "ves.io.schema.rules.string.min_len": "1"

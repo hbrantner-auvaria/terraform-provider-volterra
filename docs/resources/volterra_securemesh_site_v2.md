@@ -22,7 +22,15 @@ resource "volterra_securemesh_site_v2" "example" {
 
   // One of the arguments from this list "block_all_services blocked_services" must be set
 
-  block_all_services = true
+  blocked_services {
+    blocked_sevice {
+      // One of the arguments from this list "dns ssh web_user_interface" can be set
+
+      web_user_interface = true
+
+      network_type = "network_type"
+    }
+  }
 
   // One of the arguments from this list "log_receiver log_receiver_with_net logs_streaming_disabled" must be set
 
@@ -30,8 +38,8 @@ resource "volterra_securemesh_site_v2" "example" {
 
   // One of the arguments from this list "aws azure baremetal equinix gcp kvm nutanix oci openshift_virtualization openstack rseries vmware" must be set
 
-  azure {
-    // One of the arguments from this list "not_managed" must be set
+   gcp {
+    // "not_managed" must be set
 
     not_managed {
       node_list {
@@ -40,22 +48,23 @@ resource "volterra_securemesh_site_v2" "example" {
         interface_list {
           // One of the arguments from this list "dhcp_client dhcp_server no_ipv4_address static_ip" must be set
 
-          no_ipv4_address = true
+          dhcp_client = true
 
           description = "value"
 
           // One of the arguments from this list "bond_interface ethernet_interface vlan_interface" must be set
 
           ethernet_interface {
-            device = "eth0"
-            mac    = "01:10:20:0a:bb:1c"
+            device = "ver1"
+
+            mac = "01:10:20:0a:bb:1c"
           }
 
           // One of the arguments from this list "ipv6_auto_config no_ipv6_address static_ipv6_address" can be set
 
           no_ipv6_address = true
-          is_management   = true
-          is_primary      = true
+          is_management = true
+          is_primary = true
           labels = {
             "key1" = "value1"
           }
@@ -63,12 +72,12 @@ resource "volterra_securemesh_site_v2" "example" {
           // One of the arguments from this list "monitor monitor_disabled" can be set
 
           monitor_disabled = true
-          mtu              = "1450"
-          name             = "value"
+          mtu = "1450"
+          name = "value"
           network_option {
             // One of the arguments from this list "segment_network site_local_inside_network site_local_network" can be set
 
-            site_local_network = true
+           site_local_network = true
           }
           priority = "42"
 
@@ -83,10 +92,13 @@ resource "volterra_securemesh_site_v2" "example" {
       }
     }
   }
+
+  // lifecycle is a Terraform meta-argument — it controls resource behavior through
+  // settings such as ignore_changes, create_before_destroy, and prevent_destroy.
   lifecycle {
-      ignore_changes = [
-          labels
-      ]
+    ignore_changes = [
+      labels
+    ]
   }
 }
 ```
@@ -112,6 +124,12 @@ Argument Reference
 
 `admin_user_credentials` - (Optional) either the node local WebUI or via SSH to access shell/CLI. See [Admin User Credentials ](#admin-user-credentials) below for details.
 
+###### One of the arguments from this list "disable_advanced_delivery, enable_advanced_delivery" can be set
+
+`disable_advanced_delivery` - (Optional) x-displayName: "Disable" (`Bool`).
+
+`enable_advanced_delivery` - (Optional) x-displayName: "Enable" (`Bool`).
+
 ###### One of the arguments from this list "block_all_services, blocked_services" must be set
 
 `block_all_services` - (Optional) Enable WebUI, SSH and DNS on all nodes in this site. (`Bool`).
@@ -126,8 +144,6 @@ Argument Reference
 
 `f5_proxy` - (Optional) Use the F5 Enterprise Proxy hosted on the F5 Global Network (`Bool`).
 
-`private_adn` - (Optional) Establish private connectivity with the F5 Distributed Cloud Global Network using a Private ADN network. To provision a Private ADN network, please contact F5 Distributed Cloud support.. See [Enterprise Proxy Choice Private Adn ](#enterprise-proxy-choice-private-adn) below for details. (Deprecated)
-
 ###### One of the arguments from this list "active_forward_proxy_policies, no_forward_proxy" can be set
 
 `active_forward_proxy_policies` - (Optional) Enable Forward Proxy for this site. Traffic will be processed in the order that Forward Proxy Policies are added.. See [Forward Proxy Choice Active Forward Proxy Policies ](#forward-proxy-choice-active-forward-proxy-policies) below for details.
@@ -137,6 +153,12 @@ Argument Reference
 `load_balancing` - (Optional) This section contains settings on the site that relate to Load Balancing functionality.. See [Load Balancing ](#load-balancing) below for details.
 
 `local_vrf` - (Optional) The Site Local Inside (SLI) local VRF is used to connect LAN side workloads to this site. SLI local VRF is optional.. See [Local Vrf ](#local-vrf) below for details.
+
+###### One of the arguments from this list "disable_log_anonymization, enable_log_anonymization" can be set
+
+`disable_log_anonymization` - (Optional) Disable Log Anonymization for this site. (`Bool`).(Deprecated)
+
+`enable_log_anonymization` - (Optional) Enable Log Anonymization for this site. Traffic will be processed in the order that Log Anonymize. (`Bool`).(Deprecated)
 
 ###### One of the arguments from this list "log_receiver, log_receiver_with_net, logs_streaming_disabled" must be set
 
@@ -436,33 +458,21 @@ System behaves like auto config Router and provides auto config parameters. This
 
 `dns_config` - (Optional) Dns information that needs to added in the RouterAdvetisement. See [Router Dns Config ](#router-dns-config) below for details.
 
-### Aws Node Interface Configuration Choice Inherit Aws Node Interface Configuration
-
-Inherit AWS Node Interface Configuration.
-
-### Aws Node Interface Configuration Choice Override Aws Node Interface Configuration
-
-Override AWS Node Interface Configuration.
-
-`security_group` - (Required) Select the security group associated with this interface (`String`).
-
-`subnet_id` - (Required) Choose the subnet associated with this interface (`String`).
-
 ### Aws Resource Mapping List Aws Resource Mappings
 
 interface configuration. You do not need to provide explicit inputs for interfaces within a CE node..
 
-`aws_resources` - (Required) Choose your existing AWS resources. See [Aws Resource Mappings Aws Resources ](#aws-resource-mappings-aws-resources) below for details.
+`availability_zones` - (Required) Choose your Availability Zone and Subnet. See [Aws Resource Mappings Availability Zones ](#aws-resource-mappings-availability-zones) below for details.
 
 `network_option` - (Required) Choose the virtual network (VRF) to create mapping for. See [Aws Resource Mappings Network Option ](#aws-resource-mappings-network-option) below for details.
 
-### Aws Resource Mappings Aws Resources
+`security_group` - (Required) Choose a security group (`String`).
 
-Choose your existing AWS resources.
+### Aws Resource Mappings Availability Zones
+
+Choose your Availability Zone and Subnet.
 
 `availability_zone` - (Required) Choose the availablity zone (`String`).
-
-`security_group` - (Required) Choose a security group (`String`).
 
 `subnet_id` - (Required) Choose a existing subnet (`String`).
 
@@ -588,8 +598,6 @@ Enable cloud connect for this site.
 
 `tgw_id` - (Required) Choose the Transit Gateway (`String`).
 
-`volterra_site_asn` - (Required) F5XC Site ASN. (`Int`).
-
 ### Cluster Static Ip Interface Ip Map
 
 Map of Node to Static ip configuration value, Key:Node, Value:IP Address.
@@ -712,13 +720,15 @@ F5 defaults will use 8.8.8.8, 8.8.4.4.
 
 With this option, egress site traffic will be routed through an Internet Gateway..
 
+`force_update_routing` - (Optional) If enabled already configured routes will be updated.. See [Egress Igw Gw Force Update Routing ](#egress-igw-gw-force-update-routing) below for details.
+
 `igw_gw_id` - (Required) Choose your Internet Gateway (`String`).
 
 ### Egress Gateway Choice Egress Nat Gw
 
 With this option, egress site traffic will be routed through an Network Address Translation(NAT) Gateway..
 
-`nat_gw_id` - (Required) Choose your NAT Gateway (`String`).
+`nat_gw` - (Required) Choose your NAT Gateway. See [Egress Nat Gw Nat Gw ](#egress-nat-gw-nat-gw) below for details.
 
 ### Egress Gateway Choice No Egress
 
@@ -728,13 +738,49 @@ When Customer Managed Routing is selected, user needs to ensure the SLO route ta
 
 With this option, egress site traffic will be routed through a Private ADN Network..
 
+### Egress Igw Gw Force Update Routing
+
+If enabled already configured routes will be updated..
+
+###### One of the arguments from this list "force_route_update_disabled, force_route_update_enabled" can be set
+
+`force_route_update_disabled` - (Optional) Do not force update routing. (`Bool`).
+
+`force_route_update_enabled` - (Optional) Force update routing. (`Bool`).
+
+### Egress Nat Gw Nat Gw
+
+Choose your NAT Gateway.
+
+`force_update_routing` - (Optional) If enabled already configured routes will be updated.. See [Nat Gw Force Update Routing ](#nat-gw-force-update-routing) below for details.
+
+`nat_gw_id` - (Required) Choose your NAT Gateway (`String`).
+
 ### Enable Private Workload Routing List Enable Private Workload Routing To Ce
 
 Enable Private Workload Routing to CE.
 
+`force_update_routing` - (Optional) If enabled already configured routes will be updated.. See [Enable Private Workload Routing To Ce Force Update Routing ](#enable-private-workload-routing-to-ce-force-update-routing) below for details.
+
+###### One of the arguments from this list "custom_ip_prefix, default_ip_prefix" can be set
+
+`custom_ip_prefix` - (Optional) Enter the custom IP Prefix. See [Ip Prefix Choice Custom Ip Prefix ](#ip-prefix-choice-custom-ip-prefix) below for details.
+
+`default_ip_prefix` - (Optional) Uses 0.0.0.0/0 as the IP Prefix (`Bool`).
+
 `network_option` - (Required) VRFs).. See [Enable Private Workload Routing To Ce Network Option ](#enable-private-workload-routing-to-ce-network-option) below for details.
 
-`subnet_id` - (Required) Select the Subnet (`String`).
+`route_table_id` - (Required) Select the Route Table (`String`).
+
+### Enable Private Workload Routing To Ce Force Update Routing
+
+If enabled already configured routes will be updated..
+
+###### One of the arguments from this list "force_route_update_disabled, force_route_update_enabled" can be set
+
+`force_route_update_disabled` - (Optional) Do not force update routing. (`Bool`).
+
+`force_route_update_enabled` - (Optional) Force update routing. (`Bool`).
 
 ### Enable Private Workload Routing To Ce Network Option
 
@@ -766,11 +812,13 @@ Use the customer provided internal Enterprise Proxy.
 
 `username` - (Optional) If the internal Enterprise Proxy is using basic authentication, specify the username. This is an optional field. (`String`).
 
-### Enterprise Proxy Choice Private Adn
+### Force Update Routing Choice Force Route Update Disabled
 
-Establish private connectivity with the F5 Distributed Cloud Global Network using a Private ADN network. To provision a Private ADN network, please contact F5 Distributed Cloud support..
+Do not force update routing..
 
-`private_adn` - (Optional) Establish private connectivity with the F5 Distributed Cloud Global Network using a Private ADN network. To provision a Private ADN network, please contact F5 Distributed Cloud support. (`String`).
+### Force Update Routing Choice Force Route Update Enabled
+
+Force update routing..
 
 ### Forward Proxy Choice Active Forward Proxy Policies
 
@@ -819,16 +867,6 @@ x-displayName: "VLAN Interface".
 `device` - (Required) Select a parent interface from the dropdown. (`String`).
 
 `vlan_id` - (Optional) Configure the VLAN tag for this interface. (`Int`).
-
-### Interface List Aws Node Interface Configuration
-
-the mappings.
-
-###### One of the arguments from this list "inherit_aws_node_interface_configuration, override_aws_node_interface_configuration" can be set
-
-`inherit_aws_node_interface_configuration` - (Optional) Inherit AWS Node Interface Configuration (`Bool`).
-
-`override_aws_node_interface_configuration` - (Optional) Override AWS Node Interface Configuration. See [Aws Node Interface Configuration Choice Override Aws Node Interface Configuration ](#aws-node-interface-configuration-choice-override-aws-node-interface-configuration) below for details.
 
 ### Interface List Network Option
 
@@ -891,6 +929,16 @@ Statically configure a IPv4 address for every node.
 Configured address for every node.
 
 `interface_ip_map` - (Optional) Map of Site:Node to IPV6 address. (`String`).
+
+### Ip Prefix Choice Custom Ip Prefix
+
+Enter the custom IP Prefix.
+
+`ip_prefix` - (Required) Enter the custom IP Prefix (`String`).
+
+### Ip Prefix Choice Default Ip Prefix
+
+Uses 0.0.0.0/0 as the IP Prefix.
 
 ### Ipv6 Address Choice Ipv6 Auto Config
 
@@ -1026,6 +1074,16 @@ This section will show nodes associated with this site..
 
 Autogenerate Subnet Name.
 
+### Nat Gw Force Update Routing
+
+If enabled already configured routes will be updated..
+
+###### One of the arguments from this list "force_route_update_disabled, force_route_update_enabled" can be set
+
+`force_route_update_disabled` - (Optional) Do not force update routing. (`Bool`).
+
+`force_route_update_enabled` - (Optional) Force update routing. (`Bool`).
+
 ### Network Choice Site Local Inside Network
 
 x-displayName: "Site Local Inside (Local VRF)".
@@ -1104,7 +1162,7 @@ On a multinode site, this list holds the nodes and corresponding networking_inte
 
 Interfaces in this CE node.
 
-`aws_node_interface_configuration` - (Required) the mappings. See [Interface List Aws Node Interface Configuration ](#interface-list-aws-node-interface-configuration) below for details.
+`interface_name` - (Optional) The interface is not configurable and is autogenerated, it is used to identify the interface (`String`).
 
 `mtu` - (Optional) When configured, mtu must be between 512 and 16384 (`Int`).
 
@@ -1284,13 +1342,15 @@ F5 Distributed Cloud will automate provisioning (ex: node bringup) for this site
 
 `aws_region` - (Required) Select the value for AWS region where you want to deploy the CE site. (`String`).
 
-`aws_resource_mapping_list` - (Optional) interface configuration. You do not need to provide explicit inputs for interfaces within a CE node.. See [Managed Aws Resource Mapping List ](#managed-aws-resource-mapping-list) below for details.
+`aws_resource_mapping_list` - (Required) interface configuration. You do not need to provide explicit inputs for interfaces within a CE node.. See [Managed Aws Resource Mapping List ](#managed-aws-resource-mapping-list) below for details.
 
 ###### One of the arguments from this list "disable_cloud_connect, enable_cloud_connect" can be set
 
 `disable_cloud_connect` - (Optional) Disable cloud connect for this site (`Bool`).
 
 `enable_cloud_connect` - (Optional) Enable cloud connect for this site. See [Cloud Connect Choice Enable Cloud Connect ](#cloud-connect-choice-enable-cloud-connect) below for details.
+
+`cloud_resource_prefix` - (Required) Resources created on cloud will be prefixed with f5-<prefix>. (`String`).
 
 ###### One of the arguments from this list "disable_disk_encryption, disk_encryption_key" can be set
 
@@ -1327,6 +1387,12 @@ F5 Distributed Cloud will automate provisioning (ex: node bringup) for this site
 `enable_private_workload_routing_list` - (Optional) Enable Private Workload Routing to CE. See [Private Workload Routing Choice Enable Private Workload Routing List ](#private-workload-routing-choice-enable-private-workload-routing-list) below for details.
 
 `tags` - (Optional) It helps to manage, identify, organize, search for, and filter resources in AWS console. (`String`).
+
+###### One of the arguments from this list "disable_vip_automation, enable_vip_automation" can be set
+
+`disable_vip_automation` - (Optional) This will disable Network Load Balancer creation. (`Bool`).
+
+`enable_vip_automation` - (Optional) This will enable Network Load Balancer automation.. See [Vip Automation Choice Enable Vip Automation ](#vip-automation-choice-enable-vip-automation) below for details.
 
 `vpc_id` - (Required) Choose the Cloud VPC where you want to deploy the CE site. (`String`).
 
@@ -1953,6 +2019,16 @@ Disable Vega Upgrade Mode.
 ### Vega Upgrade Mode Toggle Choice Enable Vega Upgrade Mode
 
 When enabled, vega will inform RE to stop traffic to the specific node..
+
+### Vip Automation Choice Disable Vip Automation
+
+This will disable Network Load Balancer creation..
+
+### Vip Automation Choice Enable Vip Automation
+
+This will enable Network Load Balancer automation..
+
+`dns_connector_ref` - (Required) Choose the DNS Connector object.. See [ref](#ref) below for details.
 
 ### Volterra Sw Version Choice Default Sw Version
 

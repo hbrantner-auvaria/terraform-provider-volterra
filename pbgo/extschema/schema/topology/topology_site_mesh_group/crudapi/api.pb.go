@@ -493,6 +493,8 @@ type ObjectListReq struct {
 	NamespaceFilter []string `protobuf:"bytes,10001,rep,name=namespace_filter,json=namespaceFilter,proto3" json:"namespace_filter,omitempty"`
 	// k8s style label selector expression
 	LabelFilter string `protobuf:"bytes,10002,opt,name=label_filter,json=labelFilter,proto3" json:"label_filter,omitempty"`
+	// Which fields to report. If none specified, only
+	// uid, tenant, namespace, name, labels are reported.
 	// TODO: currently even if one specified implementation will return all fields
 	ReportFields []string `protobuf:"bytes,10003,rep,name=report_fields,json=reportFields,proto3" json:"report_fields,omitempty"`
 	// Get the resource_version associated with the list

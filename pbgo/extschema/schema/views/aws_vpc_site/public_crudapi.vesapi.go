@@ -3611,7 +3611,7 @@ var APISwaggerJSON string = `{
                 },
                 "regex_value": {
                     "type": "string",
-                    "description": "x-displayName: \"Regex Values of Domains\"\nx-example: \"([a-z]([-a-z0-9]*[a-z0-9])?)\\.com$'\"\nRegular Expression value for the domain name",
+                    "description": "x-displayName: \"Regex Values of Domains\"\nx-example: \"([a-z]([-a-z0-9]*[a-z0-9])?)\\\\.com$\"\nRegular Expression value for the domain name",
                     "title": "regex values of Domains"
                 },
                 "suffix_value": {
@@ -6120,6 +6120,13 @@ var APISwaggerJSON string = `{
                     "title": "Error Description",
                     "x-displayname": "Error Description",
                     "x-ves-example": "invalid VPC ID"
+                },
+                "error_details": {
+                    "type": "string",
+                    "description": " Error details contains error message from cloud provider\n\nExample: - \"VPC vpc-1233548 NotExistent\"-",
+                    "title": "Error Details",
+                    "x-displayname": "Error Details",
+                    "x-ves-example": "VPC vpc-1233548 NotExistent"
                 },
                 "suggested_action": {
                     "type": "string",

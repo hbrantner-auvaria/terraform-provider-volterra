@@ -78,10 +78,7 @@ Argument Reference
 
 ### Spec Argument Reference
 
-`algo` - (Required) This will define the rule combining algorithm. It can take one of the following values:
-  - `FIRST_MATCH`: Rules are evaluated sequentially till a matching rule is identified
-  - `ALLOW_OVERRIDES`: Rules with an ALLOW action are evaluated prior to rules with a DENY action
-  - `DENY_OVERRIDES`: Rules with a DENY action are evaluated prior to rules with an ALLOW action (`String`).
+`algo` - (Optional) This will define the rule combining algorithm. It can take one of the following values: - `FIRST_MATCH`: Rules are evaluated sequentially till a matching rule is identified - `ALLOW_OVERRIDES`: Rules with an ALLOW action are evaluated prior to rules with a DENY action - `DENY_OVERRIDES`: Rules with a DENY action are evaluated prior to rules with an ALLOW action (`String`).
 
 `port_matcher` - (Optional) The list of port ranges to which the destination port should belong. In case of an HTTP Connect, the port is extracted from the desired destination.. See [Port Matcher ](#port-matcher) below for details.
 
@@ -417,6 +414,8 @@ Perform normal App Firewall processing for this request.
 
 The predicate evaluates to true if the actual path value matches any of the exact or prefix values or regular expressions in the path matcher..
 
+`encoded_path_matcher` - (Optional)Match against the encoded, escaped path (`Bool`).
+
 `exact_values` - (Optional) A list of exact path values to match the input HTTP path against. (`String`).
 
 `prefix_values` - (Optional) A list of path prefix values to match the input HTTP path against. (`String`).
@@ -601,7 +600,7 @@ Specification for the rule including match predicates and actions..
 
 `segment_policy` - (Optional) Skip the configuration or set option as Any to ignore corresponding segment match. See [Segment Policy ](#segment-policy) below for details.
 
-`log_rule_evaluation` - (Optional) Log the rule match details along with the request and continue to evaluate rules in the sequence. (`Bool`)
+`log_rule_evaluation` - (Optional) Log the rule match details along with the request and continue to evaluate rules in the sequence. (`Bool`\)
 
 ### Tls Fingerprint Matcher
 
@@ -707,7 +706,7 @@ Rewrite HTML response action to insert HTML content such as Javascript script ta
 
 Shape Protected Endpoint Action that include application traffic type and mitigation.
 
-`allow_goodbot` - (Required) Good bot (`Bool`).
+`allow_goodbot` - (Optional) Good bot (`Bool`).
 
 `app_traffic_type` - (Required) Traffic type (`String`).
 
@@ -717,7 +716,7 @@ Shape Protected Endpoint Action that include application traffic type and mitiga
 
 `transaction_result` - (Optional) Success/failure Criteria for transaction result. See [Shape Protected Endpoint Action Transaction Result ](#shape-protected-endpoint-action-transaction-result) below for details.
 
-`web_scraping` - (Required) Web scraping protection enabled for protected endpoint (`Bool`).
+`web_scraping` - (Optional) Web scraping protection enabled for protected endpoint (`Bool`).
 
 ### Shape Protected Endpoint Action Mitigation
 

@@ -22,11 +22,17 @@ resource "volterra_site_mesh_group" "example" {
 
   // One of the arguments from this list "bfd_disabled bfd_enabled" must be set
 
-  bfd_disabled = true
+  bfd_enabled {
+    multiplier = "3"
+
+    receive_interval_milliseconds = "3000"
+
+    transmit_interval_milliseconds = "3000"
+  }
 
   // One of the arguments from this list "disable_re_fallback enable_re_fallback" must be set
 
-  enable_re_fallback = true
+  disable_re_fallback = true
 }
 ```
 

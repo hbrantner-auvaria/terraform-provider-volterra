@@ -31,7 +31,7 @@ resource "volterra_ike_phase1_profile" "example" {
 
   // One of the arguments from this list "reauth_disabled reauth_timeout_days reauth_timeout_hours" must be set
 
-  reauth_timeout_hours {
+  reauth_timeout_days {
     duration = "duration"
   }
   prf = ["prf"]

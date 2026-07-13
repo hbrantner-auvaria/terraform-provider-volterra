@@ -581,6 +581,7 @@ func resourceVolterraTicketTrackingSystemRead(d *schema.ResourceData, meta inter
 		}
 		return fmt.Errorf("Error finding Volterra TicketTrackingSystem %q: %s", d.Id(), err)
 	}
+
 	return setTicketTrackingSystemFields(client, d, resp)
 }
 
@@ -922,5 +923,11 @@ func resourceVolterraTicketTrackingSystemDelete(d *schema.ResourceData, meta int
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_ticket_management_ticket_tracking_system.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_ticket_management_ticket_tracking_system.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting TicketTrackingSystem: %w", err)
+	}
+	return nil
+
 }

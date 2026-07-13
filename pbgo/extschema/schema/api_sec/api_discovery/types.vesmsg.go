@@ -13,6 +13,8 @@ import (
 	"gopkg.volterra.us/stdlib/codec"
 	"gopkg.volterra.us/stdlib/db"
 	"gopkg.volterra.us/stdlib/errors"
+
+	ves_io_schema "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema"
 )
 
 var (
@@ -129,6 +131,12 @@ func (v *ValidateCreateSpecType) Validate(ctx context.Context, pm interface{}, o
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["user_defined_api_discovery_policy"]; exists {
+		vOpts := append(opts, db.WithValidateField("user_defined_api_discovery_policy"))
+		if err := fv(ctx, m.GetUserDefinedApiDiscoveryPolicy(), vOpts...); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -153,6 +161,7 @@ var DefaultCreateSpecTypeValidator = func() *ValidateCreateSpecType {
 		panic(errMsg)
 	}
 	v.FldValidators["custom_auth_types"] = vFn
+	v.FldValidators["user_defined_api_discovery_policy"] = UserDefinedApiDiscoveryPolicyValidator().Validate
 
 	return v
 }()
@@ -299,6 +308,225 @@ func CustomAuthTypeValidator() db.Validator {
 
 // augmented methods on protoc/std generated struct
 
+func (m *DiscoveryRule) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *DiscoveryRule) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *DiscoveryRule) DeepCopy() *DiscoveryRule {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &DiscoveryRule{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *DiscoveryRule) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *DiscoveryRule) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return DiscoveryRuleValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateDiscoveryRule struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateDiscoveryRule) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*DiscoveryRule)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *DiscoveryRule got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["labels"]; exists {
+		vOpts := append(opts, db.WithValidateField("labels"))
+		for key, value := range m.GetLabels() {
+			vOpts := append(vOpts, db.WithValidateMapKey(key))
+			if err := fv(ctx, value, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	if fv, exists := v.FldValidators["metadata"]; exists {
+		vOpts := append(opts, db.WithValidateField("metadata"))
+		if err := fv(ctx, m.GetMetadata(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["rule_properties"]; exists {
+		vOpts := append(opts, db.WithValidateField("rule_properties"))
+		if err := fv(ctx, m.GetRuleProperties(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultDiscoveryRuleValidator = func() *ValidateDiscoveryRule {
+	v := &ValidateDiscoveryRule{FldValidators: map[string]db.ValidatorFunc{}}
+	v.FldValidators["metadata"] = ves_io_schema.MessageMetaTypeValidator().Validate
+	v.FldValidators["rule_properties"] = RulePropertiesValidator().Validate
+
+	return v
+}()
+
+func DiscoveryRuleValidator() db.Validator {
+	return DefaultDiscoveryRuleValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *ExclusionConfig) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *ExclusionConfig) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *ExclusionConfig) DeepCopy() *ExclusionConfig {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &ExclusionConfig{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *ExclusionConfig) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *ExclusionConfig) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return ExclusionConfigValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateExclusionConfig struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateExclusionConfig) ActionChoiceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for action_choice")
+	}
+	return validatorFn, nil
+}
+
+func (v *ValidateExclusionConfig) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*ExclusionConfig)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *ExclusionConfig got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+
+	if fv, exists := v.FldValidators["action_choice"]; exists {
+		val := m.GetActionChoice()
+		vOpts := append(opts,
+			db.WithValidateField("action_choice"),
+		)
+		if err := fv(ctx, val, vOpts...); err != nil {
+			return err
+		}
+	}
+
+	switch m.GetActionChoice().(type) {
+	case *ExclusionConfig_Ignore:
+		if fv, exists := v.FldValidators["action_choice.ignore"]; exists {
+			val := m.GetActionChoice().(*ExclusionConfig_Ignore).Ignore
+			vOpts := append(opts,
+				db.WithValidateField("action_choice"),
+				db.WithValidateField("ignore"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *ExclusionConfig_Archive:
+		if fv, exists := v.FldValidators["action_choice.archive"]; exists {
+			val := m.GetActionChoice().(*ExclusionConfig_Archive).Archive
+			vOpts := append(opts,
+				db.WithValidateField("action_choice"),
+				db.WithValidateField("archive"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultExclusionConfigValidator = func() *ValidateExclusionConfig {
+	v := &ValidateExclusionConfig{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+	vrhActionChoice := v.ActionChoiceValidationRuleHandler
+	rulesActionChoice := map[string]string{
+		"ves.io.schema.rules.message.required_oneof": "true",
+	}
+	vFn, err = vrhActionChoice(rulesActionChoice)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for ExclusionConfig.action_choice: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["action_choice"] = vFn
+
+	return v
+}()
+
+func ExclusionConfigValidator() db.Validator {
+	return DefaultExclusionConfigValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *GetSpecType) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
@@ -404,6 +632,12 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["user_defined_api_discovery_policy"]; exists {
+		vOpts := append(opts, db.WithValidateField("user_defined_api_discovery_policy"))
+		if err := fv(ctx, m.GetUserDefinedApiDiscoveryPolicy(), vOpts...); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -428,6 +662,7 @@ var DefaultGetSpecTypeValidator = func() *ValidateGetSpecType {
 		panic(errMsg)
 	}
 	v.FldValidators["custom_auth_types"] = vFn
+	v.FldValidators["user_defined_api_discovery_policy"] = UserDefinedApiDiscoveryPolicyValidator().Validate
 
 	return v
 }()
@@ -543,6 +778,12 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["user_defined_api_discovery_policy"]; exists {
+		vOpts := append(opts, db.WithValidateField("user_defined_api_discovery_policy"))
+		if err := fv(ctx, m.GetUserDefinedApiDiscoveryPolicy(), vOpts...); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -567,12 +808,205 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 		panic(errMsg)
 	}
 	v.FldValidators["custom_auth_types"] = vFn
+	v.FldValidators["user_defined_api_discovery_policy"] = UserDefinedApiDiscoveryPolicyValidator().Validate
 
 	return v
 }()
 
 func GlobalSpecTypeValidator() db.Validator {
 	return DefaultGlobalSpecTypeValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *HTTPHeaderCriteria) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *HTTPHeaderCriteria) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *HTTPHeaderCriteria) DeepCopy() *HTTPHeaderCriteria {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &HTTPHeaderCriteria{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *HTTPHeaderCriteria) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *HTTPHeaderCriteria) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return HTTPHeaderCriteriaValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateHTTPHeaderCriteria struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateHTTPHeaderCriteria) FieldNameValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for field_name")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateHTTPHeaderCriteria) MatchTypeValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	var conv db.EnumConvFn
+	conv = func(v interface{}) int32 {
+		i := v.(MatchType)
+		return int32(i)
+	}
+	// MatchType_name is generated in .pb.go
+	validatorFn, err := db.NewEnumValidationRuleHandler(rules, MatchType_name, conv)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for match_type")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateHTTPHeaderCriteria) ValueValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for value")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateHTTPHeaderCriteria) LocationValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	var conv db.EnumConvFn
+	conv = func(v interface{}) int32 {
+		i := v.(RuleLocation)
+		return int32(i)
+	}
+	// RuleLocation_name is generated in .pb.go
+	validatorFn, err := db.NewEnumValidationRuleHandler(rules, RuleLocation_name, conv)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for location")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateHTTPHeaderCriteria) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*HTTPHeaderCriteria)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *HTTPHeaderCriteria got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["field_name"]; exists {
+		vOpts := append(opts, db.WithValidateField("field_name"))
+		if err := fv(ctx, m.GetFieldName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["location"]; exists {
+		vOpts := append(opts, db.WithValidateField("location"))
+		if err := fv(ctx, m.GetLocation(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["match_type"]; exists {
+		vOpts := append(opts, db.WithValidateField("match_type"))
+		if err := fv(ctx, m.GetMatchType(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["value"]; exists {
+		vOpts := append(opts, db.WithValidateField("value"))
+		if err := fv(ctx, m.GetValue(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultHTTPHeaderCriteriaValidator = func() *ValidateHTTPHeaderCriteria {
+	v := &ValidateHTTPHeaderCriteria{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhFieldName := v.FieldNameValidationRuleHandler
+	rulesFieldName := map[string]string{
+		"ves.io.schema.rules.message.required":         "true",
+		"ves.io.schema.rules.string.http_header_field": "true",
+		"ves.io.schema.rules.string.max_bytes":         "256",
+	}
+	vFn, err = vrhFieldName(rulesFieldName)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for HTTPHeaderCriteria.field_name: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["field_name"] = vFn
+
+	vrhMatchType := v.MatchTypeValidationRuleHandler
+	rulesMatchType := map[string]string{
+		"ves.io.schema.rules.enum.defined_only": "true",
+	}
+	vFn, err = vrhMatchType(rulesMatchType)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for HTTPHeaderCriteria.match_type: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["match_type"] = vFn
+
+	vrhValue := v.ValueValidationRuleHandler
+	rulesValue := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+		"ves.io.schema.rules.string.max_bytes": "1024",
+		"ves.io.schema.rules.string.not_empty": "true",
+	}
+	vFn, err = vrhValue(rulesValue)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for HTTPHeaderCriteria.value: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["value"] = vFn
+
+	vrhLocation := v.LocationValidationRuleHandler
+	rulesLocation := map[string]string{
+		"ves.io.schema.rules.enum.defined_only": "true",
+	}
+	vFn, err = vrhLocation(rulesLocation)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for HTTPHeaderCriteria.location: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["location"] = vFn
+
+	return v
+}()
+
+func HTTPHeaderCriteriaValidator() db.Validator {
+	return DefaultHTTPHeaderCriteriaValidator
 }
 
 // augmented methods on protoc/std generated struct
@@ -682,6 +1116,12 @@ func (v *ValidateReplaceSpecType) Validate(ctx context.Context, pm interface{}, 
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["user_defined_api_discovery_policy"]; exists {
+		vOpts := append(opts, db.WithValidateField("user_defined_api_discovery_policy"))
+		if err := fv(ctx, m.GetUserDefinedApiDiscoveryPolicy(), vOpts...); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -706,6 +1146,7 @@ var DefaultReplaceSpecTypeValidator = func() *ValidateReplaceSpecType {
 		panic(errMsg)
 	}
 	v.FldValidators["custom_auth_types"] = vFn
+	v.FldValidators["user_defined_api_discovery_policy"] = UserDefinedApiDiscoveryPolicyValidator().Validate
 
 	return v
 }()
@@ -714,11 +1155,407 @@ func ReplaceSpecTypeValidator() db.Validator {
 	return DefaultReplaceSpecTypeValidator
 }
 
+// augmented methods on protoc/std generated struct
+
+func (m *RuleProperties) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *RuleProperties) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *RuleProperties) DeepCopy() *RuleProperties {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &RuleProperties{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *RuleProperties) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *RuleProperties) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return RulePropertiesValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateRuleProperties struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateRuleProperties) CriteriaValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for criteria")
+	}
+	return validatorFn, nil
+}
+
+func (v *ValidateRuleProperties) CriteriaPatternValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	oValidatorFn_Pattern, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for pattern")
+	}
+	return oValidatorFn_Pattern, nil
+}
+func (v *ValidateRuleProperties) RuleTypeChoiceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for rule_type_choice")
+	}
+	return validatorFn, nil
+}
+
+func (v *ValidateRuleProperties) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*RuleProperties)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *RuleProperties got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+
+	if fv, exists := v.FldValidators["criteria"]; exists {
+		val := m.GetCriteria()
+		vOpts := append(opts,
+			db.WithValidateField("criteria"),
+		)
+		if err := fv(ctx, val, vOpts...); err != nil {
+			return err
+		}
+	}
+
+	switch m.GetCriteria().(type) {
+	case *RuleProperties_HttpHeaderCriteria:
+		if fv, exists := v.FldValidators["criteria.http_header_criteria"]; exists {
+			val := m.GetCriteria().(*RuleProperties_HttpHeaderCriteria).HttpHeaderCriteria
+			vOpts := append(opts,
+				db.WithValidateField("criteria"),
+				db.WithValidateField("http_header_criteria"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *RuleProperties_Pattern:
+		if fv, exists := v.FldValidators["criteria.pattern"]; exists {
+			val := m.GetCriteria().(*RuleProperties_Pattern).Pattern
+			vOpts := append(opts,
+				db.WithValidateField("criteria"),
+				db.WithValidateField("pattern"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+
+	if fv, exists := v.FldValidators["rule_type_choice"]; exists {
+		val := m.GetRuleTypeChoice()
+		vOpts := append(opts,
+			db.WithValidateField("rule_type_choice"),
+		)
+		if err := fv(ctx, val, vOpts...); err != nil {
+			return err
+		}
+	}
+
+	switch m.GetRuleTypeChoice().(type) {
+	case *RuleProperties_Exclusion:
+		if fv, exists := v.FldValidators["rule_type_choice.exclusion"]; exists {
+			val := m.GetRuleTypeChoice().(*RuleProperties_Exclusion).Exclusion
+			vOpts := append(opts,
+				db.WithValidateField("rule_type_choice"),
+				db.WithValidateField("exclusion"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *RuleProperties_Inclusion:
+		if fv, exists := v.FldValidators["rule_type_choice.inclusion"]; exists {
+			val := m.GetRuleTypeChoice().(*RuleProperties_Inclusion).Inclusion
+			vOpts := append(opts,
+				db.WithValidateField("rule_type_choice"),
+				db.WithValidateField("inclusion"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultRulePropertiesValidator = func() *ValidateRuleProperties {
+	v := &ValidateRuleProperties{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+	vrhCriteria := v.CriteriaValidationRuleHandler
+	rulesCriteria := map[string]string{
+		"ves.io.schema.rules.message.required_oneof": "true",
+	}
+	vFn, err = vrhCriteria(rulesCriteria)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for RuleProperties.criteria: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["criteria"] = vFn
+	vrhCriteriaPattern := v.CriteriaPatternValidationRuleHandler
+	rulesCriteriaPattern := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+		"ves.io.schema.rules.string.max_bytes": "512",
+		"ves.io.schema.rules.string.not_empty": "true",
+	}
+	vFnMap["criteria.pattern"], err = vrhCriteriaPattern(rulesCriteriaPattern)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for oneof field RuleProperties.criteria_pattern: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["criteria.pattern"] = vFnMap["criteria.pattern"]
+	vrhRuleTypeChoice := v.RuleTypeChoiceValidationRuleHandler
+	rulesRuleTypeChoice := map[string]string{
+		"ves.io.schema.rules.message.required_oneof": "true",
+	}
+	vFn, err = vrhRuleTypeChoice(rulesRuleTypeChoice)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for RuleProperties.rule_type_choice: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["rule_type_choice"] = vFn
+	v.FldValidators["criteria.http_header_criteria"] = HTTPHeaderCriteriaValidator().Validate
+	v.FldValidators["rule_type_choice.exclusion"] = ExclusionConfigValidator().Validate
+
+	return v
+}()
+
+func RulePropertiesValidator() db.Validator {
+	return DefaultRulePropertiesValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *UserDefinedApiDiscoveryPolicy) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *UserDefinedApiDiscoveryPolicy) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *UserDefinedApiDiscoveryPolicy) DeepCopy() *UserDefinedApiDiscoveryPolicy {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &UserDefinedApiDiscoveryPolicy{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *UserDefinedApiDiscoveryPolicy) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *UserDefinedApiDiscoveryPolicy) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return UserDefinedApiDiscoveryPolicyValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateUserDefinedApiDiscoveryPolicy struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateUserDefinedApiDiscoveryPolicy) DefaultBehaviorChoiceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for default_behavior_choice")
+	}
+	return validatorFn, nil
+}
+func (v *ValidateUserDefinedApiDiscoveryPolicy) DiscoveryRulesValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepMessageItemRules(rules)
+	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Message ValidationRuleHandler for discovery_rules")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []*DiscoveryRule, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+			if err := DiscoveryRuleValidator().Validate(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for discovery_rules")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]*DiscoveryRule)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []*DiscoveryRule, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
+			if err != nil {
+				return errors.Wrapf(err, "Converting %v to JSON", elem)
+			}
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated discovery_rules")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items discovery_rules")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateUserDefinedApiDiscoveryPolicy) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*UserDefinedApiDiscoveryPolicy)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *UserDefinedApiDiscoveryPolicy got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+
+	if fv, exists := v.FldValidators["default_behavior_choice"]; exists {
+		val := m.GetDefaultBehaviorChoice()
+		vOpts := append(opts,
+			db.WithValidateField("default_behavior_choice"),
+		)
+		if err := fv(ctx, val, vOpts...); err != nil {
+			return err
+		}
+	}
+
+	switch m.GetDefaultBehaviorChoice().(type) {
+	case *UserDefinedApiDiscoveryPolicy_Inclusive:
+		if fv, exists := v.FldValidators["default_behavior_choice.inclusive"]; exists {
+			val := m.GetDefaultBehaviorChoice().(*UserDefinedApiDiscoveryPolicy_Inclusive).Inclusive
+			vOpts := append(opts,
+				db.WithValidateField("default_behavior_choice"),
+				db.WithValidateField("inclusive"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *UserDefinedApiDiscoveryPolicy_Exclusive:
+		if fv, exists := v.FldValidators["default_behavior_choice.exclusive"]; exists {
+			val := m.GetDefaultBehaviorChoice().(*UserDefinedApiDiscoveryPolicy_Exclusive).Exclusive
+			vOpts := append(opts,
+				db.WithValidateField("default_behavior_choice"),
+				db.WithValidateField("exclusive"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	if fv, exists := v.FldValidators["discovery_rules"]; exists {
+		vOpts := append(opts, db.WithValidateField("discovery_rules"))
+		if err := fv(ctx, m.GetDiscoveryRules(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultUserDefinedApiDiscoveryPolicyValidator = func() *ValidateUserDefinedApiDiscoveryPolicy {
+	v := &ValidateUserDefinedApiDiscoveryPolicy{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+	vrhDefaultBehaviorChoice := v.DefaultBehaviorChoiceValidationRuleHandler
+	rulesDefaultBehaviorChoice := map[string]string{
+		"ves.io.schema.rules.message.required_oneof": "true",
+	}
+	vFn, err = vrhDefaultBehaviorChoice(rulesDefaultBehaviorChoice)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for UserDefinedApiDiscoveryPolicy.default_behavior_choice: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["default_behavior_choice"] = vFn
+
+	vrhDiscoveryRules := v.DiscoveryRulesValidationRuleHandler
+	rulesDiscoveryRules := map[string]string{
+		"ves.io.schema.rules.repeated.max_items": "100",
+		"ves.io.schema.rules.repeated.unique":    "true",
+	}
+	vFn, err = vrhDiscoveryRules(rulesDiscoveryRules)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for UserDefinedApiDiscoveryPolicy.discovery_rules: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["discovery_rules"] = vFn
+	v.FldValidators["default_behavior_choice.exclusive"] = ExclusionConfigValidator().Validate
+
+	return v
+}()
+
+func UserDefinedApiDiscoveryPolicyValidator() db.Validator {
+	return DefaultUserDefinedApiDiscoveryPolicyValidator
+}
+
 func (m *CreateSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	if f == nil {
 		return
 	}
 	m.CustomAuthTypes = f.GetCustomAuthTypes()
+	m.UserDefinedApiDiscoveryPolicy = f.GetUserDefinedApiDiscoveryPolicy()
 }
 
 func (m *CreateSpecType) FromGlobalSpecType(f *GlobalSpecType) {
@@ -737,6 +1574,7 @@ func (m *CreateSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) 
 	_ = m1
 
 	f.CustomAuthTypes = m1.CustomAuthTypes
+	f.UserDefinedApiDiscoveryPolicy = m1.UserDefinedApiDiscoveryPolicy
 }
 
 func (m *CreateSpecType) ToGlobalSpecType(f *GlobalSpecType) {
@@ -752,6 +1590,7 @@ func (m *GetSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 		return
 	}
 	m.CustomAuthTypes = f.GetCustomAuthTypes()
+	m.UserDefinedApiDiscoveryPolicy = f.GetUserDefinedApiDiscoveryPolicy()
 }
 
 func (m *GetSpecType) FromGlobalSpecType(f *GlobalSpecType) {
@@ -770,6 +1609,7 @@ func (m *GetSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	_ = m1
 
 	f.CustomAuthTypes = m1.CustomAuthTypes
+	f.UserDefinedApiDiscoveryPolicy = m1.UserDefinedApiDiscoveryPolicy
 }
 
 func (m *GetSpecType) ToGlobalSpecType(f *GlobalSpecType) {
@@ -785,6 +1625,7 @@ func (m *ReplaceSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy boo
 		return
 	}
 	m.CustomAuthTypes = f.GetCustomAuthTypes()
+	m.UserDefinedApiDiscoveryPolicy = f.GetUserDefinedApiDiscoveryPolicy()
 }
 
 func (m *ReplaceSpecType) FromGlobalSpecType(f *GlobalSpecType) {
@@ -803,6 +1644,7 @@ func (m *ReplaceSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool)
 	_ = m1
 
 	f.CustomAuthTypes = m1.CustomAuthTypes
+	f.UserDefinedApiDiscoveryPolicy = m1.UserDefinedApiDiscoveryPolicy
 }
 
 func (m *ReplaceSpecType) ToGlobalSpecType(f *GlobalSpecType) {

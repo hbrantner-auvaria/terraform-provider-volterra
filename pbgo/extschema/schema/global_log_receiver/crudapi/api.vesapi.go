@@ -1791,7 +1791,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2015,7 +2015,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2269,7 +2269,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -3335,9 +3335,9 @@ var APISwaggerJSON string = `{
                     "x-displayname": "IBM QRadar Receiver"
                 },
                 "request_logs": {
-                    "description": "Exclusive with [audit_logs dns_logs security_events]\n Send Request Logs (corresponding to Load Balancer access logs)",
+                    "description": "Exclusive with [audit_logs dns_logs security_events]\n Send Request Logs (corresponding to Load Balancer access logs).\n Allows selection between sampled or unsampled (full) logs.",
                     "title": "Request Logs",
-                    "$ref": "#/definitions/schemaEmpty",
+                    "$ref": "#/definitions/global_log_receiverRequestLogsConfig",
                     "x-displayname": "Request Logs"
                 },
                 "s3_receiver": {
@@ -3629,6 +3629,28 @@ var APISwaggerJSON string = `{
                     "title": "Use TLS",
                     "$ref": "#/definitions/global_log_receiverTLSConfigType",
                     "x-displayname": "Use TLS"
+                }
+            }
+        },
+        "global_log_receiverRequestLogsConfig": {
+            "type": "object",
+            "description": "Configuration for request logs with sampling choice.\nAllows selection between sampled (default) or unsampled (full) request logs.",
+            "title": "Request Logs Configuration",
+            "x-displayname": "Request Logs Configuration",
+            "x-ves-oneof-field-sampling_choice": "[\"sampled\",\"unsampled\"]",
+            "x-ves-proto-message": "ves.io.schema.global_log_receiver.RequestLogsConfig",
+            "properties": {
+                "sampled": {
+                    "description": "Exclusive with [unsampled]\n Sampled request logs delivered via Kafka pipeline (default)",
+                    "title": "Sampled Request Logs",
+                    "$ref": "#/definitions/schemaEmpty",
+                    "x-displayname": "Sampled"
+                },
+                "unsampled": {
+                    "description": "Exclusive with [sampled]\n Full (unsampled) request logs delivered via S3 file-based pipeline.\n Note: Unsampled logs require additional infrastructure and may have higher latency.",
+                    "title": "Unsampled Request Logs",
+                    "$ref": "#/definitions/schemaEmpty",
+                    "x-displayname": "Unsampled"
                 }
             }
         },

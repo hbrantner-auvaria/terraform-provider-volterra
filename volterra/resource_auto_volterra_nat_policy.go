@@ -2051,6 +2051,7 @@ func resourceVolterraNatPolicyRead(d *schema.ResourceData, meta interface{}) err
 		}
 		return fmt.Errorf("Error finding Volterra NatPolicy %q: %s", d.Id(), err)
 	}
+
 	return setNatPolicyFields(client, d, resp)
 }
 
@@ -3273,5 +3274,11 @@ func resourceVolterraNatPolicyDelete(d *schema.ResourceData, meta interface{}) e
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_nat_policy.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_nat_policy.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting NatPolicy: %w", err)
+	}
+	return nil
+
 }

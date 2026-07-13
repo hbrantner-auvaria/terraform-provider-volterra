@@ -22,8 +22,10 @@ resource "volterra_cloud_credentials" "example" {
 
   // One of the arguments from this list "aws_assume_role aws_secret_key azure_client_secret azure_pfx_certificate gcp_cred_file" must be set
 
-  gcp_cred_file {
-    credential_file {
+  aws_secret_key {
+    access_key = "value"
+
+    secret_key {
       blindfold_secret_info_internal {
         decryption_provider = "value"
 

@@ -622,6 +622,7 @@ func (c *CustomDataAPIRestClient) doRPCGetTGWRouteTables(ctx context.Context, ca
 		for _, item := range req.RouteTableIds {
 			q.Add("route_table_ids", fmt.Sprintf("%v", item))
 		}
+		q.Add("site", fmt.Sprintf("%v", req.Site))
 
 		hReq.URL.RawQuery += q.Encode()
 	case "delete":
@@ -2295,6 +2296,14 @@ var CustomDataAPISwaggerJSON string = `{
                         },
                         "collectionFormat": "multi",
                         "x-displayname": "TGW Attachment Ids"
+                    },
+                    {
+                        "name": "site",
+                        "description": "\nx-example: \"ce01\"\nName of the site",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "x-displayname": "Site"
                     }
                 ],
                 "tags": [
@@ -3392,6 +3401,12 @@ var CustomDataAPISwaggerJSON string = `{
                         "$ref": "#/definitions/ioschemaObjectRefType"
                     },
                     "x-displayname": "Segment"
+                },
+                "tags": {
+                    "type": "object",
+                    "description": " Transit gateway attachment tags",
+                    "title": "Tags",
+                    "x-displayname": "Tags"
                 }
             }
         },
@@ -3790,13 +3805,14 @@ var CustomDataAPISwaggerJSON string = `{
         },
         "topologyInterfaceTypeEnum": {
             "type": "string",
-            "description": " - INSIDE: INSIDE Interface\n\n - WORKLOAD: Workload Interface\n\n - NOT_APPLICABLE: NOT_APPLICABLE\n\nEx - When the subnet belongs to a azure spoke vnet",
+            "description": " - INSIDE: INSIDE Interface\n\n - WORKLOAD: Workload Interface\n\n - NOT_APPLICABLE: NOT_APPLICABLE\n\nEx - When the subnet belongs to a azure spoke vnet\n - SEGMENT: SEGMENT Interface\n",
             "title": "- OUTSIDE: OUTSIDE Interface",
             "enum": [
                 "OUTSIDE",
                 "INSIDE",
                 "WORKLOAD",
-                "NOT_APPLICABLE"
+                "NOT_APPLICABLE",
+                "SEGMENT"
             ],
             "default": "OUTSIDE",
             "x-displayname": "",
@@ -3939,6 +3955,15 @@ var CustomDataAPISwaggerJSON string = `{
             "x-displayname": "MetaType",
             "x-ves-proto-message": "ves.io.schema.topology.MetaType",
             "properties": {
+                "cloud_user_accounts": {
+                    "type": "array",
+                    "description": " Reference to cloud user account to fetch cloud resources.",
+                    "title": "Cloud User Account",
+                    "items": {
+                        "$ref": "#/definitions/ioschemaObjectRefType"
+                    },
+                    "x-displayname": "Cloud User Account"
+                },
                 "creds": {
                     "type": "array",
                     "description": " Reference to cloud credentials to fetch cloud resources.",

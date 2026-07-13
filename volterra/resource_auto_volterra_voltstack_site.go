@@ -406,7 +406,723 @@ func resourceVolterraVoltstackSite() *schema.Resource {
 										Optional:   true,
 										Deprecated: "This field is deprecated and will be removed in future release.",
 										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{},
+											Schema: map[string]*schema.Schema{
+
+												"bfd_disabled": {
+
+													Type:       schema.TypeBool,
+													Optional:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
+												},
+
+												"bfd_enabled": {
+
+													Type:       schema.TypeList,
+													MaxItems:   1,
+													Optional:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
+													Elem: &schema.Resource{
+														Schema: map[string]*schema.Schema{
+
+															"multiplier": {
+																Type:       schema.TypeInt,
+																Required:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+
+															"receive_interval_milliseconds": {
+																Type:       schema.TypeInt,
+																Required:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+
+															"transmit_interval_milliseconds": {
+																Type:       schema.TypeInt,
+																Required:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+														},
+													},
+												},
+
+												"disable": {
+
+													Type:       schema.TypeBool,
+													Optional:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
+												},
+
+												"routing_policies": {
+
+													Type:       schema.TypeList,
+													MaxItems:   1,
+													Optional:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
+													Elem: &schema.Resource{
+														Schema: map[string]*schema.Schema{
+
+															"route_policy": {
+
+																Type:       schema.TypeList,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"inbound": {
+
+																			Type:       schema.TypeBool,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																		},
+
+																		"outbound": {
+
+																			Type:       schema.TypeBool,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																		},
+
+																		"all_nodes": {
+
+																			Type:       schema.TypeBool,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																		},
+
+																		"node_name": {
+
+																			Type:       schema.TypeList,
+																			MaxItems:   1,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																			Elem: &schema.Resource{
+																				Schema: map[string]*schema.Schema{
+
+																					"node": {
+																						Type: schema.TypeList,
+
+																						Optional:   true,
+																						Deprecated: "This field is deprecated and will be removed in future release.",
+																						Elem: &schema.Schema{
+																							Type: schema.TypeString,
+																						},
+																					},
+																				},
+																			},
+																		},
+
+																		"object_refs": {
+																			Type:       schema.TypeList,
+																			Required:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																			Elem: &schema.Resource{
+																				Schema: map[string]*schema.Schema{
+
+																					"kind": {
+																						Type:       schema.TypeString,
+																						Computed:   true,
+																						Deprecated: "This field is deprecated and will be removed in future release.",
+																					},
+
+																					"name": {
+																						Type:       schema.TypeString,
+																						Optional:   true,
+																						Deprecated: "This field is deprecated and will be removed in future release.",
+																					},
+																					"namespace": {
+																						Type:       schema.TypeString,
+																						Optional:   true,
+																						Deprecated: "This field is deprecated and will be removed in future release.",
+																					},
+																					"tenant": {
+																						Type:       schema.TypeString,
+																						Optional:   true,
+																						Deprecated: "This field is deprecated and will be removed in future release.",
+																					},
+																				},
+																			},
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+
+												"label": {
+													Type:       schema.TypeString,
+													Optional:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
+												},
+
+												"metadata": {
+
+													Type:       schema.TypeList,
+													MaxItems:   1,
+													Required:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
+													Elem: &schema.Resource{
+														Schema: map[string]*schema.Schema{
+
+															"description": {
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+
+															"disable": {
+																Type:       schema.TypeBool,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+
+															"name": {
+																Type:       schema.TypeString,
+																Required:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+														},
+													},
+												},
+
+												"passive_mode_disabled": {
+
+													Type:       schema.TypeBool,
+													Optional:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
+												},
+
+												"passive_mode_enabled": {
+
+													Type:       schema.TypeBool,
+													Optional:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
+												},
+
+												"target_service": {
+													Type:       schema.TypeString,
+													Optional:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
+												},
+
+												"external": {
+
+													Type:       schema.TypeList,
+													MaxItems:   1,
+													Optional:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
+													Elem: &schema.Resource{
+														Schema: map[string]*schema.Schema{
+
+															"address": {
+
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+
+															"default_gateway": {
+
+																Type:       schema.TypeBool,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+
+															"disable": {
+
+																Type:       schema.TypeBool,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+
+															"external_connector": {
+
+																Type:       schema.TypeBool,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+
+															"from_site": {
+
+																Type:       schema.TypeBool,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+
+															"subnet_begin_offset": {
+
+																Type:       schema.TypeInt,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+
+															"subnet_end_offset": {
+
+																Type:       schema.TypeInt,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+
+															"address_ipv6": {
+
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+
+															"default_gateway_v6": {
+
+																Type:       schema.TypeBool,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+
+															"disable_v6": {
+
+																Type:       schema.TypeBool,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+
+															"from_site_v6": {
+
+																Type:       schema.TypeBool,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+
+															"subnet_begin_offset_v6": {
+
+																Type:       schema.TypeInt,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+
+															"subnet_end_offset_v6": {
+
+																Type:       schema.TypeInt,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+
+															"asn": {
+																Type:       schema.TypeInt,
+																Required:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+
+															"md5_auth_key": {
+
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+
+															"no_authentication": {
+
+																Type:       schema.TypeBool,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+
+															"family_inet": {
+
+																Type:       schema.TypeList,
+																MaxItems:   1,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"disable": {
+
+																			Type:       schema.TypeBool,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																		},
+
+																		"enable": {
+
+																			Type:       schema.TypeList,
+																			MaxItems:   1,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																			Elem: &schema.Resource{
+																				Schema: map[string]*schema.Schema{
+
+																					"aggregation": {
+
+																						Type:       schema.TypeList,
+																						Optional:   true,
+																						Deprecated: "This field is deprecated and will be removed in future release.",
+																						Elem: &schema.Resource{
+																							Schema: map[string]*schema.Schema{
+
+																								"ip_prefix": {
+																									Type:       schema.TypeString,
+																									Optional:   true,
+																									Deprecated: "This field is deprecated and will be removed in future release.",
+																								},
+
+																								"options": {
+
+																									Type:       schema.TypeList,
+																									Optional:   true,
+																									Deprecated: "This field is deprecated and will be removed in future release.",
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"summary_only": {
+
+																												Type:       schema.TypeBool,
+																												Optional:   true,
+																												Deprecated: "This field is deprecated and will be removed in future release.",
+																											},
+																										},
+																									},
+																								},
+																							},
+																						},
+																					},
+																				},
+																			},
+																		},
+																	},
+																},
+															},
+
+															"family_inet_v6": {
+
+																Type:       schema.TypeList,
+																MaxItems:   1,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"disable": {
+
+																			Type:       schema.TypeBool,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																		},
+
+																		"enable": {
+
+																			Type:       schema.TypeList,
+																			MaxItems:   1,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																			Elem: &schema.Resource{
+																				Schema: map[string]*schema.Schema{
+
+																					"aggregation": {
+
+																						Type:       schema.TypeList,
+																						Optional:   true,
+																						Deprecated: "This field is deprecated and will be removed in future release.",
+																						Elem: &schema.Resource{
+																							Schema: map[string]*schema.Schema{
+
+																								"ip_prefix": {
+																									Type:       schema.TypeString,
+																									Optional:   true,
+																									Deprecated: "This field is deprecated and will be removed in future release.",
+																								},
+
+																								"options": {
+
+																									Type:       schema.TypeList,
+																									Optional:   true,
+																									Deprecated: "This field is deprecated and will be removed in future release.",
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"summary_only": {
+
+																												Type:       schema.TypeBool,
+																												Optional:   true,
+																												Deprecated: "This field is deprecated and will be removed in future release.",
+																											},
+																										},
+																									},
+																								},
+																							},
+																						},
+																					},
+																				},
+																			},
+																		},
+																	},
+																},
+															},
+
+															"inside_interfaces": {
+
+																Type:       schema.TypeBool,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+
+															"interface": {
+
+																Type:       schema.TypeList,
+																MaxItems:   1,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"name": {
+																			Type:       schema.TypeString,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																		},
+																		"namespace": {
+																			Type:       schema.TypeString,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																		},
+																		"tenant": {
+																			Type:       schema.TypeString,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																		},
+																	},
+																},
+															},
+
+															"interface_list": {
+
+																Type:       schema.TypeList,
+																MaxItems:   1,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"interfaces": {
+																			Type:       schema.TypeList,
+																			Required:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																			Elem: &schema.Resource{
+																				Schema: map[string]*schema.Schema{
+
+																					"name": {
+																						Type:       schema.TypeString,
+																						Optional:   true,
+																						Deprecated: "This field is deprecated and will be removed in future release.",
+																					},
+																					"namespace": {
+																						Type:       schema.TypeString,
+																						Optional:   true,
+																						Deprecated: "This field is deprecated and will be removed in future release.",
+																					},
+																					"tenant": {
+																						Type:       schema.TypeString,
+																						Optional:   true,
+																						Deprecated: "This field is deprecated and will be removed in future release.",
+																					},
+																				},
+																			},
+																		},
+																	},
+																},
+															},
+
+															"outside_interfaces": {
+
+																Type:       schema.TypeBool,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+
+															"port": {
+																Type:       schema.TypeInt,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+														},
+													},
+												},
+
+												"internal": {
+
+													Type:       schema.TypeList,
+													MaxItems:   1,
+													Optional:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
+													Elem: &schema.Resource{
+														Schema: map[string]*schema.Schema{
+
+															"address": {
+
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+
+															"dns_name": {
+
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+
+															"from_site": {
+
+																Type:       schema.TypeBool,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+
+															"family_inet6vpn": {
+
+																Type:       schema.TypeList,
+																MaxItems:   1,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"disable": {
+
+																			Type:       schema.TypeBool,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																		},
+
+																		"enable": {
+
+																			Type:       schema.TypeBool,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																		},
+																	},
+																},
+															},
+
+															"family_inetvpn": {
+
+																Type:       schema.TypeList,
+																MaxItems:   1,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"disable": {
+
+																			Type:       schema.TypeBool,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																		},
+
+																		"enable": {
+
+																			Type:       schema.TypeList,
+																			MaxItems:   1,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																			Elem: &schema.Resource{
+																				Schema: map[string]*schema.Schema{
+
+																					"disable": {
+
+																						Type:       schema.TypeBool,
+																						Optional:   true,
+																						Deprecated: "This field is deprecated and will be removed in future release.",
+																					},
+
+																					"enable": {
+
+																						Type:       schema.TypeBool,
+																						Optional:   true,
+																						Deprecated: "This field is deprecated and will be removed in future release.",
+																					},
+																				},
+																			},
+																		},
+																	},
+																},
+															},
+
+															"family_rtarget": {
+
+																Type:       schema.TypeList,
+																MaxItems:   1,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"disable": {
+
+																			Type:       schema.TypeBool,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																		},
+
+																		"enable": {
+
+																			Type:       schema.TypeBool,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																		},
+																	},
+																},
+															},
+
+															"family_uuidvpn": {
+
+																Type:       schema.TypeList,
+																MaxItems:   1,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"disable": {
+
+																			Type:       schema.TypeBool,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																		},
+
+																		"enable": {
+
+																			Type:       schema.TypeBool,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																		},
+																	},
+																},
+															},
+
+															"disable_mtls": {
+
+																Type:       schema.TypeBool,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+
+															"enable_mtls": {
+
+																Type:       schema.TypeBool,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+
+															"port": {
+																Type:       schema.TypeInt,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+														},
+													},
+												},
+											},
 										},
 									},
 								},
@@ -596,11 +1312,6 @@ func resourceVolterraVoltstackSite() *schema.Resource {
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
 
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
-
 																		"name": {
 																			Type:     schema.TypeString,
 																			Optional: true,
@@ -634,11 +1345,6 @@ func resourceVolterraVoltstackSite() *schema.Resource {
 																Required: true,
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
-
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
 
 																		"name": {
 																			Type:     schema.TypeString,
@@ -8104,7 +8810,1045 @@ func resourceVolterraVoltstackSiteCreate(d *schema.ResourceData, meta interface{
 								for i, set := range sl {
 									if set != nil {
 										peers[i] = &ves_io_schema_bgp.Peer{}
-										_ = set.(map[string]interface{})
+										peersMapStrToI := set.(map[string]interface{})
+
+										bfdChoiceTypeFound := false
+
+										if v, ok := peersMapStrToI["bfd_disabled"]; ok && !isIntfNil(v) && !bfdChoiceTypeFound {
+
+											bfdChoiceTypeFound = true
+
+											if v.(bool) {
+												bfdChoiceInt := &ves_io_schema_bgp.Peer_BfdDisabled{}
+												bfdChoiceInt.BfdDisabled = &ves_io_schema.Empty{}
+												peers[i].BfdChoice = bfdChoiceInt
+											}
+
+										}
+
+										if v, ok := peersMapStrToI["bfd_enabled"]; ok && !isIntfNil(v) && !bfdChoiceTypeFound {
+
+											bfdChoiceTypeFound = true
+											bfdChoiceInt := &ves_io_schema_bgp.Peer_BfdEnabled{}
+											bfdChoiceInt.BfdEnabled = &ves_io_schema_bgp.BFD{}
+											peers[i].BfdChoice = bfdChoiceInt
+
+											sl := v.([]interface{})
+											for _, set := range sl {
+												if set != nil {
+													cs := set.(map[string]interface{})
+
+													if v, ok := cs["multiplier"]; ok && !isIntfNil(v) {
+
+														bfdChoiceInt.BfdEnabled.Multiplier = uint32(v.(int))
+
+													}
+
+													if v, ok := cs["receive_interval_milliseconds"]; ok && !isIntfNil(v) {
+
+														bfdChoiceInt.BfdEnabled.ReceiveIntervalMilliseconds = uint32(v.(int))
+
+													}
+
+													if v, ok := cs["transmit_interval_milliseconds"]; ok && !isIntfNil(v) {
+
+														bfdChoiceInt.BfdEnabled.TransmitIntervalMilliseconds = uint32(v.(int))
+
+													}
+
+												}
+											}
+
+										}
+
+										enableChoiceTypeFound := false
+
+										if v, ok := peersMapStrToI["disable"]; ok && !isIntfNil(v) && !enableChoiceTypeFound {
+
+											enableChoiceTypeFound = true
+
+											if v.(bool) {
+												enableChoiceInt := &ves_io_schema_bgp.Peer_Disable{}
+												enableChoiceInt.Disable = &ves_io_schema.Empty{}
+												peers[i].EnableChoice = enableChoiceInt
+											}
+
+										}
+
+										if v, ok := peersMapStrToI["routing_policies"]; ok && !isIntfNil(v) && !enableChoiceTypeFound {
+
+											enableChoiceTypeFound = true
+											enableChoiceInt := &ves_io_schema_bgp.Peer_RoutingPolicies{}
+											enableChoiceInt.RoutingPolicies = &ves_io_schema_bgp.BgpRoutePolicies{}
+											peers[i].EnableChoice = enableChoiceInt
+
+											sl := v.([]interface{})
+											for _, set := range sl {
+												if set != nil {
+													cs := set.(map[string]interface{})
+
+													if v, ok := cs["route_policy"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														routePolicy := make([]*ves_io_schema_bgp.BgpRoutePolicy, len(sl))
+														enableChoiceInt.RoutingPolicies.RoutePolicy = routePolicy
+														for i, set := range sl {
+															if set != nil {
+																routePolicy[i] = &ves_io_schema_bgp.BgpRoutePolicy{}
+																routePolicyMapStrToI := set.(map[string]interface{})
+
+																directionTypeFound := false
+
+																if v, ok := routePolicyMapStrToI["inbound"]; ok && !isIntfNil(v) && !directionTypeFound {
+
+																	directionTypeFound = true
+
+																	if v.(bool) {
+																		directionInt := &ves_io_schema_bgp.BgpRoutePolicy_Inbound{}
+																		directionInt.Inbound = &ves_io_schema.Empty{}
+																		routePolicy[i].Direction = directionInt
+																	}
+
+																}
+
+																if v, ok := routePolicyMapStrToI["outbound"]; ok && !isIntfNil(v) && !directionTypeFound {
+
+																	directionTypeFound = true
+
+																	if v.(bool) {
+																		directionInt := &ves_io_schema_bgp.BgpRoutePolicy_Outbound{}
+																		directionInt.Outbound = &ves_io_schema.Empty{}
+																		routePolicy[i].Direction = directionInt
+																	}
+
+																}
+
+																nodeChoiceTypeFound := false
+
+																if v, ok := routePolicyMapStrToI["all_nodes"]; ok && !isIntfNil(v) && !nodeChoiceTypeFound {
+
+																	nodeChoiceTypeFound = true
+
+																	if v.(bool) {
+																		nodeChoiceInt := &ves_io_schema_bgp.BgpRoutePolicy_AllNodes{}
+																		nodeChoiceInt.AllNodes = &ves_io_schema.Empty{}
+																		routePolicy[i].NodeChoice = nodeChoiceInt
+																	}
+
+																}
+
+																if v, ok := routePolicyMapStrToI["node_name"]; ok && !isIntfNil(v) && !nodeChoiceTypeFound {
+
+																	nodeChoiceTypeFound = true
+																	nodeChoiceInt := &ves_io_schema_bgp.BgpRoutePolicy_NodeName{}
+																	nodeChoiceInt.NodeName = &ves_io_schema_bgp.Nodes{}
+																	routePolicy[i].NodeChoice = nodeChoiceInt
+
+																	sl := v.([]interface{})
+																	for _, set := range sl {
+																		if set != nil {
+																			cs := set.(map[string]interface{})
+
+																			if v, ok := cs["node"]; ok && !isIntfNil(v) {
+
+																				ls := make([]string, len(v.([]interface{})))
+																				for i, v := range v.([]interface{}) {
+																					if v == nil {
+																						return fmt.Errorf("please provide valid non-empty string value of field node")
+																					}
+																					if str, ok := v.(string); ok {
+																						ls[i] = str
+																					}
+																				}
+																				nodeChoiceInt.NodeName.Node = ls
+
+																			}
+
+																		}
+																	}
+
+																}
+
+																if v, ok := routePolicyMapStrToI["object_refs"]; ok && !isIntfNil(v) {
+																	sl := v.([]interface{})
+																	objectRefsInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+																	routePolicy[i].ObjectRefs = objectRefsInt
+																	for i, ps := range sl {
+																		if ps != nil {
+
+																			orMapToStrVal := ps.(map[string]interface{})
+																			objectRefsInt[i] = &ves_io_schema.ObjectRefType{}
+
+																			objectRefsInt[i].Kind = "bgp_routing_policy"
+
+																			if v, ok := orMapToStrVal["name"]; ok && !isIntfNil(v) {
+																				objectRefsInt[i].Name = v.(string)
+																			}
+
+																			if v, ok := orMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																				objectRefsInt[i].Namespace = v.(string)
+																			}
+
+																			if v, ok := orMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																				objectRefsInt[i].Tenant = v.(string)
+																			}
+
+																			if v, ok := orMapToStrVal["uid"]; ok && !isIntfNil(v) {
+																				objectRefsInt[i].Uid = v.(string)
+																			}
+
+																		}
+																	}
+
+																}
+
+															}
+														}
+
+													}
+
+												}
+											}
+
+										}
+
+										if w, ok := peersMapStrToI["label"]; ok && !isIntfNil(w) {
+											peers[i].Label = w.(string)
+										}
+
+										if v, ok := peersMapStrToI["metadata"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											metadata := &ves_io_schema.MessageMetaType{}
+											peers[i].Metadata = metadata
+											for _, set := range sl {
+												if set != nil {
+													metadataMapStrToI := set.(map[string]interface{})
+
+													if w, ok := metadataMapStrToI["description"]; ok && !isIntfNil(w) {
+														metadata.Description = w.(string)
+													}
+
+													if w, ok := metadataMapStrToI["disable"]; ok && !isIntfNil(w) {
+														metadata.Disable = w.(bool)
+													}
+
+													if w, ok := metadataMapStrToI["name"]; ok && !isIntfNil(w) {
+														metadata.Name = w.(string)
+													}
+
+												}
+											}
+
+										}
+
+										passiveChoiceTypeFound := false
+
+										if v, ok := peersMapStrToI["passive_mode_disabled"]; ok && !isIntfNil(v) && !passiveChoiceTypeFound {
+
+											passiveChoiceTypeFound = true
+
+											if v.(bool) {
+												passiveChoiceInt := &ves_io_schema_bgp.Peer_PassiveModeDisabled{}
+												passiveChoiceInt.PassiveModeDisabled = &ves_io_schema.Empty{}
+												peers[i].PassiveChoice = passiveChoiceInt
+											}
+
+										}
+
+										if v, ok := peersMapStrToI["passive_mode_enabled"]; ok && !isIntfNil(v) && !passiveChoiceTypeFound {
+
+											passiveChoiceTypeFound = true
+
+											if v.(bool) {
+												passiveChoiceInt := &ves_io_schema_bgp.Peer_PassiveModeEnabled{}
+												passiveChoiceInt.PassiveModeEnabled = &ves_io_schema.Empty{}
+												peers[i].PassiveChoice = passiveChoiceInt
+											}
+
+										}
+
+										if w, ok := peersMapStrToI["target_service"]; ok && !isIntfNil(w) {
+											peers[i].TargetService = w.(string)
+										}
+
+										typeChoiceTypeFound := false
+
+										if v, ok := peersMapStrToI["external"]; ok && !isIntfNil(v) && !typeChoiceTypeFound {
+
+											typeChoiceTypeFound = true
+											typeChoiceInt := &ves_io_schema_bgp.Peer_External{}
+											typeChoiceInt.External = &ves_io_schema_bgp.PeerExternal{}
+											peers[i].TypeChoice = typeChoiceInt
+
+											sl := v.([]interface{})
+											for _, set := range sl {
+												if set != nil {
+													cs := set.(map[string]interface{})
+
+													addressChoiceTypeFound := false
+
+													if v, ok := cs["address"]; ok && !isIntfNil(v) && !addressChoiceTypeFound {
+
+														addressChoiceTypeFound = true
+														addressChoiceInt := &ves_io_schema_bgp.PeerExternal_Address{}
+
+														typeChoiceInt.External.AddressChoice = addressChoiceInt
+
+														addressChoiceInt.Address = v.(string)
+
+													}
+
+													if v, ok := cs["default_gateway"]; ok && !isIntfNil(v) && !addressChoiceTypeFound {
+
+														addressChoiceTypeFound = true
+
+														if v.(bool) {
+															addressChoiceInt := &ves_io_schema_bgp.PeerExternal_DefaultGateway{}
+															addressChoiceInt.DefaultGateway = &ves_io_schema.Empty{}
+															typeChoiceInt.External.AddressChoice = addressChoiceInt
+														}
+
+													}
+
+													if v, ok := cs["disable"]; ok && !isIntfNil(v) && !addressChoiceTypeFound {
+
+														addressChoiceTypeFound = true
+
+														if v.(bool) {
+															addressChoiceInt := &ves_io_schema_bgp.PeerExternal_Disable{}
+															addressChoiceInt.Disable = &ves_io_schema.Empty{}
+															typeChoiceInt.External.AddressChoice = addressChoiceInt
+														}
+
+													}
+
+													if v, ok := cs["external_connector"]; ok && !isIntfNil(v) && !addressChoiceTypeFound {
+
+														addressChoiceTypeFound = true
+
+														if v.(bool) {
+															addressChoiceInt := &ves_io_schema_bgp.PeerExternal_ExternalConnector{}
+															addressChoiceInt.ExternalConnector = &ves_io_schema.Empty{}
+															typeChoiceInt.External.AddressChoice = addressChoiceInt
+														}
+
+													}
+
+													if v, ok := cs["from_site"]; ok && !isIntfNil(v) && !addressChoiceTypeFound {
+
+														addressChoiceTypeFound = true
+
+														if v.(bool) {
+															addressChoiceInt := &ves_io_schema_bgp.PeerExternal_FromSite{}
+															addressChoiceInt.FromSite = &ves_io_schema.Empty{}
+															typeChoiceInt.External.AddressChoice = addressChoiceInt
+														}
+
+													}
+
+													if v, ok := cs["subnet_begin_offset"]; ok && !isIntfNil(v) && !addressChoiceTypeFound {
+
+														addressChoiceTypeFound = true
+														addressChoiceInt := &ves_io_schema_bgp.PeerExternal_SubnetBeginOffset{}
+
+														typeChoiceInt.External.AddressChoice = addressChoiceInt
+
+														addressChoiceInt.SubnetBeginOffset = uint32(v.(int))
+
+													}
+
+													if v, ok := cs["subnet_end_offset"]; ok && !isIntfNil(v) && !addressChoiceTypeFound {
+
+														addressChoiceTypeFound = true
+														addressChoiceInt := &ves_io_schema_bgp.PeerExternal_SubnetEndOffset{}
+
+														typeChoiceInt.External.AddressChoice = addressChoiceInt
+
+														addressChoiceInt.SubnetEndOffset = uint32(v.(int))
+
+													}
+
+													addressChoiceV6TypeFound := false
+
+													if v, ok := cs["address_ipv6"]; ok && !isIntfNil(v) && !addressChoiceV6TypeFound {
+
+														addressChoiceV6TypeFound = true
+														addressChoiceV6Int := &ves_io_schema_bgp.PeerExternal_AddressIpv6{}
+
+														typeChoiceInt.External.AddressChoiceV6 = addressChoiceV6Int
+
+														addressChoiceV6Int.AddressIpv6 = v.(string)
+
+													}
+
+													if v, ok := cs["default_gateway_v6"]; ok && !isIntfNil(v) && !addressChoiceV6TypeFound {
+
+														addressChoiceV6TypeFound = true
+
+														if v.(bool) {
+															addressChoiceV6Int := &ves_io_schema_bgp.PeerExternal_DefaultGatewayV6{}
+															addressChoiceV6Int.DefaultGatewayV6 = &ves_io_schema.Empty{}
+															typeChoiceInt.External.AddressChoiceV6 = addressChoiceV6Int
+														}
+
+													}
+
+													if v, ok := cs["disable_v6"]; ok && !isIntfNil(v) && !addressChoiceV6TypeFound {
+
+														addressChoiceV6TypeFound = true
+
+														if v.(bool) {
+															addressChoiceV6Int := &ves_io_schema_bgp.PeerExternal_DisableV6{}
+															addressChoiceV6Int.DisableV6 = &ves_io_schema.Empty{}
+															typeChoiceInt.External.AddressChoiceV6 = addressChoiceV6Int
+														}
+
+													}
+
+													if v, ok := cs["from_site_v6"]; ok && !isIntfNil(v) && !addressChoiceV6TypeFound {
+
+														addressChoiceV6TypeFound = true
+
+														if v.(bool) {
+															addressChoiceV6Int := &ves_io_schema_bgp.PeerExternal_FromSiteV6{}
+															addressChoiceV6Int.FromSiteV6 = &ves_io_schema.Empty{}
+															typeChoiceInt.External.AddressChoiceV6 = addressChoiceV6Int
+														}
+
+													}
+
+													if v, ok := cs["subnet_begin_offset_v6"]; ok && !isIntfNil(v) && !addressChoiceV6TypeFound {
+
+														addressChoiceV6TypeFound = true
+														addressChoiceV6Int := &ves_io_schema_bgp.PeerExternal_SubnetBeginOffsetV6{}
+
+														typeChoiceInt.External.AddressChoiceV6 = addressChoiceV6Int
+
+														addressChoiceV6Int.SubnetBeginOffsetV6 = uint32(v.(int))
+
+													}
+
+													if v, ok := cs["subnet_end_offset_v6"]; ok && !isIntfNil(v) && !addressChoiceV6TypeFound {
+
+														addressChoiceV6TypeFound = true
+														addressChoiceV6Int := &ves_io_schema_bgp.PeerExternal_SubnetEndOffsetV6{}
+
+														typeChoiceInt.External.AddressChoiceV6 = addressChoiceV6Int
+
+														addressChoiceV6Int.SubnetEndOffsetV6 = uint32(v.(int))
+
+													}
+
+													if v, ok := cs["asn"]; ok && !isIntfNil(v) {
+
+														typeChoiceInt.External.Asn = uint32(v.(int))
+
+													}
+
+													authChoiceTypeFound := false
+
+													if v, ok := cs["md5_auth_key"]; ok && !isIntfNil(v) && !authChoiceTypeFound {
+
+														authChoiceTypeFound = true
+														authChoiceInt := &ves_io_schema_bgp.PeerExternal_Md5AuthKey{}
+
+														typeChoiceInt.External.AuthChoice = authChoiceInt
+
+														authChoiceInt.Md5AuthKey = v.(string)
+
+													}
+
+													if v, ok := cs["no_authentication"]; ok && !isIntfNil(v) && !authChoiceTypeFound {
+
+														authChoiceTypeFound = true
+
+														if v.(bool) {
+															authChoiceInt := &ves_io_schema_bgp.PeerExternal_NoAuthentication{}
+															authChoiceInt.NoAuthentication = &ves_io_schema.Empty{}
+															typeChoiceInt.External.AuthChoice = authChoiceInt
+														}
+
+													}
+
+													if v, ok := cs["family_inet"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														familyInet := &ves_io_schema_bgp.FamilyInet{}
+														typeChoiceInt.External.FamilyInet = familyInet
+														for _, set := range sl {
+															if set != nil {
+																familyInetMapStrToI := set.(map[string]interface{})
+
+																enableChoiceTypeFound := false
+
+																if v, ok := familyInetMapStrToI["disable"]; ok && !isIntfNil(v) && !enableChoiceTypeFound {
+
+																	enableChoiceTypeFound = true
+
+																	if v.(bool) {
+																		enableChoiceInt := &ves_io_schema_bgp.FamilyInet_Disable{}
+																		enableChoiceInt.Disable = &ves_io_schema.Empty{}
+																		familyInet.EnableChoice = enableChoiceInt
+																	}
+
+																}
+
+																if v, ok := familyInetMapStrToI["enable"]; ok && !isIntfNil(v) && !enableChoiceTypeFound {
+
+																	enableChoiceTypeFound = true
+																	enableChoiceInt := &ves_io_schema_bgp.FamilyInet_Enable{}
+																	enableChoiceInt.Enable = &ves_io_schema_bgp.UnicastIPv4{}
+																	familyInet.EnableChoice = enableChoiceInt
+
+																	sl := v.([]interface{})
+																	for _, set := range sl {
+																		if set != nil {
+																			cs := set.(map[string]interface{})
+
+																			if v, ok := cs["aggregation"]; ok && !isIntfNil(v) {
+
+																				sl := v.([]interface{})
+																				aggregation := make([]*ves_io_schema_bgp.AggregationIPv4, len(sl))
+																				enableChoiceInt.Enable.Aggregation = aggregation
+																				for i, set := range sl {
+																					if set != nil {
+																						aggregation[i] = &ves_io_schema_bgp.AggregationIPv4{}
+																						aggregationMapStrToI := set.(map[string]interface{})
+
+																						if w, ok := aggregationMapStrToI["ip_prefix"]; ok && !isIntfNil(w) {
+																							aggregation[i].IpPrefix = w.(string)
+																						}
+
+																						if v, ok := aggregationMapStrToI["options"]; ok && !isIntfNil(v) {
+
+																							sl := v.([]interface{})
+																							options := make([]*ves_io_schema_bgp.AggregationOption, len(sl))
+																							aggregation[i].Options = options
+																							for i, set := range sl {
+																								if set != nil {
+																									options[i] = &ves_io_schema_bgp.AggregationOption{}
+																									optionsMapStrToI := set.(map[string]interface{})
+
+																									aggregationChoiceTypeFound := false
+
+																									if v, ok := optionsMapStrToI["summary_only"]; ok && !isIntfNil(v) && !aggregationChoiceTypeFound {
+
+																										aggregationChoiceTypeFound = true
+
+																										if v.(bool) {
+																											aggregationChoiceInt := &ves_io_schema_bgp.AggregationOption_SummaryOnly{}
+																											aggregationChoiceInt.SummaryOnly = &ves_io_schema.Empty{}
+																											options[i].AggregationChoice = aggregationChoiceInt
+																										}
+
+																									}
+
+																								}
+																							}
+
+																						}
+
+																					}
+																				}
+
+																			}
+
+																		}
+																	}
+
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := cs["family_inet_v6"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														familyInetV6 := &ves_io_schema_bgp.FamilyInet6{}
+														typeChoiceInt.External.FamilyInetV6 = familyInetV6
+														for _, set := range sl {
+															if set != nil {
+																familyInetV6MapStrToI := set.(map[string]interface{})
+
+																enableChoiceTypeFound := false
+
+																if v, ok := familyInetV6MapStrToI["disable"]; ok && !isIntfNil(v) && !enableChoiceTypeFound {
+
+																	enableChoiceTypeFound = true
+
+																	if v.(bool) {
+																		enableChoiceInt := &ves_io_schema_bgp.FamilyInet6_Disable{}
+																		enableChoiceInt.Disable = &ves_io_schema.Empty{}
+																		familyInetV6.EnableChoice = enableChoiceInt
+																	}
+
+																}
+
+																if v, ok := familyInetV6MapStrToI["enable"]; ok && !isIntfNil(v) && !enableChoiceTypeFound {
+
+																	enableChoiceTypeFound = true
+																	enableChoiceInt := &ves_io_schema_bgp.FamilyInet6_Enable{}
+																	enableChoiceInt.Enable = &ves_io_schema_bgp.UnicastIPv6{}
+																	familyInetV6.EnableChoice = enableChoiceInt
+
+																	sl := v.([]interface{})
+																	for _, set := range sl {
+																		if set != nil {
+																			cs := set.(map[string]interface{})
+
+																			if v, ok := cs["aggregation"]; ok && !isIntfNil(v) {
+
+																				sl := v.([]interface{})
+																				aggregation := make([]*ves_io_schema_bgp.AggregationIPv6, len(sl))
+																				enableChoiceInt.Enable.Aggregation = aggregation
+																				for i, set := range sl {
+																					if set != nil {
+																						aggregation[i] = &ves_io_schema_bgp.AggregationIPv6{}
+																						aggregationMapStrToI := set.(map[string]interface{})
+
+																						if w, ok := aggregationMapStrToI["ip_prefix"]; ok && !isIntfNil(w) {
+																							aggregation[i].IpPrefix = w.(string)
+																						}
+
+																						if v, ok := aggregationMapStrToI["options"]; ok && !isIntfNil(v) {
+
+																							sl := v.([]interface{})
+																							options := make([]*ves_io_schema_bgp.AggregationOption, len(sl))
+																							aggregation[i].Options = options
+																							for i, set := range sl {
+																								if set != nil {
+																									options[i] = &ves_io_schema_bgp.AggregationOption{}
+																									optionsMapStrToI := set.(map[string]interface{})
+
+																									aggregationChoiceTypeFound := false
+
+																									if v, ok := optionsMapStrToI["summary_only"]; ok && !isIntfNil(v) && !aggregationChoiceTypeFound {
+
+																										aggregationChoiceTypeFound = true
+
+																										if v.(bool) {
+																											aggregationChoiceInt := &ves_io_schema_bgp.AggregationOption_SummaryOnly{}
+																											aggregationChoiceInt.SummaryOnly = &ves_io_schema.Empty{}
+																											options[i].AggregationChoice = aggregationChoiceInt
+																										}
+
+																									}
+
+																								}
+																							}
+
+																						}
+
+																					}
+																				}
+
+																			}
+
+																		}
+																	}
+
+																}
+
+															}
+														}
+
+													}
+
+													interfaceChoiceTypeFound := false
+
+													if v, ok := cs["inside_interfaces"]; ok && !isIntfNil(v) && !interfaceChoiceTypeFound {
+
+														interfaceChoiceTypeFound = true
+
+														if v.(bool) {
+															interfaceChoiceInt := &ves_io_schema_bgp.PeerExternal_InsideInterfaces{}
+															interfaceChoiceInt.InsideInterfaces = &ves_io_schema.Empty{}
+															typeChoiceInt.External.InterfaceChoice = interfaceChoiceInt
+														}
+
+													}
+
+													if v, ok := cs["interface"]; ok && !isIntfNil(v) && !interfaceChoiceTypeFound {
+
+														interfaceChoiceTypeFound = true
+														interfaceChoiceInt := &ves_io_schema_bgp.PeerExternal_Interface{}
+														interfaceChoiceInt.Interface = &ves_io_schema_views.ObjectRefType{}
+														typeChoiceInt.External.InterfaceChoice = interfaceChoiceInt
+
+														sl := v.([]interface{})
+														for _, set := range sl {
+															if set != nil {
+																cs := set.(map[string]interface{})
+
+																if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+																	interfaceChoiceInt.Interface.Name = v.(string)
+
+																}
+
+																if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+																	interfaceChoiceInt.Interface.Namespace = v.(string)
+
+																}
+
+																if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+																	interfaceChoiceInt.Interface.Tenant = v.(string)
+
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := cs["interface_list"]; ok && !isIntfNil(v) && !interfaceChoiceTypeFound {
+
+														interfaceChoiceTypeFound = true
+														interfaceChoiceInt := &ves_io_schema_bgp.PeerExternal_InterfaceList{}
+														interfaceChoiceInt.InterfaceList = &ves_io_schema_bgp.InterfaceList{}
+														typeChoiceInt.External.InterfaceChoice = interfaceChoiceInt
+
+														sl := v.([]interface{})
+														for _, set := range sl {
+															if set != nil {
+																cs := set.(map[string]interface{})
+
+																if v, ok := cs["interfaces"]; ok && !isIntfNil(v) {
+
+																	sl := v.([]interface{})
+																	interfacesInt := make([]*ves_io_schema_views.ObjectRefType, len(sl))
+																	interfaceChoiceInt.InterfaceList.Interfaces = interfacesInt
+																	for i, ps := range sl {
+																		if ps != nil {
+
+																			iMapToStrVal := ps.(map[string]interface{})
+																			interfacesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+																			if v, ok := iMapToStrVal["name"]; ok && !isIntfNil(v) {
+																				interfacesInt[i].Name = v.(string)
+																			}
+
+																			if v, ok := iMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																				interfacesInt[i].Namespace = v.(string)
+																			}
+
+																			if v, ok := iMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																				interfacesInt[i].Tenant = v.(string)
+																			}
+
+																		}
+																	}
+
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := cs["outside_interfaces"]; ok && !isIntfNil(v) && !interfaceChoiceTypeFound {
+
+														interfaceChoiceTypeFound = true
+
+														if v.(bool) {
+															interfaceChoiceInt := &ves_io_schema_bgp.PeerExternal_OutsideInterfaces{}
+															interfaceChoiceInt.OutsideInterfaces = &ves_io_schema.Empty{}
+															typeChoiceInt.External.InterfaceChoice = interfaceChoiceInt
+														}
+
+													}
+
+													if v, ok := cs["port"]; ok && !isIntfNil(v) {
+
+														typeChoiceInt.External.Port = uint32(v.(int))
+
+													}
+
+												}
+											}
+
+										}
+
+										if v, ok := peersMapStrToI["internal"]; ok && !isIntfNil(v) && !typeChoiceTypeFound {
+
+											typeChoiceTypeFound = true
+											typeChoiceInt := &ves_io_schema_bgp.Peer_Internal{}
+											typeChoiceInt.Internal = &ves_io_schema_bgp.PeerInternal{}
+											peers[i].TypeChoice = typeChoiceInt
+
+											sl := v.([]interface{})
+											for _, set := range sl {
+												if set != nil {
+													cs := set.(map[string]interface{})
+
+													addressChoiceTypeFound := false
+
+													if v, ok := cs["address"]; ok && !isIntfNil(v) && !addressChoiceTypeFound {
+
+														addressChoiceTypeFound = true
+														addressChoiceInt := &ves_io_schema_bgp.PeerInternal_Address{}
+
+														typeChoiceInt.Internal.AddressChoice = addressChoiceInt
+
+														addressChoiceInt.Address = v.(string)
+
+													}
+
+													if v, ok := cs["dns_name"]; ok && !isIntfNil(v) && !addressChoiceTypeFound {
+
+														addressChoiceTypeFound = true
+														addressChoiceInt := &ves_io_schema_bgp.PeerInternal_DnsName{}
+
+														typeChoiceInt.Internal.AddressChoice = addressChoiceInt
+
+														addressChoiceInt.DnsName = v.(string)
+
+													}
+
+													if v, ok := cs["from_site"]; ok && !isIntfNil(v) && !addressChoiceTypeFound {
+
+														addressChoiceTypeFound = true
+
+														if v.(bool) {
+															addressChoiceInt := &ves_io_schema_bgp.PeerInternal_FromSite{}
+															addressChoiceInt.FromSite = &ves_io_schema.Empty{}
+															typeChoiceInt.Internal.AddressChoice = addressChoiceInt
+														}
+
+													}
+
+													if v, ok := cs["family_inet6vpn"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														familyInet6Vpn := &ves_io_schema_bgp.FamilyInet6Vpn{}
+														typeChoiceInt.Internal.FamilyInet6Vpn = familyInet6Vpn
+														for _, set := range sl {
+															if set != nil {
+																familyInet6VpnMapStrToI := set.(map[string]interface{})
+
+																enableChoiceTypeFound := false
+
+																if v, ok := familyInet6VpnMapStrToI["disable"]; ok && !isIntfNil(v) && !enableChoiceTypeFound {
+
+																	enableChoiceTypeFound = true
+
+																	if v.(bool) {
+																		enableChoiceInt := &ves_io_schema_bgp.FamilyInet6Vpn_Disable{}
+																		enableChoiceInt.Disable = &ves_io_schema.Empty{}
+																		familyInet6Vpn.EnableChoice = enableChoiceInt
+																	}
+
+																}
+
+																if v, ok := familyInet6VpnMapStrToI["enable"]; ok && !isIntfNil(v) && !enableChoiceTypeFound {
+
+																	enableChoiceTypeFound = true
+
+																	if v.(bool) {
+																		enableChoiceInt := &ves_io_schema_bgp.FamilyInet6Vpn_Enable{}
+																		enableChoiceInt.Enable = &ves_io_schema.Empty{}
+																		familyInet6Vpn.EnableChoice = enableChoiceInt
+																	}
+
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := cs["family_inetvpn"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														familyInetvpn := &ves_io_schema_bgp.FamilyInetvpn{}
+														typeChoiceInt.Internal.FamilyInetvpn = familyInetvpn
+														for _, set := range sl {
+															if set != nil {
+																familyInetvpnMapStrToI := set.(map[string]interface{})
+
+																enableChoiceTypeFound := false
+
+																if v, ok := familyInetvpnMapStrToI["disable"]; ok && !isIntfNil(v) && !enableChoiceTypeFound {
+
+																	enableChoiceTypeFound = true
+
+																	if v.(bool) {
+																		enableChoiceInt := &ves_io_schema_bgp.FamilyInetvpn_Disable{}
+																		enableChoiceInt.Disable = &ves_io_schema.Empty{}
+																		familyInetvpn.EnableChoice = enableChoiceInt
+																	}
+
+																}
+
+																if v, ok := familyInetvpnMapStrToI["enable"]; ok && !isIntfNil(v) && !enableChoiceTypeFound {
+
+																	enableChoiceTypeFound = true
+																	enableChoiceInt := &ves_io_schema_bgp.FamilyInetvpn_Enable{}
+																	enableChoiceInt.Enable = &ves_io_schema_bgp.FamilyInetvpnParameters{}
+																	familyInetvpn.EnableChoice = enableChoiceInt
+
+																	sl := v.([]interface{})
+																	for _, set := range sl {
+																		if set != nil {
+																			cs := set.(map[string]interface{})
+
+																			srChoiceTypeFound := false
+
+																			if v, ok := cs["disable"]; ok && !isIntfNil(v) && !srChoiceTypeFound {
+
+																				srChoiceTypeFound = true
+
+																				if v.(bool) {
+																					srChoiceInt := &ves_io_schema_bgp.FamilyInetvpnParameters_Disable{}
+																					srChoiceInt.Disable = &ves_io_schema.Empty{}
+																					enableChoiceInt.Enable.SrChoice = srChoiceInt
+																				}
+
+																			}
+
+																			if v, ok := cs["enable"]; ok && !isIntfNil(v) && !srChoiceTypeFound {
+
+																				srChoiceTypeFound = true
+
+																				if v.(bool) {
+																					srChoiceInt := &ves_io_schema_bgp.FamilyInetvpnParameters_Enable{}
+																					srChoiceInt.Enable = &ves_io_schema.Empty{}
+																					enableChoiceInt.Enable.SrChoice = srChoiceInt
+																				}
+
+																			}
+
+																		}
+																	}
+
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := cs["family_rtarget"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														familyRtarget := &ves_io_schema_bgp.FamilyRtarget{}
+														typeChoiceInt.Internal.FamilyRtarget = familyRtarget
+														for _, set := range sl {
+															if set != nil {
+																familyRtargetMapStrToI := set.(map[string]interface{})
+
+																enableChoiceTypeFound := false
+
+																if v, ok := familyRtargetMapStrToI["disable"]; ok && !isIntfNil(v) && !enableChoiceTypeFound {
+
+																	enableChoiceTypeFound = true
+
+																	if v.(bool) {
+																		enableChoiceInt := &ves_io_schema_bgp.FamilyRtarget_Disable{}
+																		enableChoiceInt.Disable = &ves_io_schema.Empty{}
+																		familyRtarget.EnableChoice = enableChoiceInt
+																	}
+
+																}
+
+																if v, ok := familyRtargetMapStrToI["enable"]; ok && !isIntfNil(v) && !enableChoiceTypeFound {
+
+																	enableChoiceTypeFound = true
+
+																	if v.(bool) {
+																		enableChoiceInt := &ves_io_schema_bgp.FamilyRtarget_Enable{}
+																		enableChoiceInt.Enable = &ves_io_schema.Empty{}
+																		familyRtarget.EnableChoice = enableChoiceInt
+																	}
+
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := cs["family_uuidvpn"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														familyUuidvpn := &ves_io_schema_bgp.FamilyUuidvpn{}
+														typeChoiceInt.Internal.FamilyUuidvpn = familyUuidvpn
+														for _, set := range sl {
+															if set != nil {
+																familyUuidvpnMapStrToI := set.(map[string]interface{})
+
+																enableChoiceTypeFound := false
+
+																if v, ok := familyUuidvpnMapStrToI["disable"]; ok && !isIntfNil(v) && !enableChoiceTypeFound {
+
+																	enableChoiceTypeFound = true
+
+																	if v.(bool) {
+																		enableChoiceInt := &ves_io_schema_bgp.FamilyUuidvpn_Disable{}
+																		enableChoiceInt.Disable = &ves_io_schema.Empty{}
+																		familyUuidvpn.EnableChoice = enableChoiceInt
+																	}
+
+																}
+
+																if v, ok := familyUuidvpnMapStrToI["enable"]; ok && !isIntfNil(v) && !enableChoiceTypeFound {
+
+																	enableChoiceTypeFound = true
+
+																	if v.(bool) {
+																		enableChoiceInt := &ves_io_schema_bgp.FamilyUuidvpn_Enable{}
+																		enableChoiceInt.Enable = &ves_io_schema.Empty{}
+																		familyUuidvpn.EnableChoice = enableChoiceInt
+																	}
+
+																}
+
+															}
+														}
+
+													}
+
+													mtlsChoiceTypeFound := false
+
+													if v, ok := cs["disable_mtls"]; ok && !isIntfNil(v) && !mtlsChoiceTypeFound {
+
+														mtlsChoiceTypeFound = true
+
+														if v.(bool) {
+															mtlsChoiceInt := &ves_io_schema_bgp.PeerInternal_DisableMtls{}
+															mtlsChoiceInt.DisableMtls = &ves_io_schema.Empty{}
+															typeChoiceInt.Internal.MtlsChoice = mtlsChoiceInt
+														}
+
+													}
+
+													if v, ok := cs["enable_mtls"]; ok && !isIntfNil(v) && !mtlsChoiceTypeFound {
+
+														mtlsChoiceTypeFound = true
+
+														if v.(bool) {
+															mtlsChoiceInt := &ves_io_schema_bgp.PeerInternal_EnableMtls{}
+															mtlsChoiceInt.EnableMtls = &ves_io_schema.Empty{}
+															typeChoiceInt.Internal.MtlsChoice = mtlsChoiceInt
+														}
+
+													}
+
+													if v, ok := cs["port"]; ok && !isIntfNil(v) {
+
+														typeChoiceInt.Internal.Port = uint32(v.(int))
+
+													}
+
+												}
+											}
+
+										}
 
 									}
 								}
@@ -8396,24 +10140,22 @@ func resourceVolterraVoltstackSiteCreate(d *schema.ResourceData, meta interface{
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -8439,24 +10181,22 @@ func resourceVolterraVoltstackSiteCreate(d *schema.ResourceData, meta interface{
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -17750,6 +19490,7 @@ func resourceVolterraVoltstackSiteRead(d *schema.ResourceData, meta interface{})
 		}
 		return fmt.Errorf("Error finding Volterra VoltstackSite %q: %s", d.Id(), err)
 	}
+
 	return setVoltstackSiteFields(client, d, resp)
 }
 
@@ -18327,7 +20068,1045 @@ func resourceVolterraVoltstackSiteUpdate(d *schema.ResourceData, meta interface{
 								for i, set := range sl {
 									if set != nil {
 										peers[i] = &ves_io_schema_bgp.Peer{}
-										_ = set.(map[string]interface{})
+										peersMapStrToI := set.(map[string]interface{})
+
+										bfdChoiceTypeFound := false
+
+										if v, ok := peersMapStrToI["bfd_disabled"]; ok && !isIntfNil(v) && !bfdChoiceTypeFound {
+
+											bfdChoiceTypeFound = true
+
+											if v.(bool) {
+												bfdChoiceInt := &ves_io_schema_bgp.Peer_BfdDisabled{}
+												bfdChoiceInt.BfdDisabled = &ves_io_schema.Empty{}
+												peers[i].BfdChoice = bfdChoiceInt
+											}
+
+										}
+
+										if v, ok := peersMapStrToI["bfd_enabled"]; ok && !isIntfNil(v) && !bfdChoiceTypeFound {
+
+											bfdChoiceTypeFound = true
+											bfdChoiceInt := &ves_io_schema_bgp.Peer_BfdEnabled{}
+											bfdChoiceInt.BfdEnabled = &ves_io_schema_bgp.BFD{}
+											peers[i].BfdChoice = bfdChoiceInt
+
+											sl := v.([]interface{})
+											for _, set := range sl {
+												if set != nil {
+													cs := set.(map[string]interface{})
+
+													if v, ok := cs["multiplier"]; ok && !isIntfNil(v) {
+
+														bfdChoiceInt.BfdEnabled.Multiplier = uint32(v.(int))
+
+													}
+
+													if v, ok := cs["receive_interval_milliseconds"]; ok && !isIntfNil(v) {
+
+														bfdChoiceInt.BfdEnabled.ReceiveIntervalMilliseconds = uint32(v.(int))
+
+													}
+
+													if v, ok := cs["transmit_interval_milliseconds"]; ok && !isIntfNil(v) {
+
+														bfdChoiceInt.BfdEnabled.TransmitIntervalMilliseconds = uint32(v.(int))
+
+													}
+
+												}
+											}
+
+										}
+
+										enableChoiceTypeFound := false
+
+										if v, ok := peersMapStrToI["disable"]; ok && !isIntfNil(v) && !enableChoiceTypeFound {
+
+											enableChoiceTypeFound = true
+
+											if v.(bool) {
+												enableChoiceInt := &ves_io_schema_bgp.Peer_Disable{}
+												enableChoiceInt.Disable = &ves_io_schema.Empty{}
+												peers[i].EnableChoice = enableChoiceInt
+											}
+
+										}
+
+										if v, ok := peersMapStrToI["routing_policies"]; ok && !isIntfNil(v) && !enableChoiceTypeFound {
+
+											enableChoiceTypeFound = true
+											enableChoiceInt := &ves_io_schema_bgp.Peer_RoutingPolicies{}
+											enableChoiceInt.RoutingPolicies = &ves_io_schema_bgp.BgpRoutePolicies{}
+											peers[i].EnableChoice = enableChoiceInt
+
+											sl := v.([]interface{})
+											for _, set := range sl {
+												if set != nil {
+													cs := set.(map[string]interface{})
+
+													if v, ok := cs["route_policy"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														routePolicy := make([]*ves_io_schema_bgp.BgpRoutePolicy, len(sl))
+														enableChoiceInt.RoutingPolicies.RoutePolicy = routePolicy
+														for i, set := range sl {
+															if set != nil {
+																routePolicy[i] = &ves_io_schema_bgp.BgpRoutePolicy{}
+																routePolicyMapStrToI := set.(map[string]interface{})
+
+																directionTypeFound := false
+
+																if v, ok := routePolicyMapStrToI["inbound"]; ok && !isIntfNil(v) && !directionTypeFound {
+
+																	directionTypeFound = true
+
+																	if v.(bool) {
+																		directionInt := &ves_io_schema_bgp.BgpRoutePolicy_Inbound{}
+																		directionInt.Inbound = &ves_io_schema.Empty{}
+																		routePolicy[i].Direction = directionInt
+																	}
+
+																}
+
+																if v, ok := routePolicyMapStrToI["outbound"]; ok && !isIntfNil(v) && !directionTypeFound {
+
+																	directionTypeFound = true
+
+																	if v.(bool) {
+																		directionInt := &ves_io_schema_bgp.BgpRoutePolicy_Outbound{}
+																		directionInt.Outbound = &ves_io_schema.Empty{}
+																		routePolicy[i].Direction = directionInt
+																	}
+
+																}
+
+																nodeChoiceTypeFound := false
+
+																if v, ok := routePolicyMapStrToI["all_nodes"]; ok && !isIntfNil(v) && !nodeChoiceTypeFound {
+
+																	nodeChoiceTypeFound = true
+
+																	if v.(bool) {
+																		nodeChoiceInt := &ves_io_schema_bgp.BgpRoutePolicy_AllNodes{}
+																		nodeChoiceInt.AllNodes = &ves_io_schema.Empty{}
+																		routePolicy[i].NodeChoice = nodeChoiceInt
+																	}
+
+																}
+
+																if v, ok := routePolicyMapStrToI["node_name"]; ok && !isIntfNil(v) && !nodeChoiceTypeFound {
+
+																	nodeChoiceTypeFound = true
+																	nodeChoiceInt := &ves_io_schema_bgp.BgpRoutePolicy_NodeName{}
+																	nodeChoiceInt.NodeName = &ves_io_schema_bgp.Nodes{}
+																	routePolicy[i].NodeChoice = nodeChoiceInt
+
+																	sl := v.([]interface{})
+																	for _, set := range sl {
+																		if set != nil {
+																			cs := set.(map[string]interface{})
+
+																			if v, ok := cs["node"]; ok && !isIntfNil(v) {
+
+																				ls := make([]string, len(v.([]interface{})))
+																				for i, v := range v.([]interface{}) {
+																					if v == nil {
+																						return fmt.Errorf("please provide valid non-empty string value of field node")
+																					}
+																					if str, ok := v.(string); ok {
+																						ls[i] = str
+																					}
+																				}
+																				nodeChoiceInt.NodeName.Node = ls
+
+																			}
+
+																		}
+																	}
+
+																}
+
+																if v, ok := routePolicyMapStrToI["object_refs"]; ok && !isIntfNil(v) {
+																	sl := v.([]interface{})
+																	objectRefsInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+																	routePolicy[i].ObjectRefs = objectRefsInt
+																	for i, ps := range sl {
+																		if ps != nil {
+
+																			orMapToStrVal := ps.(map[string]interface{})
+																			objectRefsInt[i] = &ves_io_schema.ObjectRefType{}
+
+																			objectRefsInt[i].Kind = "bgp_routing_policy"
+
+																			if v, ok := orMapToStrVal["name"]; ok && !isIntfNil(v) {
+																				objectRefsInt[i].Name = v.(string)
+																			}
+
+																			if v, ok := orMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																				objectRefsInt[i].Namespace = v.(string)
+																			}
+
+																			if v, ok := orMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																				objectRefsInt[i].Tenant = v.(string)
+																			}
+
+																			if v, ok := orMapToStrVal["uid"]; ok && !isIntfNil(v) {
+																				objectRefsInt[i].Uid = v.(string)
+																			}
+
+																		}
+																	}
+
+																}
+
+															}
+														}
+
+													}
+
+												}
+											}
+
+										}
+
+										if w, ok := peersMapStrToI["label"]; ok && !isIntfNil(w) {
+											peers[i].Label = w.(string)
+										}
+
+										if v, ok := peersMapStrToI["metadata"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											metadata := &ves_io_schema.MessageMetaType{}
+											peers[i].Metadata = metadata
+											for _, set := range sl {
+												if set != nil {
+													metadataMapStrToI := set.(map[string]interface{})
+
+													if w, ok := metadataMapStrToI["description"]; ok && !isIntfNil(w) {
+														metadata.Description = w.(string)
+													}
+
+													if w, ok := metadataMapStrToI["disable"]; ok && !isIntfNil(w) {
+														metadata.Disable = w.(bool)
+													}
+
+													if w, ok := metadataMapStrToI["name"]; ok && !isIntfNil(w) {
+														metadata.Name = w.(string)
+													}
+
+												}
+											}
+
+										}
+
+										passiveChoiceTypeFound := false
+
+										if v, ok := peersMapStrToI["passive_mode_disabled"]; ok && !isIntfNil(v) && !passiveChoiceTypeFound {
+
+											passiveChoiceTypeFound = true
+
+											if v.(bool) {
+												passiveChoiceInt := &ves_io_schema_bgp.Peer_PassiveModeDisabled{}
+												passiveChoiceInt.PassiveModeDisabled = &ves_io_schema.Empty{}
+												peers[i].PassiveChoice = passiveChoiceInt
+											}
+
+										}
+
+										if v, ok := peersMapStrToI["passive_mode_enabled"]; ok && !isIntfNil(v) && !passiveChoiceTypeFound {
+
+											passiveChoiceTypeFound = true
+
+											if v.(bool) {
+												passiveChoiceInt := &ves_io_schema_bgp.Peer_PassiveModeEnabled{}
+												passiveChoiceInt.PassiveModeEnabled = &ves_io_schema.Empty{}
+												peers[i].PassiveChoice = passiveChoiceInt
+											}
+
+										}
+
+										if w, ok := peersMapStrToI["target_service"]; ok && !isIntfNil(w) {
+											peers[i].TargetService = w.(string)
+										}
+
+										typeChoiceTypeFound := false
+
+										if v, ok := peersMapStrToI["external"]; ok && !isIntfNil(v) && !typeChoiceTypeFound {
+
+											typeChoiceTypeFound = true
+											typeChoiceInt := &ves_io_schema_bgp.Peer_External{}
+											typeChoiceInt.External = &ves_io_schema_bgp.PeerExternal{}
+											peers[i].TypeChoice = typeChoiceInt
+
+											sl := v.([]interface{})
+											for _, set := range sl {
+												if set != nil {
+													cs := set.(map[string]interface{})
+
+													addressChoiceTypeFound := false
+
+													if v, ok := cs["address"]; ok && !isIntfNil(v) && !addressChoiceTypeFound {
+
+														addressChoiceTypeFound = true
+														addressChoiceInt := &ves_io_schema_bgp.PeerExternal_Address{}
+
+														typeChoiceInt.External.AddressChoice = addressChoiceInt
+
+														addressChoiceInt.Address = v.(string)
+
+													}
+
+													if v, ok := cs["default_gateway"]; ok && !isIntfNil(v) && !addressChoiceTypeFound {
+
+														addressChoiceTypeFound = true
+
+														if v.(bool) {
+															addressChoiceInt := &ves_io_schema_bgp.PeerExternal_DefaultGateway{}
+															addressChoiceInt.DefaultGateway = &ves_io_schema.Empty{}
+															typeChoiceInt.External.AddressChoice = addressChoiceInt
+														}
+
+													}
+
+													if v, ok := cs["disable"]; ok && !isIntfNil(v) && !addressChoiceTypeFound {
+
+														addressChoiceTypeFound = true
+
+														if v.(bool) {
+															addressChoiceInt := &ves_io_schema_bgp.PeerExternal_Disable{}
+															addressChoiceInt.Disable = &ves_io_schema.Empty{}
+															typeChoiceInt.External.AddressChoice = addressChoiceInt
+														}
+
+													}
+
+													if v, ok := cs["external_connector"]; ok && !isIntfNil(v) && !addressChoiceTypeFound {
+
+														addressChoiceTypeFound = true
+
+														if v.(bool) {
+															addressChoiceInt := &ves_io_schema_bgp.PeerExternal_ExternalConnector{}
+															addressChoiceInt.ExternalConnector = &ves_io_schema.Empty{}
+															typeChoiceInt.External.AddressChoice = addressChoiceInt
+														}
+
+													}
+
+													if v, ok := cs["from_site"]; ok && !isIntfNil(v) && !addressChoiceTypeFound {
+
+														addressChoiceTypeFound = true
+
+														if v.(bool) {
+															addressChoiceInt := &ves_io_schema_bgp.PeerExternal_FromSite{}
+															addressChoiceInt.FromSite = &ves_io_schema.Empty{}
+															typeChoiceInt.External.AddressChoice = addressChoiceInt
+														}
+
+													}
+
+													if v, ok := cs["subnet_begin_offset"]; ok && !isIntfNil(v) && !addressChoiceTypeFound {
+
+														addressChoiceTypeFound = true
+														addressChoiceInt := &ves_io_schema_bgp.PeerExternal_SubnetBeginOffset{}
+
+														typeChoiceInt.External.AddressChoice = addressChoiceInt
+
+														addressChoiceInt.SubnetBeginOffset = uint32(v.(int))
+
+													}
+
+													if v, ok := cs["subnet_end_offset"]; ok && !isIntfNil(v) && !addressChoiceTypeFound {
+
+														addressChoiceTypeFound = true
+														addressChoiceInt := &ves_io_schema_bgp.PeerExternal_SubnetEndOffset{}
+
+														typeChoiceInt.External.AddressChoice = addressChoiceInt
+
+														addressChoiceInt.SubnetEndOffset = uint32(v.(int))
+
+													}
+
+													addressChoiceV6TypeFound := false
+
+													if v, ok := cs["address_ipv6"]; ok && !isIntfNil(v) && !addressChoiceV6TypeFound {
+
+														addressChoiceV6TypeFound = true
+														addressChoiceV6Int := &ves_io_schema_bgp.PeerExternal_AddressIpv6{}
+
+														typeChoiceInt.External.AddressChoiceV6 = addressChoiceV6Int
+
+														addressChoiceV6Int.AddressIpv6 = v.(string)
+
+													}
+
+													if v, ok := cs["default_gateway_v6"]; ok && !isIntfNil(v) && !addressChoiceV6TypeFound {
+
+														addressChoiceV6TypeFound = true
+
+														if v.(bool) {
+															addressChoiceV6Int := &ves_io_schema_bgp.PeerExternal_DefaultGatewayV6{}
+															addressChoiceV6Int.DefaultGatewayV6 = &ves_io_schema.Empty{}
+															typeChoiceInt.External.AddressChoiceV6 = addressChoiceV6Int
+														}
+
+													}
+
+													if v, ok := cs["disable_v6"]; ok && !isIntfNil(v) && !addressChoiceV6TypeFound {
+
+														addressChoiceV6TypeFound = true
+
+														if v.(bool) {
+															addressChoiceV6Int := &ves_io_schema_bgp.PeerExternal_DisableV6{}
+															addressChoiceV6Int.DisableV6 = &ves_io_schema.Empty{}
+															typeChoiceInt.External.AddressChoiceV6 = addressChoiceV6Int
+														}
+
+													}
+
+													if v, ok := cs["from_site_v6"]; ok && !isIntfNil(v) && !addressChoiceV6TypeFound {
+
+														addressChoiceV6TypeFound = true
+
+														if v.(bool) {
+															addressChoiceV6Int := &ves_io_schema_bgp.PeerExternal_FromSiteV6{}
+															addressChoiceV6Int.FromSiteV6 = &ves_io_schema.Empty{}
+															typeChoiceInt.External.AddressChoiceV6 = addressChoiceV6Int
+														}
+
+													}
+
+													if v, ok := cs["subnet_begin_offset_v6"]; ok && !isIntfNil(v) && !addressChoiceV6TypeFound {
+
+														addressChoiceV6TypeFound = true
+														addressChoiceV6Int := &ves_io_schema_bgp.PeerExternal_SubnetBeginOffsetV6{}
+
+														typeChoiceInt.External.AddressChoiceV6 = addressChoiceV6Int
+
+														addressChoiceV6Int.SubnetBeginOffsetV6 = uint32(v.(int))
+
+													}
+
+													if v, ok := cs["subnet_end_offset_v6"]; ok && !isIntfNil(v) && !addressChoiceV6TypeFound {
+
+														addressChoiceV6TypeFound = true
+														addressChoiceV6Int := &ves_io_schema_bgp.PeerExternal_SubnetEndOffsetV6{}
+
+														typeChoiceInt.External.AddressChoiceV6 = addressChoiceV6Int
+
+														addressChoiceV6Int.SubnetEndOffsetV6 = uint32(v.(int))
+
+													}
+
+													if v, ok := cs["asn"]; ok && !isIntfNil(v) {
+
+														typeChoiceInt.External.Asn = uint32(v.(int))
+
+													}
+
+													authChoiceTypeFound := false
+
+													if v, ok := cs["md5_auth_key"]; ok && !isIntfNil(v) && !authChoiceTypeFound {
+
+														authChoiceTypeFound = true
+														authChoiceInt := &ves_io_schema_bgp.PeerExternal_Md5AuthKey{}
+
+														typeChoiceInt.External.AuthChoice = authChoiceInt
+
+														authChoiceInt.Md5AuthKey = v.(string)
+
+													}
+
+													if v, ok := cs["no_authentication"]; ok && !isIntfNil(v) && !authChoiceTypeFound {
+
+														authChoiceTypeFound = true
+
+														if v.(bool) {
+															authChoiceInt := &ves_io_schema_bgp.PeerExternal_NoAuthentication{}
+															authChoiceInt.NoAuthentication = &ves_io_schema.Empty{}
+															typeChoiceInt.External.AuthChoice = authChoiceInt
+														}
+
+													}
+
+													if v, ok := cs["family_inet"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														familyInet := &ves_io_schema_bgp.FamilyInet{}
+														typeChoiceInt.External.FamilyInet = familyInet
+														for _, set := range sl {
+															if set != nil {
+																familyInetMapStrToI := set.(map[string]interface{})
+
+																enableChoiceTypeFound := false
+
+																if v, ok := familyInetMapStrToI["disable"]; ok && !isIntfNil(v) && !enableChoiceTypeFound {
+
+																	enableChoiceTypeFound = true
+
+																	if v.(bool) {
+																		enableChoiceInt := &ves_io_schema_bgp.FamilyInet_Disable{}
+																		enableChoiceInt.Disable = &ves_io_schema.Empty{}
+																		familyInet.EnableChoice = enableChoiceInt
+																	}
+
+																}
+
+																if v, ok := familyInetMapStrToI["enable"]; ok && !isIntfNil(v) && !enableChoiceTypeFound {
+
+																	enableChoiceTypeFound = true
+																	enableChoiceInt := &ves_io_schema_bgp.FamilyInet_Enable{}
+																	enableChoiceInt.Enable = &ves_io_schema_bgp.UnicastIPv4{}
+																	familyInet.EnableChoice = enableChoiceInt
+
+																	sl := v.([]interface{})
+																	for _, set := range sl {
+																		if set != nil {
+																			cs := set.(map[string]interface{})
+
+																			if v, ok := cs["aggregation"]; ok && !isIntfNil(v) {
+
+																				sl := v.([]interface{})
+																				aggregation := make([]*ves_io_schema_bgp.AggregationIPv4, len(sl))
+																				enableChoiceInt.Enable.Aggregation = aggregation
+																				for i, set := range sl {
+																					if set != nil {
+																						aggregation[i] = &ves_io_schema_bgp.AggregationIPv4{}
+																						aggregationMapStrToI := set.(map[string]interface{})
+
+																						if w, ok := aggregationMapStrToI["ip_prefix"]; ok && !isIntfNil(w) {
+																							aggregation[i].IpPrefix = w.(string)
+																						}
+
+																						if v, ok := aggregationMapStrToI["options"]; ok && !isIntfNil(v) {
+
+																							sl := v.([]interface{})
+																							options := make([]*ves_io_schema_bgp.AggregationOption, len(sl))
+																							aggregation[i].Options = options
+																							for i, set := range sl {
+																								if set != nil {
+																									options[i] = &ves_io_schema_bgp.AggregationOption{}
+																									optionsMapStrToI := set.(map[string]interface{})
+
+																									aggregationChoiceTypeFound := false
+
+																									if v, ok := optionsMapStrToI["summary_only"]; ok && !isIntfNil(v) && !aggregationChoiceTypeFound {
+
+																										aggregationChoiceTypeFound = true
+
+																										if v.(bool) {
+																											aggregationChoiceInt := &ves_io_schema_bgp.AggregationOption_SummaryOnly{}
+																											aggregationChoiceInt.SummaryOnly = &ves_io_schema.Empty{}
+																											options[i].AggregationChoice = aggregationChoiceInt
+																										}
+
+																									}
+
+																								}
+																							}
+
+																						}
+
+																					}
+																				}
+
+																			}
+
+																		}
+																	}
+
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := cs["family_inet_v6"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														familyInetV6 := &ves_io_schema_bgp.FamilyInet6{}
+														typeChoiceInt.External.FamilyInetV6 = familyInetV6
+														for _, set := range sl {
+															if set != nil {
+																familyInetV6MapStrToI := set.(map[string]interface{})
+
+																enableChoiceTypeFound := false
+
+																if v, ok := familyInetV6MapStrToI["disable"]; ok && !isIntfNil(v) && !enableChoiceTypeFound {
+
+																	enableChoiceTypeFound = true
+
+																	if v.(bool) {
+																		enableChoiceInt := &ves_io_schema_bgp.FamilyInet6_Disable{}
+																		enableChoiceInt.Disable = &ves_io_schema.Empty{}
+																		familyInetV6.EnableChoice = enableChoiceInt
+																	}
+
+																}
+
+																if v, ok := familyInetV6MapStrToI["enable"]; ok && !isIntfNil(v) && !enableChoiceTypeFound {
+
+																	enableChoiceTypeFound = true
+																	enableChoiceInt := &ves_io_schema_bgp.FamilyInet6_Enable{}
+																	enableChoiceInt.Enable = &ves_io_schema_bgp.UnicastIPv6{}
+																	familyInetV6.EnableChoice = enableChoiceInt
+
+																	sl := v.([]interface{})
+																	for _, set := range sl {
+																		if set != nil {
+																			cs := set.(map[string]interface{})
+
+																			if v, ok := cs["aggregation"]; ok && !isIntfNil(v) {
+
+																				sl := v.([]interface{})
+																				aggregation := make([]*ves_io_schema_bgp.AggregationIPv6, len(sl))
+																				enableChoiceInt.Enable.Aggregation = aggregation
+																				for i, set := range sl {
+																					if set != nil {
+																						aggregation[i] = &ves_io_schema_bgp.AggregationIPv6{}
+																						aggregationMapStrToI := set.(map[string]interface{})
+
+																						if w, ok := aggregationMapStrToI["ip_prefix"]; ok && !isIntfNil(w) {
+																							aggregation[i].IpPrefix = w.(string)
+																						}
+
+																						if v, ok := aggregationMapStrToI["options"]; ok && !isIntfNil(v) {
+
+																							sl := v.([]interface{})
+																							options := make([]*ves_io_schema_bgp.AggregationOption, len(sl))
+																							aggregation[i].Options = options
+																							for i, set := range sl {
+																								if set != nil {
+																									options[i] = &ves_io_schema_bgp.AggregationOption{}
+																									optionsMapStrToI := set.(map[string]interface{})
+
+																									aggregationChoiceTypeFound := false
+
+																									if v, ok := optionsMapStrToI["summary_only"]; ok && !isIntfNil(v) && !aggregationChoiceTypeFound {
+
+																										aggregationChoiceTypeFound = true
+
+																										if v.(bool) {
+																											aggregationChoiceInt := &ves_io_schema_bgp.AggregationOption_SummaryOnly{}
+																											aggregationChoiceInt.SummaryOnly = &ves_io_schema.Empty{}
+																											options[i].AggregationChoice = aggregationChoiceInt
+																										}
+
+																									}
+
+																								}
+																							}
+
+																						}
+
+																					}
+																				}
+
+																			}
+
+																		}
+																	}
+
+																}
+
+															}
+														}
+
+													}
+
+													interfaceChoiceTypeFound := false
+
+													if v, ok := cs["inside_interfaces"]; ok && !isIntfNil(v) && !interfaceChoiceTypeFound {
+
+														interfaceChoiceTypeFound = true
+
+														if v.(bool) {
+															interfaceChoiceInt := &ves_io_schema_bgp.PeerExternal_InsideInterfaces{}
+															interfaceChoiceInt.InsideInterfaces = &ves_io_schema.Empty{}
+															typeChoiceInt.External.InterfaceChoice = interfaceChoiceInt
+														}
+
+													}
+
+													if v, ok := cs["interface"]; ok && !isIntfNil(v) && !interfaceChoiceTypeFound {
+
+														interfaceChoiceTypeFound = true
+														interfaceChoiceInt := &ves_io_schema_bgp.PeerExternal_Interface{}
+														interfaceChoiceInt.Interface = &ves_io_schema_views.ObjectRefType{}
+														typeChoiceInt.External.InterfaceChoice = interfaceChoiceInt
+
+														sl := v.([]interface{})
+														for _, set := range sl {
+															if set != nil {
+																cs := set.(map[string]interface{})
+
+																if v, ok := cs["name"]; ok && !isIntfNil(v) {
+
+																	interfaceChoiceInt.Interface.Name = v.(string)
+
+																}
+
+																if v, ok := cs["namespace"]; ok && !isIntfNil(v) {
+
+																	interfaceChoiceInt.Interface.Namespace = v.(string)
+
+																}
+
+																if v, ok := cs["tenant"]; ok && !isIntfNil(v) {
+
+																	interfaceChoiceInt.Interface.Tenant = v.(string)
+
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := cs["interface_list"]; ok && !isIntfNil(v) && !interfaceChoiceTypeFound {
+
+														interfaceChoiceTypeFound = true
+														interfaceChoiceInt := &ves_io_schema_bgp.PeerExternal_InterfaceList{}
+														interfaceChoiceInt.InterfaceList = &ves_io_schema_bgp.InterfaceList{}
+														typeChoiceInt.External.InterfaceChoice = interfaceChoiceInt
+
+														sl := v.([]interface{})
+														for _, set := range sl {
+															if set != nil {
+																cs := set.(map[string]interface{})
+
+																if v, ok := cs["interfaces"]; ok && !isIntfNil(v) {
+
+																	sl := v.([]interface{})
+																	interfacesInt := make([]*ves_io_schema_views.ObjectRefType, len(sl))
+																	interfaceChoiceInt.InterfaceList.Interfaces = interfacesInt
+																	for i, ps := range sl {
+																		if ps != nil {
+
+																			iMapToStrVal := ps.(map[string]interface{})
+																			interfacesInt[i] = &ves_io_schema_views.ObjectRefType{}
+
+																			if v, ok := iMapToStrVal["name"]; ok && !isIntfNil(v) {
+																				interfacesInt[i].Name = v.(string)
+																			}
+
+																			if v, ok := iMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																				interfacesInt[i].Namespace = v.(string)
+																			}
+
+																			if v, ok := iMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																				interfacesInt[i].Tenant = v.(string)
+																			}
+
+																		}
+																	}
+
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := cs["outside_interfaces"]; ok && !isIntfNil(v) && !interfaceChoiceTypeFound {
+
+														interfaceChoiceTypeFound = true
+
+														if v.(bool) {
+															interfaceChoiceInt := &ves_io_schema_bgp.PeerExternal_OutsideInterfaces{}
+															interfaceChoiceInt.OutsideInterfaces = &ves_io_schema.Empty{}
+															typeChoiceInt.External.InterfaceChoice = interfaceChoiceInt
+														}
+
+													}
+
+													if v, ok := cs["port"]; ok && !isIntfNil(v) {
+
+														typeChoiceInt.External.Port = uint32(v.(int))
+
+													}
+
+												}
+											}
+
+										}
+
+										if v, ok := peersMapStrToI["internal"]; ok && !isIntfNil(v) && !typeChoiceTypeFound {
+
+											typeChoiceTypeFound = true
+											typeChoiceInt := &ves_io_schema_bgp.Peer_Internal{}
+											typeChoiceInt.Internal = &ves_io_schema_bgp.PeerInternal{}
+											peers[i].TypeChoice = typeChoiceInt
+
+											sl := v.([]interface{})
+											for _, set := range sl {
+												if set != nil {
+													cs := set.(map[string]interface{})
+
+													addressChoiceTypeFound := false
+
+													if v, ok := cs["address"]; ok && !isIntfNil(v) && !addressChoiceTypeFound {
+
+														addressChoiceTypeFound = true
+														addressChoiceInt := &ves_io_schema_bgp.PeerInternal_Address{}
+
+														typeChoiceInt.Internal.AddressChoice = addressChoiceInt
+
+														addressChoiceInt.Address = v.(string)
+
+													}
+
+													if v, ok := cs["dns_name"]; ok && !isIntfNil(v) && !addressChoiceTypeFound {
+
+														addressChoiceTypeFound = true
+														addressChoiceInt := &ves_io_schema_bgp.PeerInternal_DnsName{}
+
+														typeChoiceInt.Internal.AddressChoice = addressChoiceInt
+
+														addressChoiceInt.DnsName = v.(string)
+
+													}
+
+													if v, ok := cs["from_site"]; ok && !isIntfNil(v) && !addressChoiceTypeFound {
+
+														addressChoiceTypeFound = true
+
+														if v.(bool) {
+															addressChoiceInt := &ves_io_schema_bgp.PeerInternal_FromSite{}
+															addressChoiceInt.FromSite = &ves_io_schema.Empty{}
+															typeChoiceInt.Internal.AddressChoice = addressChoiceInt
+														}
+
+													}
+
+													if v, ok := cs["family_inet6vpn"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														familyInet6Vpn := &ves_io_schema_bgp.FamilyInet6Vpn{}
+														typeChoiceInt.Internal.FamilyInet6Vpn = familyInet6Vpn
+														for _, set := range sl {
+															if set != nil {
+																familyInet6VpnMapStrToI := set.(map[string]interface{})
+
+																enableChoiceTypeFound := false
+
+																if v, ok := familyInet6VpnMapStrToI["disable"]; ok && !isIntfNil(v) && !enableChoiceTypeFound {
+
+																	enableChoiceTypeFound = true
+
+																	if v.(bool) {
+																		enableChoiceInt := &ves_io_schema_bgp.FamilyInet6Vpn_Disable{}
+																		enableChoiceInt.Disable = &ves_io_schema.Empty{}
+																		familyInet6Vpn.EnableChoice = enableChoiceInt
+																	}
+
+																}
+
+																if v, ok := familyInet6VpnMapStrToI["enable"]; ok && !isIntfNil(v) && !enableChoiceTypeFound {
+
+																	enableChoiceTypeFound = true
+
+																	if v.(bool) {
+																		enableChoiceInt := &ves_io_schema_bgp.FamilyInet6Vpn_Enable{}
+																		enableChoiceInt.Enable = &ves_io_schema.Empty{}
+																		familyInet6Vpn.EnableChoice = enableChoiceInt
+																	}
+
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := cs["family_inetvpn"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														familyInetvpn := &ves_io_schema_bgp.FamilyInetvpn{}
+														typeChoiceInt.Internal.FamilyInetvpn = familyInetvpn
+														for _, set := range sl {
+															if set != nil {
+																familyInetvpnMapStrToI := set.(map[string]interface{})
+
+																enableChoiceTypeFound := false
+
+																if v, ok := familyInetvpnMapStrToI["disable"]; ok && !isIntfNil(v) && !enableChoiceTypeFound {
+
+																	enableChoiceTypeFound = true
+
+																	if v.(bool) {
+																		enableChoiceInt := &ves_io_schema_bgp.FamilyInetvpn_Disable{}
+																		enableChoiceInt.Disable = &ves_io_schema.Empty{}
+																		familyInetvpn.EnableChoice = enableChoiceInt
+																	}
+
+																}
+
+																if v, ok := familyInetvpnMapStrToI["enable"]; ok && !isIntfNil(v) && !enableChoiceTypeFound {
+
+																	enableChoiceTypeFound = true
+																	enableChoiceInt := &ves_io_schema_bgp.FamilyInetvpn_Enable{}
+																	enableChoiceInt.Enable = &ves_io_schema_bgp.FamilyInetvpnParameters{}
+																	familyInetvpn.EnableChoice = enableChoiceInt
+
+																	sl := v.([]interface{})
+																	for _, set := range sl {
+																		if set != nil {
+																			cs := set.(map[string]interface{})
+
+																			srChoiceTypeFound := false
+
+																			if v, ok := cs["disable"]; ok && !isIntfNil(v) && !srChoiceTypeFound {
+
+																				srChoiceTypeFound = true
+
+																				if v.(bool) {
+																					srChoiceInt := &ves_io_schema_bgp.FamilyInetvpnParameters_Disable{}
+																					srChoiceInt.Disable = &ves_io_schema.Empty{}
+																					enableChoiceInt.Enable.SrChoice = srChoiceInt
+																				}
+
+																			}
+
+																			if v, ok := cs["enable"]; ok && !isIntfNil(v) && !srChoiceTypeFound {
+
+																				srChoiceTypeFound = true
+
+																				if v.(bool) {
+																					srChoiceInt := &ves_io_schema_bgp.FamilyInetvpnParameters_Enable{}
+																					srChoiceInt.Enable = &ves_io_schema.Empty{}
+																					enableChoiceInt.Enable.SrChoice = srChoiceInt
+																				}
+
+																			}
+
+																		}
+																	}
+
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := cs["family_rtarget"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														familyRtarget := &ves_io_schema_bgp.FamilyRtarget{}
+														typeChoiceInt.Internal.FamilyRtarget = familyRtarget
+														for _, set := range sl {
+															if set != nil {
+																familyRtargetMapStrToI := set.(map[string]interface{})
+
+																enableChoiceTypeFound := false
+
+																if v, ok := familyRtargetMapStrToI["disable"]; ok && !isIntfNil(v) && !enableChoiceTypeFound {
+
+																	enableChoiceTypeFound = true
+
+																	if v.(bool) {
+																		enableChoiceInt := &ves_io_schema_bgp.FamilyRtarget_Disable{}
+																		enableChoiceInt.Disable = &ves_io_schema.Empty{}
+																		familyRtarget.EnableChoice = enableChoiceInt
+																	}
+
+																}
+
+																if v, ok := familyRtargetMapStrToI["enable"]; ok && !isIntfNil(v) && !enableChoiceTypeFound {
+
+																	enableChoiceTypeFound = true
+
+																	if v.(bool) {
+																		enableChoiceInt := &ves_io_schema_bgp.FamilyRtarget_Enable{}
+																		enableChoiceInt.Enable = &ves_io_schema.Empty{}
+																		familyRtarget.EnableChoice = enableChoiceInt
+																	}
+
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := cs["family_uuidvpn"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														familyUuidvpn := &ves_io_schema_bgp.FamilyUuidvpn{}
+														typeChoiceInt.Internal.FamilyUuidvpn = familyUuidvpn
+														for _, set := range sl {
+															if set != nil {
+																familyUuidvpnMapStrToI := set.(map[string]interface{})
+
+																enableChoiceTypeFound := false
+
+																if v, ok := familyUuidvpnMapStrToI["disable"]; ok && !isIntfNil(v) && !enableChoiceTypeFound {
+
+																	enableChoiceTypeFound = true
+
+																	if v.(bool) {
+																		enableChoiceInt := &ves_io_schema_bgp.FamilyUuidvpn_Disable{}
+																		enableChoiceInt.Disable = &ves_io_schema.Empty{}
+																		familyUuidvpn.EnableChoice = enableChoiceInt
+																	}
+
+																}
+
+																if v, ok := familyUuidvpnMapStrToI["enable"]; ok && !isIntfNil(v) && !enableChoiceTypeFound {
+
+																	enableChoiceTypeFound = true
+
+																	if v.(bool) {
+																		enableChoiceInt := &ves_io_schema_bgp.FamilyUuidvpn_Enable{}
+																		enableChoiceInt.Enable = &ves_io_schema.Empty{}
+																		familyUuidvpn.EnableChoice = enableChoiceInt
+																	}
+
+																}
+
+															}
+														}
+
+													}
+
+													mtlsChoiceTypeFound := false
+
+													if v, ok := cs["disable_mtls"]; ok && !isIntfNil(v) && !mtlsChoiceTypeFound {
+
+														mtlsChoiceTypeFound = true
+
+														if v.(bool) {
+															mtlsChoiceInt := &ves_io_schema_bgp.PeerInternal_DisableMtls{}
+															mtlsChoiceInt.DisableMtls = &ves_io_schema.Empty{}
+															typeChoiceInt.Internal.MtlsChoice = mtlsChoiceInt
+														}
+
+													}
+
+													if v, ok := cs["enable_mtls"]; ok && !isIntfNil(v) && !mtlsChoiceTypeFound {
+
+														mtlsChoiceTypeFound = true
+
+														if v.(bool) {
+															mtlsChoiceInt := &ves_io_schema_bgp.PeerInternal_EnableMtls{}
+															mtlsChoiceInt.EnableMtls = &ves_io_schema.Empty{}
+															typeChoiceInt.Internal.MtlsChoice = mtlsChoiceInt
+														}
+
+													}
+
+													if v, ok := cs["port"]; ok && !isIntfNil(v) {
+
+														typeChoiceInt.Internal.Port = uint32(v.(int))
+
+													}
+
+												}
+											}
+
+										}
 
 									}
 								}
@@ -18613,24 +21392,22 @@ func resourceVolterraVoltstackSiteUpdate(d *schema.ResourceData, meta interface{
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -18656,24 +21433,22 @@ func resourceVolterraVoltstackSiteUpdate(d *schema.ResourceData, meta interface{
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -27958,5 +30733,11 @@ func resourceVolterraVoltstackSiteDelete(d *schema.ResourceData, meta interface{
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_views_voltstack_site.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_views_voltstack_site.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting VoltstackSite: %w", err)
+	}
+	return nil
+
 }

@@ -35,7 +35,7 @@ resource "volterra_subnet" "example" {
       dhcp_networks {
         // One of the arguments from this list "network_prefix network_prefix_ipv6" can be set
 
-        network_prefix_ipv6 = "2001::1/64"
+        network_prefix = "10.1.1.0/24"
       }
     }
   }

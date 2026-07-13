@@ -150,6 +150,12 @@ func (v *ValidateSummaryResponse) Validate(ctx context.Context, pm interface{}, 
 	if m == nil {
 		return nil
 	}
+	if fv, exists := v.FldValidators["preferred_lma_region"]; exists {
+		vOpts := append(opts, db.WithValidateField("preferred_lma_region"))
+		if err := fv(ctx, m.GetPreferredLmaRegion(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["type"]; exists {
 		vOpts := append(opts, db.WithValidateField("type"))
 		if err := fv(ctx, m.GetType(), vOpts...); err != nil {

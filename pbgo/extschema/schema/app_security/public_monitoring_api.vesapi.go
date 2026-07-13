@@ -4906,7 +4906,7 @@ var AppSecurityMonitoringAPISwaggerJSON string = `{
         },
         "app_securityincidentsKeyField": {
             "type": "string",
-            "description": "x-displayName: \"Key Field\"\nSecurity events can be aggregated based on these fields.\n\n - CITY: x-displayName: \"City\"\n - COUNTRY: x-displayName: \"Country\"\n - ASN: x-displayName: \"ASN\"\n - INCIDENT_TYPE: x-displayName: \"Incident Type\"\n - INTENT: x-displayName: \"Intent\"\n - VH_NAME: x-displayName: \"Virtual Host Name\"\n - USER_ID: x-displayName: \"User ID\"\n - SRC_IP: x-displayName: \"Source IP\"\n - TLS_FINGERPRINT: x-displayName: \"JA3 TLS Fingerprint\"\n - LAST_STATUS: x-displayName: \"Last Status\"\n - INCIDENT_ID: x-displayName: \"Incident ID\"",
+            "description": "x-displayName: \"Key Field\"\nSecurity events can be aggregated based on these fields.\n\n - CITY: x-displayName: \"City\"\n - COUNTRY: x-displayName: \"Country\"\n - ASN: x-displayName: \"ASN\"\n - INCIDENT_TYPE: x-displayName: \"Incident Type\"\n - INTENT: x-displayName: \"Intent\"\n - VH_NAME: x-displayName: \"Virtual Host Name\"\n - USER_ID: x-displayName: \"User ID\"\n - SRC_IP: x-displayName: \"Source IP\"\n - TLS_FINGERPRINT: x-displayName: \"JA3 TLS Fingerprint\"\n - LAST_STATUS: x-displayName: \"Last Status\"\n - INCIDENT_ID: x-displayName: \"Incident ID\"\n - JA4_TLS_FINGERPRINT: x-displayName: \"JA4 TLS Fingerprint\"",
             "title": "Key Field",
             "enum": [
                 "CITY",
@@ -4919,7 +4919,8 @@ var AppSecurityMonitoringAPISwaggerJSON string = `{
                 "SRC_IP",
                 "TLS_FINGERPRINT",
                 "LAST_STATUS",
-                "INCIDENT_ID"
+                "INCIDENT_ID",
+                "JA4_TLS_FINGERPRINT"
             ],
             "default": "CITY"
         },
@@ -4986,10 +4987,11 @@ var AppSecurityMonitoringAPISwaggerJSON string = `{
         },
         "app_securityincidentsMultiKeyField": {
             "type": "string",
-            "description": "x-displayName: \"Multi-Key Field\"\nSecurity events can be aggregated based on these multiple key fields\n\n - SRC_IP_TLS_FINGERPRINT: x-displayName: \"Source IP, JA3 TLS Fingerprint\"\nAggregated by (KeyField.SRC_IP, KeyField.TLS_FINGERPRINT)",
+            "description": "x-displayName: \"Multi-Key Field\"\nSecurity events can be aggregated based on these multiple key fields\n\n - SRC_IP_TLS_FINGERPRINT: x-displayName: \"Source IP, JA3 TLS Fingerprint\"\nAggregated by (KeyField.SRC_IP, KeyField.TLS_FINGERPRINT)\n - SRC_IP_JA4_TLS_FINGERPRINT: x-displayName: \"Source IP, JA4 TLS Fingerprint\"\nAggregated by (KeyField.SRC_IP, KeyField.JA4_TLS_FINGERPRINT)",
             "title": "Multi-Key Field",
             "enum": [
-                "SRC_IP_TLS_FINGERPRINT"
+                "SRC_IP_TLS_FINGERPRINT",
+                "SRC_IP_JA4_TLS_FINGERPRINT"
             ],
             "default": "SRC_IP_TLS_FINGERPRINT"
         },

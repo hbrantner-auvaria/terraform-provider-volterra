@@ -347,7 +347,7 @@ type Location struct {
 	// This includes both the optional_modifier and the location_match combined.
 	// A location can either be defined by a prefix string, or by a regular expression.
 	// Reference: https://nginx.org/en/docs/http/ngx_http_core_module.html#location
-	// x-example: "~* \.(jpg|png|gif)$"
+	// x-example: "~* \\.(jpg|png|gif)$"
 	Definition string `protobuf:"bytes,1,opt,name=definition,proto3" json:"definition,omitempty"`
 	// waf_spec
 	//

@@ -286,6 +286,7 @@ func resourceVolterraIpPrefixSetRead(d *schema.ResourceData, meta interface{}) e
 		}
 		return fmt.Errorf("Error finding Volterra IpPrefixSet %q: %s", d.Id(), err)
 	}
+
 	return setIpPrefixSetFields(client, d, resp)
 }
 
@@ -467,5 +468,11 @@ func resourceVolterraIpPrefixSetDelete(d *schema.ResourceData, meta interface{})
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_ip_prefix_set.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_ip_prefix_set.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting IpPrefixSet: %w", err)
+	}
+	return nil
+
 }

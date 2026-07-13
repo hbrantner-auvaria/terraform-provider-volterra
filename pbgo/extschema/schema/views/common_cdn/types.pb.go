@@ -295,7 +295,7 @@ type LilacCDNCachePurgeRequest struct {
 	PurgeEpochTimestamp string `protobuf:"bytes,3,opt,name=purge_epoch_timestamp,json=purgeEpochTimestamp,proto3" json:"purge_epoch_timestamp,omitempty"`
 	// Purge Options
 	//
-	// x-displayName: "Purge Options"
+	// x-displayName: "Target"
 	// x-required
 	// Format: string
 	// Options to purge cache for a specific distribution
@@ -308,7 +308,7 @@ type LilacCDNCachePurgeRequest struct {
 	PatternType isLilacCDNCachePurgeRequest_PatternType `protobuf_oneof:"pattern_type"`
 	// Purge Type
 	//
-	// x-displayName: "Purge Type"
+	// x-displayName: "Type"
 	// x-required
 	// Purge type controls how the purge is performed
 	//

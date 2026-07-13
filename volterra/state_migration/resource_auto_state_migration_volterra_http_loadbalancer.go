@@ -87,11 +87,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
 
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
-
 															"name": {
 																Type:     schema.TypeString,
 																Optional: true,
@@ -126,11 +121,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
 
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
-
 															"name": {
 																Type:     schema.TypeString,
 																Optional: true,
@@ -163,11 +153,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 													Required: true,
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
-
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
 
 															"name": {
 																Type:     schema.TypeString,
@@ -212,11 +197,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 													Required: true,
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
-
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
 
 															"name": {
 																Type:     schema.TypeString,
@@ -267,11 +247,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
 
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
-
 															"name": {
 																Type:     schema.TypeString,
 																Optional: true,
@@ -316,11 +291,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
 
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
-
 															"name": {
 																Type:     schema.TypeString,
 																Optional: true,
@@ -343,11 +313,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 													Required: true,
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
-
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
 
 															"name": {
 																Type:     schema.TypeString,
@@ -407,11 +372,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
 
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
-
 															"name": {
 																Type:     schema.TypeString,
 																Optional: true,
@@ -450,11 +410,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 													Required: true,
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
-
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
 
 															"name": {
 																Type:     schema.TypeString,
@@ -500,11 +455,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
 
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
-
 															"name": {
 																Type:     schema.TypeString,
 																Optional: true,
@@ -527,11 +477,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 													Required: true,
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
-
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
 
 															"name": {
 																Type:     schema.TypeString,
@@ -582,11 +527,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
 
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
-
 															"name": {
 																Type:     schema.TypeString,
 																Optional: true,
@@ -622,11 +562,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
 
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
-
 															"name": {
 																Type:     schema.TypeString,
 																Optional: true,
@@ -650,11 +585,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 													Optional: true,
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
-
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
 
 															"name": {
 																Type:     schema.TypeString,
@@ -713,11 +643,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 							Required: true,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
-
-									"kind": {
-										Type:     schema.TypeString,
-										Computed: true,
-									},
 
 									"name": {
 										Type:     schema.TypeString,
@@ -10747,11 +10672,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 
-									"kind": {
-										Type:     schema.TypeString,
-										Computed: true,
-									},
-
 									"name": {
 										Type:     schema.TypeString,
 										Optional: true,
@@ -10775,11 +10695,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 							Optional: true,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
-
-									"kind": {
-										Type:     schema.TypeString,
-										Computed: true,
-									},
 
 									"name": {
 										Type:     schema.TypeString,
@@ -11925,11 +11840,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
 
-												"kind": {
-													Type:     schema.TypeString,
-													Computed: true,
-												},
-
 												"name": {
 													Type:     schema.TypeString,
 													Optional: true,
@@ -11973,11 +11883,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
 
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
-
 															"name": {
 																Type:     schema.TypeString,
 																Optional: true,
@@ -12007,11 +11912,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 													Optional: true,
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
-
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
 
 															"name": {
 																Type:     schema.TypeString,
@@ -12161,11 +12061,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
 
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
-
 															"name": {
 																Type:     schema.TypeString,
 																Optional: true,
@@ -12195,11 +12090,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 													Optional: true,
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
-
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
 
 															"name": {
 																Type:     schema.TypeString,
@@ -12725,11 +12615,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
 
-												"kind": {
-													Type:     schema.TypeString,
-													Computed: true,
-												},
-
 												"name": {
 													Type:     schema.TypeString,
 													Optional: true,
@@ -12759,11 +12644,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 										Optional: true,
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
-
-												"kind": {
-													Type:     schema.TypeString,
-													Computed: true,
-												},
 
 												"name": {
 													Type:     schema.TypeString,
@@ -15585,12 +15465,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
 
-																		"kind": {
-																			Type:       schema.TypeString,
-																			Computed:   true,
-																			Deprecated: "This field is deprecated and will be removed in future release.",
-																		},
-
 																		"name": {
 																			Type:       schema.TypeString,
 																			Optional:   true,
@@ -15618,12 +15492,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 																Deprecated: "This field is deprecated and will be removed in future release.",
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
-
-																		"kind": {
-																			Type:       schema.TypeString,
-																			Computed:   true,
-																			Deprecated: "This field is deprecated and will be removed in future release.",
-																		},
 
 																		"name": {
 																			Type:       schema.TypeString,
@@ -15823,12 +15691,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
 
-																		"kind": {
-																			Type:       schema.TypeString,
-																			Computed:   true,
-																			Deprecated: "This field is deprecated and will be removed in future release.",
-																		},
-
 																		"name": {
 																			Type:       schema.TypeString,
 																			Optional:   true,
@@ -15856,12 +15718,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 																Deprecated: "This field is deprecated and will be removed in future release.",
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
-
-																		"kind": {
-																			Type:       schema.TypeString,
-																			Computed:   true,
-																			Deprecated: "This field is deprecated and will be removed in future release.",
-																		},
 
 																		"name": {
 																			Type:       schema.TypeString,
@@ -16022,12 +15878,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
 
-																		"kind": {
-																			Type:       schema.TypeString,
-																			Computed:   true,
-																			Deprecated: "This field is deprecated and will be removed in future release.",
-																		},
-
 																		"name": {
 																			Type:       schema.TypeString,
 																			Optional:   true,
@@ -16055,12 +15905,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 																Deprecated: "This field is deprecated and will be removed in future release.",
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
-
-																		"kind": {
-																			Type:       schema.TypeString,
-																			Computed:   true,
-																			Deprecated: "This field is deprecated and will be removed in future release.",
-																		},
 
 																		"name": {
 																			Type:       schema.TypeString,
@@ -16219,12 +16063,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
 
-																		"kind": {
-																			Type:       schema.TypeString,
-																			Computed:   true,
-																			Deprecated: "This field is deprecated and will be removed in future release.",
-																		},
-
 																		"name": {
 																			Type:       schema.TypeString,
 																			Optional:   true,
@@ -16252,12 +16090,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 																Deprecated: "This field is deprecated and will be removed in future release.",
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
-
-																		"kind": {
-																			Type:       schema.TypeString,
-																			Computed:   true,
-																			Deprecated: "This field is deprecated and will be removed in future release.",
-																		},
 
 																		"name": {
 																			Type:       schema.TypeString,
@@ -17066,12 +16898,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
 
-												"kind": {
-													Type:       schema.TypeString,
-													Computed:   true,
-													Deprecated: "This field is deprecated and will be removed in future release.",
-												},
-
 												"name": {
 													Type:       schema.TypeString,
 													Optional:   true,
@@ -17099,12 +16925,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 										Deprecated: "This field is deprecated and will be removed in future release.",
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
-
-												"kind": {
-													Type:       schema.TypeString,
-													Computed:   true,
-													Deprecated: "This field is deprecated and will be removed in future release.",
-												},
 
 												"name": {
 													Type:       schema.TypeString,
@@ -21837,11 +21657,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
 
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
-
 															"name": {
 																Type:     schema.TypeString,
 																Optional: true,
@@ -21865,11 +21680,6 @@ func ResourceHttpLoadbalancerInstanceResourceV1() *schema.Resource {
 													Optional: true,
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
-
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
 
 															"name": {
 																Type:     schema.TypeString,

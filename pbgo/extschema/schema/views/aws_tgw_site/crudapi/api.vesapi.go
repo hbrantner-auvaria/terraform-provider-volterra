@@ -1791,7 +1791,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2015,7 +2015,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2269,7 +2269,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -3261,29 +3261,21 @@ var APISwaggerJSON string = `{
                 },
                 "connect_attachment_status": {
                     "type": "array",
-                    "description": " AWS Connect Attachment Status Type\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 1\n",
+                    "description": " AWS Connect Attachment Status Type",
                     "title": "AWS Connect Attachment Status Type",
-                    "maxItems": 1,
                     "items": {
                         "$ref": "#/definitions/cloud_connectAWSConnectAttachmentStatusType"
                     },
-                    "x-displayname": "AWS Connect Attachment Status",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.repeated.max_items": "1"
-                    }
+                    "x-displayname": "AWS Connect Attachment Status"
                 },
                 "tgw_route_table_status": {
                     "type": "array",
-                    "description": " AWS Transit Gateway Route Table Status Type\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 2\n",
+                    "description": " AWS Transit Gateway Route Table Status Type",
                     "title": "AWS Transit Gateway Route Table Status Type",
-                    "maxItems": 2,
                     "items": {
                         "$ref": "#/definitions/cloud_connectAWSTGWRouteTableStatusType"
                     },
-                    "x-displayname": "AWS Transit Gateway Route Table Status",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.repeated.max_items": "2"
-                    }
+                    "x-displayname": "AWS Transit Gateway Route Table Status"
                 },
                 "tgw_status": {
                     "description": " AWS Transit Gateway Status Type",
@@ -3431,6 +3423,12 @@ var APISwaggerJSON string = `{
                     "description": " Additional information related to the connect attachment deployment.",
                     "title": "Deployment Status",
                     "x-displayname": "Deployment Status"
+                },
+                "f5xc_site_asn": {
+                    "type": "string",
+                    "description": " F5XC Site ASN",
+                    "title": "F5XC Site ASN",
+                    "x-displayname": "F5XC Site ASN"
                 },
                 "peers": {
                     "type": "array",
@@ -4319,7 +4317,7 @@ var APISwaggerJSON string = `{
                 },
                 "regex_value": {
                     "type": "string",
-                    "description": "x-displayName: \"Regex Values of Domains\"\nx-example: \"([a-z]([-a-z0-9]*[a-z0-9])?)\\.com$'\"\nRegular Expression value for the domain name",
+                    "description": "x-displayName: \"Regex Values of Domains\"\nx-example: \"([a-z]([-a-z0-9]*[a-z0-9])?)\\\\.com$\"\nRegular Expression value for the domain name",
                     "title": "regex values of Domains"
                 },
                 "suffix_value": {
@@ -5381,6 +5379,17 @@ var APISwaggerJSON string = `{
                     "title": "TGW ARN",
                     "x-displayname": "ARN"
                 },
+                "association_default_route_table_id": {
+                    "type": "string",
+                    "description": " x-displayName \"Default Association Route Table ID\"\n AssociationDefaultRouteTableId",
+                    "title": "AssociationDefaultRouteTableId"
+                },
+                "auto_accept_shared_attachments": {
+                    "type": "boolean",
+                    "description": " x-displayName \"Auto Accept Shared Attachments\"\n AutoAcceptSharedAttachments",
+                    "title": "AutoAcceptSharedAttachments",
+                    "format": "boolean"
+                },
                 "cidrs": {
                     "type": "array",
                     "description": " x-displayName \"CIDRs\"\n TGW CIDRs",
@@ -5388,6 +5397,18 @@ var APISwaggerJSON string = `{
                     "items": {
                         "type": "string"
                     }
+                },
+                "default_route_table_association": {
+                    "type": "boolean",
+                    "description": " x-displayName \"Default Route Table Association\"\n DefaultRouteTableAssociation",
+                    "title": "DefaultRouteTableAssociation",
+                    "format": "boolean"
+                },
+                "default_route_table_propagation": {
+                    "type": "boolean",
+                    "description": " x-displayName \"Default Route Table Propagation\"\n DefaultRouteTablePropagation",
+                    "title": "DefaultRouteTablePropagation",
+                    "format": "boolean"
                 },
                 "id": {
                     "type": "string",
@@ -5400,6 +5421,11 @@ var APISwaggerJSON string = `{
                     "description": " TGW Owner Account",
                     "title": "TGW Owner",
                     "x-displayname": "Owner Account"
+                },
+                "propagation_default_route_table_id": {
+                    "type": "string",
+                    "description": " x-displayName \"Default Propagation Route Table ID\"\n PropagationDefaultRouteTableId",
+                    "title": "PropagationDefaultRouteTableId"
                 },
                 "region": {
                     "type": "string",
@@ -5420,9 +5446,14 @@ var APISwaggerJSON string = `{
                 },
                 "tags": {
                     "type": "object",
-                    "description": " TGW Tags",
+                    "description": " TGW Tags\n\nValidation Rules:\n  ves.io.schema.rules.map.keys.string.max_len: 127\n  ves.io.schema.rules.map.max_pairs: 20\n  ves.io.schema.rules.map.values.string.max_len: 255\n",
                     "title": "TGW Tags",
-                    "x-displayname": "Tags"
+                    "x-displayname": "Tags",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.map.keys.string.max_len": "127",
+                        "ves.io.schema.rules.map.max_pairs": "20",
+                        "ves.io.schema.rules.map.values.string.max_len": "255"
+                    }
                 }
             }
         },
@@ -6820,6 +6851,13 @@ var APISwaggerJSON string = `{
                     "x-displayname": "Error Description",
                     "x-ves-example": "invalid VPC ID"
                 },
+                "error_details": {
+                    "type": "string",
+                    "description": " Error details contains error message from cloud provider\n\nExample: - \"VPC vpc-1233548 NotExistent\"-",
+                    "title": "Error Details",
+                    "x-displayname": "Error Details",
+                    "x-ves-example": "VPC vpc-1233548 NotExistent"
+                },
                 "suggested_action": {
                     "type": "string",
                     "description": " Suggested Action\n\nExample: - \"update VPC ID\"-",
@@ -7255,7 +7293,7 @@ var APISwaggerJSON string = `{
                     "x-ves-example": "Site Errors"
                 },
                 "site_state": {
-                    "description": " Site state defines its state machine and in which operational phase it is. It is for both Regional Edge\n as well as Customer Edge. Example flow is site is in PROVISIONING then goest to STANDBY and ONLINE. In case of\n switching to different Connected RE it goes back to PROVISIONING and ONLINE. If any of phase failes then it\n goest to FAILED.",
+                    "description": " Site state defines its state machine and in which operational phase it is. It is for both Regional Edge\n as well as Customer Edge. Example flow is site is in PROVISIONING then goes to STANDBY and ONLINE. In case of\n switching to different Connected RE it goes back to PROVISIONING and ONLINE. If any of phase failes then it\n goes to FAILED.",
                     "title": "site_state",
                     "$ref": "#/definitions/siteSiteState",
                     "x-displayname": "Site State"

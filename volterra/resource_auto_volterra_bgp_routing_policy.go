@@ -548,6 +548,7 @@ func resourceVolterraBgpRoutingPolicyRead(d *schema.ResourceData, meta interface
 		}
 		return fmt.Errorf("Error finding Volterra BgpRoutingPolicy %q: %s", d.Id(), err)
 	}
+
 	return setBgpRoutingPolicyFields(client, d, resp)
 }
 
@@ -904,5 +905,11 @@ func resourceVolterraBgpRoutingPolicyDelete(d *schema.ResourceData, meta interfa
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_bgp_routing_policy.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_bgp_routing_policy.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting BgpRoutingPolicy: %w", err)
+	}
+	return nil
+
 }

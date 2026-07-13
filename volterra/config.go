@@ -49,6 +49,7 @@ type Config struct {
 	tenant         string
 	timeout        string
 	limiter        *ProviderLimiter
+	userAgent      string
 	// mapping of protobuf service FQN to service slug(e.g. 'config') on apiGw
 	serviceSlugs map[string]string
 }
@@ -167,12 +168,15 @@ func serviceSlugFromContext(ctx context.Context) string {
 
 // PrismURIRemapperFn is used as a http.RoundTripper to munge URIs as expected by
 // Prism API gateway (for public APIs)
-func prismURIRemapperFn(apiGwURL string) (client.RoundTripperFunc, error) {
+func prismURIRemapperFn(apiGwURL, userAgent string) (client.RoundTripperFunc, error) {
 	u, err := url.Parse(apiGwURL)
 	if err != nil {
 		return nil, errors.Wrapf(err, "Parsing apigw url %s", apiGwURL)
 	}
 	rtFn := func(req *http.Request, rt http.RoundTripper) (*http.Response, error) {
+		if userAgent != "" {
+			req.Header.Set("User-Agent", userAgent)
+		}
 		// convert https://x.y.volterra.us/api + /public/some/thing/here to
 		//         https://x.y.volterra.us/api/config/some/thing/here
 		srvURI := u.Path
@@ -216,8 +220,11 @@ func prismURIRemapperFn(apiGwURL string) (client.RoundTripperFunc, error) {
 }
 
 // uriRemapperFn is used as a http.RoundTripper to munge URIs as expected by regular services
-func uriRemapperFn(apiGwURL, tenant string) client.RoundTripperFunc {
+func uriRemapperFn(apiGwURL, tenant, userAgent string) client.RoundTripperFunc {
 	rtFn := func(req *http.Request, rt http.RoundTripper) (*http.Response, error) {
+		if userAgent != "" {
+			req.Header.Set("User-Agent", userAgent)
+		}
 		req.Header.Set(server.TenantHdrName, tenant)
 		curlOut, err := http2curl.GetCurlCommand(req)
 		if err == nil {
@@ -238,12 +245,12 @@ func uriRemapperFn(apiGwURL, tenant string) client.RoundTripperFunc {
 }
 
 func getclientOpts(c *Config) ([]vesapi.ConfigOpt, error) {
-	remapperFn, err := prismURIRemapperFn(c.url)
+	remapperFn, err := prismURIRemapperFn(c.url, c.userAgent)
 	if err != nil {
 		return nil, err
 	}
 	if c.vesenv {
-		remapperFn = uriRemapperFn(c.url, c.tenant)
+		remapperFn = uriRemapperFn(c.url, c.tenant, c.userAgent)
 	}
 
 	dur, err := time.ParseDuration(c.timeout)
@@ -284,7 +291,7 @@ func (c *Config) Client() (*APIClient, diag.Diagnostics) {
 		return nil, diag.FromErr(errors.Wrap(err, "Building client options"))
 	}
 	if c.test {
-		clOpts, err = getTestClientOpts(c.url, c.tenant)
+		clOpts, err = getTestClientOpts(c.url, c.tenant, c.userAgent)
 		if err != nil {
 			return nil, diag.FromErr(errors.Wrap(err, "Building client options"))
 		}

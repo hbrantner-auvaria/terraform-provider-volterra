@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
@@ -276,6 +277,9 @@ func resourceVolterraVirtualK8SCreate(d *schema.ResourceData, meta interface{}) 
 	}
 	d.SetId(createVirtualK8SResp.GetObjSystemMetadata().GetUid())
 
+	// Wait for pending initializers to complete before reading the object.
+	waitForPendingInitializersK8S(d, meta)
+
 	return resourceVolterraVirtualK8SRead(d, meta)
 }
 
@@ -293,6 +297,7 @@ func resourceVolterraVirtualK8SRead(d *schema.ResourceData, meta interface{}) er
 		}
 		return fmt.Errorf("Error finding Volterra VirtualK8S %q: %s", d.Id(), err)
 	}
+
 	return setVirtualK8SFields(client, d, resp)
 }
 
@@ -480,5 +485,123 @@ func resourceVolterraVirtualK8SDelete(d *schema.ResourceData, meta interface{}) 
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_virtual_k8s.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_virtual_k8s.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting VirtualK8S: %w", err)
+	}
+	return waitForDeleteFinalizersVirtualK8S(d, meta)
+
+}
+
+// waitForPendingInitializersK8S waits for all pending initializers of a Volterra VirtualK8S resource to complete.
+// It polls the resource status with exponential backoff, up to a maximum number of retries.
+// If the resource no longer exists (404), it clears the Terraform resource ID and returns.
+// If pending initializers remain after all retries, it returns an error.
+// Otherwise, it returns nil when no pending initializers are found.
+//
+// Parameters:
+//   - d: Terraform resource data containing the VirtualK8S name and namespace.
+//   - meta: Provider meta, expected to be an *APIClient.
+//
+// Returns:
+//   - error: nil if initializers are complete or resource is deleted, otherwise an error.
+//
+// TODO: Make this function generic for any resource type -- will do for new TPF provider
+func waitForPendingInitializersK8S(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*APIClient)
+	name := d.Get("name").(string)
+	namespace := d.Get("namespace").(string)
+
+	const (
+		maxRetries     = 10
+		initialBackoff = 1 * time.Second
+		maxBackoff     = 4 * time.Second
+	)
+
+	backoff := initialBackoff
+	time.Sleep(backoff)
+
+	for attempt := 0; attempt <= maxRetries; attempt++ {
+		resp, err := client.GetObject(context.Background(), ves_io_schema_virtual_k8s.ObjectType, namespace, name)
+		if err != nil {
+			if strings.Contains(err.Error(), "status code 404") {
+				log.Printf("[INFO] VirtualK8S %s no longer exists", d.Id())
+				d.SetId("")
+				return nil
+			}
+			return fmt.Errorf("error finding Volterra VirtualK8S %q: %w", d.Id(), err)
+		}
+
+		pending := resp.GetObjPendingInitializers()
+		if len(pending) == 0 {
+			return nil
+		}
+
+		if attempt == maxRetries {
+			return fmt.Errorf("VirtualK8S %s still has pending initializers after %d retries: %v", name, maxRetries, pending)
+		}
+
+		log.Printf("[INFO] VirtualK8S %s has pending initializers: %v. Retrying in %s...", name, pending, backoff)
+		time.Sleep(backoff)
+
+		backoff *= 2
+		if backoff > maxBackoff {
+			backoff = maxBackoff
+		}
+	}
+
+	return nil
+}
+
+// waitForDeleteFinalizersVirtualK8S waits for delete finalizers of a Volterra VirtualK8S resource to complete.
+// It polls the resource GET API with exponential backoff, up to a maximum number of retries.
+// When the GET API returns a 404, the resource has been fully deleted and finalizers are complete.
+// If the resource still exists after all retries, it returns an error.
+//
+// Parameters:
+//   - d: Terraform resource data containing the VirtualK8S name and namespace.
+//   - meta: Provider meta, expected to be an *APIClient.
+//
+// Returns:
+//   - error: nil if resource is deleted, otherwise an error.
+func waitForDeleteFinalizersVirtualK8S(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*APIClient)
+	name := d.Get("name").(string)
+	namespace := d.Get("namespace").(string)
+
+	const (
+		maxRetries     = 30
+		initialBackoff = 2 * time.Second
+		maxBackoff     = 10 * time.Second
+	)
+
+	backoff := initialBackoff
+
+	for attempt := 0; attempt <= maxRetries; attempt++ {
+		time.Sleep(backoff)
+
+		_, err := client.GetObject(context.Background(), ves_io_schema_virtual_k8s.ObjectType, namespace, name)
+		if err != nil {
+			if strings.Contains(err.Error(), "status code 404") {
+				log.Printf("[INFO] VirtualK8S %s has been successfully deleted", name)
+				d.SetId("")
+				return nil
+			}
+			return fmt.Errorf("error checking deletion status of VirtualK8S %q: %w", d.Id(), err)
+		}
+
+		if attempt == maxRetries {
+			return fmt.Errorf("VirtualK8S %s still exists after %d retries, delete finalizers may not have completed", name, maxRetries)
+		}
+
+		log.Printf("[INFO] VirtualK8S %s still exists (delete finalizers pending). Retrying in %s...", name, backoff)
+
+		backoff *= 2
+		if backoff > maxBackoff {
+			backoff = maxBackoff
+		}
+	}
+
+	return nil
 }

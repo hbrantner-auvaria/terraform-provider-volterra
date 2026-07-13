@@ -133,10 +133,8 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 			FieldPath:           "spec.aws_provider.securemesh_site_v2",
 			AllowedEnvironments: []string{"demo1", "test"},
 		},
-	}
-	mdr.RPCAvailableInResFieldRegistry["ves.io.schema.cloud_connect.API.Create"] = []svcfw.EnvironmentField{
 		{
-			FieldPath:           "spec.aws_provider.securemesh_site_v2",
+			FieldPath:           "spec.aws_tgw_site",
 			AllowedEnvironments: []string{"demo1", "test"},
 		},
 	}
@@ -151,46 +149,20 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 			AllowedEnvironments: []string{"demo1", "test"},
 		},
 		{
+			FieldPath:           "create_form.spec.aws_tgw_site",
+			AllowedEnvironments: []string{"demo1", "test"},
+		},
+		{
 			FieldPath:           "replace_form.spec.aws_provider.securemesh_site_v2",
 			AllowedEnvironments: []string{"demo1", "test"},
 		},
 		{
-			FieldPath:           "spec.aws_provider.securemesh_site_v2",
-			AllowedEnvironments: []string{"demo1", "test"},
-		},
-		{
-			FieldPath:           "status.#.cloud_connect_status.cloud_connect_aws_securemesh_site",
-			AllowedEnvironments: []string{"demo1", "test"},
-		},
-		{
-			FieldPath:           "status.#.cloud_connect_status.cloud_connect_aws_site.tgw_status",
-			AllowedEnvironments: []string{"demo1", "test"},
-		},
-		{
-			FieldPath:           "status.#.cloud_connect_status.cloud_connect_aws_site.transit_gateway_resource_share_status",
+			FieldPath:           "replace_form.spec.aws_tgw_site",
 			AllowedEnvironments: []string{"demo1", "test"},
 		},
 	}
 	mdr.RPCDeprecatedResponseFieldsRegistry["ves.io.schema.cloud_connect.API.List"] = []string{
 		"items.#.get_spec.aws_tgw_site",
-	}
-	mdr.RPCAvailableInResFieldRegistry["ves.io.schema.cloud_connect.API.List"] = []svcfw.EnvironmentField{
-		{
-			FieldPath:           "items.#.get_spec.aws_provider.securemesh_site_v2",
-			AllowedEnvironments: []string{"demo1", "test"},
-		},
-		{
-			FieldPath:           "items.#.status_set.#.cloud_connect_status.cloud_connect_aws_securemesh_site",
-			AllowedEnvironments: []string{"demo1", "test"},
-		},
-		{
-			FieldPath:           "items.#.status_set.#.cloud_connect_status.cloud_connect_aws_site.tgw_status",
-			AllowedEnvironments: []string{"demo1", "test"},
-		},
-		{
-			FieldPath:           "items.#.status_set.#.cloud_connect_status.cloud_connect_aws_site.transit_gateway_resource_share_status",
-			AllowedEnvironments: []string{"demo1", "test"},
-		},
 	}
 	mdr.RPCDeprecatedRequestFieldsRegistry["ves.io.schema.cloud_connect.API.Replace"] = []string{
 		"spec.aws_tgw_site",
@@ -198,6 +170,10 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 	mdr.RPCAvailableInReqFieldRegistry["ves.io.schema.cloud_connect.API.Replace"] = []svcfw.EnvironmentField{
 		{
 			FieldPath:           "spec.aws_provider.securemesh_site_v2",
+			AllowedEnvironments: []string{"demo1", "test"},
+		},
+		{
+			FieldPath:           "spec.aws_tgw_site",
 			AllowedEnvironments: []string{"demo1", "test"},
 		},
 	}

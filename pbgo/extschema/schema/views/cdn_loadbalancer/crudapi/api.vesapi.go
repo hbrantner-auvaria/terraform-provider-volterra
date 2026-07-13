@@ -1791,7 +1791,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2015,7 +2015,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2269,7 +2269,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -4867,10 +4867,10 @@ var APISwaggerJSON string = `{
             "x-ves-proto-message": "ves.io.schema.views.common_waf.ApiDiscoveryAdvancedSettings",
             "properties": {
                 "api_discovery_ref": {
-                    "description": " API Discovery Settings Object\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "description": " Defines how discovery operates and how traffic is analyzed. Use policies to customize discovery behavior, authentication handling, and other related settings.\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
                     "title": "API Discovery Settings Object",
                     "$ref": "#/definitions/schemaviewsObjectRefType",
-                    "x-displayname": "API Discovery Settings Object",
+                    "x-displayname": "Policy",
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true"
@@ -4926,16 +4926,16 @@ var APISwaggerJSON string = `{
                     "x-displayname": "Code Repositories"
                 },
                 "custom_api_auth_discovery": {
-                    "description": "Exclusive with [default_api_auth_discovery]\n Apply custom API discovery settings",
+                    "description": "Exclusive with [default_api_auth_discovery]\n Define classification rules to better match your application architecture and reduce noise.",
                     "title": "Apply Specified Custom API Auth Discovery",
                     "$ref": "#/definitions/common_wafApiDiscoveryAdvancedSettings",
                     "x-displayname": "Custom"
                 },
                 "default_api_auth_discovery": {
-                    "description": "Exclusive with [custom_api_auth_discovery]\n Apply system default API discovery settings",
+                    "description": "Exclusive with [custom_api_auth_discovery]\n Automatically discovers APIs from traffic and auth signals. No setup needed and recommended for most environments.",
                     "title": "default",
                     "$ref": "#/definitions/schemaEmpty",
-                    "x-displayname": "Default"
+                    "x-displayname": "Built-in"
                 },
                 "disable_learn_from_redirect_traffic": {
                     "description": "Exclusive with [enable_learn_from_redirect_traffic]\n Disable learning API patterns from traffic with redirect response codes 3xx",
@@ -6174,15 +6174,17 @@ var APISwaggerJSON string = `{
             "properties": {
                 "actions": {
                     "type": "array",
-                    "description": " Actions that should be taken when client identifier matches the rule\n\nValidation Rules:\n  ves.io.schema.rules.enum.defined_only: true\n  ves.io.schema.rules.repeated.max_items: 10\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "description": " Actions that should be taken when client identifier matches the rule\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.enum.defined_only: true\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 10\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "actions",
                     "maxItems": 10,
                     "items": {
                         "$ref": "#/definitions/common_wafClientSrcRuleAction"
                     },
                     "x-displayname": "Actions",
+                    "x-ves-required": "true",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.enum.defined_only": "true",
+                        "ves.io.schema.rules.message.required": "true",
                         "ves.io.schema.rules.repeated.max_items": "10",
                         "ves.io.schema.rules.repeated.unique": "true"
                     }
@@ -6313,10 +6315,10 @@ var APISwaggerJSON string = `{
             "x-ves-proto-message": "ves.io.schema.views.common_waf.Target",
             "properties": {
                 "all_endpoint": {
-                    "description": "Exclusive with [api_groups base_paths]\n Validation will be performed for all requests on this LB",
+                    "description": "Exclusive with [api_groups base_paths]\n JWT validation is applied to all requests handled by this Load Balancer. If JWT is missing or invalid, the configured action (Block or Report) will be applied.",
                     "title": "all_endpoint",
                     "$ref": "#/definitions/schemaEmpty",
-                    "x-displayname": "API Inventory"
+                    "x-displayname": "All Requests"
                 },
                 "api_groups": {
                     "description": "Exclusive with [all_endpoint base_paths]\n Validation will be performed for the endpoints mentioned in the API Groups",
@@ -10035,12 +10037,12 @@ var APISwaggerJSON string = `{
                 },
                 "regex_value": {
                     "type": "string",
-                    "description": "Exclusive with [exact_value suffix_value]\n Regular Expression value for the domain name\n\nExample: - \"([a-z]([-a-z0-9]*[a-z0-9])?)\\.com$'\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.max_len: 256\n  ves.io.schema.rules.string.min_len: 1\n  ves.io.schema.rules.string.regex: true\n",
+                    "description": "Exclusive with [exact_value suffix_value]\n Regular Expression value for the domain name\n\nExample: - \"([a-z]([-a-z0-9]*[a-z0-9])?)\\\\.com$\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.max_len: 256\n  ves.io.schema.rules.string.min_len: 1\n  ves.io.schema.rules.string.regex: true\n",
                     "title": "regex values of Domains",
                     "minLength": 1,
                     "maxLength": 256,
                     "x-displayname": "Regex Values of Domains",
-                    "x-ves-example": "([a-z]([-a-z0-9]*[a-z0-9])?)\\.com$'",
+                    "x-ves-example": "([a-z]([-a-z0-9]*[a-z0-9])?)\\\\.com$",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.string.max_len": "256",
                         "ves.io.schema.rules.string.min_len": "1",
@@ -11024,10 +11026,11 @@ var APISwaggerJSON string = `{
             "properties": {
                 "encoded_path_matcher": {
                     "type": "boolean",
-                    "description": "Match against the encoded, escaped path",
+                    "description": "Match against the encoded, escaped path\n\nExample: - \"match \\\"/path/%20another%20path\\\" instead of default \\\"/path/ another path\\\"\"-",
                     "title": "Encoded_Path",
                     "format": "boolean",
-                    "x-displayname": "Match Encoded Path"
+                    "x-displayname": "Match Encoded Path",
+                    "x-ves-example": "match \\\"/path/%20another%20path\\\" instead of default \\\"/path/ another path\\\""
                 },
                 "exact_values": {
                     "type": "array",

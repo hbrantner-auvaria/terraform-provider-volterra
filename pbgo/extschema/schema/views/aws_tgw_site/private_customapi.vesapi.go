@@ -509,6 +509,13 @@ var PrivateCustomAPISwaggerJSON string = `{
                     "x-displayname": "Error Description",
                     "x-ves-example": "invalid VPC ID"
                 },
+                "error_details": {
+                    "type": "string",
+                    "description": " Error details contains error message from cloud provider\n\nExample: - \"VPC vpc-1233548 NotExistent\"-",
+                    "title": "Error Details",
+                    "x-displayname": "Error Details",
+                    "x-ves-example": "VPC vpc-1233548 NotExistent"
+                },
                 "suggested_action": {
                     "type": "string",
                     "description": " Suggested Action\n\nExample: - \"update VPC ID\"-",

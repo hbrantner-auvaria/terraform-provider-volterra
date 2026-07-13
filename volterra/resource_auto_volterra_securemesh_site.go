@@ -15,6 +15,8 @@ import (
 
 	"gopkg.volterra.us/stdlib/client/vesapi"
 
+statemigration "github.com/volterraedge/terraform-provider-volterra/volterra/state_migration"
+
 	ves_io_schema "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema"
 	ves_io_schema_fleet "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/fleet"
 	ves_io_schema_network_firewall "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/network_firewall"
@@ -23,7 +25,6 @@ import (
 	ves_io_schema_views "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/views"
 	ves_io_schema_views_securemesh_site "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/views/securemesh_site"
 	ves_io_schema_virtual_network "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/virtual_network"
-	statemigration "github.com/volterraedge/terraform-provider-volterra/volterra/state_migration"
 )
 
 // resourceVolterraSecuremeshSite is implementation of Volterra's SecuremeshSite resources
@@ -428,11 +429,6 @@ func resourceVolterraSecuremeshSite() *schema.Resource {
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
 
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
-
 																		"name": {
 																			Type:     schema.TypeString,
 																			Optional: true,
@@ -466,11 +462,6 @@ func resourceVolterraSecuremeshSite() *schema.Resource {
 																Required: true,
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
-
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
 
 																		"name": {
 																			Type:     schema.TypeString,
@@ -4053,24 +4044,22 @@ func resourceVolterraSecuremeshSiteCreate(d *schema.ResourceData, meta interface
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -4096,24 +4085,22 @@ func resourceVolterraSecuremeshSiteCreate(d *schema.ResourceData, meta interface
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -8351,6 +8338,7 @@ func resourceVolterraSecuremeshSiteRead(d *schema.ResourceData, meta interface{}
 		}
 		return fmt.Errorf("Error finding Volterra SecuremeshSite %q: %s", d.Id(), err)
 	}
+
 	return setSecuremeshSiteFields(client, d, resp)
 }
 
@@ -8969,24 +8957,22 @@ func resourceVolterraSecuremeshSiteUpdate(d *schema.ResourceData, meta interface
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -9012,24 +8998,22 @@ func resourceVolterraSecuremeshSiteUpdate(d *schema.ResourceData, meta interface
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -13265,5 +13249,11 @@ func resourceVolterraSecuremeshSiteDelete(d *schema.ResourceData, meta interface
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_views_securemesh_site.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_views_securemesh_site.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting SecuremeshSite: %w", err)
+	}
+	return nil
+
 }

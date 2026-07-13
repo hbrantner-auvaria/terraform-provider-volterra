@@ -22,58 +22,21 @@ resource "volterra_alert_receiver" "example" {
 
   // One of the arguments from this list "email opsgenie pagerduty slack sms webhook" must be set
 
-  webhook {
-    http_config {
-      // One of the arguments from this list "auth_token basic_auth client_cert_obj no_authorization" must be set
+  pagerduty {
+    routing_key {
 
-      no_authorization = true
+      // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
 
-      enable_http2 = true
-
-      follow_redirects = true
-
-      // One of the arguments from this list "no_tls use_tls" must be set
-
-      use_tls {
-        max_version = "max_version"
-
-        min_version = "min_version"
-
-        // One of the arguments from this list "use_server_verification volterra_trusted_ca" must be set
-
-        use_server_verification {
-          ca_cert_obj {
-            trusted_ca {
-              name      = "test1"
-              namespace = "staging"
-              tenant    = "acmecorp"
-            }
-          }
-        }
-
-        // One of the arguments from this list "disable_sni sni" must be set
-
-        sni = "sni"
-      }
-    }
-
-    url {
-      blindfold_secret_info_internal {
+      blindfold_secret_info {
         decryption_provider = "value"
 
         location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
 
         store_provider = "value"
       }
-
-      secret_encoding_type = "secret_encoding_type"
-
-      // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
-
-      wingman_secret_info {
-        name = "ChargeBack-API-Key"
-      }
     }
+
+    url = "value"
   }
 }
 ```
@@ -149,10 +112,6 @@ Do not use authentication to the HTTP(s) server.
 
 F5XC Secret. URL for token, needs to be fetched from this path.
 
-`blindfold_secret_info_internal` - (Optional) Blindfold Secret Internal is used for the putting re-encrypted blindfold secret. See [Token Blindfold Secret Info Internal ](#token-blindfold-secret-info-internal) below for details.(Deprecated)
-
-`secret_encoding_type` - (Optional) e.g. if a secret is base64 encoded and then put into vault. (`String`).(Deprecated)
-
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 
 `blindfold_secret_info` - (Optional) Blindfold Secret is used for the secrets managed by F5XC Secret Management Service. See [Secret Info Oneof Blindfold Secret Info ](#secret-info-oneof-blindfold-secret-info) below for details.
@@ -166,10 +125,6 @@ F5XC Secret. URL for token, needs to be fetched from this path.
 ### Basic Auth Password
 
 HTTP Basic Auth Password.
-
-`blindfold_secret_info_internal` - (Optional) Blindfold Secret Internal is used for the putting re-encrypted blindfold secret. See [Password Blindfold Secret Info Internal ](#password-blindfold-secret-info-internal) below for details.(Deprecated)
-
-`secret_encoding_type` - (Optional) e.g. if a secret is base64 encoded and then put into vault. (`String`).(Deprecated)
 
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 
@@ -185,10 +140,6 @@ HTTP Basic Auth Password.
 
 API integration key to send alert notifications using REST API to OpsGenie service..
 
-`blindfold_secret_info_internal` - (Optional) Blindfold Secret Internal is used for the putting re-encrypted blindfold secret. See [Api Key Blindfold Secret Info Internal ](#api-key-blindfold-secret-info-internal) below for details.(Deprecated)
-
-`secret_encoding_type` - (Optional) e.g. if a secret is base64 encoded and then put into vault. (`String`).(Deprecated)
-
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 
 `blindfold_secret_info` - (Optional) Blindfold Secret is used for the secrets managed by F5XC Secret Management Service. See [Secret Info Oneof Blindfold Secret Info ](#secret-info-oneof-blindfold-secret-info) below for details.
@@ -202,10 +153,6 @@ API integration key to send alert notifications using REST API to OpsGenie servi
 ### Pagerduty Routing Key
 
 PagerDuty integration key (choose Integration Type: Events API v2).
-
-`blindfold_secret_info_internal` - (Optional) Blindfold Secret Internal is used for the putting re-encrypted blindfold secret. See [Routing Key Blindfold Secret Info Internal ](#routing-key-blindfold-secret-info-internal) below for details.(Deprecated)
-
-`secret_encoding_type` - (Optional) e.g. if a secret is base64 encoded and then put into vault. (`String`).(Deprecated)
 
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 
@@ -343,10 +290,6 @@ Perform server verification using F5XC default trusted CA list.
 
 API Key is embedded in the webhook URL..
 
-`blindfold_secret_info_internal` - (Optional) Blindfold Secret Internal is used for the putting re-encrypted blindfold secret. See [Url Blindfold Secret Info Internal ](#url-blindfold-secret-info-internal) below for details.(Deprecated)
-
-`secret_encoding_type` - (Optional) e.g. if a secret is base64 encoded and then put into vault. (`String`).(Deprecated)
-
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 
 `blindfold_secret_info` - (Optional) Blindfold Secret is used for the secrets managed by F5XC Secret Management Service. See [Secret Info Oneof Blindfold Secret Info ](#secret-info-oneof-blindfold-secret-info) below for details.
@@ -438,10 +381,6 @@ Configuration for HTTP endpoint.
 ### Webhook Url
 
 Incoming webhook url to send alert notifications..
-
-`blindfold_secret_info_internal` - (Optional) Blindfold Secret Internal is used for the putting re-encrypted blindfold secret. See [Url Blindfold Secret Info Internal ](#url-blindfold-secret-info-internal) below for details.(Deprecated)
-
-`secret_encoding_type` - (Optional) e.g. if a secret is base64 encoded and then put into vault. (`String`).(Deprecated)
 
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 

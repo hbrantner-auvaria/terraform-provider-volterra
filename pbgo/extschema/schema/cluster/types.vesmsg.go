@@ -386,14 +386,6 @@ type ValidateCreateSpecType struct {
 	FldValidators map[string]db.ValidatorFunc
 }
 
-func (v *ValidateCreateSpecType) MaxRequestsPerConnectionChoiceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
-	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
-	if err != nil {
-		return nil, errors.Wrap(err, "ValidationRuleHandler for max_requests_per_connection_choice")
-	}
-	return validatorFn, nil
-}
-
 func (v *ValidateCreateSpecType) MaxRequestsPerConnectionChoiceMaxRequestsPerConnectionValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
 	oValidatorFn_MaxRequestsPerConnection, err := db.NewUint32ValidationRuleHandler(rules)
 	if err != nil {
@@ -723,16 +715,6 @@ func (v *ValidateCreateSpecType) Validate(ctx context.Context, pm interface{}, o
 		}
 	}
 
-	if fv, exists := v.FldValidators["max_requests_per_connection_choice"]; exists {
-		val := m.GetMaxRequestsPerConnectionChoice()
-		vOpts := append(opts,
-			db.WithValidateField("max_requests_per_connection_choice"),
-		)
-		if err := fv(ctx, val, vOpts...); err != nil {
-			return err
-		}
-	}
-
 	switch m.GetMaxRequestsPerConnectionChoice().(type) {
 	case *CreateSpecType_MaxRequestsPerConnection:
 		if fv, exists := v.FldValidators["max_requests_per_connection_choice.max_requests_per_connection"]; exists {
@@ -849,16 +831,6 @@ var DefaultCreateSpecTypeValidator = func() *ValidateCreateSpecType {
 	_, _ = err, vFn
 	vFnMap := map[string]db.ValidatorFunc{}
 	_ = vFnMap
-	vrhMaxRequestsPerConnectionChoice := v.MaxRequestsPerConnectionChoiceValidationRuleHandler
-	rulesMaxRequestsPerConnectionChoice := map[string]string{
-		"ves.io.schema.rules.message.required_oneof": "true",
-	}
-	vFn, err = vrhMaxRequestsPerConnectionChoice(rulesMaxRequestsPerConnectionChoice)
-	if err != nil {
-		errMsg := fmt.Sprintf("ValidationRuleHandler for CreateSpecType.max_requests_per_connection_choice: %s", err)
-		panic(errMsg)
-	}
-	v.FldValidators["max_requests_per_connection_choice"] = vFn
 	vrhMaxRequestsPerConnectionChoiceMaxRequestsPerConnection := v.MaxRequestsPerConnectionChoiceMaxRequestsPerConnectionValidationRuleHandler
 	rulesMaxRequestsPerConnectionChoiceMaxRequestsPerConnection := map[string]string{
 		"ves.io.schema.rules.uint32.gte": "1",
@@ -1274,14 +1246,6 @@ type ValidateGetSpecType struct {
 	FldValidators map[string]db.ValidatorFunc
 }
 
-func (v *ValidateGetSpecType) MaxRequestsPerConnectionChoiceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
-	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
-	if err != nil {
-		return nil, errors.Wrap(err, "ValidationRuleHandler for max_requests_per_connection_choice")
-	}
-	return validatorFn, nil
-}
-
 func (v *ValidateGetSpecType) MaxRequestsPerConnectionChoiceMaxRequestsPerConnectionValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
 	oValidatorFn_MaxRequestsPerConnection, err := db.NewUint32ValidationRuleHandler(rules)
 	if err != nil {
@@ -1636,16 +1600,6 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 		}
 	}
 
-	if fv, exists := v.FldValidators["max_requests_per_connection_choice"]; exists {
-		val := m.GetMaxRequestsPerConnectionChoice()
-		vOpts := append(opts,
-			db.WithValidateField("max_requests_per_connection_choice"),
-		)
-		if err := fv(ctx, val, vOpts...); err != nil {
-			return err
-		}
-	}
-
 	switch m.GetMaxRequestsPerConnectionChoice().(type) {
 	case *GetSpecType_MaxRequestsPerConnection:
 		if fv, exists := v.FldValidators["max_requests_per_connection_choice.max_requests_per_connection"]; exists {
@@ -1762,16 +1716,6 @@ var DefaultGetSpecTypeValidator = func() *ValidateGetSpecType {
 	_, _ = err, vFn
 	vFnMap := map[string]db.ValidatorFunc{}
 	_ = vFnMap
-	vrhMaxRequestsPerConnectionChoice := v.MaxRequestsPerConnectionChoiceValidationRuleHandler
-	rulesMaxRequestsPerConnectionChoice := map[string]string{
-		"ves.io.schema.rules.message.required_oneof": "true",
-	}
-	vFn, err = vrhMaxRequestsPerConnectionChoice(rulesMaxRequestsPerConnectionChoice)
-	if err != nil {
-		errMsg := fmt.Sprintf("ValidationRuleHandler for GetSpecType.max_requests_per_connection_choice: %s", err)
-		panic(errMsg)
-	}
-	v.FldValidators["max_requests_per_connection_choice"] = vFn
 	vrhMaxRequestsPerConnectionChoiceMaxRequestsPerConnection := v.MaxRequestsPerConnectionChoiceMaxRequestsPerConnectionValidationRuleHandler
 	rulesMaxRequestsPerConnectionChoiceMaxRequestsPerConnection := map[string]string{
 		"ves.io.schema.rules.uint32.gte": "1",
@@ -2078,14 +2022,6 @@ func (m *GlobalSpecType) GetTlsParametersDRefInfo() ([]db.DRefInfo, error) {
 
 type ValidateGlobalSpecType struct {
 	FldValidators map[string]db.ValidatorFunc
-}
-
-func (v *ValidateGlobalSpecType) MaxRequestsPerConnectionChoiceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
-	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
-	if err != nil {
-		return nil, errors.Wrap(err, "ValidationRuleHandler for max_requests_per_connection_choice")
-	}
-	return validatorFn, nil
 }
 
 func (v *ValidateGlobalSpecType) MaxRequestsPerConnectionChoiceMaxRequestsPerConnectionValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
@@ -2479,16 +2415,6 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 		}
 	}
 
-	if fv, exists := v.FldValidators["max_requests_per_connection_choice"]; exists {
-		val := m.GetMaxRequestsPerConnectionChoice()
-		vOpts := append(opts,
-			db.WithValidateField("max_requests_per_connection_choice"),
-		)
-		if err := fv(ctx, val, vOpts...); err != nil {
-			return err
-		}
-	}
-
 	switch m.GetMaxRequestsPerConnectionChoice().(type) {
 	case *GlobalSpecType_MaxRequestsPerConnection:
 		if fv, exists := v.FldValidators["max_requests_per_connection_choice.max_requests_per_connection"]; exists {
@@ -2605,16 +2531,6 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 	_, _ = err, vFn
 	vFnMap := map[string]db.ValidatorFunc{}
 	_ = vFnMap
-	vrhMaxRequestsPerConnectionChoice := v.MaxRequestsPerConnectionChoiceValidationRuleHandler
-	rulesMaxRequestsPerConnectionChoice := map[string]string{
-		"ves.io.schema.rules.message.required_oneof": "true",
-	}
-	vFn, err = vrhMaxRequestsPerConnectionChoice(rulesMaxRequestsPerConnectionChoice)
-	if err != nil {
-		errMsg := fmt.Sprintf("ValidationRuleHandler for GlobalSpecType.max_requests_per_connection_choice: %s", err)
-		panic(errMsg)
-	}
-	v.FldValidators["max_requests_per_connection_choice"] = vFn
 	vrhMaxRequestsPerConnectionChoiceMaxRequestsPerConnection := v.MaxRequestsPerConnectionChoiceMaxRequestsPerConnectionValidationRuleHandler
 	rulesMaxRequestsPerConnectionChoiceMaxRequestsPerConnection := map[string]string{
 		"ves.io.schema.rules.uint32.gte": "1",
@@ -3246,14 +3162,6 @@ type ValidateReplaceSpecType struct {
 	FldValidators map[string]db.ValidatorFunc
 }
 
-func (v *ValidateReplaceSpecType) MaxRequestsPerConnectionChoiceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
-	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
-	if err != nil {
-		return nil, errors.Wrap(err, "ValidationRuleHandler for max_requests_per_connection_choice")
-	}
-	return validatorFn, nil
-}
-
 func (v *ValidateReplaceSpecType) MaxRequestsPerConnectionChoiceMaxRequestsPerConnectionValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
 	oValidatorFn_MaxRequestsPerConnection, err := db.NewUint32ValidationRuleHandler(rules)
 	if err != nil {
@@ -3583,16 +3491,6 @@ func (v *ValidateReplaceSpecType) Validate(ctx context.Context, pm interface{}, 
 		}
 	}
 
-	if fv, exists := v.FldValidators["max_requests_per_connection_choice"]; exists {
-		val := m.GetMaxRequestsPerConnectionChoice()
-		vOpts := append(opts,
-			db.WithValidateField("max_requests_per_connection_choice"),
-		)
-		if err := fv(ctx, val, vOpts...); err != nil {
-			return err
-		}
-	}
-
 	switch m.GetMaxRequestsPerConnectionChoice().(type) {
 	case *ReplaceSpecType_MaxRequestsPerConnection:
 		if fv, exists := v.FldValidators["max_requests_per_connection_choice.max_requests_per_connection"]; exists {
@@ -3709,16 +3607,6 @@ var DefaultReplaceSpecTypeValidator = func() *ValidateReplaceSpecType {
 	_, _ = err, vFn
 	vFnMap := map[string]db.ValidatorFunc{}
 	_ = vFnMap
-	vrhMaxRequestsPerConnectionChoice := v.MaxRequestsPerConnectionChoiceValidationRuleHandler
-	rulesMaxRequestsPerConnectionChoice := map[string]string{
-		"ves.io.schema.rules.message.required_oneof": "true",
-	}
-	vFn, err = vrhMaxRequestsPerConnectionChoice(rulesMaxRequestsPerConnectionChoice)
-	if err != nil {
-		errMsg := fmt.Sprintf("ValidationRuleHandler for ReplaceSpecType.max_requests_per_connection_choice: %s", err)
-		panic(errMsg)
-	}
-	v.FldValidators["max_requests_per_connection_choice"] = vFn
 	vrhMaxRequestsPerConnectionChoiceMaxRequestsPerConnection := v.MaxRequestsPerConnectionChoiceMaxRequestsPerConnectionValidationRuleHandler
 	rulesMaxRequestsPerConnectionChoiceMaxRequestsPerConnection := map[string]string{
 		"ves.io.schema.rules.uint32.gte": "1",

@@ -203,6 +203,7 @@ var DefaultGetSpecTypeValidator = func() *ValidateGetSpecType {
 	}
 	v.FldValidators["bot_infras_with_version"] = vFn
 	v.FldValidators["endpoint_policy_content"] = ves_io_schema_shape_bot_defense.ProtectedEndpointsValidator().Validate
+	v.FldValidators["cookies"] = ves_io_schema_shape_bot_defense.CookieDefinitionValidator().Validate
 
 	return v
 }()
@@ -502,6 +503,7 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 	v.FldValidators["bot_infras_with_version"] = vFn
 	v.FldValidators["endpoint_policy_version"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["endpoint_policy_content"] = ves_io_schema_shape_bot_defense.ProtectedEndpointsValidator().Validate
+	v.FldValidators["cookies"] = ves_io_schema_shape_bot_defense.CookieDefinitionValidator().Validate
 
 	return v
 }()

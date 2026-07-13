@@ -1782,7 +1782,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2006,7 +2006,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2260,7 +2260,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -3163,13 +3163,14 @@ var APISwaggerJSON string = `{
         },
         "topologyInterfaceTypeEnum": {
             "type": "string",
-            "description": " - INSIDE: INSIDE Interface\n\n - WORKLOAD: Workload Interface\n\n - NOT_APPLICABLE: NOT_APPLICABLE\n\nEx - When the subnet belongs to a azure spoke vnet",
+            "description": " - INSIDE: INSIDE Interface\n\n - WORKLOAD: Workload Interface\n\n - NOT_APPLICABLE: NOT_APPLICABLE\n\nEx - When the subnet belongs to a azure spoke vnet\n - SEGMENT: SEGMENT Interface\n",
             "title": "- OUTSIDE: OUTSIDE Interface",
             "enum": [
                 "OUTSIDE",
                 "INSIDE",
                 "WORKLOAD",
-                "NOT_APPLICABLE"
+                "NOT_APPLICABLE",
+                "SEGMENT"
             ],
             "default": "OUTSIDE",
             "x-displayname": "",
@@ -3182,6 +3183,15 @@ var APISwaggerJSON string = `{
             "x-displayname": "MetaType",
             "x-ves-proto-message": "ves.io.schema.topology.MetaType",
             "properties": {
+                "cloud_user_accounts": {
+                    "type": "array",
+                    "description": " Reference to cloud user account to fetch cloud resources.",
+                    "title": "Cloud User Account",
+                    "items": {
+                        "$ref": "#/definitions/ioschemaObjectRefType"
+                    },
+                    "x-displayname": "Cloud User Account"
+                },
                 "creds": {
                     "type": "array",
                     "description": " Reference to cloud credentials to fetch cloud resources.",

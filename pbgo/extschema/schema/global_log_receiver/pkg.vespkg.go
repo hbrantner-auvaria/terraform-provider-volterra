@@ -53,6 +53,7 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.global_log_receiver.NewRelicConfig"] = NewRelicConfigValidator()
 	vr["ves.io.schema.global_log_receiver.QRadarConfig"] = QRadarConfigValidator()
 	vr["ves.io.schema.global_log_receiver.ReplaceSpecType"] = ReplaceSpecTypeValidator()
+	vr["ves.io.schema.global_log_receiver.RequestLogsConfig"] = RequestLogsConfigValidator()
 	vr["ves.io.schema.global_log_receiver.S3Config"] = S3ConfigValidator()
 	vr["ves.io.schema.global_log_receiver.SplunkConfig"] = SplunkConfigValidator()
 	vr["ves.io.schema.global_log_receiver.SumoLogicConfig"] = SumoLogicConfigValidator()

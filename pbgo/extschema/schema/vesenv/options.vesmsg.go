@@ -2025,6 +2025,17 @@ func (v *ValidateServiceSlugChoice) Validate(ctx context.Context, pm interface{}
 				return err
 			}
 		}
+	case *ServiceSlugChoice_Schemas:
+		if fv, exists := v.FldValidators["choice.schemas"]; exists {
+			val := m.GetChoice().(*ServiceSlugChoice_Schemas).Schemas
+			vOpts := append(opts,
+				db.WithValidateField("choice"),
+				db.WithValidateField("schemas"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 	return nil
 }

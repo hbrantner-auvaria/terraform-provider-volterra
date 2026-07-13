@@ -1166,7 +1166,7 @@ var ApiepLBCustomAPISwaggerJSON string = `{
         },
         "app_typeAPIEPCategory": {
             "type": "string",
-            "description": "The category of an API endpoint.\n\nDiscovered API Endpoint.\nThe API Endpoint is imported from user swagger.\nThe API Endpoint is present at the API Inventory.\nThe API Endpoint is considered as part of Shadow API.\nDeprecated API Endpoint.\nNon-API Endpoint.",
+            "description": "The category of an API endpoint.\n\nDiscovered API Endpoint.\nThe API Endpoint is imported from user swagger.\nThe API Endpoint is present at the API Inventory.\nThe API Endpoint is considered as part of Shadow API.\nDeprecated API Endpoint.\nNon-API Endpoint.\n - APIEP_CATEGORY_DISCOVERY_POLICY: x-displayName: Policy\nUser-Defined Discovery Policy",
             "title": "APIEP Category",
             "enum": [
                 "APIEP_CATEGORY_DISCOVERED",
@@ -1174,7 +1174,8 @@ var ApiepLBCustomAPISwaggerJSON string = `{
                 "APIEP_CATEGORY_INVENTORY",
                 "APIEP_CATEGORY_SHADOW",
                 "APIEP_CATEGORY_DEPRECATED",
-                "APIEP_CATEGORY_NON_API"
+                "APIEP_CATEGORY_NON_API",
+                "APIEP_CATEGORY_DISCOVERY_POLICY"
             ],
             "default": "APIEP_CATEGORY_DISCOVERED",
             "x-displayname": "Category of the API Endpoint",

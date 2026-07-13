@@ -1791,7 +1791,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2015,7 +2015,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2269,7 +2269,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2624,11 +2624,61 @@ var APISwaggerJSON string = `{
                 }
             }
         },
+        "api_discoveryDiscoveryRule": {
+            "type": "object",
+            "description": "Defines a rule for classifying endpoints as API or Non-API",
+            "title": "DiscoveryRule",
+            "x-displayname": "Discovery Rule",
+            "x-ves-proto-message": "ves.io.schema.api_sec.api_discovery.DiscoveryRule",
+            "properties": {
+                "labels": {
+                    "type": "object",
+                    "description": " Map of string keys and values that can be used to organize and categorize the rule",
+                    "title": "labels",
+                    "x-displayname": "Labels"
+                },
+                "metadata": {
+                    "description": " Standard object metadata including name, labels, and description",
+                    "title": "metadata",
+                    "$ref": "#/definitions/schemaMessageMetaType",
+                    "x-displayname": "Metadata"
+                },
+                "rule_properties": {
+                    "description": " Configuration for rule type and matching criteria",
+                    "title": "rule_properties",
+                    "$ref": "#/definitions/api_discoveryRuleProperties",
+                    "x-displayname": "Rule Properties"
+                }
+            }
+        },
+        "api_discoveryExclusionConfig": {
+            "type": "object",
+            "description": "Configuration for exclusion action",
+            "title": "ExclusionConfig",
+            "x-displayname": "Exclusion Configuration",
+            "x-ves-oneof-field-action_choice": "[\"archive\",\"ignore\"]",
+            "x-ves-proto-message": "ves.io.schema.api_sec.api_discovery.ExclusionConfig",
+            "properties": {
+                "archive": {
+                    "description": "Exclusive with [ignore]\n Endpoints are removed from active API Discovery and stored in the Archive under Non-API Rules for reference and auditing.",
+                    "title": "archive",
+                    "$ref": "#/definitions/schemaEmpty",
+                    "x-displayname": "Archive as Non-API Endpoint"
+                },
+                "ignore": {
+                    "description": "Exclusive with [archive]\n Excluded endpoints are completely ignored by API Discovery and will not appear in discovery results, inventories, or insights.",
+                    "title": "ignore",
+                    "$ref": "#/definitions/schemaEmpty",
+                    "x-displayname": "Ignore from API Discovery"
+                }
+            }
+        },
         "api_discoveryGlobalSpecType": {
             "type": "object",
             "description": "Shape of api_discovery in the storage backend.",
             "title": "GlobalSpecType",
             "x-displayname": "Specification",
+            "x-ves-displayorder": "2,1",
             "x-ves-proto-message": "ves.io.schema.api_sec.api_discovery.GlobalSpecType",
             "properties": {
                 "custom_auth_types": {
@@ -2642,6 +2692,132 @@ var APISwaggerJSON string = `{
                     "x-displayname": "Custom Authentication Types",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.repeated.max_items": "10"
+                    }
+                },
+                "user_defined_api_discovery_policy": {
+                    "description": " Rules are evaluated sequentially, top to bottom. If no rules are added, all traffic will be discovered or ignored based on the selection in the 'Default Behaviour of the Rule Set' field.",
+                    "title": "user_defined_api_discovery_policy",
+                    "$ref": "#/definitions/api_discoveryUserDefinedApiDiscoveryPolicy",
+                    "x-displayname": "Rules Properties"
+                }
+            }
+        },
+        "api_discoveryHTTPHeaderCriteria": {
+            "type": "object",
+            "description": "Criteria for matching HTTP headers",
+            "title": "HTTPHeaderCriteria",
+            "x-displayname": "HTTP Header Criteria",
+            "x-ves-proto-message": "ves.io.schema.api_sec.api_discovery.HTTPHeaderCriteria",
+            "properties": {
+                "field_name": {
+                    "type": "string",
+                    "description": "\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.http_header_field: true\n  ves.io.schema.rules.string.max_bytes: 256\n",
+                    "title": "field_name",
+                    "maxLength": 256,
+                    "x-displayname": "HTTP Header Name",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.string.http_header_field": "true",
+                        "ves.io.schema.rules.string.max_bytes": "256"
+                    }
+                },
+                "location": {
+                    "description": "\n\nValidation Rules:\n  ves.io.schema.rules.enum.defined_only: true\n",
+                    "title": "location",
+                    "$ref": "#/definitions/api_discoveryRuleLocation",
+                    "x-displayname": "Location",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.enum.defined_only": "true"
+                    }
+                },
+                "match_type": {
+                    "description": "\n\nValidation Rules:\n  ves.io.schema.rules.enum.defined_only: true\n",
+                    "title": "match_type",
+                    "$ref": "#/definitions/api_discoveryMatchType",
+                    "x-displayname": "Match Type",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.enum.defined_only": "true"
+                    }
+                },
+                "value": {
+                    "type": "string",
+                    "description": "\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.max_bytes: 1024\n  ves.io.schema.rules.string.not_empty: true\n",
+                    "title": "value",
+                    "maxLength": 1024,
+                    "x-displayname": "Value",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.string.max_bytes": "1024",
+                        "ves.io.schema.rules.string.not_empty": "true"
+                    }
+                }
+            }
+        },
+        "api_discoveryMatchType": {
+            "type": "string",
+            "description": "Specifies how the value should be matched\n",
+            "title": "MatchType",
+            "enum": [
+                "EXACT_MATCH",
+                "SUBSTRING",
+                "REGEX"
+            ],
+            "default": "EXACT_MATCH",
+            "x-displayname": "Match Type",
+            "x-ves-proto-enum": "ves.io.schema.api_sec.api_discovery.MatchType"
+        },
+        "api_discoveryRuleLocation": {
+            "type": "string",
+            "description": "Specifies whether the rule criteria should be evaluated against request or response\n\nApplies the rule to incoming traffic from the client.\nApplies the rule to outgoing traffic sent back to the client.",
+            "title": "RuleLocation",
+            "enum": [
+                "REQUEST",
+                "RESPONSE"
+            ],
+            "default": "REQUEST",
+            "x-displayname": "Rule Location",
+            "x-ves-proto-enum": "ves.io.schema.api_sec.api_discovery.RuleLocation"
+        },
+        "api_discoveryRuleProperties": {
+            "type": "object",
+            "description": "Determines whether matching endpoints are included in API Discovery or excluded.",
+            "title": "RuleProperties",
+            "x-displayname": "Rule Properties",
+            "x-ves-oneof-field-criteria": "[\"http_header_criteria\",\"pattern\"]",
+            "x-ves-oneof-field-rule_type_choice": "[\"exclusion\",\"inclusion\"]",
+            "x-ves-proto-message": "ves.io.schema.api_sec.api_discovery.RuleProperties",
+            "properties": {
+                "exclusion": {
+                    "description": "Exclusive with [inclusion]\n Matching endpoints will be excluded from API discovery",
+                    "title": "exclusion",
+                    "$ref": "#/definitions/api_discoveryExclusionConfig",
+                    "x-displayname": "Exclusion"
+                },
+                "http_header_criteria": {
+                    "description": "Exclusive with [pattern]\n",
+                    "title": "http_header_criteria",
+                    "$ref": "#/definitions/api_discoveryHTTPHeaderCriteria",
+                    "x-displayname": "HTTP Header"
+                },
+                "inclusion": {
+                    "description": "Exclusive with [exclusion]\n Matching endpoints will be included in API discovery",
+                    "title": "inclusion",
+                    "$ref": "#/definitions/schemaEmpty",
+                    "x-displayname": "Inclusion"
+                },
+                "pattern": {
+                    "type": "string",
+                    "description": "Exclusive with [http_header_criteria]\n Patterns are matched against the request path to identify endpoints by path structure, file extension, or version prefix. Endpoints that match this pattern are affected by the rule.\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.max_bytes: 512\n  ves.io.schema.rules.string.not_empty: true\n",
+                    "title": "pattern",
+                    "maxLength": 512,
+                    "x-displayname": "Pattern",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.string.max_bytes": "512",
+                        "ves.io.schema.rules.string.not_empty": "true"
                     }
                 }
             }
@@ -2690,6 +2866,42 @@ var APISwaggerJSON string = `{
                         "$ref": "#/definitions/ioschemaObjectRefType"
                     },
                     "x-displayname": "Config Object"
+                }
+            }
+        },
+        "api_discoveryUserDefinedApiDiscoveryPolicy": {
+            "type": "object",
+            "description": "Rules are evaluated sequentially, top to bottom. If no rules are added, all traffic will be discovered or ignored based on the selection in the 'Default Behaviour of the Rule Set' field.",
+            "title": "UserDefinedApiDiscoveryPolicy",
+            "x-displayname": "User Defined API Discovery Policy",
+            "x-ves-oneof-field-default_behavior_choice": "[\"exclusive\",\"inclusive\"]",
+            "x-ves-proto-message": "ves.io.schema.api_sec.api_discovery.UserDefinedApiDiscoveryPolicy",
+            "properties": {
+                "discovery_rules": {
+                    "type": "array",
+                    "description": " Define rules to include or exclude endpoints by path, domain, or header. Rules run top to bottom; unmatched endpoints follow the default action.\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 100\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "title": "discovery_rules",
+                    "maxItems": 100,
+                    "items": {
+                        "$ref": "#/definitions/api_discoveryDiscoveryRule"
+                    },
+                    "x-displayname": "Discovery Rules",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.repeated.max_items": "100",
+                        "ves.io.schema.rules.repeated.unique": "true"
+                    }
+                },
+                "exclusive": {
+                    "description": "Exclusive with [inclusive]\n Any traffic that does not match the specified rules will be ignored by default.",
+                    "title": "exclusive",
+                    "$ref": "#/definitions/api_discoveryExclusionConfig",
+                    "x-displayname": "Exclusive"
+                },
+                "inclusive": {
+                    "description": "Exclusive with [exclusive]\n Any traffic that does not match the specified rules will be discovered by default.",
+                    "title": "inclusive",
+                    "$ref": "#/definitions/schemaEmpty",
+                    "x-displayname": "Inclusive"
                 }
             }
         },
@@ -3023,6 +3235,13 @@ var APISwaggerJSON string = `{
                 }
             }
         },
+        "schemaEmpty": {
+            "type": "object",
+            "description": "This can be used for messages where no values are needed",
+            "title": "Empty",
+            "x-displayname": "Empty",
+            "x-ves-proto-message": "ves.io.schema.Empty"
+        },
         "schemaInitializerType": {
             "type": "object",
             "description": "Initializer is information about an initializer that has not yet completed.",
@@ -3068,6 +3287,40 @@ var APISwaggerJSON string = `{
             "title": "ListMetaType",
             "x-displayname": "List Metadata",
             "x-ves-proto-message": "ves.io.schema.ListMetaType"
+        },
+        "schemaMessageMetaType": {
+            "type": "object",
+            "description": "MessageMetaType is metadata (common attributes) of a message that only certain messages\nhave. This information is propagated to the metadata of a child object that gets created\nfrom the containing message during view processing.\nThe information in this type can be specified by user during create and replace APIs.",
+            "title": "MessageMetaType",
+            "x-displayname": "Message Metadata",
+            "x-ves-proto-message": "ves.io.schema.MessageMetaType",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "description": " Human readable description.\n\nExample: - \"Virtual Host for acmecorp website\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.max_len: 256\n",
+                    "title": "description",
+                    "maxLength": 256,
+                    "x-displayname": "Description",
+                    "x-ves-example": "Virtual Host for acmecorp website",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.string.max_len": "256"
+                    }
+                },
+                "name": {
+                    "type": "string",
+                    "description": " This is the name of the message.\n The value of name has to follow DNS-1035 format.\n\nExample: - \"acmecorp-web\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.min_len: 1\n  ves.io.schema.rules.string.ves_object_name: true\n",
+                    "title": "name",
+                    "minLength": 1,
+                    "x-displayname": "Name",
+                    "x-ves-example": "acmecorp-web",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.string.min_len": "1",
+                        "ves.io.schema.rules.string.ves_object_name": "true"
+                    }
+                }
+            }
         },
         "schemaObjectMetaType": {
             "type": "object",

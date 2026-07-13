@@ -16,6 +16,7 @@ import (
 
 	ves_io_schema "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema"
 	ves_io_schema_discovery "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/discovery"
+	ves_io_schema_discovery_cloud "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/discovery_cloud"
 	ves_io_schema_views "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/views"
 )
 
@@ -25,6 +26,420 @@ var (
 	_ = errors.Wrap
 	_ = strings.Split
 )
+
+// augmented methods on protoc/std generated struct
+
+func (m *AwsPortInfo) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *AwsPortInfo) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *AwsPortInfo) DeepCopy() *AwsPortInfo {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &AwsPortInfo{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *AwsPortInfo) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *AwsPortInfo) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return AwsPortInfoValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateAwsPortInfo struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateAwsPortInfo) PortValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewUint32ValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for port")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateAwsPortInfo) ProtocolValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for protocol")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateAwsPortInfo) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*AwsPortInfo)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *AwsPortInfo got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["port"]; exists {
+		vOpts := append(opts, db.WithValidateField("port"))
+		if err := fv(ctx, m.GetPort(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["protocol"]; exists {
+		vOpts := append(opts, db.WithValidateField("protocol"))
+		if err := fv(ctx, m.GetProtocol(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultAwsPortInfoValidator = func() *ValidateAwsPortInfo {
+	v := &ValidateAwsPortInfo{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhPort := v.PortValidationRuleHandler
+	rulesPort := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+		"ves.io.schema.rules.uint32.gte":       "1",
+		"ves.io.schema.rules.uint32.lte":       "65535",
+	}
+	vFn, err = vrhPort(rulesPort)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for AwsPortInfo.port: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["port"] = vFn
+
+	vrhProtocol := v.ProtocolValidationRuleHandler
+	rulesProtocol := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+		"ves.io.schema.rules.string.in":        "[\"TCP\",\"UDP\"]",
+	}
+	vFn, err = vrhProtocol(rulesProtocol)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for AwsPortInfo.protocol: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["protocol"] = vFn
+
+	return v
+}()
+
+func AwsPortInfoValidator() db.Validator {
+	return DefaultAwsPortInfoValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *AwsService) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *AwsService) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *AwsService) DeepCopy() *AwsService {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &AwsService{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *AwsService) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *AwsService) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return AwsServiceValidator().Validate(ctx, m, opts...)
+}
+
+func (m *AwsService) GetDRefInfo() ([]db.DRefInfo, error) {
+	if m == nil {
+		return nil, nil
+	}
+
+	return m.GetDiscoveryCloudObjectDRefInfo()
+}
+
+func (m *AwsService) GetDiscoveryCloudObjectDRefInfo() ([]db.DRefInfo, error) {
+	vref := m.GetDiscoveryCloudObject()
+	if vref == nil {
+		return nil, nil
+	}
+	vdRef := db.NewDirectRefForView(vref)
+	vdRef.SetKind("discovery_cloud.Object")
+	dri := db.DRefInfo{
+		RefdType:   "discovery_cloud.Object",
+		RefdTenant: vref.Tenant,
+		RefdNS:     vref.Namespace,
+		RefdName:   vref.Name,
+		DRField:    "discovery_cloud_object",
+		Ref:        vdRef,
+	}
+	return []db.DRefInfo{dri}, nil
+}
+
+// GetDiscoveryCloudObjectDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *AwsService) GetDiscoveryCloudObjectDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "discovery_cloud.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: discovery_cloud")
+	}
+	vref := m.GetDiscoveryCloudObject()
+	if vref == nil {
+		return nil, nil
+	}
+	ref := &ves_io_schema.ObjectRefType{
+		Kind:      "discovery_cloud.Object",
+		Tenant:    vref.Tenant,
+		Namespace: vref.Namespace,
+		Name:      vref.Name,
+	}
+	refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+	if err != nil {
+		return nil, errors.Wrap(err, "Getting referred entry")
+	}
+	if refdEnt != nil {
+		entries = append(entries, refdEnt)
+	}
+	return entries, nil
+}
+
+type ValidateAwsService struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateAwsService) RegionValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for region")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateAwsService) VpcIdValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for vpc_id")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateAwsService) TypeValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	var conv db.EnumConvFn
+	conv = func(v interface{}) int32 {
+		i := v.(ves_io_schema_discovery_cloud.AwsServiceType)
+		return int32(i)
+	}
+	// ves_io_schema_discovery_cloud.AwsServiceType_name is generated in .pb.go
+	validatorFn, err := db.NewEnumValidationRuleHandler(rules, ves_io_schema_discovery_cloud.AwsServiceType_name, conv)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for type")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateAwsService) NameValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for name")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateAwsService) EndpointAddressValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for endpoint_address")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateAwsService) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*AwsService)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *AwsService got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["discovery_cloud_object"]; exists {
+		vOpts := append(opts, db.WithValidateField("discovery_cloud_object"))
+		if err := fv(ctx, m.GetDiscoveryCloudObject(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["endpoint_address"]; exists {
+		vOpts := append(opts, db.WithValidateField("endpoint_address"))
+		if err := fv(ctx, m.GetEndpointAddress(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["name"]; exists {
+		vOpts := append(opts, db.WithValidateField("name"))
+		if err := fv(ctx, m.GetName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["ports"]; exists {
+		vOpts := append(opts, db.WithValidateField("ports"))
+		for idx, item := range m.GetPorts() {
+			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
+			if err := fv(ctx, item, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	if fv, exists := v.FldValidators["region"]; exists {
+		vOpts := append(opts, db.WithValidateField("region"))
+		if err := fv(ctx, m.GetRegion(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["subnet_id"]; exists {
+		vOpts := append(opts, db.WithValidateField("subnet_id"))
+		if err := fv(ctx, m.GetSubnetId(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["type"]; exists {
+		vOpts := append(opts, db.WithValidateField("type"))
+		if err := fv(ctx, m.GetType(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["vpc_id"]; exists {
+		vOpts := append(opts, db.WithValidateField("vpc_id"))
+		if err := fv(ctx, m.GetVpcId(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultAwsServiceValidator = func() *ValidateAwsService {
+	v := &ValidateAwsService{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhRegion := v.RegionValidationRuleHandler
+	rulesRegion := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhRegion(rulesRegion)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for AwsService.region: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["region"] = vFn
+
+	vrhVpcId := v.VpcIdValidationRuleHandler
+	rulesVpcId := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+		"ves.io.schema.rules.string.max_len":   "64",
+		"ves.io.schema.rules.string.pattern":   "^(vpc-)([a-z0-9]{8}|[a-z0-9]{17})$",
+	}
+	vFn, err = vrhVpcId(rulesVpcId)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for AwsService.vpc_id: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["vpc_id"] = vFn
+
+	vrhType := v.TypeValidationRuleHandler
+	rulesType := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhType(rulesType)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for AwsService.type: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["type"] = vFn
+
+	vrhName := v.NameValidationRuleHandler
+	rulesName := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhName(rulesName)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for AwsService.name: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["name"] = vFn
+
+	vrhEndpointAddress := v.EndpointAddressValidationRuleHandler
+	rulesEndpointAddress := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhEndpointAddress(rulesEndpointAddress)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for AwsService.endpoint_address: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["endpoint_address"] = vFn
+	v.FldValidators["discovery_cloud_object"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
+	v.FldValidators["ports"] = AwsPortInfoValidator().Validate
+
+	return v
+}()
+
+func AwsServiceValidator() db.Validator {
+	return DefaultAwsServiceValidator
+}
 
 // augmented methods on protoc/std generated struct
 
@@ -483,6 +898,16 @@ func (m *CreateSpecType) GetServiceTypeDRefInfo() ([]db.DRefInfo, error) {
 			dri.DRField = "third_party." + dri.DRField
 		}
 		return drInfos, err
+	case *CreateSpecType_AwsService:
+		drInfos, err := m.GetAwsService().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetAwsService().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "aws_service." + dri.DRField
+		}
+		return drInfos, err
 	default:
 		return nil, nil
 	}
@@ -649,6 +1074,17 @@ func (v *ValidateCreateSpecType) Validate(ctx context.Context, pm interface{}, o
 				return err
 			}
 		}
+	case *CreateSpecType_AwsService:
+		if fv, exists := v.FldValidators["service_type.aws_service"]; exists {
+			val := m.GetServiceType().(*CreateSpecType_AwsService).AwsService
+			vOpts := append(opts,
+				db.WithValidateField("service_type"),
+				db.WithValidateField("aws_service"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 	if fv, exists := v.FldValidators["tcp_load_balancers"]; exists {
 		vOpts := append(opts, db.WithValidateField("tcp_load_balancers"))
@@ -732,6 +1168,7 @@ var DefaultCreateSpecTypeValidator = func() *ValidateCreateSpecType {
 	v.FldValidators["service_type.consul_service"] = ConsulServiceValidator().Validate
 	v.FldValidators["service_type.n1_discovered_server"] = NginxOneDiscoveredServerValidator().Validate
 	v.FldValidators["service_type.third_party"] = ThirdPartyApplicationDiscoveryValidator().Validate
+	v.FldValidators["service_type.aws_service"] = AwsServiceValidator().Validate
 	v.FldValidators["http_load_balancers"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["tcp_load_balancers"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 
@@ -912,6 +1349,16 @@ func (m *GetSpecType) GetServiceTypeDRefInfo() ([]db.DRefInfo, error) {
 			dri.DRField = "third_party." + dri.DRField
 		}
 		return drInfos, err
+	case *GetSpecType_AwsService:
+		drInfos, err := m.GetAwsService().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetAwsService().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "aws_service." + dri.DRField
+		}
+		return drInfos, err
 	default:
 		return nil, nil
 	}
@@ -1078,6 +1525,17 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 				return err
 			}
 		}
+	case *GetSpecType_AwsService:
+		if fv, exists := v.FldValidators["service_type.aws_service"]; exists {
+			val := m.GetServiceType().(*GetSpecType_AwsService).AwsService
+			vOpts := append(opts,
+				db.WithValidateField("service_type"),
+				db.WithValidateField("aws_service"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 	if fv, exists := v.FldValidators["tcp_load_balancers"]; exists {
 		vOpts := append(opts, db.WithValidateField("tcp_load_balancers"))
@@ -1161,6 +1619,7 @@ var DefaultGetSpecTypeValidator = func() *ValidateGetSpecType {
 	v.FldValidators["service_type.consul_service"] = ConsulServiceValidator().Validate
 	v.FldValidators["service_type.n1_discovered_server"] = NginxOneDiscoveredServerValidator().Validate
 	v.FldValidators["service_type.third_party"] = ThirdPartyApplicationDiscoveryValidator().Validate
+	v.FldValidators["service_type.aws_service"] = AwsServiceValidator().Validate
 	v.FldValidators["http_load_balancers"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["tcp_load_balancers"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 
@@ -1396,6 +1855,16 @@ func (m *GlobalSpecType) GetServiceTypeDRefInfo() ([]db.DRefInfo, error) {
 			dri.DRField = "third_party." + dri.DRField
 		}
 		return drInfos, err
+	case *GlobalSpecType_AwsService:
+		drInfos, err := m.GetAwsService().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetAwsService().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "aws_service." + dri.DRField
+		}
+		return drInfos, err
 	default:
 		return nil, nil
 	}
@@ -1613,6 +2082,17 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 				return err
 			}
 		}
+	case *GlobalSpecType_AwsService:
+		if fv, exists := v.FldValidators["service_type.aws_service"]; exists {
+			val := m.GetServiceType().(*GlobalSpecType_AwsService).AwsService
+			vOpts := append(opts,
+				db.WithValidateField("service_type"),
+				db.WithValidateField("aws_service"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 	if fv, exists := v.FldValidators["tcp_load_balancers"]; exists {
 		vOpts := append(opts, db.WithValidateField("tcp_load_balancers"))
@@ -1702,6 +2182,7 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 	v.FldValidators["service_type.consul_service"] = ConsulServiceValidator().Validate
 	v.FldValidators["service_type.n1_discovered_server"] = NginxOneDiscoveredServerValidator().Validate
 	v.FldValidators["service_type.third_party"] = ThirdPartyApplicationDiscoveryValidator().Validate
+	v.FldValidators["service_type.aws_service"] = AwsServiceValidator().Validate
 	v.FldValidators["http_load_balancers"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["tcp_load_balancers"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["internal_virtual_host"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
@@ -2452,6 +2933,16 @@ func (m *ReplaceSpecType) GetServiceTypeDRefInfo() ([]db.DRefInfo, error) {
 			dri.DRField = "third_party." + dri.DRField
 		}
 		return drInfos, err
+	case *ReplaceSpecType_AwsService:
+		drInfos, err := m.GetAwsService().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetAwsService().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "aws_service." + dri.DRField
+		}
+		return drInfos, err
 	default:
 		return nil, nil
 	}
@@ -2618,6 +3109,17 @@ func (v *ValidateReplaceSpecType) Validate(ctx context.Context, pm interface{}, 
 				return err
 			}
 		}
+	case *ReplaceSpecType_AwsService:
+		if fv, exists := v.FldValidators["service_type.aws_service"]; exists {
+			val := m.GetServiceType().(*ReplaceSpecType_AwsService).AwsService
+			vOpts := append(opts,
+				db.WithValidateField("service_type"),
+				db.WithValidateField("aws_service"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 	if fv, exists := v.FldValidators["tcp_load_balancers"]; exists {
 		vOpts := append(opts, db.WithValidateField("tcp_load_balancers"))
@@ -2701,6 +3203,7 @@ var DefaultReplaceSpecTypeValidator = func() *ValidateReplaceSpecType {
 	v.FldValidators["service_type.consul_service"] = ConsulServiceValidator().Validate
 	v.FldValidators["service_type.n1_discovered_server"] = NginxOneDiscoveredServerValidator().Validate
 	v.FldValidators["service_type.third_party"] = ThirdPartyApplicationDiscoveryValidator().Validate
+	v.FldValidators["service_type.aws_service"] = AwsServiceValidator().Validate
 	v.FldValidators["http_load_balancers"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["tcp_load_balancers"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 
@@ -3280,6 +3783,9 @@ func (r *CreateSpecType) SetServiceTypeToGlobalSpecType(o *GlobalSpecType) error
 	case nil:
 		o.ServiceType = nil
 
+	case *CreateSpecType_AwsService:
+		o.ServiceType = &GlobalSpecType_AwsService{AwsService: of.AwsService}
+
 	case *CreateSpecType_ConsulService:
 		o.ServiceType = &GlobalSpecType_ConsulService{ConsulService: of.ConsulService}
 
@@ -3305,6 +3811,9 @@ func (r *CreateSpecType) GetServiceTypeFromGlobalSpecType(o *GlobalSpecType) err
 	switch of := o.ServiceType.(type) {
 	case nil:
 		r.ServiceType = nil
+
+	case *GlobalSpecType_AwsService:
+		r.ServiceType = &CreateSpecType_AwsService{AwsService: of.AwsService}
 
 	case *GlobalSpecType_ConsulService:
 		r.ServiceType = &CreateSpecType_ConsulService{ConsulService: of.ConsulService}
@@ -3407,6 +3916,9 @@ func (r *GetSpecType) SetServiceTypeToGlobalSpecType(o *GlobalSpecType) error {
 	case nil:
 		o.ServiceType = nil
 
+	case *GetSpecType_AwsService:
+		o.ServiceType = &GlobalSpecType_AwsService{AwsService: of.AwsService}
+
 	case *GetSpecType_ConsulService:
 		o.ServiceType = &GlobalSpecType_ConsulService{ConsulService: of.ConsulService}
 
@@ -3432,6 +3944,9 @@ func (r *GetSpecType) GetServiceTypeFromGlobalSpecType(o *GlobalSpecType) error 
 	switch of := o.ServiceType.(type) {
 	case nil:
 		r.ServiceType = nil
+
+	case *GlobalSpecType_AwsService:
+		r.ServiceType = &GetSpecType_AwsService{AwsService: of.AwsService}
 
 	case *GlobalSpecType_ConsulService:
 		r.ServiceType = &GetSpecType_ConsulService{ConsulService: of.ConsulService}
@@ -3534,6 +4049,9 @@ func (r *ReplaceSpecType) SetServiceTypeToGlobalSpecType(o *GlobalSpecType) erro
 	case nil:
 		o.ServiceType = nil
 
+	case *ReplaceSpecType_AwsService:
+		o.ServiceType = &GlobalSpecType_AwsService{AwsService: of.AwsService}
+
 	case *ReplaceSpecType_ConsulService:
 		o.ServiceType = &GlobalSpecType_ConsulService{ConsulService: of.ConsulService}
 
@@ -3559,6 +4077,9 @@ func (r *ReplaceSpecType) GetServiceTypeFromGlobalSpecType(o *GlobalSpecType) er
 	switch of := o.ServiceType.(type) {
 	case nil:
 		r.ServiceType = nil
+
+	case *GlobalSpecType_AwsService:
+		r.ServiceType = &ReplaceSpecType_AwsService{AwsService: of.AwsService}
 
 	case *GlobalSpecType_ConsulService:
 		r.ServiceType = &ReplaceSpecType_ConsulService{ConsulService: of.ConsulService}

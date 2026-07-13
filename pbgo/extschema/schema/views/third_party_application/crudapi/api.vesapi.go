@@ -1791,7 +1791,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2015,7 +2015,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2269,7 +2269,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2958,10 +2958,10 @@ var APISwaggerJSON string = `{
             "x-ves-proto-message": "ves.io.schema.views.common_waf.ApiDiscoveryAdvancedSettings",
             "properties": {
                 "api_discovery_ref": {
-                    "description": " API Discovery Settings Object\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "description": " Defines how discovery operates and how traffic is analyzed. Use policies to customize discovery behavior, authentication handling, and other related settings.\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
                     "title": "API Discovery Settings Object",
                     "$ref": "#/definitions/schemaviewsObjectRefType",
-                    "x-displayname": "API Discovery Settings Object",
+                    "x-displayname": "Policy",
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true"
@@ -3017,16 +3017,16 @@ var APISwaggerJSON string = `{
                     "x-displayname": "Code Repositories"
                 },
                 "custom_api_auth_discovery": {
-                    "description": "Exclusive with [default_api_auth_discovery]\n Apply custom API discovery settings",
+                    "description": "Exclusive with [default_api_auth_discovery]\n Define classification rules to better match your application architecture and reduce noise.",
                     "title": "Apply Specified Custom API Auth Discovery",
                     "$ref": "#/definitions/common_wafApiDiscoveryAdvancedSettings",
                     "x-displayname": "Custom"
                 },
                 "default_api_auth_discovery": {
-                    "description": "Exclusive with [custom_api_auth_discovery]\n Apply system default API discovery settings",
+                    "description": "Exclusive with [custom_api_auth_discovery]\n Automatically discovers APIs from traffic and auth signals. No setup needed and recommended for most environments.",
                     "title": "default",
                     "$ref": "#/definitions/schemaEmpty",
-                    "x-displayname": "Default"
+                    "x-displayname": "Built-in"
                 },
                 "disable_learn_from_redirect_traffic": {
                     "description": "Exclusive with [enable_learn_from_redirect_traffic]\n Disable learning API patterns from traffic with redirect response codes 3xx",

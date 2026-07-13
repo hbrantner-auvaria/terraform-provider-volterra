@@ -2955,12 +2955,12 @@ var APISwaggerJSON string = `{
                 },
                 "regex_value": {
                     "type": "string",
-                    "description": "Exclusive with [exact_value suffix_value]\n Regular Expression value for the domain name\n\nExample: - \"([a-z]([-a-z0-9]*[a-z0-9])?)\\.com$'\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.max_len: 256\n  ves.io.schema.rules.string.min_len: 1\n  ves.io.schema.rules.string.regex: true\n",
+                    "description": "Exclusive with [exact_value suffix_value]\n Regular Expression value for the domain name\n\nExample: - \"([a-z]([-a-z0-9]*[a-z0-9])?)\\\\.com$\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.max_len: 256\n  ves.io.schema.rules.string.min_len: 1\n  ves.io.schema.rules.string.regex: true\n",
                     "title": "regex values of Domains",
                     "minLength": 1,
                     "maxLength": 256,
                     "x-displayname": "Regex Values of Domains",
-                    "x-ves-example": "([a-z]([-a-z0-9]*[a-z0-9])?)\\.com$'",
+                    "x-ves-example": "([a-z]([-a-z0-9]*[a-z0-9])?)\\\\.com$",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.string.max_len": "256",
                         "ves.io.schema.rules.string.min_len": "1",

@@ -341,6 +341,7 @@ type CustomDataTypeRef struct {
 	// custom_data_type_ref
 	//
 	// x-displayName: "Defined Custom Sensitive Data Type"
+	// x-required
 	// List of custom data types to monitor
 	CustomDataTypeRef *views.ObjectRefType `protobuf:"bytes,2,opt,name=custom_data_type_ref,json=customDataTypeRef,proto3" json:"custom_data_type_ref,omitempty"`
 }

@@ -26,28 +26,28 @@ var (
 
 // augmented methods on protoc/std generated struct
 
-func (m *AWSParams) ToJSON() (string, error) {
+func (m *AWSCredentials) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
 
-func (m *AWSParams) ToYAML() (string, error) {
+func (m *AWSCredentials) ToYAML() (string, error) {
 	return codec.ToYAML(m)
 }
 
 // Redact squashes sensitive info in m (in-place)
-func (m *AWSParams) Redact(ctx context.Context) error {
+func (m *AWSCredentials) Redact(ctx context.Context) error {
 	// clear fields with confidential option set (at message or field level)
 	if m == nil {
 		return nil
 	}
 	if err := m.GetSecretAccessKey().Redact(ctx); err != nil {
-		return errors.Wrapf(err, "Redacting AWSParams.secret_access_key")
+		return errors.Wrapf(err, "Redacting AWSCredentials.secret_access_key")
 	}
 
 	return nil
 }
 
-func (m *AWSParams) DeepCopy() *AWSParams {
+func (m *AWSCredentials) DeepCopy() *AWSCredentials {
 	if m == nil {
 		return nil
 	}
@@ -55,7 +55,7 @@ func (m *AWSParams) DeepCopy() *AWSParams {
 	if err != nil {
 		return nil
 	}
-	c := &AWSParams{}
+	c := &AWSCredentials{}
 	err = c.Unmarshal(ser)
 	if err != nil {
 		return nil
@@ -63,22 +63,22 @@ func (m *AWSParams) DeepCopy() *AWSParams {
 	return c
 }
 
-func (m *AWSParams) DeepCopyProto() proto.Message {
+func (m *AWSCredentials) DeepCopyProto() proto.Message {
 	if m == nil {
 		return nil
 	}
 	return m.DeepCopy()
 }
 
-func (m *AWSParams) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
-	return AWSParamsValidator().Validate(ctx, m, opts...)
+func (m *AWSCredentials) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return AWSCredentialsValidator().Validate(ctx, m, opts...)
 }
 
-type ValidateAWSParams struct {
+type ValidateAWSCredentials struct {
 	FldValidators map[string]db.ValidatorFunc
 }
 
-func (v *ValidateAWSParams) AccessKeyIdValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+func (v *ValidateAWSCredentials) AccessKeyIdValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
 	validatorFn, err := db.NewStringValidationRuleHandler(rules)
 	if err != nil {
 		return nil, errors.Wrap(err, "ValidationRuleHandler for access_key_id")
@@ -86,7 +86,7 @@ func (v *ValidateAWSParams) AccessKeyIdValidationRuleHandler(rules map[string]st
 
 	return validatorFn, nil
 }
-func (v *ValidateAWSParams) SecretAccessKeyValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+func (v *ValidateAWSCredentials) SecretAccessKeyValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
 	reqdValidatorFn, err := db.NewMessageValidationRuleHandler(rules)
 	if err != nil {
 		return nil, errors.Wrap(err, "MessageValidationRuleHandler for secret_access_key")
@@ -103,7 +103,7 @@ func (v *ValidateAWSParams) SecretAccessKeyValidationRuleHandler(rules map[strin
 
 	return validatorFn, nil
 }
-func (v *ValidateAWSParams) RegionValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+func (v *ValidateAWSCredentials) RegionValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
 	validatorFn, err := db.NewStringValidationRuleHandler(rules)
 	if err != nil {
 		return nil, errors.Wrap(err, "ValidationRuleHandler for region")
@@ -112,14 +112,14 @@ func (v *ValidateAWSParams) RegionValidationRuleHandler(rules map[string]string)
 	return validatorFn, nil
 }
 
-func (v *ValidateAWSParams) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
-	m, ok := pm.(*AWSParams)
+func (v *ValidateAWSCredentials) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*AWSCredentials)
 	if !ok {
 		switch t := pm.(type) {
 		case nil:
 			return nil
 		default:
-			return fmt.Errorf("Expected type *AWSParams got type %s", t)
+			return fmt.Errorf("Expected type *AWSCredentials got type %s", t)
 		}
 	}
 	if m == nil {
@@ -147,8 +147,8 @@ func (v *ValidateAWSParams) Validate(ctx context.Context, pm interface{}, opts .
 }
 
 // Well-known symbol for default validator implementation
-var DefaultAWSParamsValidator = func() *ValidateAWSParams {
-	v := &ValidateAWSParams{FldValidators: map[string]db.ValidatorFunc{}}
+var DefaultAWSCredentialsValidator = func() *ValidateAWSCredentials {
+	v := &ValidateAWSCredentials{FldValidators: map[string]db.ValidatorFunc{}}
 	var (
 		err error
 		vFn db.ValidatorFunc
@@ -163,7 +163,7 @@ var DefaultAWSParamsValidator = func() *ValidateAWSParams {
 	}
 	vFn, err = vrhAccessKeyId(rulesAccessKeyId)
 	if err != nil {
-		errMsg := fmt.Sprintf("ValidationRuleHandler for AWSParams.access_key_id: %s", err)
+		errMsg := fmt.Sprintf("ValidationRuleHandler for AWSCredentials.access_key_id: %s", err)
 		panic(errMsg)
 	}
 	v.FldValidators["access_key_id"] = vFn
@@ -174,7 +174,7 @@ var DefaultAWSParamsValidator = func() *ValidateAWSParams {
 	}
 	vFn, err = vrhSecretAccessKey(rulesSecretAccessKey)
 	if err != nil {
-		errMsg := fmt.Sprintf("ValidationRuleHandler for AWSParams.secret_access_key: %s", err)
+		errMsg := fmt.Sprintf("ValidationRuleHandler for AWSCredentials.secret_access_key: %s", err)
 		panic(errMsg)
 	}
 	v.FldValidators["secret_access_key"] = vFn
@@ -185,7 +185,7 @@ var DefaultAWSParamsValidator = func() *ValidateAWSParams {
 	}
 	vFn, err = vrhRegion(rulesRegion)
 	if err != nil {
-		errMsg := fmt.Sprintf("ValidationRuleHandler for AWSParams.region: %s", err)
+		errMsg := fmt.Sprintf("ValidationRuleHandler for AWSCredentials.region: %s", err)
 		panic(errMsg)
 	}
 	v.FldValidators["region"] = vFn
@@ -193,8 +193,8 @@ var DefaultAWSParamsValidator = func() *ValidateAWSParams {
 	return v
 }()
 
-func AWSParamsValidator() db.Validator {
-	return DefaultAWSParamsValidator
+func AWSCredentialsValidator() db.Validator {
+	return DefaultAWSCredentialsValidator
 }
 
 // augmented methods on protoc/std generated struct
@@ -548,8 +548,8 @@ func (m *GetSpecType) Redact(ctx context.Context) error {
 	if err := m.GetClickhouseParams().Redact(ctx); err != nil {
 		return errors.Wrapf(err, "Redacting GetSpecType.clickhouse_params")
 	}
-	if err := m.GetAwsParams().Redact(ctx); err != nil {
-		return errors.Wrapf(err, "Redacting GetSpecType.aws_params")
+	if err := m.GetAccessLogsS3Params().Redact(ctx); err != nil {
+		return errors.Wrapf(err, "Redacting GetSpecType.access_logs_s3_params")
 	}
 
 	return nil
@@ -651,15 +651,21 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 	if m == nil {
 		return nil
 	}
-	if fv, exists := v.FldValidators["aws_params"]; exists {
-		vOpts := append(opts, db.WithValidateField("aws_params"))
-		if err := fv(ctx, m.GetAwsParams(), vOpts...); err != nil {
+	if fv, exists := v.FldValidators["access_logs_s3_params"]; exists {
+		vOpts := append(opts, db.WithValidateField("access_logs_s3_params"))
+		if err := fv(ctx, m.GetAccessLogsS3Params(), vOpts...); err != nil {
 			return err
 		}
 	}
 	if fv, exists := v.FldValidators["clickhouse_params"]; exists {
 		vOpts := append(opts, db.WithValidateField("clickhouse_params"))
 		if err := fv(ctx, m.GetClickhouseParams(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["country"]; exists {
+		vOpts := append(opts, db.WithValidateField("country"))
+		if err := fv(ctx, m.GetCountry(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -727,7 +733,7 @@ var DefaultGetSpecTypeValidator = func() *ValidateGetSpecType {
 		panic(errMsg)
 	}
 	v.FldValidators["clickhouse_params"] = vFn
-	v.FldValidators["aws_params"] = AWSParamsValidator().Validate
+	v.FldValidators["access_logs_s3_params"] = S3ParamsValidator().Validate
 
 	return v
 }()
@@ -755,8 +761,8 @@ func (m *GlobalSpecType) Redact(ctx context.Context) error {
 	if err := m.GetClickhouseParams().Redact(ctx); err != nil {
 		return errors.Wrapf(err, "Redacting GlobalSpecType.clickhouse_params")
 	}
-	if err := m.GetAwsParams().Redact(ctx); err != nil {
-		return errors.Wrapf(err, "Redacting GlobalSpecType.aws_params")
+	if err := m.GetAccessLogsS3Params().Redact(ctx); err != nil {
+		return errors.Wrapf(err, "Redacting GlobalSpecType.access_logs_s3_params")
 	}
 
 	return nil
@@ -858,15 +864,21 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 	if m == nil {
 		return nil
 	}
-	if fv, exists := v.FldValidators["aws_params"]; exists {
-		vOpts := append(opts, db.WithValidateField("aws_params"))
-		if err := fv(ctx, m.GetAwsParams(), vOpts...); err != nil {
+	if fv, exists := v.FldValidators["access_logs_s3_params"]; exists {
+		vOpts := append(opts, db.WithValidateField("access_logs_s3_params"))
+		if err := fv(ctx, m.GetAccessLogsS3Params(), vOpts...); err != nil {
 			return err
 		}
 	}
 	if fv, exists := v.FldValidators["clickhouse_params"]; exists {
 		vOpts := append(opts, db.WithValidateField("clickhouse_params"))
 		if err := fv(ctx, m.GetClickhouseParams(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["country"]; exists {
+		vOpts := append(opts, db.WithValidateField("country"))
+		if err := fv(ctx, m.GetCountry(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -934,7 +946,7 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 		panic(errMsg)
 	}
 	v.FldValidators["clickhouse_params"] = vFn
-	v.FldValidators["aws_params"] = AWSParamsValidator().Validate
+	v.FldValidators["access_logs_s3_params"] = S3ParamsValidator().Validate
 
 	return v
 }()
@@ -1077,12 +1089,161 @@ func KafkaParamsValidator() db.Validator {
 	return DefaultKafkaParamsValidator
 }
 
+// augmented methods on protoc/std generated struct
+
+func (m *S3Params) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *S3Params) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+// Redact squashes sensitive info in m (in-place)
+func (m *S3Params) Redact(ctx context.Context) error {
+	// clear fields with confidential option set (at message or field level)
+	if m == nil {
+		return nil
+	}
+	if err := m.GetAwsCredentials().Redact(ctx); err != nil {
+		return errors.Wrapf(err, "Redacting S3Params.aws_credentials")
+	}
+
+	return nil
+}
+
+func (m *S3Params) DeepCopy() *S3Params {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &S3Params{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *S3Params) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *S3Params) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return S3ParamsValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateS3Params struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateS3Params) AwsCredentialsValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	reqdValidatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "MessageValidationRuleHandler for aws_credentials")
+	}
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		if err := reqdValidatorFn(ctx, val, opts...); err != nil {
+			return err
+		}
+		if err := AWSCredentialsValidator().Validate(ctx, val, opts...); err != nil {
+			return err
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateS3Params) BucketValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for bucket")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateS3Params) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*S3Params)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *S3Params got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["aws_credentials"]; exists {
+		vOpts := append(opts, db.WithValidateField("aws_credentials"))
+		if err := fv(ctx, m.GetAwsCredentials(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["bucket"]; exists {
+		vOpts := append(opts, db.WithValidateField("bucket"))
+		if err := fv(ctx, m.GetBucket(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultS3ParamsValidator = func() *ValidateS3Params {
+	v := &ValidateS3Params{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhAwsCredentials := v.AwsCredentialsValidationRuleHandler
+	rulesAwsCredentials := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhAwsCredentials(rulesAwsCredentials)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for S3Params.aws_credentials: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["aws_credentials"] = vFn
+
+	vrhBucket := v.BucketValidationRuleHandler
+	rulesBucket := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhBucket(rulesBucket)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for S3Params.bucket: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["bucket"] = vFn
+
+	return v
+}()
+
+func S3ParamsValidator() db.Validator {
+	return DefaultS3ParamsValidator
+}
+
 func (m *GetSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	if f == nil {
 		return
 	}
-	m.AwsParams = f.GetAwsParams()
+	m.AccessLogsS3Params = f.GetAccessLogsS3Params()
 	m.ClickhouseParams = f.GetClickhouseParams()
+	m.Country = f.GetCountry()
 	m.ElasticParams = f.GetElasticParams()
 	m.IsDefault = f.GetIsDefault()
 	m.KafkaParams = f.GetKafkaParams()
@@ -1103,8 +1264,9 @@ func (m *GetSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	}
 	_ = m1
 
-	f.AwsParams = m1.AwsParams
+	f.AccessLogsS3Params = m1.AccessLogsS3Params
 	f.ClickhouseParams = m1.ClickhouseParams
+	f.Country = m1.Country
 	f.ElasticParams = m1.ElasticParams
 	f.IsDefault = m1.IsDefault
 	f.KafkaParams = m1.KafkaParams

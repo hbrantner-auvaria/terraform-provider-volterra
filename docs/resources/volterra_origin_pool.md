@@ -25,8 +25,10 @@ resource "volterra_origin_pool" "example" {
   origin_servers {
     // One of the arguments from this list "cbip_service consul_service custom_endpoint_object k8s_service private_ip private_name public_ip public_name vn_private_ip vn_private_name" must be set
 
-    custom_endpoint_object {
-      endpoint {
+    vn_private_name {
+      dns_name = "value"
+
+      private_network {
         name      = "test1"
         namespace = "staging"
         tenant    = "acmecorp"
@@ -40,7 +42,7 @@ resource "volterra_origin_pool" "example" {
 
   // One of the arguments from this list "automatic_port lb_port port" must be set
 
-  lb_port = true
+  port = "9080"
 
   // One of the arguments from this list "no_tls use_tls" must be set
 

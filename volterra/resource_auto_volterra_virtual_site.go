@@ -191,10 +191,6 @@ func resourceVolterraVirtualSiteCreate(d *schema.ResourceData, meta interface{})
 		return fmt.Errorf("error creating VirtualSite: %s", err)
 	}
 	d.SetId(createVirtualSiteResp.GetObjSystemMetadata().GetUid())
-	if v, ok := d.GetOk("fail_if_referred"); ok && !isIntfNil(v) {
-		d.Set("fail_if_referred", v.(bool))
-	}
-
 	return resourceVolterraVirtualSiteRead(d, meta)
 }
 
@@ -212,6 +208,7 @@ func resourceVolterraVirtualSiteRead(d *schema.ResourceData, meta interface{}) e
 		}
 		return fmt.Errorf("Error finding Volterra VirtualSite %q: %s", d.Id(), err)
 	}
+
 	return setVirtualSiteFields(client, d, resp)
 }
 
@@ -293,10 +290,6 @@ func resourceVolterraVirtualSiteUpdate(d *schema.ResourceData, meta interface{})
 		return fmt.Errorf("error updating VirtualSite: %s", err)
 	}
 
-	if v, ok := d.GetOk("fail_if_referred"); ok && !isIntfNil(v) {
-		d.Set("fail_if_referred", v.(bool))
-	}
-
 	return resourceVolterraVirtualSiteRead(d, meta)
 }
 
@@ -323,5 +316,11 @@ func resourceVolterraVirtualSiteDelete(d *schema.ResourceData, meta interface{})
 			vesapi.WithFailIfReferred(),
 		}
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_virtual_site.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_virtual_site.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting VirtualSite: %w", err)
+	}
+	return nil
+
 }

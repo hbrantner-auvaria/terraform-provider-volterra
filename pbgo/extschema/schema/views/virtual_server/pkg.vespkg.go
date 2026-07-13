@@ -7,6 +7,7 @@ import (
 	"reflect"
 
 	"gopkg.volterra.us/stdlib/db"
+	"gopkg.volterra.us/stdlib/server"
 	"gopkg.volterra.us/stdlib/store"
 	"gopkg.volterra.us/stdlib/svcfw"
 )
@@ -25,22 +26,28 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.views.virtual_server.ListResponseItem"] = ListResponseItemValidator()
 	vr["ves.io.schema.views.virtual_server.ReplaceRequest"] = ReplaceRequestValidator()
 	vr["ves.io.schema.views.virtual_server.ReplaceResponse"] = ReplaceResponseValidator()
+	vr["ves.io.schema.views.virtual_server.GetAssociatedObjectsRequest"] = GetAssociatedObjectsRequestValidator()
+	vr["ves.io.schema.views.virtual_server.GetAssociatedObjectsResponse"] = GetAssociatedObjectsResponseValidator()
 	vr["ves.io.schema.views.virtual_server.ClonePoolType"] = ClonePoolTypeValidator()
 	vr["ves.io.schema.views.virtual_server.ConnectionLimitsType"] = ConnectionLimitsTypeValidator()
 	vr["ves.io.schema.views.virtual_server.CreateSpecType"] = CreateSpecTypeValidator()
 	vr["ves.io.schema.views.virtual_server.DomainsManagedByF5XC"] = DomainsManagedByF5XCValidator()
 	vr["ves.io.schema.views.virtual_server.GetSpecType"] = GetSpecTypeValidator()
 	vr["ves.io.schema.views.virtual_server.GlobalSpecType"] = GlobalSpecTypeValidator()
-	vr["ves.io.schema.views.virtual_server.HTTPProfileType"] = HTTPProfileTypeValidator()
+	vr["ves.io.schema.views.virtual_server.HTTP3DefaultServerSelection"] = HTTP3DefaultServerSelectionValidator()
+	vr["ves.io.schema.views.virtual_server.HTTP3Services"] = HTTP3ServicesValidator()
+	vr["ves.io.schema.views.virtual_server.HTTPDefaultServerSelection"] = HTTPDefaultServerSelectionValidator()
 	vr["ves.io.schema.views.virtual_server.HTTPServices"] = HTTPServicesValidator()
 	vr["ves.io.schema.views.virtual_server.ManagedDomain"] = ManagedDomainValidator()
 	vr["ves.io.schema.views.virtual_server.NotManagedDomainsType"] = NotManagedDomainsTypeValidator()
 	vr["ves.io.schema.views.virtual_server.ReplaceSpecType"] = ReplaceSpecTypeValidator()
 	vr["ves.io.schema.views.virtual_server.ServiceType"] = ServiceTypeValidator()
 	vr["ves.io.schema.views.virtual_server.Services"] = ServicesValidator()
-	vr["ves.io.schema.views.virtual_server.TCPProfileType"] = TCPProfileTypeValidator()
+	vr["ves.io.schema.views.virtual_server.TCPDefaultServerSelection"] = TCPDefaultServerSelectionValidator()
+	vr["ves.io.schema.views.virtual_server.TCPServices"] = TCPServicesValidator()
 	vr["ves.io.schema.views.virtual_server.TranslationType"] = TranslationTypeValidator()
-	vr["ves.io.schema.views.virtual_server.WebsocketProfileType"] = WebsocketProfileTypeValidator()
+	vr["ves.io.schema.views.virtual_server.UDPDefaultServerSelection"] = UDPDefaultServerSelectionValidator()
+	vr["ves.io.schema.views.virtual_server.UDPServices"] = UDPServicesValidator()
 }
 
 func initializeEntryRegistry(mdr *svcfw.MDRegistry) {
@@ -55,10 +62,67 @@ func initializeEntryRegistry(mdr *svcfw.MDRegistry) {
 }
 
 func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
+	mdr.RPCAvailableInReqFieldRegistry["ves.io.schema.views.virtual_server.API.Create"] = []svcfw.EnvironmentField{
+		{
+			FieldPath:           "spec.traffic_policies.#",
+			AllowedEnvironments: []string{"demo1", "test"},
+		},
+	}
+	mdr.RPCAvailableInResFieldRegistry["ves.io.schema.views.virtual_server.API.Create"] = []svcfw.EnvironmentField{
+		{
+			FieldPath:           "spec.traffic_policies.#",
+			AllowedEnvironments: []string{"demo1", "test"},
+		},
+	}
+	mdr.RPCAvailableInResFieldRegistry["ves.io.schema.views.virtual_server.API.Get"] = []svcfw.EnvironmentField{
+		{
+			FieldPath:           "create_form.spec.traffic_policies.#",
+			AllowedEnvironments: []string{"demo1", "test"},
+		},
+		{
+			FieldPath:           "replace_form.spec.traffic_policies.#",
+			AllowedEnvironments: []string{"demo1", "test"},
+		},
+		{
+			FieldPath:           "spec.traffic_policies.#",
+			AllowedEnvironments: []string{"demo1", "test"},
+		},
+	}
+	mdr.RPCAvailableInResFieldRegistry["ves.io.schema.views.virtual_server.API.List"] = []svcfw.EnvironmentField{
+		{
+			FieldPath:           "items.#.get_spec.traffic_policies.#",
+			AllowedEnvironments: []string{"demo1", "test"},
+		},
+	}
+	mdr.RPCAvailableInReqFieldRegistry["ves.io.schema.views.virtual_server.API.Replace"] = []svcfw.EnvironmentField{
+		{
+			FieldPath:           "spec.traffic_policies.#",
+			AllowedEnvironments: []string{"demo1", "test"},
+		},
+	}
+	mdr.RPCAvailableInResFieldRegistry["ves.io.schema.views.virtual_server.CustomAPI.GetAssociatedObjects"] = []svcfw.EnvironmentField{
+		{
+			FieldPath:           "traffic_policies.#",
+			AllowedEnvironments: []string{"demo1", "test"},
+		},
+		{
+			FieldPath:           "virtual_addresses.#.spec.gc_spec.private.segment.custom_vip.ip_v6",
+			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
+		},
+		{
+			FieldPath:           "virtual_addresses.#.spec.gc_spec.private.site.custom_vip.ip_v6",
+			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
+		},
+		{
+			FieldPath:           "virtual_addresses.#.spec.gc_spec.private.virtual_ce_sites.custom_vip.ip_v6",
+			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
+		},
+	}
 }
 
 func initializeAPIGwServiceSlugsRegistry(sm map[string]string) {
 	sm["ves.io.schema.views.virtual_server.API"] = "config"
+	sm["ves.io.schema.views.virtual_server.CustomAPI"] = "config"
 }
 
 func initializeP0PolicyRegistry(sm map[string]svcfw.P0PolicyInfo) {
@@ -88,6 +152,21 @@ func initializeCRUDServiceRegistry(mdr *svcfw.MDRegistry, isExternal bool) {
 		mdr.SvcRegisterHandlers["ves.io.schema.views.virtual_server.API"] = RegisterAPIServer
 		mdr.SvcGwRegisterHandlers["ves.io.schema.views.virtual_server.API"] = RegisterGwAPIHandler
 		csr.CRUDServerRegistry["ves.io.schema.views.virtual_server.Object"] = NewCRUDAPIServer
+	}()
+	customCSR = mdr.PubCustomServiceRegistry
+	func() {
+		// set swagger jsons for our and external schemas
+		customCSR.SwaggerRegistry["ves.io.schema.views.virtual_server.Object"] = CustomAPISwaggerJSON
+		customCSR.GrpcClientRegistry["ves.io.schema.views.virtual_server.CustomAPI"] = NewCustomAPIGrpcClient
+		customCSR.RestClientRegistry["ves.io.schema.views.virtual_server.CustomAPI"] = NewCustomAPIRestClient
+		if isExternal {
+			return
+		}
+		mdr.SvcRegisterHandlers["ves.io.schema.views.virtual_server.CustomAPI"] = RegisterCustomAPIServer
+		mdr.SvcGwRegisterHandlers["ves.io.schema.views.virtual_server.CustomAPI"] = RegisterGwCustomAPIHandler
+		customCSR.ServerRegistry["ves.io.schema.views.virtual_server.CustomAPI"] = func(svc svcfw.Service) server.APIHandler {
+			return NewCustomAPIServer(svc)
+		}
 	}()
 }
 

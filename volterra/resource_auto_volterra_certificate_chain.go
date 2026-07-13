@@ -155,6 +155,7 @@ func resourceVolterraCertificateChainRead(d *schema.ResourceData, meta interface
 		}
 		return fmt.Errorf("Error finding Volterra CertificateChain %q: %s", d.Id(), err)
 	}
+
 	return setCertificateChainFields(client, d, resp)
 }
 
@@ -258,5 +259,11 @@ func resourceVolterraCertificateChainDelete(d *schema.ResourceData, meta interfa
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_certificate_chain.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_certificate_chain.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting CertificateChain: %w", err)
+	}
+	return nil
+
 }

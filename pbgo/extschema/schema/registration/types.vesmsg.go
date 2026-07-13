@@ -27,6 +27,202 @@ var (
 
 // augmented methods on protoc/std generated struct
 
+func (m *BondConfiguration) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *BondConfiguration) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *BondConfiguration) DeepCopy() *BondConfiguration {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &BondConfiguration{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *BondConfiguration) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *BondConfiguration) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return BondConfigurationValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateBondConfiguration struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateBondConfiguration) NameValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for name")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateBondConfiguration) InterfacesValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepStringItemRules(rules)
+	itemValFn, err := db.NewStringValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Item ValidationRuleHandler for interfaces")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []string, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for interfaces")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]string)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []string, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal := fmt.Sprintf("%v", elem)
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated interfaces")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items interfaces")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateBondConfiguration) ModeValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	var conv db.EnumConvFn
+	conv = func(v interface{}) int32 {
+		i := v.(BondMode)
+		return int32(i)
+	}
+	// BondMode_name is generated in .pb.go
+	validatorFn, err := db.NewEnumValidationRuleHandler(rules, BondMode_name, conv)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for mode")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateBondConfiguration) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*BondConfiguration)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *BondConfiguration got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["interfaces"]; exists {
+		vOpts := append(opts, db.WithValidateField("interfaces"))
+		if err := fv(ctx, m.GetInterfaces(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["mode"]; exists {
+		vOpts := append(opts, db.WithValidateField("mode"))
+		if err := fv(ctx, m.GetMode(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["name"]; exists {
+		vOpts := append(opts, db.WithValidateField("name"))
+		if err := fv(ctx, m.GetName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultBondConfigurationValidator = func() *ValidateBondConfiguration {
+	v := &ValidateBondConfiguration{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhName := v.NameValidationRuleHandler
+	rulesName := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+		"ves.io.schema.rules.string.max_len":   "64",
+	}
+	vFn, err = vrhName(rulesName)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for BondConfiguration.name: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["name"] = vFn
+
+	vrhInterfaces := v.InterfacesValidationRuleHandler
+	rulesInterfaces := map[string]string{
+		"ves.io.schema.rules.message.required":              "true",
+		"ves.io.schema.rules.repeated.items.string.max_len": "64",
+		"ves.io.schema.rules.repeated.max_items":            "8",
+		"ves.io.schema.rules.repeated.min_items":            "1",
+		"ves.io.schema.rules.repeated.unique":               "true",
+	}
+	vFn, err = vrhInterfaces(rulesInterfaces)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for BondConfiguration.interfaces: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["interfaces"] = vFn
+
+	vrhMode := v.ModeValidationRuleHandler
+	rulesMode := map[string]string{
+		"ves.io.schema.rules.enum.defined_only": "true",
+		"ves.io.schema.rules.enum.not_in":       "0",
+		"ves.io.schema.rules.message.required":  "true",
+	}
+	vFn, err = vrhMode(rulesMode)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for BondConfiguration.mode: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["mode"] = vFn
+
+	return v
+}()
+
+func BondConfigurationValidator() db.Validator {
+	return DefaultBondConfigurationValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *CreateSpecType) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
@@ -766,6 +962,12 @@ func (v *ValidateInfra) Validate(ctx context.Context, pm interface{}, opts ...db
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["bond_config"]; exists {
+		vOpts := append(opts, db.WithValidateField("bond_config"))
+		if err := fv(ctx, m.GetBondConfig(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["certified_hw"]; exists {
 		vOpts := append(opts, db.WithValidateField("certified_hw"))
 		if err := fv(ctx, m.GetCertifiedHw(), vOpts...); err != nil {
@@ -880,6 +1082,7 @@ var DefaultInfraValidator = func() *ValidateInfra {
 	}
 	v.FldValidators["interfaces"] = vFn
 	v.FldValidators["hw_info"] = ves_io_schema_site.OsInfoValidator().Validate
+	v.FldValidators["bond_config"] = BondConfigurationValidator().Validate
 
 	return v
 }()
@@ -929,6 +1132,39 @@ type ValidateInterface struct {
 	FldValidators map[string]db.ValidatorFunc
 }
 
+func (v *ValidateInterface) AddrValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for addr")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateInterface) PlenValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewInt32ValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for plen")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateInterface) NameValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for name")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateInterface) GwValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for gw")
+	}
+
+	return validatorFn, nil
+}
+
 func (v *ValidateInterface) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
 	m, ok := pm.(*Interface)
 	if !ok {
@@ -945,6 +1181,12 @@ func (v *ValidateInterface) Validate(ctx context.Context, pm interface{}, opts .
 	if fv, exists := v.FldValidators["addr"]; exists {
 		vOpts := append(opts, db.WithValidateField("addr"))
 		if err := fv(ctx, m.GetAddr(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["gw"]; exists {
+		vOpts := append(opts, db.WithValidateField("gw"))
+		if err := fv(ctx, m.GetGw(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -966,6 +1208,58 @@ func (v *ValidateInterface) Validate(ctx context.Context, pm interface{}, opts .
 // Well-known symbol for default validator implementation
 var DefaultInterfaceValidator = func() *ValidateInterface {
 	v := &ValidateInterface{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhAddr := v.AddrValidationRuleHandler
+	rulesAddr := map[string]string{
+		"ves.io.schema.rules.string.ip": "true",
+	}
+	vFn, err = vrhAddr(rulesAddr)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for Interface.addr: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["addr"] = vFn
+
+	vrhPlen := v.PlenValidationRuleHandler
+	rulesPlen := map[string]string{
+		"ves.io.schema.rules.int32.gte": "0",
+		"ves.io.schema.rules.int32.lte": "128",
+	}
+	vFn, err = vrhPlen(rulesPlen)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for Interface.plen: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["plen"] = vFn
+
+	vrhName := v.NameValidationRuleHandler
+	rulesName := map[string]string{
+		"ves.io.schema.rules.string.max_len": "64",
+	}
+	vFn, err = vrhName(rulesName)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for Interface.name: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["name"] = vFn
+
+	vrhGw := v.GwValidationRuleHandler
+	rulesGw := map[string]string{
+		"ves.io.schema.rules.string.ip": "true",
+	}
+	vFn, err = vrhGw(rulesGw)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for Interface.gw: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["gw"] = vFn
 
 	return v
 }()

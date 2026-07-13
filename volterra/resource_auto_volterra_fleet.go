@@ -15,10 +15,11 @@ import (
 
 	"gopkg.volterra.us/stdlib/client/vesapi"
 
+statemigration "github.com/volterraedge/terraform-provider-volterra/volterra/state_migration"
+
 	ves_io_schema "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema"
 	ves_io_schema_fleet "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/fleet"
 	ves_io_schema_views "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/views"
-	statemigration "github.com/volterraedge/terraform-provider-volterra/volterra/state_migration"
 )
 
 // resourceVolterraFleet is implementation of Volterra's Fleet resources
@@ -469,6 +470,20 @@ func resourceVolterraFleet() *schema.Resource {
 						},
 					},
 				},
+			},
+
+			"disable_log_anonymization": {
+
+				Type:       schema.TypeBool,
+				Optional:   true,
+				Deprecated: "This field is deprecated and will be removed in future release.",
+			},
+
+			"enable_log_anonymization": {
+
+				Type:       schema.TypeBool,
+				Optional:   true,
+				Deprecated: "This field is deprecated and will be removed in future release.",
 			},
 
 			"log_receiver": {
@@ -4284,6 +4299,34 @@ func resourceVolterraFleetCreate(d *schema.ResourceData, meta interface{}) error
 				}
 
 			}
+		}
+
+	}
+
+	//log_anonymization_mode
+
+	logAnonymizationModeTypeFound := false
+
+	if v, ok := d.GetOk("disable_log_anonymization"); ok && !logAnonymizationModeTypeFound {
+
+		logAnonymizationModeTypeFound = true
+
+		if v.(bool) {
+			logAnonymizationModeInt := &ves_io_schema_fleet.CreateSpecType_DisableLogAnonymization{}
+			logAnonymizationModeInt.DisableLogAnonymization = &ves_io_schema.Empty{}
+			createSpec.LogAnonymizationMode = logAnonymizationModeInt
+		}
+
+	}
+
+	if v, ok := d.GetOk("enable_log_anonymization"); ok && !logAnonymizationModeTypeFound {
+
+		logAnonymizationModeTypeFound = true
+
+		if v.(bool) {
+			logAnonymizationModeInt := &ves_io_schema_fleet.CreateSpecType_EnableLogAnonymization{}
+			logAnonymizationModeInt.EnableLogAnonymization = &ves_io_schema.Empty{}
+			createSpec.LogAnonymizationMode = logAnonymizationModeInt
 		}
 
 	}
@@ -8326,6 +8369,7 @@ func resourceVolterraFleetRead(d *schema.ResourceData, meta interface{}) error {
 		}
 		return fmt.Errorf("Error finding Volterra Fleet %q: %s", d.Id(), err)
 	}
+
 	return setFleetFields(client, d, resp)
 }
 
@@ -9010,6 +9054,32 @@ func resourceVolterraFleetUpdate(d *schema.ResourceData, meta interface{}) error
 				}
 
 			}
+		}
+
+	}
+
+	logAnonymizationModeTypeFound := false
+
+	if v, ok := d.GetOk("disable_log_anonymization"); ok && !logAnonymizationModeTypeFound {
+
+		logAnonymizationModeTypeFound = true
+
+		if v.(bool) {
+			logAnonymizationModeInt := &ves_io_schema_fleet.ReplaceSpecType_DisableLogAnonymization{}
+			logAnonymizationModeInt.DisableLogAnonymization = &ves_io_schema.Empty{}
+			updateSpec.LogAnonymizationMode = logAnonymizationModeInt
+		}
+
+	}
+
+	if v, ok := d.GetOk("enable_log_anonymization"); ok && !logAnonymizationModeTypeFound {
+
+		logAnonymizationModeTypeFound = true
+
+		if v.(bool) {
+			logAnonymizationModeInt := &ves_io_schema_fleet.ReplaceSpecType_EnableLogAnonymization{}
+			logAnonymizationModeInt.EnableLogAnonymization = &ves_io_schema.Empty{}
+			updateSpec.LogAnonymizationMode = logAnonymizationModeInt
 		}
 
 	}
@@ -13034,5 +13104,11 @@ func resourceVolterraFleetDelete(d *schema.ResourceData, meta interface{}) error
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_fleet.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_fleet.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting Fleet: %w", err)
+	}
+	return nil
+
 }

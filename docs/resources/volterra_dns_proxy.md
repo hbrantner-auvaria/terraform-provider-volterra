@@ -29,7 +29,7 @@ resource "volterra_dns_proxy" "example" {
   ddos_profile {
     // One of the arguments from this list "disable_ddos_mitigation enable_ddos_mitigation" can be set
 
-    enable_ddos_mitigation = true
+    disable_ddos_mitigation = true
   }
 
   origin_servers {
@@ -37,18 +37,10 @@ resource "volterra_dns_proxy" "example" {
       health_check {
         // One of the arguments from this list "dns_health_check icmp_health_check tcp_health_check udp_health_check" can be set
 
-        dns_health_check {
-          expected_rcode = "no-error"
+        tcp_health_check {
+          expected_response = ".*"
 
-          expected_record_type = "REQUESTED_QUERY_TYPE"
-
-          expected_response = "10.0.0.1"
-
-          query_name = "www.example.com"
-
-          query_type = "A"
-
-          reverse = true
+          send_payload = "send_payload"
         }
       }
 
@@ -71,18 +63,12 @@ resource "volterra_dns_proxy" "example" {
       public_ip {
         // One of the arguments from this list "ip ipv6" must be set
 
-        ip = "8.8.8.8"
+        ipv6 = "2001::1"
       }
 
       // One of the arguments from this list "no_preference site_preferences" can be set
 
-      site_preferences {
-        refs {
-          name      = "test1"
-          namespace = "staging"
-          tenant    = "acmecorp"
-        }
-      }
+      no_preference = true
     }
   }
 

@@ -378,11 +378,6 @@ func resourceVolterraVsPool() *schema.Resource {
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
 
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
-
 																		"name": {
 																			Type:     schema.TypeString,
 																			Optional: true,
@@ -2386,6 +2381,7 @@ func resourceVolterraVsPoolRead(d *schema.ResourceData, meta interface{}) error 
 		}
 		return fmt.Errorf("Error finding Volterra VsPool %q: %s", d.Id(), err)
 	}
+
 	return setVsPoolFields(client, d, resp)
 }
 
@@ -3799,5 +3795,11 @@ func resourceVolterraVsPoolDelete(d *schema.ResourceData, meta interface{}) erro
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_views_vs_pool.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_views_vs_pool.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting VsPool: %w", err)
+	}
+	return nil
+
 }

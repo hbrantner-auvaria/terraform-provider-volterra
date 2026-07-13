@@ -209,14 +209,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 			FieldPath:           "spec.vip_selection",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
-		{
-			FieldPath:           "status.#.managed_site_orchestration_status",
-			AllowedEnvironments: []string{"demo1", "test"},
-		},
-		{
-			FieldPath:           "status.#.site_errors.#",
-			AllowedEnvironments: []string{"demo1", "test"},
-		},
 	}
 	mdr.RPCAvailableInResFieldRegistry["ves.io.schema.site.API.List"] = []svcfw.EnvironmentField{
 		{
@@ -242,14 +234,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		{
 			FieldPath:           "items.#.get_spec.vip_selection",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
-		},
-		{
-			FieldPath:           "items.#.status_set.#.managed_site_orchestration_status",
-			AllowedEnvironments: []string{"demo1", "test"},
-		},
-		{
-			FieldPath:           "items.#.status_set.#.site_errors.#",
-			AllowedEnvironments: []string{"demo1", "test"},
 		},
 	}
 	mdr.RPCSubscriptionFieldsRegistry["ves.io.schema.site.API.Replace"] = []svcfw.SubscriptionField{

@@ -33,12 +33,8 @@ resource "volterra_dns_load_balancer" "example" {
 
       // One of the arguments from this list "asn_list asn_matcher geo_location_label_selector geo_location_set ip_prefix_list ip_prefix_set" must be set
 
-      asn_matcher {
-        asn_sets {
-          name      = "test1"
-          namespace = "staging"
-          tenant    = "acmecorp"
-        }
+      geo_location_label_selector {
+        expressions = ["region in (us-west1, us-west2),tier in (staging)"]
       }
       score = "50"
     }

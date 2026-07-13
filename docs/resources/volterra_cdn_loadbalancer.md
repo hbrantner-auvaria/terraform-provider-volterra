@@ -36,160 +36,11 @@ resource "volterra_cdn_loadbalancer" "example" {
 
   // One of the arguments from this list "api_discovery_on_cache_miss disable_api_discovery enable_api_discovery" must be set
 
-  enable_api_discovery {
-    api_crawler {
-      // One of the arguments from this list "api_crawler_config disable_api_crawler" must be set
-
-      disable_api_crawler = true
-    }
-
-    api_discovery_from_code_scan {
-      code_base_integrations {
-        // One of the arguments from this list "all_repos selected_repos" must be set
-
-        all_repos = true
-
-        code_base_integration {
-          name      = "test1"
-          namespace = "staging"
-          tenant    = "acmecorp"
-        }
-      }
-    }
-
-    // One of the arguments from this list "custom_api_auth_discovery default_api_auth_discovery" must be set
-
-    default_api_auth_discovery = true
-    discovered_api_settings {
-      purge_duration_for_inactive_discovered_apis = "2"
-    }
-
-    // One of the arguments from this list "disable_learn_from_redirect_traffic enable_learn_from_redirect_traffic" must be set
-
-    disable_learn_from_redirect_traffic = true
-    sensitive_data_detection_rules {
-      custom_sensitive_data_detection_rules {
-        metadata {
-          description = "Virtual Host for acmecorp website"
-
-          disable = true
-
-          name = "acmecorp-web"
-        }
-
-        sensitive_data_detection_config {
-          // One of the arguments from this list "any_domain specific_domain" must be set
-
-          any_domain = true
-
-          // One of the arguments from this list "key_pattern key_value_pattern value_pattern" must be set
-
-          key_pattern {
-            // One of the arguments from this list "exact_value regex_value" must be set
-
-            exact_value = "x-volt-header"
-          }
-
-          // One of the arguments from this list "all_request_sections all_response_sections all_sections custom_sections" must be set
-
-          all_sections = true
-
-          // One of the arguments from this list "any_target api_endpoint_target api_group base_path" must be set
-
-          any_target = true
-        }
-
-        sensitive_data_type {
-          type = "EMAIL"
-        }
-      }
-
-      disabled_built_in_rules {
-        name = "[EMAIL, CC]"
-      }
-    }
-  }
+  disable_api_discovery = true
 
   // One of the arguments from this list "bot_defense bot_defense_advanced disable_bot_defense" must be set
 
-  bot_defense {
-    // One of the arguments from this list "disable_cors_support enable_cors_support" must be set
-
-    enable_cors_support = true
-
-    policy {
-      // One of the arguments from this list "disable_js_insert js_insert_all_pages js_insert_all_pages_except js_insertion_rules" must be set
-
-      js_insert_all_pages {
-        javascript_location = "javascript_location"
-      }
-
-      javascript_mode = "javascript_mode"
-
-      js_download_path = "value"
-
-      // One of the arguments from this list "disable_mobile_sdk mobile_sdk_config" must be set
-
-      disable_mobile_sdk = true
-      protected_app_endpoints {
-        // One of the arguments from this list "mobile web web_mobile" must be set
-
-        mobile = true
-
-        // One of the arguments from this list "any_domain domain" can be set
-
-        any_domain = true
-
-        // One of the arguments from this list "flow_label undefined_flow_label" must be set
-
-        undefined_flow_label = true
-
-        // One of the arguments from this list "allow_good_bots mitigate_good_bots" must be set
-
-        allow_good_bots = true
-        headers {
-          invert_matcher = true
-
-          // One of the arguments from this list "check_not_present check_present item presence" must be set
-
-          check_not_present = true
-          name = "Accept-Encoding"
-        }
-        http_methods = ["http_methods"]
-        metadata {
-          description = "Virtual Host for acmecorp website"
-
-          disable = true
-
-          name = "acmecorp-web"
-        }
-        mitigation {
-          // One of the arguments from this list "block flag none redirect" can be set
-
-          none = true
-        }
-        path {
-          // One of the arguments from this list "path prefix regex" must be set
-
-          prefix = "/register/"
-        }
-        protocol = "protocol"
-        query_params {
-          invert_matcher = true
-
-          key = "sourceid"
-
-          // One of the arguments from this list "check_not_present check_present item presence" must be set
-
-          check_not_present = true
-        }
-      }
-    }
-
-    regional_endpoint = "regional_endpoint"
-
-    timeout = "300"
-  }
+  disable_bot_defense = true
 
   // One of the arguments from this list "client_side_defense disable_client_side_defense" must be set
 
@@ -198,7 +49,7 @@ resource "volterra_cdn_loadbalancer" "example" {
 
   // One of the arguments from this list "l7_ddos_action_block l7_ddos_action_default l7_ddos_action_js_challenge l7_ddos_action_none" must be set
 
-  l7_ddos_action_none = true
+  l7_ddos_action_block = true
 
   // One of the arguments from this list "http https https_auto_cert" must be set
 
@@ -468,7 +319,7 @@ Define rules to block IP Prefixes or AS numbers..
 
 `waf_skip_processing` - (Optional) Skip WAF processing for clients matching this rule. (`Bool`).(Deprecated)
 
-`actions` - (Optional) Actions that should be taken when client identifier matches the rule (`List of Strings`).
+`actions` - (Required) Actions that should be taken when client identifier matches the rule (`List of Strings`).
 
 ###### One of the arguments from this list "as_number, http_header, ip_prefix, ipv6_prefix, user_identifier" must be set
 
@@ -742,7 +593,7 @@ Define rules to skip processing of one or more features such as WAF, Bot Defense
 
 `waf_skip_processing` - (Optional) Skip WAF processing for clients matching this rule. (`Bool`).(Deprecated)
 
-`actions` - (Optional) Actions that should be taken when client identifier matches the rule (`List of Strings`).
+`actions` - (Required) Actions that should be taken when client identifier matches the rule (`List of Strings`).
 
 ###### One of the arguments from this list "as_number, http_header, ip_prefix, ipv6_prefix, user_identifier" must be set
 
@@ -1002,9 +853,9 @@ Enable api discovery only on cache miss in this distribution.
 
 ###### One of the arguments from this list "custom_api_auth_discovery, default_api_auth_discovery" must be set
 
-`custom_api_auth_discovery` - (Optional) Apply custom API discovery settings. See [Api Discovery Settings Choice Custom Api Auth Discovery ](#api-discovery-settings-choice-custom-api-auth-discovery) below for details.
+`custom_api_auth_discovery` - (Optional) Define classification rules to better match your application architecture and reduce noise.. See [Api Discovery Settings Choice Custom Api Auth Discovery ](#api-discovery-settings-choice-custom-api-auth-discovery) below for details.
 
-`default_api_auth_discovery` - (Optional) Apply system default API discovery settings (`Bool`).
+`default_api_auth_discovery` - (Optional) Automatically discovers APIs from traffic and auth signals. No setup needed and recommended for most environments. (`Bool`).
 
 `discovered_api_settings` - (Optional) Configure Discovered API Settings.. See [Api Discovery On Cache Miss Discovered Api Settings ](#api-discovery-on-cache-miss-discovered-api-settings) below for details.
 
@@ -1030,9 +881,9 @@ Enable api discovery for all requests in this distribution.
 
 ###### One of the arguments from this list "custom_api_auth_discovery, default_api_auth_discovery" must be set
 
-`custom_api_auth_discovery` - (Optional) Apply custom API discovery settings. See [Api Discovery Settings Choice Custom Api Auth Discovery ](#api-discovery-settings-choice-custom-api-auth-discovery) below for details.
+`custom_api_auth_discovery` - (Optional) Define classification rules to better match your application architecture and reduce noise.. See [Api Discovery Settings Choice Custom Api Auth Discovery ](#api-discovery-settings-choice-custom-api-auth-discovery) below for details.
 
-`default_api_auth_discovery` - (Optional) Apply system default API discovery settings (`Bool`).
+`default_api_auth_discovery` - (Optional) Automatically discovers APIs from traffic and auth signals. No setup needed and recommended for most environments. (`Bool`).
 
 `discovered_api_settings` - (Optional) Configure Discovered API Settings.. See [Enable Api Discovery Discovered Api Settings ](#enable-api-discovery-discovered-api-settings) below for details.
 
@@ -1088,13 +939,13 @@ Manage rules to detect sensitive data in requests and/or response sections..
 
 ### Api Discovery Settings Choice Custom Api Auth Discovery
 
-Apply custom API discovery settings.
+Define classification rules to better match your application architecture and reduce noise..
 
-`api_discovery_ref` - (Required) API Discovery Settings Object. See [ref](#ref) below for details.
+`api_discovery_ref` - (Required) Defines how discovery operates and how traffic is analyzed. Use policies to customize discovery behavior, authentication handling, and other related settings.. See [ref](#ref) below for details.
 
 ### Api Discovery Settings Choice Default Api Auth Discovery
 
-Apply system default API discovery settings.
+Automatically discovers APIs from traffic and auth signals. No setup needed and recommended for most environments..
 
 ### Api Endpoint Rules Action
 
@@ -2014,7 +1865,7 @@ Define rules to block IP Prefixes or AS numbers..
 
 `waf_skip_processing` - (Optional) Skip WAF processing for clients matching this rule. (`Bool`).(Deprecated)
 
-`actions` - (Optional) Actions that should be taken when client identifier matches the rule (`List of Strings`).
+`actions` - (Required) Actions that should be taken when client identifier matches the rule (`List of Strings`).
 
 ###### One of the arguments from this list "as_number, http_header, ip_prefix, ipv6_prefix, user_identifier" must be set
 
@@ -2066,7 +1917,7 @@ Define rules to skip processing of one or more features such as WAF, Bot Defense
 
 `waf_skip_processing` - (Optional) Skip WAF processing for clients matching this rule. (`Bool`).(Deprecated)
 
-`actions` - (Optional) Actions that should be taken when client identifier matches the rule (`List of Strings`).
+`actions` - (Required) Actions that should be taken when client identifier matches the rule (`List of Strings`).
 
 ###### One of the arguments from this list "as_number, http_header, ip_prefix, ipv6_prefix, user_identifier" must be set
 
@@ -3032,7 +2883,7 @@ Define endpoints for which JWT token validation will be performed.
 
 ###### One of the arguments from this list "all_endpoint, api_groups, base_paths" must be set
 
-`all_endpoint` - (Optional) Validation will be performed for all requests on this LB (`Bool`).
+`all_endpoint` - (Optional) JWT validation is applied to all requests handled by this Load Balancer. If JWT is missing or invalid, the configured action (Block or Report) will be applied. (`Bool`).
 
 `api_groups` - (Optional) Validation will be performed for the endpoints mentioned in the API Groups. See [Target Api Groups ](#target-api-groups) below for details.
 
@@ -4638,7 +4489,7 @@ query_params.
 
 ### Target All Endpoint
 
-Validation will be performed for all requests on this LB.
+JWT validation is applied to all requests handled by this Load Balancer. If JWT is missing or invalid, the configured action (Block or Report) will be applied..
 
 ### Target Api Groups
 

@@ -7939,6 +7939,7 @@ func resourceVolterraVirtualHostRead(d *schema.ResourceData, meta interface{}) e
 		}
 		return fmt.Errorf("Error finding Volterra VirtualHost %q: %s", d.Id(), err)
 	}
+
 	return setVirtualHostFields(client, d, resp)
 }
 
@@ -12365,5 +12366,11 @@ func resourceVolterraVirtualHostDelete(d *schema.ResourceData, meta interface{})
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_virtual_host.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_virtual_host.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting VirtualHost: %w", err)
+	}
+	return nil
+
 }

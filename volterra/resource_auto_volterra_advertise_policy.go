@@ -1442,30 +1442,30 @@ func resourceVolterraAdvertisePolicyCreate(d *schema.ResourceData, meta interfac
 							if v, ok := cs["ref"]; ok && !isIntfNil(v) {
 
 								sl := v.([]interface{})
-								refIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
-								refOrSelectorInt.Site.Ref = refIntNew
+								refOrSelectorIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
+								refOrSelectorInt.Site.Ref = refOrSelectorIntNew
 								for i, ps := range sl {
 									if ps != nil {
 
 										rMapToStrVal := ps.(map[string]interface{})
-										refIntNew[i] = &ves_io_schema.ObjectRefType{}
+										refOrSelectorIntNew[i] = &ves_io_schema.ObjectRefType{}
 
-										refIntNew[i].Kind = "site"
+										refOrSelectorIntNew[i].Kind = "site"
 
 										if v, ok := rMapToStrVal["name"]; ok && !isIntfNil(v) {
-											refIntNew[i].Name = v.(string)
+											refOrSelectorIntNew[i].Name = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-											refIntNew[i].Namespace = v.(string)
+											refOrSelectorIntNew[i].Namespace = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-											refIntNew[i].Tenant = v.(string)
+											refOrSelectorIntNew[i].Tenant = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["uid"]; ok && !isIntfNil(v) {
-											refIntNew[i].Uid = v.(string)
+											refOrSelectorIntNew[i].Uid = v.(string)
 										}
 
 									}
@@ -1527,30 +1527,30 @@ func resourceVolterraAdvertisePolicyCreate(d *schema.ResourceData, meta interfac
 							if v, ok := cs["ref"]; ok && !isIntfNil(v) {
 
 								sl := v.([]interface{})
-								refIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
-								refOrSelectorInt.VirtualNetwork.Ref = refIntNew
+								refOrSelectorIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
+								refOrSelectorInt.VirtualNetwork.Ref = refOrSelectorIntNew
 								for i, ps := range sl {
 									if ps != nil {
 
 										rMapToStrVal := ps.(map[string]interface{})
-										refIntNew[i] = &ves_io_schema.ObjectRefType{}
+										refOrSelectorIntNew[i] = &ves_io_schema.ObjectRefType{}
 
-										refIntNew[i].Kind = "virtual_network"
+										refOrSelectorIntNew[i].Kind = "virtual_network"
 
 										if v, ok := rMapToStrVal["name"]; ok && !isIntfNil(v) {
-											refIntNew[i].Name = v.(string)
+											refOrSelectorIntNew[i].Name = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-											refIntNew[i].Namespace = v.(string)
+											refOrSelectorIntNew[i].Namespace = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-											refIntNew[i].Tenant = v.(string)
+											refOrSelectorIntNew[i].Tenant = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["uid"]; ok && !isIntfNil(v) {
-											refIntNew[i].Uid = v.(string)
+											refOrSelectorIntNew[i].Uid = v.(string)
 										}
 
 									}
@@ -1610,30 +1610,30 @@ func resourceVolterraAdvertisePolicyCreate(d *schema.ResourceData, meta interfac
 							if v, ok := cs["ref"]; ok && !isIntfNil(v) {
 
 								sl := v.([]interface{})
-								refIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
-								refOrSelectorInt.VirtualSite.Ref = refIntNew
+								refOrSelectorIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
+								refOrSelectorInt.VirtualSite.Ref = refOrSelectorIntNew
 								for i, ps := range sl {
 									if ps != nil {
 
 										rMapToStrVal := ps.(map[string]interface{})
-										refIntNew[i] = &ves_io_schema.ObjectRefType{}
+										refOrSelectorIntNew[i] = &ves_io_schema.ObjectRefType{}
 
-										refIntNew[i].Kind = "virtual_site"
+										refOrSelectorIntNew[i].Kind = "virtual_site"
 
 										if v, ok := rMapToStrVal["name"]; ok && !isIntfNil(v) {
-											refIntNew[i].Name = v.(string)
+											refOrSelectorIntNew[i].Name = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-											refIntNew[i].Namespace = v.(string)
+											refOrSelectorIntNew[i].Namespace = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-											refIntNew[i].Tenant = v.(string)
+											refOrSelectorIntNew[i].Tenant = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["uid"]; ok && !isIntfNil(v) {
-											refIntNew[i].Uid = v.(string)
+											refOrSelectorIntNew[i].Uid = v.(string)
 										}
 
 									}
@@ -1710,6 +1710,7 @@ func resourceVolterraAdvertisePolicyRead(d *schema.ResourceData, meta interface{
 		}
 		return fmt.Errorf("Error finding Volterra AdvertisePolicy %q: %s", d.Id(), err)
 	}
+
 	return setAdvertisePolicyFields(client, d, resp)
 }
 
@@ -2411,30 +2412,30 @@ func resourceVolterraAdvertisePolicyUpdate(d *schema.ResourceData, meta interfac
 							if v, ok := cs["ref"]; ok && !isIntfNil(v) {
 
 								sl := v.([]interface{})
-								refIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
-								refOrSelectorInt.Site.Ref = refIntNew
+								refOrSelectorIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
+								refOrSelectorInt.Site.Ref = refOrSelectorIntNew
 								for i, ps := range sl {
 									if ps != nil {
 
 										rMapToStrVal := ps.(map[string]interface{})
-										refIntNew[i] = &ves_io_schema.ObjectRefType{}
+										refOrSelectorIntNew[i] = &ves_io_schema.ObjectRefType{}
 
-										refIntNew[i].Kind = "site"
+										refOrSelectorIntNew[i].Kind = "site"
 
 										if v, ok := rMapToStrVal["name"]; ok && !isIntfNil(v) {
-											refIntNew[i].Name = v.(string)
+											refOrSelectorIntNew[i].Name = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-											refIntNew[i].Namespace = v.(string)
+											refOrSelectorIntNew[i].Namespace = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-											refIntNew[i].Tenant = v.(string)
+											refOrSelectorIntNew[i].Tenant = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["uid"]; ok && !isIntfNil(v) {
-											refIntNew[i].Uid = v.(string)
+											refOrSelectorIntNew[i].Uid = v.(string)
 										}
 
 									}
@@ -2496,30 +2497,30 @@ func resourceVolterraAdvertisePolicyUpdate(d *schema.ResourceData, meta interfac
 							if v, ok := cs["ref"]; ok && !isIntfNil(v) {
 
 								sl := v.([]interface{})
-								refIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
-								refOrSelectorInt.VirtualNetwork.Ref = refIntNew
+								refOrSelectorIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
+								refOrSelectorInt.VirtualNetwork.Ref = refOrSelectorIntNew
 								for i, ps := range sl {
 									if ps != nil {
 
 										rMapToStrVal := ps.(map[string]interface{})
-										refIntNew[i] = &ves_io_schema.ObjectRefType{}
+										refOrSelectorIntNew[i] = &ves_io_schema.ObjectRefType{}
 
-										refIntNew[i].Kind = "virtual_network"
+										refOrSelectorIntNew[i].Kind = "virtual_network"
 
 										if v, ok := rMapToStrVal["name"]; ok && !isIntfNil(v) {
-											refIntNew[i].Name = v.(string)
+											refOrSelectorIntNew[i].Name = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-											refIntNew[i].Namespace = v.(string)
+											refOrSelectorIntNew[i].Namespace = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-											refIntNew[i].Tenant = v.(string)
+											refOrSelectorIntNew[i].Tenant = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["uid"]; ok && !isIntfNil(v) {
-											refIntNew[i].Uid = v.(string)
+											refOrSelectorIntNew[i].Uid = v.(string)
 										}
 
 									}
@@ -2579,30 +2580,30 @@ func resourceVolterraAdvertisePolicyUpdate(d *schema.ResourceData, meta interfac
 							if v, ok := cs["ref"]; ok && !isIntfNil(v) {
 
 								sl := v.([]interface{})
-								refIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
-								refOrSelectorInt.VirtualSite.Ref = refIntNew
+								refOrSelectorIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
+								refOrSelectorInt.VirtualSite.Ref = refOrSelectorIntNew
 								for i, ps := range sl {
 									if ps != nil {
 
 										rMapToStrVal := ps.(map[string]interface{})
-										refIntNew[i] = &ves_io_schema.ObjectRefType{}
+										refOrSelectorIntNew[i] = &ves_io_schema.ObjectRefType{}
 
-										refIntNew[i].Kind = "virtual_site"
+										refOrSelectorIntNew[i].Kind = "virtual_site"
 
 										if v, ok := rMapToStrVal["name"]; ok && !isIntfNil(v) {
-											refIntNew[i].Name = v.(string)
+											refOrSelectorIntNew[i].Name = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-											refIntNew[i].Namespace = v.(string)
+											refOrSelectorIntNew[i].Namespace = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-											refIntNew[i].Tenant = v.(string)
+											refOrSelectorIntNew[i].Tenant = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["uid"]; ok && !isIntfNil(v) {
-											refIntNew[i].Uid = v.(string)
+											refOrSelectorIntNew[i].Uid = v.(string)
 										}
 
 									}
@@ -2683,5 +2684,11 @@ func resourceVolterraAdvertisePolicyDelete(d *schema.ResourceData, meta interfac
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_advertise_policy.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_advertise_policy.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting AdvertisePolicy: %w", err)
+	}
+	return nil
+
 }

@@ -470,6 +470,7 @@ func resourceVolterraK8SClusterRoleRead(d *schema.ResourceData, meta interface{}
 		}
 		return fmt.Errorf("Error finding Volterra K8SClusterRole %q: %s", d.Id(), err)
 	}
+
 	return setK8SClusterRoleFields(client, d, resp)
 }
 
@@ -776,5 +777,11 @@ func resourceVolterraK8SClusterRoleDelete(d *schema.ResourceData, meta interface
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_k8s_cluster_role.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_k8s_cluster_role.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting K8SClusterRole: %w", err)
+	}
+	return nil
+
 }

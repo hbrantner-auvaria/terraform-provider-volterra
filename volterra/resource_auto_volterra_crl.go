@@ -251,6 +251,7 @@ func resourceVolterraCrlRead(d *schema.ResourceData, meta interface{}) error {
 		}
 		return fmt.Errorf("Error finding Volterra Crl %q: %s", d.Id(), err)
 	}
+
 	return setCrlFields(client, d, resp)
 }
 
@@ -414,5 +415,11 @@ func resourceVolterraCrlDelete(d *schema.ResourceData, meta interface{}) error {
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_crl.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_crl.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting Crl: %w", err)
+	}
+	return nil
+
 }

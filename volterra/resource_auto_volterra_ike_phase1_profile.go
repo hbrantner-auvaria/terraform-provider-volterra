@@ -438,6 +438,7 @@ func resourceVolterraIkePhase1ProfileRead(d *schema.ResourceData, meta interface
 		}
 		return fmt.Errorf("Error finding Volterra IkePhase1Profile %q: %s", d.Id(), err)
 	}
+
 	return setIkePhase1ProfileFields(client, d, resp)
 }
 
@@ -713,5 +714,11 @@ func resourceVolterraIkePhase1ProfileDelete(d *schema.ResourceData, meta interfa
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_views_ike_phase1_profile.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_views_ike_phase1_profile.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting IkePhase1Profile: %w", err)
+	}
+	return nil
+
 }
