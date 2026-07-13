@@ -167,6 +167,7 @@ func resourceVolterraMobileBaseConfigRead(d *schema.ResourceData, meta interface
 		}
 		return fmt.Errorf("Error finding Volterra MobileBaseConfig %q: %s", d.Id(), err)
 	}
+
 	return setMobileBaseConfigFields(client, d, resp)
 }
 
@@ -283,5 +284,11 @@ func resourceVolterraMobileBaseConfigDelete(d *schema.ResourceData, meta interfa
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_shape_bot_defense_mobile_base_config.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_shape_bot_defense_mobile_base_config.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting MobileBaseConfig: %w", err)
+	}
+	return nil
+
 }

@@ -22,7 +22,7 @@ resource "volterra_ike2" "example" {
 
   // One of the arguments from this list "ike_keylifetime_hours ike_keylifetime_minutes use_default_keylifetime" must be set
 
-  ike_keylifetime_hours {
+  ike_keylifetime_minutes {
     duration = "duration"
   }
 }

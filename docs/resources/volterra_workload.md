@@ -25,7 +25,11 @@ resource "volterra_workload" "example" {
   simple_service {
     // One of the arguments from this list "do_not_advertise service_port simple_advertise" must be set
 
-    do_not_advertise = true
+    simple_advertise {
+      domains = ["www.foo.com"]
+
+      service_port = "2048"
+    }
 
     configuration {
       parameters {
@@ -415,6 +419,14 @@ Advertise on vK8s Service Network on RE..
 
 Default class.
 
+### Coalescing Choice Default Coalescing
+
+or Cipher suite configuration.
+
+### Coalescing Choice Strict Coalescing
+
+and/or Cipher suite configuration.
+
 ### Configuration Parameters
 
 Parameters for the workload.
@@ -629,6 +641,12 @@ URI path of route.
 
 Send direct response.
 
+`response_body` - (Optional) response body to send (`String`).(Deprecated)
+
+`response_body_encoded` - (Optional) E.g. "<p> Access Denied </p>". Base64 encoded string url for this is string:///PHA+IEFjY2VzcyBEZW5pZWQgPC9wPg== (`String`).
+
+`response_code` - (Optional) response code to send (`Int`).
+
 ### Empty Dir Mount
 
 Volume mount associated with the empty directory.
@@ -729,9 +747,43 @@ Name or number of the port to access on the container..
 
 `num` - (Optional) Port number (`Int`).
 
+### Http Protocol Choice Http Protocol Enable V1 Only
+
+Enable HTTP/1.1 for downstream connections.
+
+`header_transformation` - (Optional) the stateful formatter will take effect, and the stateless formatter will be disregarded.. See [Http Protocol Enable V1 Only Header Transformation ](#http-protocol-enable-v1-only-header-transformation) below for details.
+
+### Http Protocol Choice Http Protocol Enable V1 V2
+
+Enable both HTTP/1.1 and HTTP/2 for downstream connections.
+
+### Http Protocol Choice Http Protocol Enable V2 Only
+
+Enable HTTP/2 for downstream connections.
+
+### Http Protocol Enable V1 Only Header Transformation
+
+the stateful formatter will take effect, and the stateless formatter will be disregarded..
+
+###### One of the arguments from this list "default_header_transformation, legacy_header_transformation, preserve_case_header_transformation, proper_case_header_transformation" must be set
+
+`default_header_transformation` - (Optional) Normalize the headers to lower case (`Bool`).
+
+`legacy_header_transformation` - (Optional) Use old header transformation if configured earlier (`Bool`).
+
+`preserve_case_header_transformation` - (Optional) Preserves the original case of headers without any modifications. (`Bool`).
+
+`proper_case_header_transformation` - (Optional) For example, “content-type” becomes “Content-Type”, and “foo$b#$are” becomes “Foo$B#$Are” (`Bool`).
+
 ### Https Coalescing Options
 
 Options for coalescing TLS for multiple HTTPS Load Balancers.
+
+###### One of the arguments from this list "default_coalescing, strict_coalescing" must be set
+
+`default_coalescing` - (Optional) or Cipher suite configuration (`Bool`).
+
+`strict_coalescing` - (Optional) and/or Cipher suite configuration (`Bool`).
 
 ### Https Header Transformation Type
 
@@ -751,9 +803,23 @@ Header transformation options for response headers to the client.
 
 HTTP protocol configuration options for downstream connections..
 
+###### One of the arguments from this list "http_protocol_enable_v1_only, http_protocol_enable_v1_v2, http_protocol_enable_v2_only" must be set
+
+`http_protocol_enable_v1_only` - (Optional) Enable HTTP/1.1 for downstream connections. See [Http Protocol Choice Http Protocol Enable V1 Only ](#http-protocol-choice-http-protocol-enable-v1-only) below for details.
+
+`http_protocol_enable_v1_v2` - (Optional) Enable both HTTP/1.1 and HTTP/2 for downstream connections (`Bool`).
+
+`http_protocol_enable_v2_only` - (Optional) Enable HTTP/2 for downstream connections (`Bool`).
+
 ### Https Auto Cert Coalescing Options
 
 Options for coalescing TLS for multiple HTTPS Load Balancers.
+
+###### One of the arguments from this list "default_coalescing, strict_coalescing" must be set
+
+`default_coalescing` - (Optional) or Cipher suite configuration (`Bool`).
+
+`strict_coalescing` - (Optional) and/or Cipher suite configuration (`Bool`).
 
 ### Https Auto Cert Header Transformation Type
 
@@ -772,6 +838,14 @@ Header transformation options for response headers to the client.
 ### Https Auto Cert Http Protocol Options
 
 HTTP protocol configuration options for downstream connections..
+
+###### One of the arguments from this list "http_protocol_enable_v1_only, http_protocol_enable_v1_v2, http_protocol_enable_v2_only" must be set
+
+`http_protocol_enable_v1_only` - (Optional) Enable HTTP/1.1 for downstream connections. See [Http Protocol Choice Http Protocol Enable V1 Only ](#http-protocol-choice-http-protocol-enable-v1-only) below for details.
+
+`http_protocol_enable_v1_v2` - (Optional) Enable both HTTP/1.1 and HTTP/2 for downstream connections (`Bool`).
+
+`http_protocol_enable_v2_only` - (Optional) Enable HTTP/2 for downstream connections (`Bool`).
 
 ### Https Auto Cert Tls Config
 
@@ -1163,6 +1237,20 @@ Blindfold Secret Internal is used for the putting re-encrypted blindfold secret.
 
 `store_provider` - (Optional) This field needs to be provided only if the url scheme is not string:/// (`String`).
 
+### Query Params Remove All Params
+
+x-displayName: "Remove All Parameters".
+
+### Query Params Retain All Params
+
+x-displayName: "Retain All Parameters".
+
+### Query Params Strip Query Params
+
+Specifies the list of query params to be removed. Not supported.
+
+`query_params` - (Optional) Query params keys to strip while manipulating the HTTP request (`String`).
+
 ### Redirect Route Headers
 
 List of (key, value) headers.
@@ -1206,6 +1294,32 @@ URI path of route.
 ### Redirect Route Route Redirect
 
 Send redirect response.
+
+`host_redirect` - (Optional) swap host part of incoming URL in redirect URL (`String`).
+
+`port_redirect` - (Optional) Specify the port value to redirect to a URL with non default port(443) (`Int`).(Deprecated)
+
+`proto_redirect` - (Optional) When incoming-proto option is specified, swapping of protocol is not done. (`String`).
+
+###### One of the arguments from this list "all_params, remove_all_params, replace_params, retain_all_params, strip_query_params" can be set
+
+`all_params` - (Optional) be removed. Default value is false, which means query portion of the URL will NOT be removed (`Bool`).(Deprecated)
+
+`remove_all_params` - (Optional) x-displayName: "Remove All Parameters" (`Bool`).
+
+`replace_params` - (Optional) x-displayName: "Replace All Parameters" (`String`).
+
+`retain_all_params` - (Optional) x-displayName: "Retain All Parameters" (`Bool`).
+
+`strip_query_params` - (Optional) Specifies the list of query params to be removed. Not supported. See [Query Params Strip Query Params ](#query-params-strip-query-params) below for details.(Deprecated)
+
+###### One of the arguments from this list "path_redirect, prefix_rewrite" can be set
+
+`path_redirect` - (Optional) swap path part of incoming URL in redirect URL (`String`).
+
+`prefix_rewrite` - (Optional) This option allows redirect URLs be dynamically created based on the request (`String`).
+
+`response_code` - (Optional) The HTTP status code to use in the redirect response. (`Int`).
 
 ### Ref
 

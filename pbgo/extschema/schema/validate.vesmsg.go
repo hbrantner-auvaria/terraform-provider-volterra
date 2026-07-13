@@ -3237,6 +3237,17 @@ func (v *ValidateStringRules) Validate(ctx context.Context, pm interface{}, opts
 				return err
 			}
 		}
+	case *StringRules_VhDomainOrIp:
+		if fv, exists := v.FldValidators["well_known.vh_domain_or_ip"]; exists {
+			val := m.GetWellKnown().(*StringRules_VhDomainOrIp).VhDomainOrIp
+			vOpts := append(opts,
+				db.WithValidateField("well_known"),
+				db.WithValidateField("vh_domain_or_ip"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 	return nil
 }

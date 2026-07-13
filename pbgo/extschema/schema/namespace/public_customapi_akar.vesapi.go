@@ -6381,6 +6381,12 @@ var NamespaceCustomAPISwaggerJSON string = `{
                     "format": "int64",
                     "x-displayname": "iRules Count"
                 },
+                "virtual_server_specs": {
+                    "description": " Detailed specifications of Virtual Servers",
+                    "title": "Virtual Server Specifications",
+                    "$ref": "#/definitions/namespaceVirtualServerSpecsInventoryType",
+                    "x-displayname": "Virtual Server Specifications"
+                },
                 "virtualserver_results": {
                     "type": "array",
                     "description": " List of Virtual Servers",
@@ -6425,6 +6431,33 @@ var NamespaceCustomAPISwaggerJSON string = `{
                     "description": " VIP Type",
                     "title": "VIP Type",
                     "x-displayname": "VIP Type"
+                }
+            }
+        },
+        "namespaceVirtualServerSpecsInventoryType": {
+            "type": "object",
+            "description": "Inventory of HTTP and TCP Loadbalancer specifications specific to Virtual Servers",
+            "title": "VirtualServerSpecsInventoryType",
+            "x-displayname": "Virtual Server Specifications Inventory",
+            "x-ves-proto-message": "ves.io.schema.namespace.VirtualServerSpecsInventoryType",
+            "properties": {
+                "http": {
+                    "description": " Inventory of HTTP Loadbalancers associated with Virtual Servers",
+                    "title": "HTTP Loadbalancer Inventory",
+                    "$ref": "#/definitions/namespaceHTTPLoadbalancerInventoryType",
+                    "x-displayname": "HTTP Loadbalancers on Virtual Servers"
+                },
+                "tcp": {
+                    "description": " Inventory of TCP Loadbalancers associated with Virtual Servers",
+                    "title": "TCP Loadbalancer Inventory",
+                    "$ref": "#/definitions/namespaceTCPLoadbalancerInventoryType",
+                    "x-displayname": "TCP Loadbalancers on Virtual Servers"
+                },
+                "udp": {
+                    "description": " Inventory of UDP Loadbalancers associated with Virtual Servers",
+                    "title": "UDP Loadbalancer Inventory",
+                    "$ref": "#/definitions/namespaceUDPLoadbalancerInventoryType",
+                    "x-displayname": "UDP Loadbalancers on Virtual Servers"
                 }
             }
         },

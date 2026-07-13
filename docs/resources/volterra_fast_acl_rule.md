@@ -29,7 +29,7 @@ resource "volterra_fast_acl_rule" "example" {
   port {
     // One of the arguments from this list "all dns user_defined" can be set
 
-    all = true
+    user_defined = "user_defined"
   }
 
   // One of the arguments from this list "ip_prefix_set prefix" must be set

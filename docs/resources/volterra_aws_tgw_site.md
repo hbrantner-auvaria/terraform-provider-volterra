@@ -22,24 +22,19 @@ resource "volterra_aws_tgw_site" "example" {
 
   aws_parameters {
     admin_password {
-      blindfold_secret_info_internal {
-        decryption_provider = "value"
-
-        location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
-
-        store_provider = "value"
-      }
-
-      secret_encoding_type = "secret_encoding_type"
 
       // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
 
-      blindfold_secret_info {
-        decryption_provider = "value"
+      vault_secret_info {
+        key = "key_pem"
 
-        location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
+        location = "v1/data/vhost_key"
 
-        store_provider = "value"
+        provider = "vault-vh-provider"
+
+        secret_encoding = "secret_encoding"
+
+        version = "1"
       }
     }
 
@@ -76,21 +71,19 @@ resource "volterra_aws_tgw_site" "example" {
 
     // One of the arguments from this list "assisted aws_cred" must be set
 
-    aws_cred {
-      name      = "test1"
-      namespace = "staging"
-      tenant    = "acmecorp"
-    }
+    assisted = true
     disk_size = "80"
 
     // One of the arguments from this list "disable_encryption enable_encryption" can be set
 
-    disable_encryption = true
+    enable_encryption {
+      kms_key_id = "kms_key_id"
+    }
     instance_type = "a1.xlarge"
 
     // One of the arguments from this list "disable_internet_vip enable_internet_vip" must be set
 
-    enable_internet_vip = true
+    disable_internet_vip = true
 
     // One of the arguments from this list "custom_security_group f5xc_security_group" must be set
 
@@ -98,7 +91,14 @@ resource "volterra_aws_tgw_site" "example" {
 
     // One of the arguments from this list "new_vpc vpc_id" must be set
 
-    vpc_id = "vpc-12345678901234567"
+    new_vpc {
+      allocate_ipv6 = true
+
+      // One of the arguments from this list "autogenerate name_tag" must be set
+
+      autogenerate = true
+      primary_ipv4 = "10.1.0.0/16"
+    }
     ssh_key = "ssh-rsa AAAAB..."
 
     // One of the arguments from this list "existing_tgw new_tgw" must be set
@@ -120,15 +120,7 @@ resource "volterra_aws_tgw_site" "example" {
 
   // One of the arguments from this list "block_all_services blocked_services default_blocked_services" must be set
 
-  blocked_services {
-    blocked_sevice {
-      // One of the arguments from this list "dns ssh web_user_interface" can be set
-
-      web_user_interface = true
-
-      network_type = "network_type"
-    }
-  }
+  default_blocked_services = true
 
   // One of the arguments from this list "direct_connect_disabled direct_connect_enabled private_connectivity" must be set
 
@@ -447,10 +439,6 @@ User is managing the ASN for TGW and F5XC Site..
 
 Admin password user for accessing site through serial console ..
 
-`blindfold_secret_info_internal` - (Optional) Blindfold Secret Internal is used for the putting re-encrypted blindfold secret. See [Admin Password Blindfold Secret Info Internal ](#admin-password-blindfold-secret-info-internal) below for details.(Deprecated)
-
-`secret_encoding_type` - (Optional) e.g. if a secret is base64 encoded and then put into vault. (`String`).(Deprecated)
-
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 
 `blindfold_secret_info` - (Optional) Blindfold Secret is used for the secrets managed by F5XC Secret Management Service. See [Secret Info Oneof Blindfold Secret Info ](#secret-info-oneof-blindfold-secret-info) below for details.
@@ -590,10 +578,6 @@ Site Registration and Site to RE tunnels go over the internet gateway.
 ### Custom Certificate Private Key
 
 TLS Private Key data in unencrypted PEM format including the PEM headers. The data may be optionally secured using BlindFold. TLS key has to match the accompanying certificate..
-
-`blindfold_secret_info_internal` - (Optional) Blindfold Secret Internal is used for the putting re-encrypted blindfold secret. See [Private Key Blindfold Secret Info Internal ](#private-key-blindfold-secret-info-internal) below for details.(Deprecated)
-
-`secret_encoding_type` - (Optional) e.g. if a secret is base64 encoded and then put into vault. (`String`).(Deprecated)
 
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 

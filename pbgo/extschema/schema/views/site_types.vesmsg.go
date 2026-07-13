@@ -6690,6 +6690,12 @@ func (v *ValidateSiteError) Validate(ctx context.Context, pm interface{}, opts .
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["error_details"]; exists {
+		vOpts := append(opts, db.WithValidateField("error_details"))
+		if err := fv(ctx, m.GetErrorDetails(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["suggested_action"]; exists {
 		vOpts := append(opts, db.WithValidateField("suggested_action"))
 		if err := fv(ctx, m.GetSuggestedAction(), vOpts...); err != nil {

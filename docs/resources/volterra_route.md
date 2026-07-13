@@ -53,13 +53,13 @@ resource "volterra_route" "example" {
       incoming_port {
         // One of the arguments from this list "no_port_match port port_ranges" can be set
 
-        no_port_match = true
+        port = "6443"
       }
 
       path {
         // One of the arguments from this list "path prefix regex" must be set
 
-        prefix = "/register/"
+        regex = "regex"
       }
 
       query_params {
@@ -98,7 +98,7 @@ resource "volterra_route" "example" {
     response_cookies_to_add {
       // One of the arguments from this list "add_domain ignore_domain" can be set
 
-      ignore_domain = true
+      add_domain = "add_domain"
 
       // One of the arguments from this list "add_expiry ignore_expiry" can be set
 
@@ -116,7 +116,7 @@ resource "volterra_route" "example" {
 
       // One of the arguments from this list "add_partitioned ignore_partitioned" can be set
 
-      add_partitioned = true
+      ignore_partitioned = true
 
       // One of the arguments from this list "add_path ignore_path" can be set
 
@@ -124,7 +124,7 @@ resource "volterra_route" "example" {
 
       // One of the arguments from this list "ignore_samesite samesite_lax samesite_none samesite_strict" can be set
 
-      samesite_none = true
+      samesite_strict = true
 
       // One of the arguments from this list "add_secure ignore_secure" can be set
 
@@ -162,7 +162,7 @@ resource "volterra_route" "example" {
 
       // One of the arguments from this list "do_not_retract_cluster retract_cluster" can be set
 
-      retract_cluster = true
+      do_not_retract_cluster = true
       cors_policy {
         allow_credentials = true
 
@@ -185,9 +185,7 @@ resource "volterra_route" "example" {
       csrf_policy {
         // One of the arguments from this list "all_load_balancer_domains custom_domain_list disabled" must be set
 
-        custom_domain_list {
-          domains = ["www.foo.com"]
-        }
+        all_load_balancer_domains = true
       }
       destinations {
         cluster {
@@ -210,24 +208,7 @@ resource "volterra_route" "example" {
       hash_policy {
         // One of the arguments from this list "cookie header_name source_ip" must be set
 
-        cookie {
-          // One of the arguments from this list "add_httponly ignore_httponly" can be set
-
-          ignore_httponly = true
-
-          name = "userid"
-
-          path = "/Users/userid/browser/cookies"
-
-          // One of the arguments from this list "ignore_samesite samesite_lax samesite_none samesite_strict" can be set
-
-          ignore_samesite = true
-
-          // One of the arguments from this list "add_secure ignore_secure" can be set
-
-          ignore_secure = true
-          ttl = "5000"
-        }
+        header_name = "host"
 
         terminal = true
       }
@@ -302,13 +283,7 @@ resource "volterra_route" "example" {
     waf_type {
       // One of the arguments from this list "app_firewall disable_waf inherit_waf" must be set
 
-      app_firewall {
-        app_firewall {
-          name      = "test1"
-          namespace = "staging"
-          tenant    = "acmecorp"
-        }
-      }
+      inherit_waf = true
     }
   }
 }
@@ -1104,10 +1079,6 @@ Ignore value of cookie.
 ### Value Choice Secret Value
 
 Secret Value of the Cookie header.
-
-`blindfold_secret_info_internal` - (Optional) Blindfold Secret Internal is used for the putting re-encrypted blindfold secret. See [Secret Value Blindfold Secret Info Internal ](#secret-value-blindfold-secret-info-internal) below for details.(Deprecated)
-
-`secret_encoding_type` - (Optional) e.g. if a secret is base64 encoded and then put into vault. (`String`).(Deprecated)
 
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 

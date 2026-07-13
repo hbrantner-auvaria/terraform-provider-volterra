@@ -2439,6 +2439,7 @@ var APISwaggerJSON string = `{
             "title": "Get Certificate",
             "x-displayname": "Get Certificate",
             "x-ves-oneof-field-ocsp_stapling_choice": "[\"custom_hash_algorithms\",\"disable_ocsp_stapling\",\"use_system_defaults\"]",
+            "x-ves-oneof-field-provider": "[\"manual\",\"virtual_host_auto_cert\"]",
             "x-ves-proto-message": "ves.io.schema.certificate.GetSpecType",
             "properties": {
                 "certificate_chain": {
@@ -2487,6 +2488,11 @@ var APISwaggerJSON string = `{
                     },
                     "x-displayname": "Certificate Information"
                 },
+                "manual": {
+                    "description": "Exclusive with [virtual_host_auto_cert]\n",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Manual"
+                },
                 "private_key": {
                     "description": " Private Key data in unencrypted PEM format including the PEM headers. The data may be optionally secured using BlindFold. Key has to match the accompanying certificate.\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
                     "$ref": "#/definitions/schemaSecretType",
@@ -2508,6 +2514,11 @@ var APISwaggerJSON string = `{
                     "description": "Exclusive with [custom_hash_algorithms disable_ocsp_stapling]\n Use F5XC Default Settings to fetch and staple OCSP Response.\n OCSP Response will be stapled if it can be fetched. Additionally, LoadBalancer will not become active until ocspResponse cannot be fetched if the certificate has MustStaple extension set.\n F5XC will try to fetch OCSPResponse with sha256 and sha1 as HashAlgorithm, in that order.",
                     "$ref": "#/definitions/ioschemaEmpty",
                     "x-displayname": "Enable"
+                },
+                "virtual_host_auto_cert": {
+                    "description": "Exclusive with [manual]\n",
+                    "$ref": "#/definitions/certificateVirtualHostAutoCert",
+                    "x-displayname": "Virtual Host Auto Cert"
                 }
             }
         },
@@ -2742,6 +2753,28 @@ var APISwaggerJSON string = `{
                         "$ref": "#/definitions/ioschemaObjectRefType"
                     },
                     "x-displayname": "Config Object"
+                }
+            }
+        },
+        "certificateVirtualHostAutoCert": {
+            "type": "object",
+            "description": "AutoCert provider information",
+            "title": "Virtual Host Auto Cert",
+            "x-displayname": "Virtual Host Auto Cert",
+            "x-ves-proto-message": "ves.io.schema.certificate.VirtualHostAutoCert",
+            "properties": {
+                "owner_virtual_host": {
+                    "type": "array",
+                    "description": " The virtual_host object that owns this certificate\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 1\n",
+                    "title": "Owner Virtual Host",
+                    "maxItems": 1,
+                    "items": {
+                        "$ref": "#/definitions/ioschemaObjectRefType"
+                    },
+                    "x-displayname": "Owner Virtual Host",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.repeated.max_items": "1"
+                    }
                 }
             }
         },

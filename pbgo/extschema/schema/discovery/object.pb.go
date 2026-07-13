@@ -182,10 +182,10 @@ type StatusObject struct {
 	// workflow, especially the internal LB status on the CE
 	CbipStatus *CBIPStatusType `protobuf:"bytes,5,opt,name=cbip_status,json=cbipStatus,proto3" json:"cbip_status,omitempty"` // Deprecated: Do not use.
 	// cbip_clusters_status
-	// x-displayName: "cBIP Clusters Status"
+	// x-displayName: "BIG-IP Clusters Status"
 	// x-required
 	// CBIPClusterStatus captures the status
-	// of the cBIP cluster discovery workflow, especially the device status
+	// of the BIG-IP cluster discovery workflow, especially the device status
 	CbipClustersStatus []*CBIPClusterStatus `protobuf:"bytes,6,rep,name=cbip_clusters_status,json=cbipClustersStatus,proto3" json:"cbip_clusters_status,omitempty"`
 }
 
@@ -273,7 +273,7 @@ type CBIPStatusType struct {
 	// BIG-IP Device Discovery Status
 	//
 	// x-displayName: "Device Discovery Status"
-	// Status of the discovery task for each cbip device
+	// Status of the discovery task for each BIG-IP device
 	DeviceStatus []*CBIPDeviceStatus `protobuf:"bytes,2,rep,name=device_status,json=deviceStatus,proto3" json:"device_status,omitempty"`
 }
 
@@ -326,7 +326,7 @@ type CBIPDeviceStatus struct {
 	// x-displayName: "Management IP"
 	// x-required
 	// x-example: "10.1.1.1"
-	// IP Address of the Classic BIG-IP device
+	// IP Address of the BIG-IP device
 	CbipMgmtIp string `protobuf:"bytes,1,opt,name=cbip_mgmt_ip,json=cbipMgmtIp,proto3" json:"cbip_mgmt_ip,omitempty"`
 	// Status condition
 	//
@@ -390,21 +390,21 @@ func (m *CBIPDeviceStatus) GetConditions() []*schema.ConditionType {
 	return nil
 }
 
-// Status for each cbip cluster
+// Status for each BIG-IP cluster
 type CBIPClusterStatus struct {
 	// Cluster name
 	// x-displayName: "Cluster Name"
-	// Name of the cBIP cluster
+	// Name of the BIG-IP cluster
 	ClusterName string `protobuf:"bytes,1,opt,name=cluster_name,json=clusterName,proto3" json:"cluster_name,omitempty"`
 	// Status condition
 	//
 	// x-displayName: "Condition"
-	// Status condition of the cBIP cluster
+	// Status condition of the BIG-IP cluster
 	Condition *schema.ConditionType `protobuf:"bytes,2,opt,name=condition,proto3" json:"condition,omitempty"`
 	// Devices status
 	// x-displayName: "Devices Status"
 	// x-required
-	// Device status of the cBIP cluster
+	// Device status of the BIG-IP cluster
 	DevicesStatus []*CBIPDeviceStatus `protobuf:"bytes,3,rep,name=devices_status,json=devicesStatus,proto3" json:"devices_status,omitempty"`
 }
 

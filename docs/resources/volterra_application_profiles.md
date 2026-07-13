@@ -23,7 +23,7 @@ resource "volterra_application_profiles" "example" {
   ddos_profile {
     // One of the arguments from this list "disable_ddos_mitigation enable_ddos_mitigation" can be set
 
-    disable_ddos_mitigation = true
+    enable_ddos_mitigation = true
   }
 }
 ```
@@ -53,7 +53,7 @@ Argument Reference
 
 `irules` - (Optional) Options for attaching iRules to BIG-IP Proxy. See [ref](#ref) below for details.
 
-`traffic_policies` - (Optional) x-displayName: "Traffic Policy". See [ref](#ref) below for details.
+`pmf_traffic_policies` - (Optional) x-displayName: "Traffic Policy". See [ref](#ref) below for details.
 
 `virtual_server` - (Optional) Specifies configuration related to virtual server. See [Virtual Server ](#virtual-server) below for details.
 
@@ -119,9 +119,11 @@ Specifies configuration related to virtual server.
 
 `virtual_server_state` - (Optional) State. See [Virtual Server Virtual Server State ](#virtual-server-virtual-server-state) below for details.
 
-###### One of the arguments from this list "http, https, tcp, udp" can be set
+###### One of the arguments from this list "http, http3, https, tcp, udp" can be set
 
 `http` - (Optional) x-displayName: "HTTP". See [Virtual Server Type Http ](#virtual-server-type-http) below for details.
+
+`http3` - (Optional) x-displayName: "HTTP3". See [Virtual Server Type Http3 ](#virtual-server-type-http3) below for details.
 
 `https` - (Optional) x-displayName: "HTTPS". See [Virtual Server Type Https ](#virtual-server-type-https) below for details.
 
@@ -365,13 +367,45 @@ State.
 
 `state_enabled` - (Optional) x-displayName: "Enabled". See [State Choice State Enabled ](#state-choice-state-enabled) below for details.
 
-### Virtual Server Type Http
+### Virtual Server Type Http3
 
-x-displayName: "HTTP".
+x-displayName: "HTTP3".
+
+`client_ssl_profile` - (Optional) x-displayName: "Client SSL Profile". See [ref](#ref) below for details.
+
+`http3_profile` - (Optional) x-displayName: "HTTP/3 Profile". See [ref](#ref) below for details.
 
 `http_client_profile` - (Optional) x-displayName: "HTTP Profile (Client)". See [ref](#ref) below for details.
 
 `http_server_profile` - (Optional) x-displayName: "HTTP Profile (Server)". See [ref](#ref) below for details.
+
+`quic_profile` - (Optional) x-displayName: "QUIC Profile". See [ref](#ref) below for details.
+
+`server_ssl_profile` - (Optional) x-displayName: "Server SSL Profile". See [ref](#ref) below for details.
+
+`tcp_server_profile` - (Optional) x-displayName: "TCP Profile (Server)". See [ref](#ref) below for details.
+
+`udp_client_profile` - (Optional) x-displayName: "Protocol Profile (Client)". See [ref](#ref) below for details.
+
+`udp_server_profile` - (Optional) x-displayName: "Protocol Profile (Server)". See [ref](#ref) below for details.
+
+### Virtual Server Type Http
+
+x-displayName: "HTTP".
+
+`client_ssl_profile` - (Optional) x-displayName: "Client SSL Profile". See [ref](#ref) below for details.
+
+`http2_client_profile` - (Optional) x-displayName: "HTTP/2 Profile Client". See [ref](#ref) below for details.
+
+`http2_server_profile` - (Optional) x-displayName: "HTTP/2 Profile Server". See [ref](#ref) below for details.
+
+`http_client_profile` - (Optional) x-displayName: "HTTP Profile (Client)". See [ref](#ref) below for details.
+
+`http_server_profile` - (Optional) x-displayName: "HTTP Profile (Server)". See [ref](#ref) below for details.
+
+`ocsp_profile` - (Optional) x-displayName: "OCSP Profile". See [ref](#ref) below for details.
+
+`server_ssl_profile` - (Optional) x-displayName: "Server SSL Profile". See [ref](#ref) below for details.
 
 `stream_profile` - (Optional) x-displayName: "Stream Profile". See [ref](#ref) below for details.
 
@@ -387,9 +421,19 @@ x-displayName: "HTTP".
 
 x-displayName: "HTTPS".
 
+`client_ssl_profile` - (Optional) x-displayName: "Client SSL Profile". See [ref](#ref) below for details.
+
+`http2_client_profile` - (Optional) x-displayName: "HTTP/2 Profile Client". See [ref](#ref) below for details.
+
+`http2_server_profile` - (Optional) x-displayName: "HTTP/2 Profile Server". See [ref](#ref) below for details.
+
 `http_client_profile` - (Optional) x-displayName: "HTTP Profile (Client)". See [ref](#ref) below for details.
 
 `http_server_profile` - (Optional) x-displayName: "HTTP Profile (Server)". See [ref](#ref) below for details.
+
+`ocsp_profile` - (Optional) x-displayName: "OCSP Profile". See [ref](#ref) below for details.
+
+`server_ssl_profile` - (Optional) x-displayName: "Server SSL Profile". See [ref](#ref) below for details.
 
 `stream_profile` - (Optional) x-displayName: "Stream Profile". See [ref](#ref) below for details.
 
@@ -405,6 +449,12 @@ x-displayName: "HTTPS".
 
 x-displayName: "TCP".
 
+`client_ssl_profile` - (Optional) x-displayName: "Client SSL Profile". See [ref](#ref) below for details.
+
+`ocsp_profile` - (Optional) x-displayName: "OCSP Profile". See [ref](#ref) below for details.
+
+`server_ssl_profile` - (Optional) x-displayName: "Server SSL Profile". See [ref](#ref) below for details.
+
 `tcp_client_profile` - (Optional) x-displayName: "Protocol Profile (Client)". See [ref](#ref) below for details.
 
 `tcp_server_profile` - (Optional) x-displayName: "Protocol Profile (Server)". See [ref](#ref) below for details.
@@ -413,9 +463,13 @@ x-displayName: "TCP".
 
 x-displayName: "UDP".
 
-`tcp_client_profile` - (Optional) x-displayName: "Protocol Profile (Client)". See [ref](#ref) below for details.
+`client_ssl_profile` - (Optional) x-displayName: "Client SSL Profile". See [ref](#ref) below for details.
 
-`tcp_server_profile` - (Optional) x-displayName: "Protocol Profile (Server)". See [ref](#ref) below for details.
+`server_ssl_profile` - (Optional) x-displayName: "Server SSL Profile". See [ref](#ref) below for details.
+
+`udp_client_profile` - (Optional) x-displayName: "Protocol Profile (Client)". See [ref](#ref) below for details.
+
+`udp_server_profile` - (Optional) x-displayName: "Protocol Profile (Server)". See [ref](#ref) below for details.
 
 Attribute Reference
 -------------------

@@ -910,6 +910,17 @@ func (v *ValidateHttpHealthCheck) Validate(ctx context.Context, pm interface{}, 
 				return err
 			}
 		}
+	case *HttpHealthCheck_InheritLoadBalancerFqdn:
+		if fv, exists := v.FldValidators["virtual_host_choice.inherit_load_balancer_fqdn"]; exists {
+			val := m.GetVirtualHostChoice().(*HttpHealthCheck_InheritLoadBalancerFqdn).InheritLoadBalancerFqdn
+			vOpts := append(opts,
+				db.WithValidateField("virtual_host_choice"),
+				db.WithValidateField("inherit_load_balancer_fqdn"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 	return nil
 }

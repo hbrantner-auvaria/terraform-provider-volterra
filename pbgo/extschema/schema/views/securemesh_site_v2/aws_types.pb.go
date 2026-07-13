@@ -151,6 +151,7 @@ type AWSManagedMode struct {
 	// Resource Mapping
 	//
 	// x-displayName: "Resource Mapping"
+	// x-required
 	// You can use this section to provide resource mapping for Site Local Outside (SLO), Site Local Inside (SLI) and Segment networks across
 	// availablity zones according to your deployment topology. When resource mapping is provided here, then these resources will be implictly used for
 	// interface configuration. You do not need to provide explicit inputs for interfaces within a CE node.
@@ -175,6 +176,21 @@ type AWSManagedMode struct {
 	//	*AWSManagedMode_DisableDiskEncryption
 	//	*AWSManagedMode_DiskEncryptionKey
 	DiskEncryptionChoice isAWSManagedMode_DiskEncryptionChoice `protobuf_oneof:"disk_encryption_choice"`
+	// Cloud Resource Prefix
+	//
+	// x-required
+	// x-displayName: "Cloud Resource Prefix"
+	// Resources created on cloud will be prefixed with f5-<prefix>.
+	CloudResourcePrefix string `protobuf:"bytes,51,opt,name=cloud_resource_prefix,json=cloudResourcePrefix,proto3" json:"cloud_resource_prefix,omitempty"`
+	// Network load balancer creation status
+	//
+	// x-displayName: "VIP Automation"
+	// Network load balancer creation status
+	//
+	// Types that are valid to be assigned to VipAutomationChoice:
+	//	*AWSManagedMode_DisableVipAutomation
+	//	*AWSManagedMode_EnableVipAutomation
+	VipAutomationChoice isAWSManagedMode_VipAutomationChoice `protobuf_oneof:"vip_automation_choice"`
 }
 
 func (m *AWSManagedMode) Reset()      { *m = AWSManagedMode{} }
@@ -235,6 +251,12 @@ type isAWSManagedMode_DiskEncryptionChoice interface {
 	MarshalTo([]byte) (int, error)
 	Size() int
 }
+type isAWSManagedMode_VipAutomationChoice interface {
+	isAWSManagedMode_VipAutomationChoice()
+	Equal(interface{}) bool
+	MarshalTo([]byte) (int, error)
+	Size() int
+}
 
 type AWSManagedMode_NoEgress struct {
 	NoEgress *schema.Empty `protobuf:"bytes,40,opt,name=no_egress,json=noEgress,proto3,oneof" json:"no_egress,omitempty"`
@@ -243,7 +265,7 @@ type AWSManagedMode_EgressIgwGw struct {
 	EgressIgwGw *AWSIGWGatewayType `protobuf:"bytes,39,opt,name=egress_igw_gw,json=egressIgwGw,proto3,oneof" json:"egress_igw_gw,omitempty"`
 }
 type AWSManagedMode_EgressNatGw struct {
-	EgressNatGw *AWSNATGatewayType `protobuf:"bytes,48,opt,name=egress_nat_gw,json=egressNatGw,proto3,oneof" json:"egress_nat_gw,omitempty"`
+	EgressNatGw *AWSNATGatewayListType `protobuf:"bytes,55,opt,name=egress_nat_gw,json=egressNatGw,proto3,oneof" json:"egress_nat_gw,omitempty"`
 }
 type AWSManagedMode_PrivateAdn struct {
 	PrivateAdn *schema.Empty `protobuf:"bytes,50,opt,name=private_adn,json=privateAdn,proto3,oneof" json:"private_adn,omitempty"`
@@ -272,6 +294,12 @@ type AWSManagedMode_DisableDiskEncryption struct {
 type AWSManagedMode_DiskEncryptionKey struct {
 	DiskEncryptionKey *AWSDiskEncryptionKeyType `protobuf:"bytes,47,opt,name=disk_encryption_key,json=diskEncryptionKey,proto3,oneof" json:"disk_encryption_key,omitempty"`
 }
+type AWSManagedMode_DisableVipAutomation struct {
+	DisableVipAutomation *schema.Empty `protobuf:"bytes,57,opt,name=disable_vip_automation,json=disableVipAutomation,proto3,oneof" json:"disable_vip_automation,omitempty"`
+}
+type AWSManagedMode_EnableVipAutomation struct {
+	EnableVipAutomation *EnableVIPAutomationType `protobuf:"bytes,58,opt,name=enable_vip_automation,json=enableVipAutomation,proto3,oneof" json:"enable_vip_automation,omitempty"`
+}
 
 func (*AWSManagedMode_NoEgress) isAWSManagedMode_EgressGatewayChoice()                          {}
 func (*AWSManagedMode_EgressIgwGw) isAWSManagedMode_EgressGatewayChoice()                       {}
@@ -287,6 +315,8 @@ func (*AWSManagedMode_EnablePrivateWorkloadRoutingList) isAWSManagedMode_Private
 }
 func (*AWSManagedMode_DisableDiskEncryption) isAWSManagedMode_DiskEncryptionChoice() {}
 func (*AWSManagedMode_DiskEncryptionKey) isAWSManagedMode_DiskEncryptionChoice()     {}
+func (*AWSManagedMode_DisableVipAutomation) isAWSManagedMode_VipAutomationChoice()   {}
+func (*AWSManagedMode_EnableVipAutomation) isAWSManagedMode_VipAutomationChoice()    {}
 
 func (m *AWSManagedMode) GetEgressGatewayChoice() isAWSManagedMode_EgressGatewayChoice {
 	if m != nil {
@@ -315,6 +345,12 @@ func (m *AWSManagedMode) GetPrivateWorkloadRoutingChoice() isAWSManagedMode_Priv
 func (m *AWSManagedMode) GetDiskEncryptionChoice() isAWSManagedMode_DiskEncryptionChoice {
 	if m != nil {
 		return m.DiskEncryptionChoice
+	}
+	return nil
+}
+func (m *AWSManagedMode) GetVipAutomationChoice() isAWSManagedMode_VipAutomationChoice {
+	if m != nil {
+		return m.VipAutomationChoice
 	}
 	return nil
 }
@@ -375,7 +411,7 @@ func (m *AWSManagedMode) GetEgressIgwGw() *AWSIGWGatewayType {
 	return nil
 }
 
-func (m *AWSManagedMode) GetEgressNatGw() *AWSNATGatewayType {
+func (m *AWSManagedMode) GetEgressNatGw() *AWSNATGatewayListType {
 	if x, ok := m.GetEgressGatewayChoice().(*AWSManagedMode_EgressNatGw); ok {
 		return x.EgressNatGw
 	}
@@ -459,6 +495,27 @@ func (m *AWSManagedMode) GetDiskEncryptionKey() *AWSDiskEncryptionKeyType {
 	return nil
 }
 
+func (m *AWSManagedMode) GetCloudResourcePrefix() string {
+	if m != nil {
+		return m.CloudResourcePrefix
+	}
+	return ""
+}
+
+func (m *AWSManagedMode) GetDisableVipAutomation() *schema.Empty {
+	if x, ok := m.GetVipAutomationChoice().(*AWSManagedMode_DisableVipAutomation); ok {
+		return x.DisableVipAutomation
+	}
+	return nil
+}
+
+func (m *AWSManagedMode) GetEnableVipAutomation() *EnableVIPAutomationType {
+	if x, ok := m.GetVipAutomationChoice().(*AWSManagedMode_EnableVipAutomation); ok {
+		return x.EnableVipAutomation
+	}
+	return nil
+}
+
 // XXX_OneofWrappers is for the internal use of the proto package.
 func (*AWSManagedMode) XXX_OneofWrappers() []interface{} {
 	return []interface{}{
@@ -474,7 +531,57 @@ func (*AWSManagedMode) XXX_OneofWrappers() []interface{} {
 		(*AWSManagedMode_EnablePrivateWorkloadRoutingList)(nil),
 		(*AWSManagedMode_DisableDiskEncryption)(nil),
 		(*AWSManagedMode_DiskEncryptionKey)(nil),
+		(*AWSManagedMode_DisableVipAutomation)(nil),
+		(*AWSManagedMode_EnableVipAutomation)(nil),
 	}
+}
+
+// Enable VIP Automation
+//
+// x-displayName: "DNS Connector"
+// This will enable Network Load Balancer automation.
+type EnableVIPAutomationType struct {
+	// DNS Connector
+	//
+	// x-required
+	// x-displayName: "DNS Connector"
+	// Choose the DNS Connector object.
+	DnsConnectorRef *views.ObjectRefType `protobuf:"bytes,1,opt,name=dns_connector_ref,json=dnsConnectorRef,proto3" json:"dns_connector_ref,omitempty"`
+}
+
+func (m *EnableVIPAutomationType) Reset()      { *m = EnableVIPAutomationType{} }
+func (*EnableVIPAutomationType) ProtoMessage() {}
+func (*EnableVIPAutomationType) Descriptor() ([]byte, []int) {
+	return fileDescriptor_1f46c75610d719ed, []int{1}
+}
+func (m *EnableVIPAutomationType) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *EnableVIPAutomationType) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	b = b[:cap(b)]
+	n, err := m.MarshalToSizedBuffer(b)
+	if err != nil {
+		return nil, err
+	}
+	return b[:n], nil
+}
+func (m *EnableVIPAutomationType) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EnableVIPAutomationType.Merge(m, src)
+}
+func (m *EnableVIPAutomationType) XXX_Size() int {
+	return m.Size()
+}
+func (m *EnableVIPAutomationType) XXX_DiscardUnknown() {
+	xxx_messageInfo_EnableVIPAutomationType.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EnableVIPAutomationType proto.InternalMessageInfo
+
+func (m *EnableVIPAutomationType) GetDnsConnectorRef() *views.ObjectRefType {
+	if m != nil {
+		return m.DnsConnectorRef
+	}
+	return nil
 }
 
 // AWS Private Connectivity To Site
@@ -510,7 +617,7 @@ type AWSCloudLinkConfigType struct {
 func (m *AWSCloudLinkConfigType) Reset()      { *m = AWSCloudLinkConfigType{} }
 func (*AWSCloudLinkConfigType) ProtoMessage() {}
 func (*AWSCloudLinkConfigType) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1f46c75610d719ed, []int{1}
+	return fileDescriptor_1f46c75610d719ed, []int{2}
 }
 func (m *AWSCloudLinkConfigType) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -603,7 +710,7 @@ type EnablePrivateWorkloadRoutingListType struct {
 	// Enable Private Workload Routing to CE
 	//
 	// x-required
-	// x-displayName: "Subnets"
+	// x-displayName: "Workloads"
 	// Enable Private Workload Routing to CE
 	EnablePrivateWorkloadRoutingToCe []*EnablePrivateWorkloadRoutingType `protobuf:"bytes,1,rep,name=enable_private_workload_routing_to_ce,json=enablePrivateWorkloadRoutingToCe,proto3" json:"enable_private_workload_routing_to_ce,omitempty"`
 }
@@ -611,7 +718,7 @@ type EnablePrivateWorkloadRoutingListType struct {
 func (m *EnablePrivateWorkloadRoutingListType) Reset()      { *m = EnablePrivateWorkloadRoutingListType{} }
 func (*EnablePrivateWorkloadRoutingListType) ProtoMessage() {}
 func (*EnablePrivateWorkloadRoutingListType) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1f46c75610d719ed, []int{2}
+	return fileDescriptor_1f46c75610d719ed, []int{3}
 }
 func (m *EnablePrivateWorkloadRoutingListType) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -659,7 +766,7 @@ type AWSDiskEncryptionKeyType struct {
 func (m *AWSDiskEncryptionKeyType) Reset()      { *m = AWSDiskEncryptionKeyType{} }
 func (*AWSDiskEncryptionKeyType) ProtoMessage() {}
 func (*AWSDiskEncryptionKeyType) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1f46c75610d719ed, []int{3}
+	return fileDescriptor_1f46c75610d719ed, []int{4}
 }
 func (m *AWSDiskEncryptionKeyType) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -696,12 +803,12 @@ func (m *AWSDiskEncryptionKeyType) GetKeyId() string {
 // x-displayName: "Enable Private Workload RoutingType"
 // Enable Private Workload Routing to CE Type
 type EnablePrivateWorkloadRoutingType struct {
-	// Subnet
+	// Route Table
 	//
-	// x-displayName: "Subnet"
+	// x-displayName: "Route Table"
 	// x-required
-	// Select the Subnet
-	SubnetId string `protobuf:"bytes,3,opt,name=subnet_id,json=subnetId,proto3" json:"subnet_id,omitempty"`
+	// Select the Route Table
+	RouteTableId string `protobuf:"bytes,5,opt,name=route_table_id,json=routeTableId,proto3" json:"route_table_id,omitempty"`
 	// Select VRF
 	//
 	// x-displayName: "Select VRF"
@@ -713,12 +820,28 @@ type EnablePrivateWorkloadRoutingType struct {
 	// configured via Networking > Segments. A site can have multiple Network Segments (global
 	// VRFs).
 	NetworkOption *views.NetworkSelectType `protobuf:"bytes,2,opt,name=network_option,json=networkOption,proto3" json:"network_option,omitempty"`
+	// IP Prefix Choice
+	//
+	// x-displayName: "IP Prefix"
+	// Choose the IP Prefix type
+	//
+	// Types that are valid to be assigned to IpPrefixChoice:
+	//	*EnablePrivateWorkloadRoutingType_DefaultIpPrefix
+	//	*EnablePrivateWorkloadRoutingType_CustomIpPrefix
+	IpPrefixChoice isEnablePrivateWorkloadRoutingType_IpPrefixChoice `protobuf_oneof:"ip_prefix_choice"`
+	// Force Update Routing Choice
+	//
+	// x-displayName: "Force Update Routing Choice"
+	// Enable or disable forced update of routing.
+	// Default is disabled.
+	// If enabled already configured routes will be updated.
+	ForceUpdateRouting *ForceUpdateRoutingType `protobuf:"bytes,8,opt,name=force_update_routing,json=forceUpdateRouting,proto3" json:"force_update_routing,omitempty"`
 }
 
 func (m *EnablePrivateWorkloadRoutingType) Reset()      { *m = EnablePrivateWorkloadRoutingType{} }
 func (*EnablePrivateWorkloadRoutingType) ProtoMessage() {}
 func (*EnablePrivateWorkloadRoutingType) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1f46c75610d719ed, []int{4}
+	return fileDescriptor_1f46c75610d719ed, []int{5}
 }
 func (m *EnablePrivateWorkloadRoutingType) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -743,9 +866,35 @@ func (m *EnablePrivateWorkloadRoutingType) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_EnablePrivateWorkloadRoutingType proto.InternalMessageInfo
 
-func (m *EnablePrivateWorkloadRoutingType) GetSubnetId() string {
+type isEnablePrivateWorkloadRoutingType_IpPrefixChoice interface {
+	isEnablePrivateWorkloadRoutingType_IpPrefixChoice()
+	Equal(interface{}) bool
+	MarshalTo([]byte) (int, error)
+	Size() int
+}
+
+type EnablePrivateWorkloadRoutingType_DefaultIpPrefix struct {
+	DefaultIpPrefix *schema.Empty `protobuf:"bytes,9,opt,name=default_ip_prefix,json=defaultIpPrefix,proto3,oneof" json:"default_ip_prefix,omitempty"`
+}
+type EnablePrivateWorkloadRoutingType_CustomIpPrefix struct {
+	CustomIpPrefix *CustomIpPrefixType `protobuf:"bytes,10,opt,name=custom_ip_prefix,json=customIpPrefix,proto3,oneof" json:"custom_ip_prefix,omitempty"`
+}
+
+func (*EnablePrivateWorkloadRoutingType_DefaultIpPrefix) isEnablePrivateWorkloadRoutingType_IpPrefixChoice() {
+}
+func (*EnablePrivateWorkloadRoutingType_CustomIpPrefix) isEnablePrivateWorkloadRoutingType_IpPrefixChoice() {
+}
+
+func (m *EnablePrivateWorkloadRoutingType) GetIpPrefixChoice() isEnablePrivateWorkloadRoutingType_IpPrefixChoice {
 	if m != nil {
-		return m.SubnetId
+		return m.IpPrefixChoice
+	}
+	return nil
+}
+
+func (m *EnablePrivateWorkloadRoutingType) GetRouteTableId() string {
+	if m != nil {
+		return m.RouteTableId
 	}
 	return ""
 }
@@ -755,6 +904,179 @@ func (m *EnablePrivateWorkloadRoutingType) GetNetworkOption() *views.NetworkSele
 		return m.NetworkOption
 	}
 	return nil
+}
+
+func (m *EnablePrivateWorkloadRoutingType) GetDefaultIpPrefix() *schema.Empty {
+	if x, ok := m.GetIpPrefixChoice().(*EnablePrivateWorkloadRoutingType_DefaultIpPrefix); ok {
+		return x.DefaultIpPrefix
+	}
+	return nil
+}
+
+func (m *EnablePrivateWorkloadRoutingType) GetCustomIpPrefix() *CustomIpPrefixType {
+	if x, ok := m.GetIpPrefixChoice().(*EnablePrivateWorkloadRoutingType_CustomIpPrefix); ok {
+		return x.CustomIpPrefix
+	}
+	return nil
+}
+
+func (m *EnablePrivateWorkloadRoutingType) GetForceUpdateRouting() *ForceUpdateRoutingType {
+	if m != nil {
+		return m.ForceUpdateRouting
+	}
+	return nil
+}
+
+// XXX_OneofWrappers is for the internal use of the proto package.
+func (*EnablePrivateWorkloadRoutingType) XXX_OneofWrappers() []interface{} {
+	return []interface{}{
+		(*EnablePrivateWorkloadRoutingType_DefaultIpPrefix)(nil),
+		(*EnablePrivateWorkloadRoutingType_CustomIpPrefix)(nil),
+	}
+}
+
+// Force Update Routing Choice
+//
+// x-displayName: "Force Update Routing Choice"
+// Enable or disable forced update of routing.
+// Default is disabled.
+// If enabled already configured routes will be updated.
+type ForceUpdateRoutingType struct {
+	// Force Update Routing Choice
+	//
+	// x-displayName: "Force Update Routing Choice"
+	// Enable or disable forced update of routing.
+	// Default is disabled.
+	// If enabled already configured routes will be updated.
+	//
+	// Types that are valid to be assigned to ForceUpdateRoutingChoice:
+	//	*ForceUpdateRoutingType_ForceRouteUpdateDisabled
+	//	*ForceUpdateRoutingType_ForceRouteUpdateEnabled
+	ForceUpdateRoutingChoice isForceUpdateRoutingType_ForceUpdateRoutingChoice `protobuf_oneof:"force_update_routing_choice"`
+}
+
+func (m *ForceUpdateRoutingType) Reset()      { *m = ForceUpdateRoutingType{} }
+func (*ForceUpdateRoutingType) ProtoMessage() {}
+func (*ForceUpdateRoutingType) Descriptor() ([]byte, []int) {
+	return fileDescriptor_1f46c75610d719ed, []int{6}
+}
+func (m *ForceUpdateRoutingType) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ForceUpdateRoutingType) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	b = b[:cap(b)]
+	n, err := m.MarshalToSizedBuffer(b)
+	if err != nil {
+		return nil, err
+	}
+	return b[:n], nil
+}
+func (m *ForceUpdateRoutingType) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ForceUpdateRoutingType.Merge(m, src)
+}
+func (m *ForceUpdateRoutingType) XXX_Size() int {
+	return m.Size()
+}
+func (m *ForceUpdateRoutingType) XXX_DiscardUnknown() {
+	xxx_messageInfo_ForceUpdateRoutingType.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ForceUpdateRoutingType proto.InternalMessageInfo
+
+type isForceUpdateRoutingType_ForceUpdateRoutingChoice interface {
+	isForceUpdateRoutingType_ForceUpdateRoutingChoice()
+	Equal(interface{}) bool
+	MarshalTo([]byte) (int, error)
+	Size() int
+}
+
+type ForceUpdateRoutingType_ForceRouteUpdateDisabled struct {
+	ForceRouteUpdateDisabled *schema.Empty `protobuf:"bytes,2,opt,name=force_route_update_disabled,json=forceRouteUpdateDisabled,proto3,oneof" json:"force_route_update_disabled,omitempty"`
+}
+type ForceUpdateRoutingType_ForceRouteUpdateEnabled struct {
+	ForceRouteUpdateEnabled *schema.Empty `protobuf:"bytes,3,opt,name=force_route_update_enabled,json=forceRouteUpdateEnabled,proto3,oneof" json:"force_route_update_enabled,omitempty"`
+}
+
+func (*ForceUpdateRoutingType_ForceRouteUpdateDisabled) isForceUpdateRoutingType_ForceUpdateRoutingChoice() {
+}
+func (*ForceUpdateRoutingType_ForceRouteUpdateEnabled) isForceUpdateRoutingType_ForceUpdateRoutingChoice() {
+}
+
+func (m *ForceUpdateRoutingType) GetForceUpdateRoutingChoice() isForceUpdateRoutingType_ForceUpdateRoutingChoice {
+	if m != nil {
+		return m.ForceUpdateRoutingChoice
+	}
+	return nil
+}
+
+func (m *ForceUpdateRoutingType) GetForceRouteUpdateDisabled() *schema.Empty {
+	if x, ok := m.GetForceUpdateRoutingChoice().(*ForceUpdateRoutingType_ForceRouteUpdateDisabled); ok {
+		return x.ForceRouteUpdateDisabled
+	}
+	return nil
+}
+
+func (m *ForceUpdateRoutingType) GetForceRouteUpdateEnabled() *schema.Empty {
+	if x, ok := m.GetForceUpdateRoutingChoice().(*ForceUpdateRoutingType_ForceRouteUpdateEnabled); ok {
+		return x.ForceRouteUpdateEnabled
+	}
+	return nil
+}
+
+// XXX_OneofWrappers is for the internal use of the proto package.
+func (*ForceUpdateRoutingType) XXX_OneofWrappers() []interface{} {
+	return []interface{}{
+		(*ForceUpdateRoutingType_ForceRouteUpdateDisabled)(nil),
+		(*ForceUpdateRoutingType_ForceRouteUpdateEnabled)(nil),
+	}
+}
+
+// Custom IP Prefix
+//
+// x-displayName: "Custom IP Prefix"
+// Enter the custom IP Prefix
+type CustomIpPrefixType struct {
+	// IP Prefix
+	//
+	// x-displayName: "IP Prefix"
+	// x-required
+	// Enter the custom IP Prefix
+	IpPrefix string `protobuf:"bytes,4,opt,name=ip_prefix,json=ipPrefix,proto3" json:"ip_prefix,omitempty"`
+}
+
+func (m *CustomIpPrefixType) Reset()      { *m = CustomIpPrefixType{} }
+func (*CustomIpPrefixType) ProtoMessage() {}
+func (*CustomIpPrefixType) Descriptor() ([]byte, []int) {
+	return fileDescriptor_1f46c75610d719ed, []int{7}
+}
+func (m *CustomIpPrefixType) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CustomIpPrefixType) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	b = b[:cap(b)]
+	n, err := m.MarshalToSizedBuffer(b)
+	if err != nil {
+		return nil, err
+	}
+	return b[:n], nil
+}
+func (m *CustomIpPrefixType) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CustomIpPrefixType.Merge(m, src)
+}
+func (m *CustomIpPrefixType) XXX_Size() int {
+	return m.Size()
+}
+func (m *CustomIpPrefixType) XXX_DiscardUnknown() {
+	xxx_messageInfo_CustomIpPrefixType.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CustomIpPrefixType proto.InternalMessageInfo
+
+func (m *CustomIpPrefixType) GetIpPrefix() string {
+	if m != nil {
+		return m.IpPrefix
+	}
+	return ""
 }
 
 // Transit Gateway
@@ -769,19 +1091,12 @@ type AWSTGWType struct {
 	// x-required
 	// Choose the Transit Gateway
 	TgwId string `protobuf:"bytes,1,opt,name=tgw_id,json=tgwId,proto3" json:"tgw_id,omitempty"`
-	// F5XC Site ASN
-	//
-	// x-displayName: "Customer Edge side Autonomous System Number (ASN)"
-	// x-example: "64501"
-	// x-required
-	// F5XC Site ASN.
-	VolterraSiteAsn uint32 `protobuf:"varint,2,opt,name=volterra_site_asn,json=volterraSiteAsn,proto3" json:"volterra_site_asn,omitempty"`
 }
 
 func (m *AWSTGWType) Reset()      { *m = AWSTGWType{} }
 func (*AWSTGWType) ProtoMessage() {}
 func (*AWSTGWType) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1f46c75610d719ed, []int{5}
+	return fileDescriptor_1f46c75610d719ed, []int{8}
 }
 func (m *AWSTGWType) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -813,13 +1128,6 @@ func (m *AWSTGWType) GetTgwId() string {
 	return ""
 }
 
-func (m *AWSTGWType) GetVolterraSiteAsn() uint32 {
-	if m != nil {
-		return m.VolterraSiteAsn
-	}
-	return 0
-}
-
 // AWSManagedNodeList
 //
 // x-displayName: "List of Nodes"
@@ -836,7 +1144,7 @@ type AWSManagedNodeList struct {
 func (m *AWSManagedNodeList) Reset()      { *m = AWSManagedNodeList{} }
 func (*AWSManagedNodeList) ProtoMessage() {}
 func (*AWSManagedNodeList) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1f46c75610d719ed, []int{6}
+	return fileDescriptor_1f46c75610d719ed, []int{9}
 }
 func (m *AWSManagedNodeList) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -904,7 +1212,7 @@ type AWSManagedNode struct {
 func (m *AWSManagedNode) Reset()      { *m = AWSManagedNode{} }
 func (*AWSManagedNode) ProtoMessage() {}
 func (*AWSManagedNode) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1f46c75610d719ed, []int{7}
+	return fileDescriptor_1f46c75610d719ed, []int{10}
 }
 func (m *AWSManagedNode) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -989,20 +1297,17 @@ type AWSOrchestratedInterface struct {
 	//	*AWSOrchestratedInterface_SiteToSiteConnectivityInterfaceDisabled
 	//	*AWSOrchestratedInterface_SiteToSiteConnectivityInterfaceEnabled
 	SiteToSiteConnectivityInterfaceChoice isAWSOrchestratedInterface_SiteToSiteConnectivityInterfaceChoice `protobuf_oneof:"site_to_site_connectivity_interface_choice"`
-	// AWS Node Interface Configuration Type
+	// Interface Name
 	//
-	// x-displayName: "Configuration"
-	// x-required
-	// Select the interface configuration style you want to adopt. Inherit option will inherit the configuration
-	// from the mapping user did. Override option allows you to choose subnet and security group settings that override
-	// the mappings
-	AwsNodeInterfaceConfiguration *AWSNodeInterfaceConfigurationType `protobuf:"bytes,11,opt,name=aws_node_interface_configuration,json=awsNodeInterfaceConfiguration,proto3" json:"aws_node_interface_configuration,omitempty"`
+	// x-displayName: "Interface Name"
+	// The interface is not configurable and is autogenerated, it is used to identify the interface
+	InterfaceName string `protobuf:"bytes,12,opt,name=interface_name,json=interfaceName,proto3" json:"interface_name,omitempty"`
 }
 
 func (m *AWSOrchestratedInterface) Reset()      { *m = AWSOrchestratedInterface{} }
 func (*AWSOrchestratedInterface) ProtoMessage() {}
 func (*AWSOrchestratedInterface) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1f46c75610d719ed, []int{8}
+	return fileDescriptor_1f46c75610d719ed, []int{11}
 }
 func (m *AWSOrchestratedInterface) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1081,11 +1386,11 @@ func (m *AWSOrchestratedInterface) GetSiteToSiteConnectivityInterfaceEnabled() *
 	return nil
 }
 
-func (m *AWSOrchestratedInterface) GetAwsNodeInterfaceConfiguration() *AWSNodeInterfaceConfigurationType {
+func (m *AWSOrchestratedInterface) GetInterfaceName() string {
 	if m != nil {
-		return m.AwsNodeInterfaceConfiguration
+		return m.InterfaceName
 	}
-	return nil
+	return ""
 }
 
 // XXX_OneofWrappers is for the internal use of the proto package.
@@ -1094,165 +1399,6 @@ func (*AWSOrchestratedInterface) XXX_OneofWrappers() []interface{} {
 		(*AWSOrchestratedInterface_SiteToSiteConnectivityInterfaceDisabled)(nil),
 		(*AWSOrchestratedInterface_SiteToSiteConnectivityInterfaceEnabled)(nil),
 	}
-}
-
-// AWSNodeInterfaceConfigurationType
-//
-// x-displayName: "AWSNodeInterfaceConfigurationType"
-// Select the interface configuration style you want to adopt. Inherit option will inherit the configuration
-// from the mapping user did. Override option allows you to choose subnet and security group settings that override
-// the mappings
-type AWSNodeInterfaceConfigurationType struct {
-	// Choice of aws node interface configuration
-	//
-	// x-displayName: "AWS Node Interface Configuration"
-	// Select the interface configuration style you want to adopt. Inherit option will inherit the configuration
-	// from the mapping user did. Override option allows you to choose subnet and security group settings that override
-	// the mappings
-	//
-	// Types that are valid to be assigned to AwsNodeInterfaceConfigurationChoice:
-	//	*AWSNodeInterfaceConfigurationType_InheritAwsNodeInterfaceConfiguration
-	//	*AWSNodeInterfaceConfigurationType_OverrideAwsNodeInterfaceConfiguration
-	AwsNodeInterfaceConfigurationChoice isAWSNodeInterfaceConfigurationType_AwsNodeInterfaceConfigurationChoice `protobuf_oneof:"aws_node_interface_configuration_choice"`
-}
-
-func (m *AWSNodeInterfaceConfigurationType) Reset()      { *m = AWSNodeInterfaceConfigurationType{} }
-func (*AWSNodeInterfaceConfigurationType) ProtoMessage() {}
-func (*AWSNodeInterfaceConfigurationType) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1f46c75610d719ed, []int{9}
-}
-func (m *AWSNodeInterfaceConfigurationType) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *AWSNodeInterfaceConfigurationType) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	b = b[:cap(b)]
-	n, err := m.MarshalToSizedBuffer(b)
-	if err != nil {
-		return nil, err
-	}
-	return b[:n], nil
-}
-func (m *AWSNodeInterfaceConfigurationType) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AWSNodeInterfaceConfigurationType.Merge(m, src)
-}
-func (m *AWSNodeInterfaceConfigurationType) XXX_Size() int {
-	return m.Size()
-}
-func (m *AWSNodeInterfaceConfigurationType) XXX_DiscardUnknown() {
-	xxx_messageInfo_AWSNodeInterfaceConfigurationType.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AWSNodeInterfaceConfigurationType proto.InternalMessageInfo
-
-type isAWSNodeInterfaceConfigurationType_AwsNodeInterfaceConfigurationChoice interface {
-	isAWSNodeInterfaceConfigurationType_AwsNodeInterfaceConfigurationChoice()
-	Equal(interface{}) bool
-	MarshalTo([]byte) (int, error)
-	Size() int
-}
-
-type AWSNodeInterfaceConfigurationType_InheritAwsNodeInterfaceConfiguration struct {
-	InheritAwsNodeInterfaceConfiguration *schema.Empty `protobuf:"bytes,2,opt,name=inherit_aws_node_interface_configuration,json=inheritAwsNodeInterfaceConfiguration,proto3,oneof" json:"inherit_aws_node_interface_configuration,omitempty"`
-}
-type AWSNodeInterfaceConfigurationType_OverrideAwsNodeInterfaceConfiguration struct {
-	OverrideAwsNodeInterfaceConfiguration *AWSOverrideNodeInterfaceConfigurationType `protobuf:"bytes,3,opt,name=override_aws_node_interface_configuration,json=overrideAwsNodeInterfaceConfiguration,proto3,oneof" json:"override_aws_node_interface_configuration,omitempty"`
-}
-
-func (*AWSNodeInterfaceConfigurationType_InheritAwsNodeInterfaceConfiguration) isAWSNodeInterfaceConfigurationType_AwsNodeInterfaceConfigurationChoice() {
-}
-func (*AWSNodeInterfaceConfigurationType_OverrideAwsNodeInterfaceConfiguration) isAWSNodeInterfaceConfigurationType_AwsNodeInterfaceConfigurationChoice() {
-}
-
-func (m *AWSNodeInterfaceConfigurationType) GetAwsNodeInterfaceConfigurationChoice() isAWSNodeInterfaceConfigurationType_AwsNodeInterfaceConfigurationChoice {
-	if m != nil {
-		return m.AwsNodeInterfaceConfigurationChoice
-	}
-	return nil
-}
-
-func (m *AWSNodeInterfaceConfigurationType) GetInheritAwsNodeInterfaceConfiguration() *schema.Empty {
-	if x, ok := m.GetAwsNodeInterfaceConfigurationChoice().(*AWSNodeInterfaceConfigurationType_InheritAwsNodeInterfaceConfiguration); ok {
-		return x.InheritAwsNodeInterfaceConfiguration
-	}
-	return nil
-}
-
-func (m *AWSNodeInterfaceConfigurationType) GetOverrideAwsNodeInterfaceConfiguration() *AWSOverrideNodeInterfaceConfigurationType {
-	if x, ok := m.GetAwsNodeInterfaceConfigurationChoice().(*AWSNodeInterfaceConfigurationType_OverrideAwsNodeInterfaceConfiguration); ok {
-		return x.OverrideAwsNodeInterfaceConfiguration
-	}
-	return nil
-}
-
-// XXX_OneofWrappers is for the internal use of the proto package.
-func (*AWSNodeInterfaceConfigurationType) XXX_OneofWrappers() []interface{} {
-	return []interface{}{
-		(*AWSNodeInterfaceConfigurationType_InheritAwsNodeInterfaceConfiguration)(nil),
-		(*AWSNodeInterfaceConfigurationType_OverrideAwsNodeInterfaceConfiguration)(nil),
-	}
-}
-
-// Override AWS Node Interface Configuration
-//
-// x-displayName: "Override AWS Node Interface Configuration"
-// Override AWS Node Interface Configuration
-type AWSOverrideNodeInterfaceConfigurationType struct {
-	// Subnet
-	//
-	// x-displayName: "Subnet"
-	// x-required
-	// Choose the subnet associated with this interface
-	SubnetId string `protobuf:"bytes,1,opt,name=subnet_id,json=subnetId,proto3" json:"subnet_id,omitempty"`
-	// Security Group
-	//
-	// x-displayName: "Security Group"
-	// x-required
-	// Select the security group associated with this interface
-	SecurityGroup string `protobuf:"bytes,2,opt,name=security_group,json=securityGroup,proto3" json:"security_group,omitempty"`
-}
-
-func (m *AWSOverrideNodeInterfaceConfigurationType) Reset() {
-	*m = AWSOverrideNodeInterfaceConfigurationType{}
-}
-func (*AWSOverrideNodeInterfaceConfigurationType) ProtoMessage() {}
-func (*AWSOverrideNodeInterfaceConfigurationType) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1f46c75610d719ed, []int{10}
-}
-func (m *AWSOverrideNodeInterfaceConfigurationType) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *AWSOverrideNodeInterfaceConfigurationType) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	b = b[:cap(b)]
-	n, err := m.MarshalToSizedBuffer(b)
-	if err != nil {
-		return nil, err
-	}
-	return b[:n], nil
-}
-func (m *AWSOverrideNodeInterfaceConfigurationType) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AWSOverrideNodeInterfaceConfigurationType.Merge(m, src)
-}
-func (m *AWSOverrideNodeInterfaceConfigurationType) XXX_Size() int {
-	return m.Size()
-}
-func (m *AWSOverrideNodeInterfaceConfigurationType) XXX_DiscardUnknown() {
-	xxx_messageInfo_AWSOverrideNodeInterfaceConfigurationType.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AWSOverrideNodeInterfaceConfigurationType proto.InternalMessageInfo
-
-func (m *AWSOverrideNodeInterfaceConfigurationType) GetSubnetId() string {
-	if m != nil {
-		return m.SubnetId
-	}
-	return ""
-}
-
-func (m *AWSOverrideNodeInterfaceConfigurationType) GetSecurityGroup() string {
-	if m != nil {
-		return m.SecurityGroup
-	}
-	return ""
 }
 
 // AWS Resource Mapping List Type
@@ -1273,7 +1419,7 @@ type AWSResourceMappingListType struct {
 func (m *AWSResourceMappingListType) Reset()      { *m = AWSResourceMappingListType{} }
 func (*AWSResourceMappingListType) ProtoMessage() {}
 func (*AWSResourceMappingListType) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1f46c75610d719ed, []int{11}
+	return fileDescriptor_1f46c75610d719ed, []int{12}
 }
 func (m *AWSResourceMappingListType) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1316,18 +1462,24 @@ type AWSResourceMappingType struct {
 	// x-required
 	// Choose the virtual network (VRF) to create mapping for
 	NetworkOption *views.NetworkSelectType `protobuf:"bytes,1,opt,name=network_option,json=networkOption,proto3" json:"network_option,omitempty"`
+	// Security Group
+	//
+	// x-displayName: "Security Group"
+	// x-required
+	// Choose a security group
+	SecurityGroup string `protobuf:"bytes,3,opt,name=security_group,json=securityGroup,proto3" json:"security_group,omitempty"`
 	// AWS Resource Mapping Type
 	//
-	// x-displayName: "Resources"
+	// x-displayName: "Availability Zone"
 	// x-required
-	// Choose your existing AWS resources
-	AwsResources []*AWSResources `protobuf:"bytes,2,rep,name=aws_resources,json=awsResources,proto3" json:"aws_resources,omitempty"`
+	// Choose your Availability Zone and Subnet
+	AvailabilityZones []*AvailabilityZonesType `protobuf:"bytes,4,rep,name=availability_zones,json=availabilityZones,proto3" json:"availability_zones,omitempty"`
 }
 
 func (m *AWSResourceMappingType) Reset()      { *m = AWSResourceMappingType{} }
 func (*AWSResourceMappingType) ProtoMessage() {}
 func (*AWSResourceMappingType) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1f46c75610d719ed, []int{12}
+	return fileDescriptor_1f46c75610d719ed, []int{13}
 }
 func (m *AWSResourceMappingType) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1359,9 +1511,16 @@ func (m *AWSResourceMappingType) GetNetworkOption() *views.NetworkSelectType {
 	return nil
 }
 
-func (m *AWSResourceMappingType) GetAwsResources() []*AWSResources {
+func (m *AWSResourceMappingType) GetSecurityGroup() string {
 	if m != nil {
-		return m.AwsResources
+		return m.SecurityGroup
+	}
+	return ""
+}
+
+func (m *AWSResourceMappingType) GetAvailabilityZones() []*AvailabilityZonesType {
+	if m != nil {
+		return m.AvailabilityZones
 	}
 	return nil
 }
@@ -1377,12 +1536,19 @@ type AWSIGWGatewayType struct {
 	// x-required
 	// Choose your Internet Gateway
 	IgwGwId string `protobuf:"bytes,1,opt,name=igw_gw_id,json=igwGwId,proto3" json:"igw_gw_id,omitempty"`
+	// Force Update Routing Choice
+	//
+	// x-displayName: "Force Update Routing Choice"
+	// Enable or disable forced update of routing.
+	// Default is disabled.
+	// If enabled already configured routes will be updated.
+	ForceUpdateRouting *ForceUpdateRoutingType `protobuf:"bytes,8,opt,name=force_update_routing,json=forceUpdateRouting,proto3" json:"force_update_routing,omitempty"`
 }
 
 func (m *AWSIGWGatewayType) Reset()      { *m = AWSIGWGatewayType{} }
 func (*AWSIGWGatewayType) ProtoMessage() {}
 func (*AWSIGWGatewayType) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1f46c75610d719ed, []int{13}
+	return fileDescriptor_1f46c75610d719ed, []int{14}
 }
 func (m *AWSIGWGatewayType) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1414,23 +1580,85 @@ func (m *AWSIGWGatewayType) GetIgwGwId() string {
 	return ""
 }
 
+func (m *AWSIGWGatewayType) GetForceUpdateRouting() *ForceUpdateRoutingType {
+	if m != nil {
+		return m.ForceUpdateRouting
+	}
+	return nil
+}
+
 // AWS NAT Gateway choice
 //
 // x-displayName: "AWS NAT Gateway choice"
 // With this option, egress site traffic will be routed through an Network Address Translation(NAT) Gateway.
+type AWSNATGatewayListType struct {
+	// NAT Gateway
+	//
+	// x-required
+	// x-displayName: "NAT Gateway"
+	// Choose your NAT Gateway
+	NatGw []*AWSNATGatewayType `protobuf:"bytes,1,rep,name=nat_gw,json=natGw,proto3" json:"nat_gw,omitempty"`
+}
+
+func (m *AWSNATGatewayListType) Reset()      { *m = AWSNATGatewayListType{} }
+func (*AWSNATGatewayListType) ProtoMessage() {}
+func (*AWSNATGatewayListType) Descriptor() ([]byte, []int) {
+	return fileDescriptor_1f46c75610d719ed, []int{15}
+}
+func (m *AWSNATGatewayListType) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AWSNATGatewayListType) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	b = b[:cap(b)]
+	n, err := m.MarshalToSizedBuffer(b)
+	if err != nil {
+		return nil, err
+	}
+	return b[:n], nil
+}
+func (m *AWSNATGatewayListType) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AWSNATGatewayListType.Merge(m, src)
+}
+func (m *AWSNATGatewayListType) XXX_Size() int {
+	return m.Size()
+}
+func (m *AWSNATGatewayListType) XXX_DiscardUnknown() {
+	xxx_messageInfo_AWSNATGatewayListType.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AWSNATGatewayListType proto.InternalMessageInfo
+
+func (m *AWSNATGatewayListType) GetNatGw() []*AWSNATGatewayType {
+	if m != nil {
+		return m.NatGw
+	}
+	return nil
+}
+
+// NAT Gateway
+//
+// x-displayName: "NAT Gateway"
+// Choose your NAT Gateway
 type AWSNATGatewayType struct {
 	// NAT Gateway
 	//
 	// x-required
 	// x-displayName: "NAT Gateway"
 	// Choose your NAT Gateway
-	NatGwId []string `protobuf:"bytes,2,rep,name=nat_gw_id,json=natGwId,proto3" json:"nat_gw_id,omitempty"`
+	NatGwId string `protobuf:"bytes,3,opt,name=nat_gw_id,json=natGwId,proto3" json:"nat_gw_id,omitempty"`
+	// Force Update Routing Choice
+	//
+	// x-displayName: "Force Update Routing Choice"
+	// Enable or disable forced update of routing.
+	// Default is disabled.
+	// If enabled already configured routes will be updated.
+	ForceUpdateRouting *ForceUpdateRoutingType `protobuf:"bytes,4,opt,name=force_update_routing,json=forceUpdateRouting,proto3" json:"force_update_routing,omitempty"`
 }
 
 func (m *AWSNATGatewayType) Reset()      { *m = AWSNATGatewayType{} }
 func (*AWSNATGatewayType) ProtoMessage() {}
 func (*AWSNATGatewayType) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1f46c75610d719ed, []int{14}
+	return fileDescriptor_1f46c75610d719ed, []int{16}
 }
 func (m *AWSNATGatewayType) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1455,18 +1683,25 @@ func (m *AWSNATGatewayType) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_AWSNATGatewayType proto.InternalMessageInfo
 
-func (m *AWSNATGatewayType) GetNatGwId() []string {
+func (m *AWSNATGatewayType) GetNatGwId() string {
 	if m != nil {
 		return m.NatGwId
+	}
+	return ""
+}
+
+func (m *AWSNATGatewayType) GetForceUpdateRouting() *ForceUpdateRoutingType {
+	if m != nil {
+		return m.ForceUpdateRouting
 	}
 	return nil
 }
 
-// AWS Resource Mapping Type
+// Availability Zones Type
 //
-// x-displayName: "Resources"
-// Resources
-type AWSResources struct {
+// x-displayName: "Availability Zones"
+// Availability Zones
+type AvailabilityZonesType struct {
 	// Availablity Zone
 	//
 	// x-displayName: "Availablity Zone"
@@ -1481,23 +1716,17 @@ type AWSResources struct {
 	// x-required
 	// Choose a existing subnet
 	SubnetId string `protobuf:"bytes,2,opt,name=subnet_id,json=subnetId,proto3" json:"subnet_id,omitempty"`
-	// Security Group
-	//
-	// x-displayName: "Security Group"
-	// x-required
-	// Choose a security group
-	SecurityGroup string `protobuf:"bytes,3,opt,name=security_group,json=securityGroup,proto3" json:"security_group,omitempty"`
 }
 
-func (m *AWSResources) Reset()      { *m = AWSResources{} }
-func (*AWSResources) ProtoMessage() {}
-func (*AWSResources) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1f46c75610d719ed, []int{15}
+func (m *AvailabilityZonesType) Reset()      { *m = AvailabilityZonesType{} }
+func (*AvailabilityZonesType) ProtoMessage() {}
+func (*AvailabilityZonesType) Descriptor() ([]byte, []int) {
+	return fileDescriptor_1f46c75610d719ed, []int{17}
 }
-func (m *AWSResources) XXX_Unmarshal(b []byte) error {
+func (m *AvailabilityZonesType) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *AWSResources) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *AvailabilityZonesType) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	b = b[:cap(b)]
 	n, err := m.MarshalToSizedBuffer(b)
 	if err != nil {
@@ -1505,35 +1734,28 @@ func (m *AWSResources) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 	}
 	return b[:n], nil
 }
-func (m *AWSResources) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AWSResources.Merge(m, src)
+func (m *AvailabilityZonesType) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AvailabilityZonesType.Merge(m, src)
 }
-func (m *AWSResources) XXX_Size() int {
+func (m *AvailabilityZonesType) XXX_Size() int {
 	return m.Size()
 }
-func (m *AWSResources) XXX_DiscardUnknown() {
-	xxx_messageInfo_AWSResources.DiscardUnknown(m)
+func (m *AvailabilityZonesType) XXX_DiscardUnknown() {
+	xxx_messageInfo_AvailabilityZonesType.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_AWSResources proto.InternalMessageInfo
+var xxx_messageInfo_AvailabilityZonesType proto.InternalMessageInfo
 
-func (m *AWSResources) GetAvailabilityZone() string {
+func (m *AvailabilityZonesType) GetAvailabilityZone() string {
 	if m != nil {
 		return m.AvailabilityZone
 	}
 	return ""
 }
 
-func (m *AWSResources) GetSubnetId() string {
+func (m *AvailabilityZonesType) GetSubnetId() string {
 	if m != nil {
 		return m.SubnetId
-	}
-	return ""
-}
-
-func (m *AWSResources) GetSecurityGroup() string {
-	if m != nil {
-		return m.SecurityGroup
 	}
 	return ""
 }
@@ -1545,6 +1767,8 @@ func init() {
 	golang_proto.RegisterType((*AWSManagedMode)(nil), "ves.io.schema.views.securemesh_site_v2.AWSManagedMode")
 	proto.RegisterMapType((map[string]string)(nil), "ves.io.schema.views.securemesh_site_v2.AWSManagedMode.TagsEntry")
 	golang_proto.RegisterMapType((map[string]string)(nil), "ves.io.schema.views.securemesh_site_v2.AWSManagedMode.TagsEntry")
+	proto.RegisterType((*EnableVIPAutomationType)(nil), "ves.io.schema.views.securemesh_site_v2.EnableVIPAutomationType")
+	golang_proto.RegisterType((*EnableVIPAutomationType)(nil), "ves.io.schema.views.securemesh_site_v2.EnableVIPAutomationType")
 	proto.RegisterType((*AWSCloudLinkConfigType)(nil), "ves.io.schema.views.securemesh_site_v2.AWSCloudLinkConfigType")
 	golang_proto.RegisterType((*AWSCloudLinkConfigType)(nil), "ves.io.schema.views.securemesh_site_v2.AWSCloudLinkConfigType")
 	proto.RegisterType((*EnablePrivateWorkloadRoutingListType)(nil), "ves.io.schema.views.securemesh_site_v2.EnablePrivateWorkloadRoutingListType")
@@ -1553,6 +1777,10 @@ func init() {
 	golang_proto.RegisterType((*AWSDiskEncryptionKeyType)(nil), "ves.io.schema.views.securemesh_site_v2.AWSDiskEncryptionKeyType")
 	proto.RegisterType((*EnablePrivateWorkloadRoutingType)(nil), "ves.io.schema.views.securemesh_site_v2.EnablePrivateWorkloadRoutingType")
 	golang_proto.RegisterType((*EnablePrivateWorkloadRoutingType)(nil), "ves.io.schema.views.securemesh_site_v2.EnablePrivateWorkloadRoutingType")
+	proto.RegisterType((*ForceUpdateRoutingType)(nil), "ves.io.schema.views.securemesh_site_v2.ForceUpdateRoutingType")
+	golang_proto.RegisterType((*ForceUpdateRoutingType)(nil), "ves.io.schema.views.securemesh_site_v2.ForceUpdateRoutingType")
+	proto.RegisterType((*CustomIpPrefixType)(nil), "ves.io.schema.views.securemesh_site_v2.CustomIpPrefixType")
+	golang_proto.RegisterType((*CustomIpPrefixType)(nil), "ves.io.schema.views.securemesh_site_v2.CustomIpPrefixType")
 	proto.RegisterType((*AWSTGWType)(nil), "ves.io.schema.views.securemesh_site_v2.AWSTGWType")
 	golang_proto.RegisterType((*AWSTGWType)(nil), "ves.io.schema.views.securemesh_site_v2.AWSTGWType")
 	proto.RegisterType((*AWSManagedNodeList)(nil), "ves.io.schema.views.securemesh_site_v2.AWSManagedNodeList")
@@ -1561,20 +1789,18 @@ func init() {
 	golang_proto.RegisterType((*AWSManagedNode)(nil), "ves.io.schema.views.securemesh_site_v2.AWSManagedNode")
 	proto.RegisterType((*AWSOrchestratedInterface)(nil), "ves.io.schema.views.securemesh_site_v2.AWSOrchestratedInterface")
 	golang_proto.RegisterType((*AWSOrchestratedInterface)(nil), "ves.io.schema.views.securemesh_site_v2.AWSOrchestratedInterface")
-	proto.RegisterType((*AWSNodeInterfaceConfigurationType)(nil), "ves.io.schema.views.securemesh_site_v2.AWSNodeInterfaceConfigurationType")
-	golang_proto.RegisterType((*AWSNodeInterfaceConfigurationType)(nil), "ves.io.schema.views.securemesh_site_v2.AWSNodeInterfaceConfigurationType")
-	proto.RegisterType((*AWSOverrideNodeInterfaceConfigurationType)(nil), "ves.io.schema.views.securemesh_site_v2.AWSOverrideNodeInterfaceConfigurationType")
-	golang_proto.RegisterType((*AWSOverrideNodeInterfaceConfigurationType)(nil), "ves.io.schema.views.securemesh_site_v2.AWSOverrideNodeInterfaceConfigurationType")
 	proto.RegisterType((*AWSResourceMappingListType)(nil), "ves.io.schema.views.securemesh_site_v2.AWSResourceMappingListType")
 	golang_proto.RegisterType((*AWSResourceMappingListType)(nil), "ves.io.schema.views.securemesh_site_v2.AWSResourceMappingListType")
 	proto.RegisterType((*AWSResourceMappingType)(nil), "ves.io.schema.views.securemesh_site_v2.AWSResourceMappingType")
 	golang_proto.RegisterType((*AWSResourceMappingType)(nil), "ves.io.schema.views.securemesh_site_v2.AWSResourceMappingType")
 	proto.RegisterType((*AWSIGWGatewayType)(nil), "ves.io.schema.views.securemesh_site_v2.AWSIGWGatewayType")
 	golang_proto.RegisterType((*AWSIGWGatewayType)(nil), "ves.io.schema.views.securemesh_site_v2.AWSIGWGatewayType")
+	proto.RegisterType((*AWSNATGatewayListType)(nil), "ves.io.schema.views.securemesh_site_v2.AWSNATGatewayListType")
+	golang_proto.RegisterType((*AWSNATGatewayListType)(nil), "ves.io.schema.views.securemesh_site_v2.AWSNATGatewayListType")
 	proto.RegisterType((*AWSNATGatewayType)(nil), "ves.io.schema.views.securemesh_site_v2.AWSNATGatewayType")
 	golang_proto.RegisterType((*AWSNATGatewayType)(nil), "ves.io.schema.views.securemesh_site_v2.AWSNATGatewayType")
-	proto.RegisterType((*AWSResources)(nil), "ves.io.schema.views.securemesh_site_v2.AWSResources")
-	golang_proto.RegisterType((*AWSResources)(nil), "ves.io.schema.views.securemesh_site_v2.AWSResources")
+	proto.RegisterType((*AvailabilityZonesType)(nil), "ves.io.schema.views.securemesh_site_v2.AvailabilityZonesType")
+	golang_proto.RegisterType((*AvailabilityZonesType)(nil), "ves.io.schema.views.securemesh_site_v2.AvailabilityZonesType")
 }
 
 func init() {
@@ -1585,195 +1811,225 @@ func init() {
 }
 
 var fileDescriptor_1f46c75610d719ed = []byte{
-	// 3002 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x59, 0x5f, 0x4c, 0x1b, 0x67,
-	0xb6, 0xe7, 0xb3, 0x07, 0x33, 0x1c, 0x02, 0x0c, 0x1f, 0x81, 0x38, 0x4e, 0xe2, 0x0c, 0x2e, 0x01,
-	0x43, 0x8c, 0x01, 0xdb, 0xfc, 0x09, 0x0f, 0x51, 0x31, 0x45, 0xc4, 0x53, 0x02, 0xe9, 0x40, 0x1b,
-	0x29, 0xf7, 0xde, 0x58, 0x83, 0xfd, 0xc5, 0xcc, 0xc5, 0xcc, 0xf8, 0xce, 0x8c, 0xed, 0x92, 0x36,
-	0xb7, 0xd1, 0xbd, 0xd2, 0xd5, 0x6d, 0xd5, 0x4a, 0xb9, 0x79, 0xb8, 0x5a, 0x45, 0x5a, 0x69, 0x1f,
-	0xf6, 0x61, 0xdb, 0x6a, 0xa5, 0x6a, 0xdf, 0xb6, 0x93, 0x95, 0x50, 0xbb, 0x2b, 0x55, 0x79, 0xe2,
-	0xb1, 0xea, 0xcb, 0xb6, 0x64, 0x1f, 0xda, 0x87, 0x95, 0xfa, 0xb0, 0x0f, 0x7d, 0xeb, 0x6a, 0xbe,
-	0x19, 0x9b, 0x31, 0x18, 0x1b, 0xba, 0x8d, 0xb4, 0x6f, 0xe3, 0x99, 0x73, 0x7e, 0xe7, 0xfb, 0xce,
-	0x39, 0xdf, 0x39, 0xbf, 0xf3, 0x19, 0xa6, 0x4b, 0x44, 0x8f, 0xca, 0xea, 0xb8, 0x9e, 0xd9, 0x24,
-	0xdb, 0xd2, 0x78, 0x49, 0x26, 0x65, 0x7d, 0x5c, 0x27, 0x99, 0xa2, 0x46, 0xb6, 0x89, 0xbe, 0x99,
-	0xd6, 0x65, 0x83, 0xa4, 0x4b, 0xb1, 0x71, 0xa9, 0xac, 0xa7, 0x8d, 0x9d, 0x02, 0xd1, 0xa3, 0x05,
-	0x4d, 0x35, 0x54, 0x3c, 0x64, 0xeb, 0x45, 0x6d, 0xbd, 0x28, 0xd5, 0x8b, 0x1e, 0xd5, 0x0b, 0x8c,
-	0xe5, 0x64, 0x63, 0xb3, 0xb8, 0x11, 0xcd, 0xa8, 0xdb, 0xe3, 0x39, 0x35, 0xa7, 0x8e, 0x53, 0xf5,
-	0x8d, 0xe2, 0x3d, 0xfa, 0x8b, 0xfe, 0xa0, 0x4f, 0x36, 0x6c, 0xe0, 0x5c, 0xed, 0x72, 0x14, 0x62,
-	0x38, 0x1f, 0xae, 0x1e, 0xf9, 0x50, 0x56, 0xb5, 0xad, 0xb4, 0xac, 0x18, 0x44, 0xbb, 0x27, 0x65,
-	0xc8, 0xb8, 0x6b, 0x71, 0x81, 0x0b, 0xb5, 0xc2, 0x6a, 0xc1, 0x90, 0x55, 0xa5, 0xf2, 0xf1, 0x7c,
-	0xed, 0x47, 0xb7, 0xde, 0xc5, 0x43, 0xce, 0x90, 0xf2, 0x72, 0x56, 0x32, 0x88, 0xf3, 0x95, 0x3f,
-	0xea, 0xaa, 0x74, 0x2d, 0xf4, 0x60, 0x5d, 0x67, 0x5a, 0x9e, 0x70, 0x5b, 0xb9, 0x5c, 0x4f, 0xca,
-	0x25, 0x10, 0xfa, 0xf3, 0x59, 0xe8, 0x9a, 0xbf, 0xbd, 0x76, 0x53, 0x52, 0xa4, 0x1c, 0xc9, 0xde,
-	0x54, 0xb3, 0x04, 0x4f, 0x01, 0x58, 0x11, 0xd0, 0x48, 0x4e, 0x56, 0x15, 0x3f, 0xe2, 0x51, 0xb8,
-	0x3d, 0xd9, 0xff, 0x83, 0x89, 0x5a, 0x3e, 0x7d, 0x8a, 0xba, 0xc2, 0x68, 0x0e, 0x32, 0x79, 0xb5,
-	0x98, 0x1d, 0xcb, 0x4a, 0x86, 0x24, 0xb6, 0x4b, 0x65, 0x5d, 0xa4, 0x82, 0x58, 0x02, 0x5f, 0xa9,
-	0x90, 0x49, 0xcb, 0x59, 0x3f, 0x43, 0x55, 0x84, 0xfa, 0x2a, 0x9f, 0x7e, 0xb7, 0xeb, 0x65, 0x34,
-	0x8f, 0xff, 0x65, 0xeb, 0x61, 0x48, 0x1b, 0x8c, 0x85, 0xee, 0x86, 0x4b, 0x85, 0xcc, 0xd8, 0x48,
-	0xf8, 0x5f, 0xa4, 0xb1, 0xfb, 0x13, 0x63, 0xd7, 0xfe, 0xed, 0xad, 0xd9, 0x07, 0x6f, 0x57, 0x9f,
-	0x27, 0x67, 0x1e, 0x8c, 0x0c, 0x8a, 0xad, 0xa5, 0x42, 0x26, 0x95, 0xc5, 0xff, 0x85, 0xa0, 0xdf,
-	0x5a, 0x1a, 0x45, 0x4b, 0x17, 0x75, 0xa2, 0xa5, 0xa5, 0x4c, 0x46, 0x2d, 0x2a, 0x86, 0x3f, 0xc2,
-	0xa3, 0x70, 0x47, 0x2c, 0x14, 0xad, 0x97, 0x2a, 0xab, 0x1b, 0xff, 0x4e, 0x32, 0x86, 0x48, 0xee,
-	0xad, 0xef, 0x14, 0x48, 0x72, 0xe4, 0xa3, 0x07, 0xf8, 0x28, 0xc0, 0xa7, 0x4f, 0x11, 0xc7, 0xa2,
-	0x43, 0xbb, 0xeb, 0x95, 0xca, 0xfa, 0x82, 0xf5, 0xf3, 0x75, 0x9d, 0x68, 0xf3, 0xb6, 0x20, 0xfe,
-	0x5f, 0x04, 0x8c, 0x21, 0xe5, 0x74, 0x7f, 0x1b, 0xef, 0x0d, 0x77, 0xc4, 0x5e, 0x8e, 0x9e, 0x2c,
-	0x3b, 0xa3, 0xb5, 0x5e, 0x8e, 0xae, 0x4b, 0x39, 0x7d, 0x51, 0x31, 0xb4, 0x9d, 0x64, 0xcc, 0xf2,
-	0x44, 0xfb, 0x13, 0xe4, 0x0b, 0x59, 0x7e, 0x79, 0xc7, 0xfa, 0xd5, 0xfa, 0x04, 0x79, 0xb8, 0xb0,
-	0xf5, 0x04, 0x4f, 0x50, 0xdb, 0x68, 0xab, 0xe6, 0xf5, 0xff, 0x88, 0xf6, 0xbf, 0xfe, 0x93, 0xd7,
-	0xf7, 0xde, 0x53, 0xe4, 0x61, 0x5b, 0x44, 0xba, 0x02, 0xfc, 0x3b, 0x04, 0x9d, 0xb2, 0xa2, 0x1b,
-	0x92, 0x92, 0xb1, 0xc3, 0xee, 0x67, 0xa9, 0xeb, 0xdf, 0x47, 0x5f, 0x99, 0x08, 0xb6, 0xa7, 0xa2,
-	0xb1, 0x37, 0xf3, 0x92, 0x96, 0x23, 0x56, 0x24, 0x1e, 0x3f, 0x45, 0xdb, 0x30, 0x05, 0xae, 0xb7,
-	0x78, 0x38, 0x3c, 0xcb, 0xbf, 0xc9, 0x97, 0x16, 0x6e, 0xbd, 0x1e, 0xe1, 0xe3, 0xb1, 0xa5, 0x24,
-	0x2f, 0xce, 0xdf, 0x1c, 0xe1, 0xb7, 0x49, 0x56, 0x2e, 0x6e, 0xf3, 0x05, 0xa2, 0xdd, 0x53, 0xb5,
-	0x6d, 0x0b, 0x1a, 0x12, 0x54, 0x2d, 0xe1, 0xa8, 0x0d, 0x85, 0x27, 0xa7, 0xab, 0x7a, 0xd3, 0x89,
-	0x8a, 0xde, 0xa6, 0x9c, 0xdb, 0x74, 0x6b, 0x55, 0x03, 0x2d, 0x9e, 0xa9, 0xac, 0xd1, 0xf2, 0x3f,
-	0x4e, 0x40, 0x7b, 0x56, 0xd6, 0xb7, 0xd2, 0xba, 0x7c, 0x9f, 0xf8, 0x3b, 0x78, 0x14, 0xee, 0x4c,
-	0x9e, 0xfb, 0xca, 0x44, 0x9e, 0xd9, 0x09, 0x9a, 0x30, 0xdf, 0xed, 0x7a, 0xd9, 0x51, 0x9f, 0xff,
-	0xe1, 0xdf, 0xbc, 0xe1, 0x5b, 0x22, 0x6b, 0x49, 0xae, 0xc9, 0xf7, 0x09, 0x8e, 0x43, 0xbb, 0xa2,
-	0xa6, 0x49, 0x4e, 0x23, 0xba, 0xee, 0x0f, 0xd3, 0x60, 0x9f, 0x3d, 0xe4, 0xf9, 0xc5, 0xed, 0x82,
-	0xb1, 0x73, 0xa3, 0x45, 0x64, 0x15, 0x75, 0x91, 0xca, 0xe1, 0x34, 0x74, 0xda, 0x1a, 0x69, 0x39,
-	0x57, 0x4e, 0xe7, 0xca, 0xfe, 0x61, 0xaa, 0x78, 0xed, 0x14, 0x21, 0x4b, 0x2d, 0xdd, 0x5e, 0x92,
-	0x0c, 0x52, 0x96, 0x76, 0xac, 0xc5, 0xdf, 0x68, 0x11, 0x3b, 0x6c, 0xc4, 0x54, 0xae, 0xbc, 0x54,
-	0x76, 0x19, 0x50, 0x24, 0xc3, 0x32, 0x30, 0x71, 0x6a, 0x03, 0x2b, 0xf3, 0xeb, 0x75, 0x0d, 0xac,
-	0x48, 0xc6, 0x52, 0x19, 0xcf, 0x40, 0x47, 0x41, 0x93, 0x4b, 0x92, 0x41, 0xd2, 0x52, 0x56, 0xf1,
-	0xc7, 0x1a, 0x6e, 0x1c, 0x1c, 0xd1, 0xf9, 0xac, 0x82, 0xef, 0xc0, 0xa5, 0x8a, 0x62, 0x46, 0x55,
-	0x14, 0x92, 0x31, 0xe4, 0x92, 0x6c, 0xec, 0xa4, 0xb3, 0xb2, 0x2e, 0x6d, 0xe4, 0x49, 0xd6, 0x7f,
-	0xae, 0x01, 0x14, 0x12, 0x2f, 0x38, 0xca, 0x0b, 0x2e, 0xdd, 0x57, 0x1c, 0x55, 0x9c, 0x87, 0x1e,
-	0xfb, 0x00, 0xe5, 0x65, 0x65, 0xcb, 0x82, 0xbf, 0x27, 0xe7, 0xfc, 0xd3, 0x14, 0xef, 0xfa, 0x29,
-	0x76, 0x4e, 0x4f, 0xd6, 0xb2, 0xac, 0x6c, 0x2d, 0x50, 0x04, 0xba, 0x7d, 0x24, 0x76, 0x67, 0x6a,
-	0x5f, 0xe3, 0xdb, 0x56, 0xe4, 0xb3, 0x24, 0x9d, 0x97, 0x75, 0xc3, 0xff, 0x12, 0xb5, 0x32, 0x77,
-	0xfa, 0x33, 0xb7, 0xa2, 0x66, 0xc9, 0xb2, 0xac, 0x1b, 0x56, 0x76, 0xd8, 0x4f, 0x58, 0x80, 0x3e,
-	0xc7, 0x1b, 0x4e, 0x41, 0x71, 0x1c, 0xe5, 0x1f, 0x6c, 0xe0, 0x1a, 0x8f, 0xd8, 0xeb, 0x28, 0xd1,
-	0xe5, 0x3b, 0xfe, 0xc1, 0xf7, 0xe0, 0x2c, 0x51, 0xea, 0x40, 0x5d, 0xa1, 0x50, 0xb1, 0x53, 0xac,
-	0x77, 0x7d, 0xe9, 0x36, 0xf5, 0x84, 0x47, 0xc4, 0x36, 0x62, 0x8d, 0x9d, 0xff, 0x46, 0x70, 0xde,
-	0x2e, 0xce, 0xba, 0x5a, 0xd4, 0x32, 0x24, 0xbd, 0x2d, 0x15, 0x0a, 0xb2, 0x92, 0xb3, 0xbd, 0x33,
-	0x44, 0xad, 0x25, 0x4f, 0x61, 0x4d, 0x74, 0x70, 0x6e, 0xda, 0x30, 0x96, 0x5f, 0x68, 0x91, 0x64,
-	0xf6, 0x4c, 0x84, 0xc4, 0x7e, 0x5a, 0xdd, 0x8f, 0x48, 0x60, 0x19, 0x86, 0x2a, 0x9e, 0xab, 0x24,
-	0x99, 0xd5, 0x21, 0xf3, 0xaa, 0x94, 0x4d, 0x6b, 0x6a, 0xd1, 0xb0, 0x16, 0x64, 0xa8, 0xe9, 0x0c,
-	0xf1, 0x8f, 0x36, 0x70, 0xa5, 0x57, 0x1c, 0x70, 0x50, 0x6e, 0xd9, 0x20, 0xb7, 0x1d, 0x0c, 0xd1,
-	0x86, 0x58, 0x57, 0x17, 0x08, 0xfe, 0x35, 0x82, 0x41, 0xc7, 0xb3, 0xc7, 0x9a, 0xa2, 0x7b, 0x9f,
-	0xa2, 0x96, 0x96, 0x4f, 0xba, 0xf7, 0x45, 0xe5, 0x78, 0xc3, 0x07, 0x5e, 0xf8, 0xde, 0x44, 0xe8,
-	0x86, 0x57, 0xe4, 0x49, 0x13, 0x69, 0xbc, 0x02, 0xe7, 0x2a, 0x1e, 0xa1, 0xc5, 0x8d, 0x28, 0x19,
-	0x6d, 0x87, 0xf6, 0x6b, 0x7f, 0xb4, 0x81, 0x0b, 0x18, 0xb1, 0x92, 0x82, 0xaf, 0xc8, 0xfa, 0xd6,
-	0x62, 0x55, 0x09, 0x6b, 0xd0, 0x7b, 0x08, 0x27, 0xbd, 0x45, 0x76, 0xfc, 0xe3, 0x14, 0xeb, 0x34,
-	0x2d, 0xa7, 0x16, 0xf7, 0x55, 0x62, 0x57, 0x19, 0x46, 0xec, 0xc9, 0x1e, 0xfe, 0x10, 0x98, 0x81,
-	0xf6, 0x6a, 0x53, 0xc2, 0x1c, 0x78, 0x2d, 0x83, 0xb4, 0xfb, 0x8b, 0xd6, 0x23, 0x3e, 0x0b, 0xad,
-	0x25, 0x29, 0x5f, 0x24, 0x7e, 0x0f, 0x7d, 0x67, 0xff, 0x98, 0xf3, 0xcc, 0xa2, 0xb9, 0xff, 0xfc,
-	0xcc, 0x44, 0xf7, 0xe1, 0x12, 0xf4, 0xcc, 0xdf, 0x5e, 0xe3, 0x9d, 0x36, 0xc9, 0x0f, 0xf1, 0x6f,
-	0xdc, 0x5a, 0xc0, 0x6c, 0x22, 0x11, 0x99, 0x8c, 0x24, 0x22, 0x33, 0xd0, 0x0f, 0x5c, 0x25, 0x95,
-	0x78, 0x27, 0x97, 0xb0, 0x27, 0x3e, 0x0b, 0x3c, 0xe0, 0x85, 0x45, 0xde, 0x3a, 0x9e, 0xfc, 0x2d,
-	0x4d, 0x2d, 0x10, 0xcd, 0x90, 0x89, 0x8e, 0x61, 0x36, 0x32, 0x39, 0x19, 0x49, 0x4c, 0x45, 0xe2,
-	0x53, 0x70, 0x19, 0x38, 0x7a, 0x06, 0xf8, 0x15, 0x9b, 0x88, 0x59, 0x9a, 0x1d, 0x93, 0x53, 0x91,
-	0xc4, 0x64, 0x24, 0x16, 0x8b, 0xc4, 0x63, 0xc9, 0x04, 0xf4, 0x39, 0x55, 0x38, 0x67, 0x57, 0xd2,
-	0x74, 0x66, 0x53, 0x95, 0x33, 0x04, 0x5f, 0xd8, 0x35, 0xd1, 0xf0, 0x9e, 0x89, 0xba, 0xf7, 0x4d,
-	0xd4, 0x91, 0x98, 0x88, 0xc4, 0xaf, 0x45, 0x12, 0xb3, 0x91, 0xa9, 0x89, 0x6f, 0x4d, 0x84, 0x92,
-	0x13, 0x70, 0xa1, 0x6e, 0x85, 0x74, 0x74, 0x7b, 0x76, 0x4d, 0x74, 0x6e, 0xcf, 0x44, 0xfd, 0xfb,
-	0x26, 0x6a, 0x8d, 0xc5, 0x23, 0x53, 0x89, 0xe4, 0x08, 0x9c, 0xad, 0x39, 0xdd, 0x6e, 0xd1, 0xc1,
-	0x3d, 0x13, 0xf1, 0x96, 0x68, 0x7c, 0x3a, 0x12, 0x9f, 0x49, 0x26, 0xe0, 0xf2, 0xb1, 0xe9, 0xea,
-	0xd2, 0x1a, 0xdd, 0x33, 0xd1, 0x88, 0xa5, 0x95, 0x88, 0x45, 0xa6, 0xe2, 0xc9, 0xab, 0xd0, 0x7f,
-	0x38, 0xea, 0x2e, 0xe1, 0xe8, 0x9e, 0x89, 0xc6, 0xa8, 0xf0, 0x74, 0x24, 0x31, 0x23, 0x30, 0xac,
-	0x87, 0xf3, 0x0a, 0x0c, 0xeb, 0xe5, 0x18, 0x81, 0x61, 0x7d, 0x5c, 0x9b, 0xc0, 0xb0, 0xed, 0x1c,
-	0x08, 0x0c, 0x7b, 0x86, 0xeb, 0x14, 0x18, 0xb6, 0x93, 0xeb, 0x12, 0x18, 0xb6, 0x8b, 0xeb, 0x16,
-	0x18, 0xb6, 0x9b, 0xe3, 0x04, 0x86, 0xe5, 0xb8, 0x1e, 0x81, 0x61, 0x7b, 0x38, 0x2c, 0x30, 0x2c,
-	0xe6, 0x7a, 0x05, 0x86, 0x9d, 0xe4, 0x62, 0x02, 0xc3, 0xf6, 0x73, 0xe7, 0x04, 0x86, 0xf5, 0x73,
-	0xe7, 0x05, 0x86, 0x4d, 0x70, 0x53, 0x02, 0xc3, 0x9e, 0xe7, 0x02, 0x02, 0xc3, 0x06, 0xb8, 0x0b,
-	0x02, 0xc3, 0x5e, 0xe0, 0x2e, 0x0a, 0x0c, 0x7b, 0x91, 0xbb, 0x24, 0x30, 0xec, 0x25, 0x2e, 0x28,
-	0x30, 0x6c, 0x90, 0xbb, 0x2c, 0x30, 0xec, 0x65, 0x8e, 0x17, 0x18, 0x96, 0xe7, 0x06, 0x04, 0x86,
-	0x1d, 0xe0, 0x42, 0x02, 0xc3, 0x86, 0xb8, 0x97, 0x04, 0x86, 0x1d, 0xe1, 0x46, 0x05, 0x86, 0xbd,
-	0xca, 0x45, 0x04, 0x86, 0x1d, 0xe3, 0xa2, 0xa1, 0xbf, 0x78, 0xa0, 0xbf, 0x7e, 0xb5, 0xc7, 0x77,
-	0xc0, 0x57, 0xca, 0x95, 0x2d, 0xca, 0x68, 0xb3, 0xcc, 0x05, 0x87, 0x32, 0x1e, 0x61, 0x62, 0x6e,
-	0xae, 0x98, 0x2b, 0x37, 0xe3, 0x8a, 0xb9, 0x72, 0x2a, 0x8b, 0x37, 0x00, 0x0e, 0x9a, 0x14, 0xcd,
-	0xd9, 0x93, 0xd1, 0xc3, 0xcb, 0x1f, 0x3d, 0x70, 0x29, 0x5a, 0xfc, 0xd5, 0x5a, 0xcc, 0x04, 0x9a,
-	0xf3, 0xd9, 0x8d, 0x4e, 0x6c, 0xaf, 0x36, 0x28, 0x3c, 0x01, 0x6d, 0x6a, 0xd1, 0xd0, 0xe5, 0x2c,
-	0xa1, 0x9c, 0xf7, 0xf8, 0xce, 0x5c, 0x11, 0xc3, 0x51, 0xf0, 0xc9, 0x0a, 0x55, 0x68, 0x6d, 0xa8,
-	0xe0, 0x48, 0x25, 0x43, 0xd0, 0x5d, 0x19, 0x3f, 0x1c, 0xfa, 0x8f, 0xbb, 0x77, 0x4d, 0x64, 0x95,
-	0x67, 0xef, 0xbe, 0x89, 0xbc, 0x89, 0xc8, 0x94, 0x9d, 0x02, 0xa1, 0xbf, 0x22, 0x18, 0x3c, 0x49,
-	0x51, 0xc3, 0x7f, 0x44, 0x70, 0xa5, 0x59, 0x45, 0xb5, 0x8b, 0x37, 0xa2, 0x04, 0xf7, 0xc6, 0xcf,
-	0x51, 0x52, 0x6d, 0xe6, 0x4d, 0xa9, 0xed, 0x63, 0xe4, 0xe1, 0x5e, 0xae, 0x3c, 0xb1, 0xa8, 0xf2,
-	0xe4, 0xb7, 0xf9, 0xed, 0xe3, 0xa7, 0xc8, 0xc3, 0xb5, 0x34, 0xae, 0xb8, 0x56, 0x63, 0x08, 0xbd,
-	0x0a, 0xfe, 0xe3, 0xca, 0x1b, 0x1e, 0x07, 0xdf, 0x16, 0xd9, 0x39, 0xc8, 0x2b, 0xff, 0x0f, 0x26,
-	0x42, 0x75, 0x19, 0x7e, 0xeb, 0x16, 0xd9, 0x49, 0x65, 0x43, 0xbf, 0xf2, 0x02, 0xdf, 0x6c, 0xf9,
-	0x58, 0x81, 0x76, 0xbd, 0xb8, 0xa1, 0x10, 0xc3, 0x02, 0xf6, 0x52, 0xe0, 0xd7, 0xaa, 0x09, 0xeb,
-	0x39, 0x9a, 0xb0, 0x3e, 0x8d, 0xe1, 0x90, 0x3d, 0xe7, 0x8c, 0x68, 0xc3, 0xb1, 0x2b, 0x77, 0xc3,
-	0xb6, 0x7a, 0xe3, 0xf4, 0x65, 0x6d, 0xa1, 0x54, 0x16, 0xaf, 0x41, 0x57, 0x6d, 0xec, 0x9d, 0x2c,
-	0x1e, 0xaa, 0x1b, 0x10, 0xa7, 0x38, 0xae, 0x91, 0x3c, 0xc9, 0x38, 0xdd, 0xeb, 0x93, 0xa7, 0x08,
-	0x89, 0x9d, 0x0e, 0xc6, 0x2a, 0x85, 0x98, 0xfb, 0x04, 0x3d, 0x33, 0xd1, 0xc7, 0x08, 0xfa, 0xc0,
-	0xb7, 0x46, 0x0d, 0x05, 0x3a, 0x5c, 0xdb, 0x82, 0xff, 0x43, 0xd0, 0xe5, 0x20, 0xf1, 0xb6, 0xc6,
-	0xe8, 0x3b, 0xf0, 0x00, 0xc2, 0x30, 0x50, 0xbb, 0x94, 0x28, 0x0d, 0x7a, 0x5e, 0xcd, 0x48, 0xf9,
-	0xb4, 0xf3, 0x25, 0xe6, 0x5d, 0x5b, 0x5e, 0x85, 0x71, 0x08, 0x1f, 0x2f, 0x69, 0x27, 0xb5, 0x5b,
-	0x21, 0x05, 0x3c, 0x04, 0x0f, 0x2b, 0x90, 0xdc, 0x36, 0x51, 0x8c, 0x8a, 0x98, 0xc0, 0xb0, 0x88,
-	0xf3, 0x84, 0x3e, 0x42, 0x00, 0x07, 0xf4, 0x08, 0x67, 0xc0, 0x67, 0xb8, 0x4b, 0xc7, 0x72, 0xa3,
-	0xd2, 0x71, 0x78, 0xde, 0x34, 0x9a, 0xd6, 0x10, 0x83, 0xd6, 0x90, 0x19, 0xe8, 0x29, 0xa9, 0x79,
-	0x83, 0x68, 0x9a, 0x64, 0x67, 0xb9, 0xa4, 0xdb, 0x41, 0xe8, 0x4c, 0x76, 0xd0, 0x08, 0x8f, 0x32,
-	0xfe, 0x1f, 0x7f, 0xf4, 0x8a, 0xdd, 0x15, 0xa9, 0x35, 0xd9, 0x20, 0xf3, 0xba, 0x12, 0x7a, 0x0f,
-	0x01, 0x3e, 0xca, 0x3d, 0xb1, 0xe1, 0xa6, 0xb2, 0xf6, 0xe9, 0x9a, 0xfe, 0x69, 0x54, 0x36, 0x79,
-	0x99, 0xda, 0x7f, 0x8c, 0xbc, 0xdc, 0x43, 0x54, 0xef, 0x30, 0x1d, 0xf0, 0xdc, 0xd0, 0xe7, 0x5e,
-	0xf7, 0x88, 0x6f, 0x69, 0xe3, 0x09, 0x60, 0xe8, 0xb8, 0x68, 0xfb, 0xee, 0xe2, 0xa3, 0x3f, 0x20,
-	0xaa, 0xda, 0xab, 0xf5, 0x88, 0x6d, 0x0b, 0xaa, 0x62, 0x68, 0x6a, 0x5e, 0xf4, 0x59, 0x67, 0x80,
-	0x68, 0x22, 0x95, 0xc4, 0xa3, 0xc0, 0x6e, 0xaa, 0xba, 0xa1, 0x48, 0xdb, 0x0e, 0x01, 0x48, 0x76,
-	0x55, 0xb4, 0xac, 0xe9, 0xf4, 0x21, 0x23, 0x56, 0xbf, 0xe3, 0x79, 0xe8, 0xb0, 0x38, 0xaa, 0x74,
-	0x3f, 0x4d, 0xc5, 0xed, 0xa3, 0x32, 0xd0, 0x34, 0x40, 0xf4, 0x32, 0x61, 0xfe, 0xfe, 0x8a, 0x05,
-	0xf1, 0x00, 0xba, 0xaa, 0xd7, 0x2d, 0xb6, 0xbb, 0x98, 0x53, 0x4f, 0xdb, 0xab, 0x5a, 0x66, 0x93,
-	0xe8, 0x86, 0x26, 0x19, 0x24, 0x9b, 0xaa, 0x80, 0x25, 0xcf, 0xd6, 0xf5, 0x56, 0x67, 0xd5, 0x9a,
-	0xe5, 0xb2, 0xb9, 0x47, 0xe8, 0x33, 0x13, 0xcd, 0xc0, 0x79, 0xe0, 0x28, 0x31, 0x49, 0x29, 0x74,
-	0xa8, 0xa5, 0xcc, 0xac, 0x75, 0x32, 0x12, 0x8b, 0xc4, 0x21, 0x00, 0x7d, 0x55, 0xcc, 0x9a, 0xef,
-	0x28, 0xf1, 0xcc, 0x44, 0xaf, 0x41, 0x3f, 0xb0, 0x37, 0x1c, 0x7f, 0x04, 0xe0, 0xc0, 0x77, 0xd0,
-	0x05, 0x8c, 0x95, 0xbf, 0x01, 0x9f, 0x1d, 0x01, 0x18, 0x86, 0xfe, 0xf9, 0x92, 0x24, 0xe7, 0xa5,
-	0x0d, 0x39, 0x2f, 0x1b, 0x3b, 0xfc, 0x1d, 0x55, 0x21, 0x7c, 0x78, 0xfe, 0xce, 0x48, 0xa0, 0xb3,
-	0xc6, 0x8b, 0xa1, 0x0f, 0x58, 0x5a, 0xf0, 0xea, 0x6e, 0xea, 0x85, 0x94, 0x0a, 0x1c, 0x05, 0xef,
-	0xb6, 0x51, 0xa4, 0xe1, 0xeb, 0x4c, 0x5e, 0xfc, 0xca, 0x44, 0xcc, 0xe4, 0xd4, 0xc4, 0x84, 0xe5,
-	0xb4, 0xee, 0xd1, 0xce, 0x64, 0xc7, 0x44, 0x64, 0x6a, 0x32, 0x36, 0x36, 0x39, 0x1d, 0x9f, 0x4d,
-	0x88, 0x96, 0x20, 0x2e, 0x42, 0xc4, 0xbe, 0x7f, 0x52, 0xed, 0x28, 0xd4, 0xb0, 0xaa, 0x83, 0x68,
-	0x56, 0x27, 0xd0, 0xf6, 0x86, 0x1d, 0x70, 0xd8, 0xc2, 0x58, 0x57, 0xad, 0x13, 0xe5, 0x1e, 0x42,
-	0xab, 0x7b, 0xae, 0x4e, 0xa3, 0x3a, 0x5c, 0x3d, 0x89, 0x59, 0xbb, 0xa1, 0x64, 0xfd, 0xd0, 0xd0,
-	0xea, 0x50, 0x13, 0xab, 0x76, 0x93, 0xc8, 0xe2, 0x5f, 0x20, 0xe0, 0xad, 0xe8, 0xd0, 0xe3, 0x7c,
-	0x60, 0xc4, 0xa6, 0x08, 0x45, 0x8d, 0xa6, 0x02, 0xbd, 0xdc, 0xe8, 0x88, 0xa5, 0x4e, 0x73, 0x19,
-	0xa0, 0x66, 0x49, 0xd5, 0xd6, 0x82, 0x1b, 0xcc, 0x15, 0xa6, 0x4b, 0x52, 0x59, 0x3f, 0x5e, 0x70,
-	0xee, 0xa1, 0xf7, 0x33, 0x13, 0x5d, 0x87, 0x4b, 0x70, 0xee, 0x20, 0x41, 0x6b, 0x24, 0xb0, 0x67,
-	0x72, 0x12, 0x2e, 0xc1, 0xd9, 0x83, 0xcf, 0x2e, 0xe2, 0xdd, 0x1a, 0x8b, 0xc4, 0x23, 0xb3, 0xcf,
-	0x4c, 0xf4, 0x7b, 0x0f, 0xfc, 0x3f, 0x3a, 0x16, 0x23, 0xf4, 0x16, 0x08, 0xcd, 0xf6, 0x1f, 0x55,
-	0x4b, 0x44, 0xd3, 0xac, 0x82, 0xdf, 0x4c, 0x12, 0xf7, 0xaf, 0x3a, 0xa2, 0xb5, 0x56, 0x02, 0x7d,
-	0x29, 0x65, 0x93, 0x68, 0xb2, 0x51, 0xfb, 0x1a, 0x7e, 0x89, 0xa0, 0xfb, 0x0d, 0x59, 0x33, 0x8a,
-	0x52, 0xbe, 0x32, 0x14, 0x8c, 0xbe, 0x8b, 0xe0, 0x7f, 0xd0, 0x8b, 0x6c, 0x54, 0x23, 0xcd, 0x1a,
-	0x55, 0xac, 0x6d, 0xcd, 0x7e, 0x91, 0xbc, 0x0e, 0xa3, 0x27, 0x49, 0x49, 0x87, 0xdb, 0x73, 0xbb,
-	0x26, 0x6a, 0xdf, 0x33, 0x11, 0xbb, 0x6f, 0x22, 0xe6, 0x5a, 0x64, 0x72, 0xc2, 0xee, 0x78, 0x02,
-	0xc3, 0x32, 0x5c, 0xab, 0xc0, 0xb0, 0xad, 0x9c, 0xaf, 0x4a, 0xf0, 0xdb, 0x38, 0x56, 0x60, 0x58,
-	0x96, 0x6b, 0x0f, 0xbd, 0xeb, 0x85, 0x81, 0xa6, 0x19, 0x83, 0x15, 0x08, 0xcb, 0xb6, 0x0b, 0x9b,
-	0x06, 0xc1, 0x29, 0x19, 0xc7, 0x9d, 0x8c, 0x41, 0x07, 0x67, 0xbe, 0x51, 0xf2, 0xe1, 0xdf, 0x22,
-	0x18, 0x39, 0x71, 0xd8, 0x69, 0x69, 0xe9, 0x88, 0xbd, 0x76, 0x9a, 0x9a, 0xee, 0x60, 0x37, 0xde,
-	0xf6, 0x8d, 0x16, 0xf1, 0x4a, 0x65, 0x15, 0x0d, 0xd7, 0x9b, 0xbc, 0x0e, 0xc3, 0xcd, 0x56, 0x59,
-	0x09, 0x53, 0xef, 0xae, 0x89, 0x3c, 0x7b, 0x26, 0x42, 0x16, 0xef, 0x8e, 0x45, 0xe2, 0xd6, 0x10,
-	0xe9, 0x70, 0x93, 0x47, 0x1e, 0x18, 0x39, 0xf1, 0xe2, 0x6a, 0x79, 0x24, 0x7a, 0xf1, 0x3c, 0x52,
-	0x87, 0x2e, 0xea, 0x4c, 0x2b, 0xf9, 0x72, 0x9a, 0x5a, 0x2c, 0x38, 0x0d, 0x7c, 0xb9, 0xf1, 0x05,
-	0x3d, 0x6d, 0x94, 0x61, 0x6d, 0x28, 0x36, 0x78, 0x37, 0xac, 0xe7, 0x1a, 0x1a, 0x7b, 0xfb, 0xee,
-	0xa0, 0xd8, 0x59, 0xb1, 0xb1, 0x64, 0x99, 0x08, 0x7d, 0x8c, 0x20, 0x70, 0xfc, 0xfd, 0x12, 0x7e,
-	0x1f, 0x41, 0x5f, 0xbd, 0x7b, 0x2c, 0xdd, 0xa1, 0x45, 0xd7, 0x7f, 0xfa, 0x1d, 0x16, 0xad, 0x94,
-	0x7e, 0xab, 0x52, 0xd6, 0xed, 0xf4, 0xbd, 0x47, 0xef, 0xb4, 0xf4, 0xd0, 0x87, 0x5e, 0x3a, 0xa3,
-	0xd6, 0x41, 0xaa, 0xd3, 0x5a, 0xd1, 0x3f, 0xde, 0x5a, 0x55, 0xe8, 0x74, 0xef, 0x5e, 0xf7, 0x7b,
-	0xe8, 0xae, 0x13, 0x3f, 0x61, 0xd7, 0xfa, 0x31, 0x8c, 0xe6, 0x8c, 0x6b, 0x9f, 0xfa, 0xdc, 0x17,
-	0x16, 0xed, 0xff, 0x1c, 0xfd, 0xb3, 0x57, 0x4e, 0x18, 0x80, 0xae, 0xea, 0x2d, 0xd1, 0x82, 0x5a,
-	0x54, 0x8c, 0xb9, 0xee, 0x43, 0xae, 0x0a, 0x3d, 0xa0, 0xf7, 0x4c, 0xb5, 0xf7, 0xf2, 0x78, 0x13,
-	0xda, 0xed, 0x2b, 0xfe, 0x53, 0x4c, 0x04, 0x7d, 0xae, 0x89, 0x40, 0x6e, 0x36, 0x11, 0xb4, 0xc9,
-	0xb9, 0xf2, 0x52, 0x39, 0x95, 0x0d, 0x7d, 0x88, 0xa8, 0xfd, 0xda, 0x6b, 0x7b, 0xfc, 0x01, 0x82,
-	0x76, 0xfb, 0x2f, 0x00, 0x6b, 0x01, 0x56, 0x34, 0xdb, 0x93, 0xff, 0xd1, 0x68, 0x01, 0x57, 0x1f,
-	0xa3, 0x70, 0xc8, 0x31, 0xae, 0x48, 0x8d, 0xcf, 0x72, 0x75, 0x6c, 0xf6, 0x36, 0x1b, 0x9b, 0xdb,
-	0x14, 0xc9, 0xb0, 0x56, 0xe9, 0xd4, 0xa5, 0x8f, 0xbd, 0x70, 0xc6, 0x9d, 0x2a, 0x78, 0x05, 0x7a,
-	0x24, 0x17, 0xdb, 0x4c, 0xdf, 0x57, 0x95, 0xca, 0x10, 0x30, 0xd0, 0xa8, 0x04, 0xd9, 0xfc, 0x9c,
-	0x73, 0xeb, 0x5a, 0x44, 0x15, 0xe7, 0xdd, 0xa5, 0xcc, 0xae, 0x2a, 0xab, 0x4d, 0x71, 0x7e, 0xc6,
-	0x42, 0xe6, 0x7d, 0xe1, 0x85, 0x6c, 0x6e, 0xf3, 0x99, 0x89, 0xb2, 0x30, 0x0c, 0x9c, 0x43, 0xd3,
-	0xab, 0x2c, 0x3d, 0xd0, 0x5b, 0xc7, 0x99, 0xc7, 0xcd, 0xd5, 0x21, 0xe8, 0x5a, 0x73, 0x60, 0x79,
-	0x8a, 0x1b, 0xe0, 0x0e, 0x6f, 0x66, 0x74, 0x15, 0x3a, 0x9c, 0x23, 0x49, 0x53, 0xaa, 0x1f, 0xf0,
-	0x5a, 0x6a, 0x7d, 0x31, 0xbd, 0xbc, 0xba, 0x30, 0xbf, 0x9c, 0x5e, 0x7d, 0x7d, 0x7d, 0x2d, 0xf5,
-	0xca, 0x22, 0xd7, 0x82, 0xfb, 0xa0, 0xc7, 0xf5, 0x3e, 0xb5, 0x42, 0x5f, 0x23, 0xdc, 0x01, 0x6d,
-	0x6b, 0x8b, 0x4b, 0x37, 0x17, 0x57, 0xd6, 0x39, 0x4f, 0x80, 0xd9, 0x35, 0x51, 0x4b, 0xf2, 0x09,
-	0xda, 0xfb, 0x26, 0xd8, 0xf2, 0xe5, 0x37, 0xc1, 0x96, 0xef, 0xbf, 0x09, 0xa2, 0x87, 0xfb, 0x41,
-	0xf4, 0x9b, 0xfd, 0x20, 0xfa, 0x62, 0x3f, 0x88, 0xf6, 0xf6, 0x83, 0xe8, 0xcb, 0xfd, 0x20, 0xfa,
-	0x7a, 0x3f, 0x88, 0xbe, 0xdd, 0x0f, 0xb6, 0x7c, 0xbf, 0x1f, 0x44, 0x8f, 0x9e, 0x07, 0x5b, 0x76,
-	0x9f, 0x07, 0xd1, 0xde, 0xf3, 0x60, 0xcb, 0x97, 0xcf, 0x83, 0x2d, 0x77, 0xfe, 0x35, 0xa7, 0x16,
-	0xb6, 0x72, 0xd1, 0xca, 0x6c, 0x1b, 0x2d, 0xea, 0xe3, 0xf4, 0xc1, 0x9a, 0x75, 0xc6, 0x0a, 0x9a,
-	0x5a, 0x92, 0xb3, 0x44, 0x1b, 0xab, 0x7c, 0x1e, 0x2f, 0x6c, 0xe4, 0xd4, 0x71, 0xf2, 0xa6, 0xe1,
-	0xfc, 0xd5, 0xdc, 0xe4, 0x4f, 0xfe, 0x0d, 0x1f, 0xfd, 0xff, 0x39, 0xfe, 0xf7, 0x00, 0x00, 0x00,
-	0xff, 0xff, 0x83, 0x71, 0xcb, 0x77, 0x15, 0x20, 0x00, 0x00,
+	// 3479 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x5a, 0x5b, 0x4c, 0x23, 0x59,
+	0x7a, 0xe6, 0xd8, 0x65, 0x53, 0xfc, 0x34, 0x50, 0x1c, 0x6e, 0x6e, 0xe8, 0x36, 0xd5, 0x5e, 0x86,
+	0x36, 0x74, 0x61, 0xc0, 0x17, 0xa0, 0x51, 0x32, 0x33, 0x98, 0x66, 0x68, 0x6a, 0x69, 0xba, 0x53,
+	0xd0, 0xdd, 0x52, 0x6f, 0xb6, 0xad, 0xc2, 0x3e, 0x98, 0x0a, 0xa6, 0xca, 0xaa, 0x2a, 0xe3, 0xa1,
+	0x33, 0xad, 0x69, 0xad, 0x94, 0xdb, 0x68, 0x23, 0x4d, 0x5a, 0x59, 0x69, 0x35, 0x51, 0x9e, 0x12,
+	0x29, 0xab, 0xc9, 0x4b, 0x94, 0x3c, 0x44, 0x1a, 0xf7, 0x4a, 0x68, 0xb2, 0x91, 0x92, 0x79, 0xe2,
+	0x25, 0xd2, 0x68, 0x22, 0x45, 0x3b, 0x4c, 0x1e, 0x76, 0xa5, 0x8d, 0x34, 0x0f, 0x89, 0x34, 0xda,
+	0x97, 0x44, 0xe7, 0x54, 0x95, 0xb1, 0xc1, 0x18, 0x98, 0x64, 0x94, 0x79, 0x2b, 0xd7, 0xf9, 0x2f,
+	0xe7, 0x7c, 0xff, 0x7f, 0xfe, 0x5b, 0x19, 0x66, 0xf6, 0x88, 0x15, 0xd3, 0x8c, 0x49, 0x2b, 0xbb,
+	0x4d, 0x76, 0xd5, 0xc9, 0x3d, 0x8d, 0x94, 0xad, 0x49, 0x8b, 0x64, 0x4b, 0x26, 0xd9, 0x25, 0xd6,
+	0x76, 0xc6, 0xd2, 0x6c, 0x92, 0xd9, 0x8b, 0x4f, 0xaa, 0x65, 0x2b, 0x63, 0xef, 0x17, 0x89, 0x15,
+	0x2b, 0x9a, 0x86, 0x6d, 0xe0, 0x51, 0x87, 0x2f, 0xe6, 0xf0, 0xc5, 0x18, 0x5f, 0xec, 0x34, 0xdf,
+	0xe0, 0x44, 0x5e, 0xb3, 0xb7, 0x4b, 0x9b, 0xb1, 0xac, 0xb1, 0x3b, 0x99, 0x37, 0xf2, 0xc6, 0x24,
+	0x63, 0xdf, 0x2c, 0x6d, 0xb1, 0x5f, 0xec, 0x07, 0x7b, 0x72, 0xc4, 0x0e, 0x0e, 0xd4, 0x6f, 0x47,
+	0x27, 0xb6, 0xbb, 0x70, 0xeb, 0xd4, 0x42, 0xd9, 0x30, 0x77, 0x32, 0x9a, 0x6e, 0x13, 0x73, 0x4b,
+	0xcd, 0x92, 0xc9, 0x9a, 0xcd, 0x0d, 0x0e, 0xd5, 0x13, 0x1b, 0x45, 0x5b, 0x33, 0x74, 0x6f, 0xf1,
+	0x6a, 0xfd, 0x62, 0x2d, 0xdf, 0xb5, 0x13, 0x60, 0xa8, 0x05, 0x2d, 0xa7, 0xda, 0xc4, 0x5d, 0x15,
+	0x4f, 0x43, 0x95, 0xa9, 0x17, 0x3d, 0xd2, 0x10, 0x4c, 0x8a, 0x44, 0xad, 0x96, 0xe1, 0x46, 0x54,
+	0x35, 0x04, 0x91, 0x7f, 0x1d, 0x80, 0xce, 0x85, 0xc7, 0xeb, 0xf7, 0x54, 0x5d, 0xcd, 0x93, 0xdc,
+	0x3d, 0x23, 0x47, 0x70, 0x0a, 0x80, 0x5a, 0xc0, 0x24, 0x79, 0xcd, 0xd0, 0x43, 0x48, 0x44, 0xd1,
+	0xb6, 0x74, 0xff, 0x57, 0x15, 0xd4, 0xf2, 0xd1, 0x2b, 0xd4, 0x19, 0x45, 0xf3, 0x90, 0x2d, 0x18,
+	0xa5, 0xdc, 0x44, 0x4e, 0xb5, 0x55, 0xa5, 0x4d, 0x2d, 0x5b, 0x0a, 0x23, 0xc4, 0x2a, 0x04, 0xf7,
+	0x8a, 0xd9, 0x8c, 0x96, 0x0b, 0x71, 0x8c, 0x45, 0x6e, 0xcc, 0xf2, 0xd1, 0x2f, 0x0f, 0xfc, 0x9c,
+	0xe9, 0x0b, 0xbd, 0x49, 0x1f, 0x46, 0xcd, 0x91, 0x78, 0xe4, 0x69, 0x74, 0xaf, 0x98, 0x9d, 0x18,
+	0x8b, 0x7e, 0x4f, 0x9d, 0x78, 0x36, 0x35, 0x71, 0xfb, 0xfb, 0xbf, 0x3b, 0xf7, 0xfc, 0x9d, 0xea,
+	0xf3, 0xf4, 0xec, 0xf3, 0xb1, 0x11, 0x25, 0xb0, 0x57, 0xcc, 0xae, 0xe4, 0xf0, 0x0f, 0x10, 0xf4,
+	0xd3, 0xad, 0x31, 0x69, 0x99, 0x92, 0x45, 0xcc, 0x8c, 0x9a, 0xcd, 0x1a, 0x25, 0xdd, 0x0e, 0x49,
+	0x22, 0x8a, 0xb6, 0xc7, 0x23, 0xb1, 0x46, 0xae, 0x72, 0x7f, 0xf3, 0x77, 0x48, 0xd6, 0x56, 0xc8,
+	0xd6, 0xc6, 0x7e, 0x91, 0xa4, 0xc7, 0x3e, 0x7c, 0x8e, 0x4f, 0x0b, 0xf8, 0xe8, 0x15, 0x12, 0x78,
+	0x74, 0xe2, 0x74, 0x3d, 0x6a, 0xd9, 0x5a, 0xa4, 0x3f, 0x1f, 0x5a, 0xc4, 0x5c, 0x70, 0x08, 0xf1,
+	0x1f, 0x22, 0xe0, 0x6c, 0x35, 0x6f, 0x85, 0x5a, 0x45, 0x7f, 0xb4, 0x3d, 0xfe, 0x66, 0xec, 0x62,
+	0xde, 0x19, 0xab, 0x47, 0x39, 0xb6, 0xa1, 0xe6, 0xad, 0x25, 0xdd, 0x36, 0xf7, 0xd3, 0x71, 0x8a,
+	0x44, 0xdb, 0x07, 0x28, 0x18, 0xa1, 0xb8, 0xbc, 0x4b, 0x7f, 0x05, 0x3e, 0x40, 0x3e, 0x21, 0x4a,
+	0x9f, 0xe0, 0x03, 0xd4, 0x3a, 0x1e, 0x30, 0xfd, 0xa1, 0xff, 0x46, 0x47, 0x3f, 0xff, 0x47, 0x7f,
+	0xf0, 0xbd, 0x57, 0xc8, 0xc7, 0xb7, 0x28, 0x6c, 0x07, 0xf8, 0x6f, 0x11, 0x74, 0x68, 0xba, 0x65,
+	0xab, 0x7a, 0xd6, 0x31, 0x7b, 0x88, 0x67, 0xd0, 0xff, 0x10, 0x7d, 0x56, 0x41, 0xb0, 0x9b, 0x8a,
+	0xc5, 0xdf, 0x2e, 0xa8, 0x66, 0x9e, 0x50, 0x4b, 0xbc, 0x7c, 0x85, 0x76, 0x21, 0x05, 0x35, 0x6f,
+	0xf1, 0xcd, 0xe8, 0x9c, 0xf8, 0xb6, 0xb8, 0xb7, 0xf8, 0xe0, 0xa1, 0x24, 0x26, 0xe2, 0xcb, 0x69,
+	0x51, 0x59, 0xb8, 0x37, 0x26, 0xee, 0x92, 0x9c, 0x56, 0xda, 0x15, 0x8b, 0xc4, 0xdc, 0x32, 0xcc,
+	0x5d, 0x2a, 0x1a, 0x92, 0x8c, 0x2d, 0xe9, 0xb2, 0x8d, 0x46, 0xa7, 0x67, 0xaa, 0x7c, 0x33, 0x49,
+	0x8f, 0x6f, 0x5b, 0xcb, 0x6f, 0xd7, 0x72, 0x55, 0x0d, 0xad, 0x5c, 0xf1, 0xf6, 0x48, 0xf1, 0xc7,
+	0x49, 0x68, 0xcb, 0x69, 0xd6, 0x4e, 0xc6, 0xd2, 0x9e, 0x91, 0x50, 0xbb, 0x88, 0xa2, 0x1d, 0xe9,
+	0x81, 0xcf, 0x2a, 0xc8, 0x37, 0x37, 0xc5, 0x1c, 0xe6, 0x97, 0x07, 0x7e, 0x7e, 0x3c, 0x18, 0x7a,
+	0xf1, 0x9f, 0xfe, 0xe8, 0x03, 0x85, 0xa7, 0x94, 0xeb, 0xda, 0x33, 0x82, 0x13, 0xd0, 0xa6, 0x1b,
+	0x19, 0x92, 0x37, 0x89, 0x65, 0x85, 0xa2, 0xcc, 0xd8, 0xbd, 0x27, 0x90, 0x5f, 0xda, 0x2d, 0xda,
+	0xfb, 0x77, 0x5b, 0x14, 0x5e, 0x37, 0x96, 0x18, 0x1d, 0xce, 0x40, 0x87, 0xc3, 0x91, 0xd1, 0xf2,
+	0xe5, 0x4c, 0xbe, 0x1c, 0xba, 0xc9, 0x18, 0x6f, 0x5f, 0xc2, 0x64, 0x2b, 0xcb, 0x8f, 0x97, 0x55,
+	0x9b, 0x94, 0xd5, 0x7d, 0xba, 0xf9, 0xbb, 0x2d, 0x4a, 0xbb, 0x23, 0x71, 0x25, 0x5f, 0x5e, 0x2e,
+	0xe3, 0x6c, 0x55, 0x81, 0xae, 0xda, 0x54, 0xc1, 0x2c, 0x53, 0xf0, 0x9b, 0x97, 0x50, 0xb0, 0xb6,
+	0xb0, 0xe1, 0x2a, 0x58, 0xd5, 0x2c, 0xbb, 0x5e, 0xc9, 0x9a, 0x6a, 0x2f, 0x97, 0xf1, 0x2c, 0xb4,
+	0x17, 0x4d, 0x6d, 0x4f, 0xb5, 0x49, 0x46, 0xcd, 0xe9, 0xa1, 0x78, 0xd3, 0xc3, 0x83, 0x4b, 0xba,
+	0x90, 0xd3, 0xf1, 0x13, 0xb8, 0xee, 0x31, 0x66, 0x0d, 0x5d, 0x27, 0x59, 0x5b, 0xdb, 0xd3, 0xec,
+	0xfd, 0x4c, 0x4e, 0xb3, 0xd4, 0xcd, 0x02, 0xc9, 0x85, 0x06, 0x9a, 0x88, 0x42, 0xca, 0x90, 0xcb,
+	0xbc, 0x58, 0xc3, 0x7b, 0xc7, 0x65, 0xc5, 0x05, 0xe8, 0x76, 0x2e, 0x51, 0x41, 0xd3, 0x77, 0xa8,
+	0xf8, 0x2d, 0x2d, 0x1f, 0x9a, 0x61, 0xf2, 0x5e, 0xbf, 0xc4, 0xe9, 0xd9, 0xed, 0x5a, 0xd5, 0xf4,
+	0x9d, 0x45, 0x26, 0x81, 0x1d, 0x1f, 0x29, 0x5d, 0xd9, 0xfa, 0xd7, 0xf8, 0x31, 0xb5, 0x7e, 0x8e,
+	0x64, 0x0a, 0x9a, 0x65, 0x87, 0xbe, 0xc3, 0xb4, 0xcc, 0x5f, 0xfe, 0xde, 0xad, 0x19, 0x39, 0x42,
+	0x41, 0xa6, 0x1e, 0xe2, 0x3c, 0x61, 0x19, 0xfa, 0x5c, 0x34, 0xdc, 0xa0, 0xe2, 0x02, 0x15, 0x1a,
+	0x69, 0x02, 0x8d, 0x4f, 0xe9, 0x71, 0x99, 0xd8, 0xf6, 0x5d, 0x7c, 0xf0, 0x16, 0xf4, 0x12, 0xbd,
+	0x81, 0xa8, 0xd7, 0x98, 0xa8, 0xf8, 0x25, 0xf6, 0xbb, 0xb1, 0xfc, 0x98, 0x21, 0xe1, 0x53, 0xb0,
+	0x23, 0xb1, 0x4e, 0xcf, 0x1f, 0x20, 0xb8, 0xea, 0x04, 0x68, 0xcb, 0x28, 0x99, 0x59, 0x92, 0xd9,
+	0x55, 0x8b, 0x45, 0x4d, 0xcf, 0x3b, 0xe8, 0x8c, 0x32, 0x6d, 0xe9, 0x4b, 0x68, 0x53, 0x5c, 0x39,
+	0xf7, 0x1c, 0x31, 0x9e, 0x1b, 0xa6, 0xf9, 0xc3, 0x0a, 0x42, 0x5f, 0x56, 0x10, 0x52, 0xfa, 0x59,
+	0x94, 0x3f, 0x45, 0x85, 0x35, 0x18, 0xf5, 0xd0, 0xf3, 0x1c, 0x8d, 0x66, 0xca, 0x82, 0xa1, 0xe6,
+	0x32, 0xa6, 0x51, 0xb2, 0xe9, 0xa6, 0x6c, 0x23, 0x93, 0x25, 0xa1, 0xf1, 0x26, 0x70, 0xfa, 0x95,
+	0x1b, 0xae, 0x94, 0x07, 0x8e, 0x90, 0xc7, 0xae, 0x0c, 0xc5, 0x11, 0xb1, 0x61, 0x2c, 0x12, 0xfc,
+	0x97, 0x08, 0x46, 0x5c, 0x74, 0xcf, 0x54, 0xc5, 0xce, 0x9f, 0x62, 0x9a, 0x56, 0x2f, 0x7a, 0xfe,
+	0x25, 0xfd, 0x6c, 0xc5, 0x55, 0x24, 0x38, 0x8a, 0xc2, 0x5d, 0xbf, 0x22, 0x92, 0x73, 0xa8, 0xf1,
+	0x1a, 0x0c, 0x78, 0x88, 0xb0, 0x20, 0x47, 0xf4, 0xac, 0xb9, 0xcf, 0xf2, 0x76, 0x28, 0xd6, 0x04,
+	0x02, 0x4e, 0xf1, 0xdc, 0xf0, 0x8e, 0x66, 0xed, 0x2c, 0x55, 0x99, 0xb0, 0x09, 0x3d, 0x27, 0xe4,
+	0x64, 0x76, 0xc8, 0x7e, 0x68, 0x92, 0xc9, 0xba, 0x4c, 0xea, 0xa9, 0x97, 0xfb, 0x5d, 0xe2, 0x84,
+	0x33, 0x4e, 0xe9, 0xce, 0x9d, 0x5c, 0xc0, 0x19, 0xe8, 0x73, 0x1c, 0xb8, 0xea, 0x60, 0x45, 0x93,
+	0x6c, 0x69, 0x6f, 0x87, 0x12, 0x2c, 0xb9, 0xdc, 0xa2, 0x21, 0x3a, 0x68, 0x72, 0x02, 0x17, 0xe2,
+	0xe9, 0xe3, 0x90, 0x79, 0x35, 0x3e, 0xf0, 0x94, 0x26, 0xec, 0x85, 0x89, 0x27, 0xdf, 0xbf, 0xe5,
+	0x3e, 0xd0, 0xe4, 0x3d, 0x3e, 0xa2, 0xf4, 0x30, 0x49, 0x9e, 0xef, 0x3c, 0x60, 0x72, 0xf0, 0x2a,
+	0xf4, 0x7b, 0x20, 0xed, 0x69, 0xc5, 0x8c, 0x5a, 0xb2, 0x8d, 0x5d, 0x95, 0x61, 0x74, 0xbb, 0x09,
+	0x46, 0x01, 0xa5, 0xd7, 0xe5, 0x7a, 0xa4, 0x15, 0x17, 0xaa, 0x3c, 0xb8, 0x04, 0x7d, 0xae, 0x63,
+	0x9c, 0x10, 0x36, 0xcf, 0x84, 0xbd, 0x71, 0x39, 0x4f, 0x78, 0xb4, 0xf2, 0xe0, 0x58, 0x36, 0xc3,
+	0x28, 0xa0, 0xf4, 0x38, 0xf2, 0xeb, 0xd4, 0x0e, 0xce, 0x42, 0x5b, 0x35, 0x85, 0x63, 0x01, 0xfc,
+	0xd4, 0x2c, 0xac, 0x56, 0x52, 0xe8, 0x23, 0xee, 0x85, 0xc0, 0x9e, 0x5a, 0x28, 0x91, 0x90, 0x8f,
+	0xbd, 0x73, 0x7e, 0xcc, 0xfb, 0xe6, 0xd0, 0xfc, 0xef, 0xa1, 0x8f, 0x2b, 0xe8, 0x05, 0x02, 0x11,
+	0xba, 0x17, 0x1e, 0xaf, 0x8b, 0x6e, 0x59, 0x21, 0x8e, 0x8a, 0x8f, 0x1e, 0x2c, 0xe2, 0xf6, 0x64,
+	0x52, 0x9a, 0x96, 0x92, 0x52, 0x6a, 0x5a, 0x9a, 0x85, 0x7e, 0x10, 0x3c, 0xe4, 0x44, 0xf7, 0xda,
+	0x61, 0x5f, 0x62, 0x0e, 0x44, 0xc0, 0x8b, 0x4b, 0x22, 0x8d, 0x66, 0xe2, 0x03, 0xd3, 0x28, 0x12,
+	0xd3, 0xd6, 0x88, 0x85, 0x61, 0x4e, 0x9a, 0x9e, 0x96, 0x92, 0x29, 0x29, 0x91, 0x82, 0x08, 0x08,
+	0x2c, 0x64, 0x88, 0x6b, 0x4e, 0xed, 0x4a, 0x39, 0x3b, 0xa7, 0x53, 0x52, 0x72, 0x5a, 0x8a, 0xc7,
+	0xa5, 0x44, 0x5c, 0x4a, 0xcd, 0xa4, 0x93, 0xd0, 0xe7, 0xe6, 0xae, 0xbc, 0x93, 0x7f, 0x32, 0xd9,
+	0x6d, 0x43, 0xcb, 0x12, 0x3c, 0x74, 0x50, 0x41, 0x37, 0x0f, 0x2b, 0xa8, 0xeb, 0xa8, 0x82, 0xda,
+	0x93, 0x53, 0x52, 0xe2, 0xb6, 0x94, 0x4a, 0x49, 0xa9, 0xa9, 0x5f, 0x54, 0x10, 0x4a, 0x4f, 0xc1,
+	0x50, 0xc3, 0x9c, 0xe2, 0xf2, 0x76, 0x1f, 0x54, 0xd0, 0xc0, 0x61, 0x05, 0xf5, 0x1f, 0x55, 0x50,
+	0x20, 0x9e, 0x90, 0x52, 0xc9, 0xf4, 0x18, 0xf4, 0xd6, 0xc5, 0xc3, 0x5a, 0xd2, 0x91, 0xc3, 0x0a,
+	0x12, 0x29, 0x69, 0x62, 0x46, 0x4a, 0xcc, 0xa6, 0x93, 0x30, 0x7c, 0xe6, 0xe5, 0xae, 0xe1, 0x1a,
+	0x3f, 0xac, 0xa0, 0x31, 0xca, 0x95, 0x8c, 0x4b, 0xa9, 0x44, 0xfa, 0x16, 0x73, 0xa7, 0xba, 0x3b,
+	0x52, 0x43, 0x1c, 0x3b, 0xac, 0xa0, 0x09, 0x46, 0x3c, 0x23, 0x25, 0x67, 0xd3, 0x73, 0xd0, 0x57,
+	0xef, 0x26, 0x1e, 0xed, 0xf0, 0x41, 0x05, 0xdd, 0x3e, 0xac, 0xa0, 0x39, 0x4a, 0x9b, 0x9a, 0x95,
+	0x52, 0x73, 0xef, 0xfd, 0x1a, 0x41, 0x8e, 0xec, 0x1a, 0xd3, 0x92, 0x4d, 0x2c, 0x5b, 0xe6, 0x78,
+	0x9f, 0xe0, 0x97, 0x39, 0xde, 0x2f, 0x70, 0x32, 0xc7, 0x07, 0x85, 0x56, 0x99, 0xe3, 0xdb, 0x04,
+	0x90, 0x39, 0xfe, 0x8a, 0xd0, 0x21, 0x73, 0x7c, 0x87, 0xd0, 0x29, 0x73, 0x7c, 0xa7, 0xd0, 0x25,
+	0x73, 0x7c, 0x97, 0x20, 0xc8, 0x1c, 0x2f, 0x08, 0xdd, 0x32, 0xc7, 0x77, 0x0b, 0x58, 0xe6, 0x78,
+	0x2c, 0xf4, 0xc8, 0x1c, 0x3f, 0x2d, 0xc4, 0x65, 0x8e, 0x9f, 0x12, 0xa6, 0x65, 0x8e, 0xef, 0x17,
+	0x06, 0x64, 0x8e, 0x0f, 0x09, 0x57, 0x65, 0x8e, 0x4f, 0x0a, 0x29, 0x99, 0xe3, 0xaf, 0x0a, 0x83,
+	0x32, 0xc7, 0x0f, 0x0a, 0x43, 0x32, 0xc7, 0x0f, 0x09, 0xd7, 0x64, 0x8e, 0xbf, 0x26, 0x5c, 0x97,
+	0x39, 0xfe, 0xba, 0x10, 0x96, 0x39, 0x3e, 0x2c, 0x0c, 0xcb, 0x1c, 0x3f, 0x2c, 0x88, 0x32, 0xc7,
+	0x8b, 0xc2, 0x0d, 0x99, 0xe3, 0x6f, 0x08, 0x11, 0x99, 0xe3, 0x23, 0xc2, 0x77, 0x64, 0x8e, 0x1f,
+	0x13, 0xc6, 0x65, 0x8e, 0xbf, 0x25, 0x48, 0x32, 0xc7, 0x4f, 0x08, 0x31, 0x99, 0xe3, 0xe7, 0x84,
+	0xdb, 0x91, 0x3f, 0x46, 0x30, 0x70, 0x86, 0x5f, 0x63, 0x13, 0xba, 0x73, 0xba, 0xe5, 0x59, 0xc5,
+	0x30, 0x33, 0x26, 0xd9, 0x62, 0x1e, 0x7c, 0xb1, 0x32, 0x3a, 0xf2, 0xe1, 0xf3, 0x8e, 0x3a, 0x7e,
+	0x5a, 0xea, 0xd3, 0x0a, 0x7a, 0x0a, 0xcd, 0x07, 0x9d, 0x7a, 0x40, 0xe9, 0xca, 0xe9, 0xd6, 0xa2,
+	0xb7, 0xae, 0x90, 0xad, 0xc8, 0xbf, 0xfb, 0xa0, 0xbf, 0x71, 0xd6, 0xc7, 0x4f, 0x20, 0xb8, 0x97,
+	0x2f, 0xd3, 0xf6, 0xc1, 0xe9, 0x38, 0x16, 0xdd, 0xf6, 0xe1, 0x54, 0x55, 0x5e, 0xdb, 0x37, 0xe4,
+	0xcb, 0xe7, 0xf5, 0x0d, 0xf9, 0xf2, 0x4a, 0x0e, 0x6f, 0x02, 0x1c, 0x17, 0x2b, 0xec, 0x46, 0x5e,
+	0xec, 0x8c, 0xc3, 0x1f, 0x3e, 0xaf, 0x61, 0x6c, 0x70, 0xc0, 0xb6, 0x6a, 0xa1, 0x82, 0xa7, 0xa0,
+	0xd5, 0x28, 0xd9, 0x96, 0x96, 0x23, 0xac, 0xff, 0x39, 0xbb, 0x42, 0xf3, 0xc8, 0x70, 0x0c, 0x82,
+	0x9a, 0xce, 0x18, 0x02, 0x4d, 0x19, 0x5c, 0xaa, 0x74, 0x04, 0xba, 0xbc, 0x56, 0xd4, 0x6d, 0x05,
+	0x71, 0xd7, 0x41, 0x05, 0x71, 0x87, 0x15, 0xe4, 0x3f, 0xaa, 0x20, 0x7f, 0x52, 0x4a, 0x39, 0xee,
+	0x19, 0xf9, 0x0f, 0x04, 0x23, 0x17, 0x49, 0x6c, 0xf8, 0x67, 0x08, 0x5e, 0x3b, 0x2f, 0xab, 0x3a,
+	0x09, 0x1c, 0xb1, 0x66, 0xe7, 0xee, 0xff, 0x45, 0x5a, 0x75, 0xba, 0x30, 0xd6, 0xe6, 0xbc, 0x44,
+	0x3e, 0xe1, 0x4d, 0xef, 0x89, 0x47, 0xde, 0x53, 0xc8, 0xe9, 0x75, 0x5e, 0xbe, 0x42, 0x3e, 0xa1,
+	0xa5, 0x79, 0xd6, 0xa5, 0xc5, 0x41, 0xe4, 0xbb, 0x10, 0x3a, 0x2b, 0xc5, 0xe1, 0x49, 0x08, 0xee,
+	0x90, 0xfd, 0x63, 0xbf, 0x0a, 0x7d, 0x55, 0x41, 0xa8, 0x61, 0xb7, 0x17, 0xd8, 0x21, 0xfb, 0x2b,
+	0xb9, 0xc8, 0x8f, 0x78, 0x10, 0xcf, 0xdb, 0x3e, 0xb6, 0xa1, 0x93, 0xe2, 0x43, 0x32, 0x36, 0x03,
+	0x4f, 0xcb, 0x31, 0x1b, 0xb6, 0xa5, 0xd7, 0xaa, 0x5e, 0xeb, 0x3b, 0xed, 0xb5, 0x34, 0x69, 0xa2,
+	0xba, 0xc6, 0xd7, 0xb4, 0x37, 0x9b, 0x3b, 0xf0, 0x15, 0xa6, 0x65, 0x83, 0x2a, 0x59, 0xc9, 0xe1,
+	0x75, 0xe8, 0xac, 0xf7, 0x00, 0xd7, 0x97, 0x47, 0x1b, 0x9a, 0xc5, 0x8d, 0xfd, 0xeb, 0xa4, 0x40,
+	0xb2, 0x6e, 0x1d, 0xf3, 0x37, 0xaf, 0x10, 0x52, 0x3a, 0x5c, 0x19, 0xf7, 0x9d, 0x12, 0x23, 0x0d,
+	0xdd, 0x39, 0xb2, 0xa5, 0x96, 0x0a, 0x76, 0x46, 0x2b, 0x7a, 0xa9, 0xbe, 0xad, 0xa9, 0x47, 0x76,
+	0xb9, 0x0c, 0x2b, 0x45, 0x37, 0xa3, 0x6f, 0x81, 0x90, 0x2d, 0x59, 0xb6, 0xb1, 0x5b, 0x23, 0x02,
+	0x2e, 0x57, 0xa6, 0x2f, 0x32, 0x7e, 0x4f, 0xa2, 0xdb, 0x07, 0x75, 0x66, 0xeb, 0xde, 0xe2, 0x3d,
+	0xe8, 0xdd, 0x32, 0x68, 0x45, 0x52, 0x2a, 0xe6, 0xa8, 0xb3, 0xba, 0x3e, 0xca, 0xda, 0xde, 0x4b,
+	0x34, 0x1e, 0x6f, 0x51, 0x19, 0x0f, 0x99, 0x88, 0x5a, 0x9f, 0x64, 0x65, 0x9e, 0x82, 0xb7, 0x4e,
+	0xad, 0xce, 0xff, 0xb3, 0xff, 0xe3, 0x0a, 0xba, 0x0e, 0x43, 0x20, 0x78, 0xce, 0x20, 0xba, 0x4b,
+	0xb8, 0x35, 0x25, 0x25, 0xa5, 0xb8, 0x34, 0xf7, 0x49, 0x05, 0xfd, 0x85, 0x1f, 0x86, 0xa1, 0x9d,
+	0x2e, 0x10, 0x91, 0x99, 0x6c, 0x50, 0x38, 0xe9, 0x26, 0xf0, 0x27, 0x08, 0x3a, 0x5d, 0xc3, 0x88,
+	0x8e, 0x01, 0xc6, 0xdf, 0x85, 0xe7, 0x10, 0x85, 0x1b, 0xf5, 0x96, 0x8d, 0xb1, 0xbd, 0x16, 0x8c,
+	0xac, 0x5a, 0xc8, 0xb8, 0x2b, 0x71, 0xff, 0xfa, 0xea, 0x7d, 0x98, 0x84, 0xe8, 0xd9, 0x94, 0x4e,
+	0xa4, 0xa8, 0x65, 0x58, 0x01, 0x11, 0xc2, 0x27, 0x19, 0x48, 0x7e, 0x97, 0xe8, 0xb6, 0x47, 0x06,
+	0x7f, 0x8a, 0xa0, 0x97, 0x41, 0x22, 0x3a, 0xa7, 0xf6, 0xce, 0x36, 0xfe, 0x0e, 0x3c, 0x83, 0xdf,
+	0x80, 0xa9, 0x46, 0x90, 0xc7, 0x9c, 0x97, 0xce, 0xe9, 0xdc, 0x25, 0xaf, 0xaf, 0x8c, 0xf3, 0x5e,
+	0x9b, 0x08, 0xf3, 0x30, 0x79, 0x51, 0x6e, 0xe7, 0x96, 0xe7, 0xe2, 0xad, 0xce, 0xe5, 0xcb, 0xc1,
+	0x43, 0x68, 0x5b, 0x79, 0x20, 0x3a, 0x96, 0x1f, 0xbf, 0x0b, 0x6f, 0x41, 0xa4, 0x81, 0xa7, 0xc6,
+	0x3b, 0xee, 0x38, 0xaf, 0xd8, 0xa6, 0x09, 0x88, 0xa7, 0x3d, 0x31, 0x7e, 0xc5, 0xf1, 0x2d, 0x87,
+	0x22, 0x3d, 0x02, 0x42, 0x75, 0xc9, 0x4b, 0xfe, 0xc2, 0x41, 0x05, 0xb5, 0x1d, 0x56, 0x10, 0x77,
+	0x54, 0x41, 0xdc, 0x6d, 0x69, 0x7a, 0x4a, 0xe6, 0x78, 0x24, 0xf8, 0xaa, 0xd9, 0x9e, 0x13, 0x02,
+	0x91, 0x5f, 0x23, 0xe8, 0x6f, 0xec, 0x38, 0xf8, 0x21, 0x0c, 0x35, 0x81, 0xc3, 0xbd, 0xa4, 0x67,
+	0x5d, 0xa6, 0x10, 0x63, 0x65, 0x7b, 0x73, 0x24, 0x57, 0x7b, 0xec, 0x75, 0x18, 0x3c, 0x1b, 0xa7,
+	0x90, 0xbf, 0xa9, 0xd4, 0x81, 0x93, 0x52, 0x5d, 0x54, 0xd3, 0x31, 0x6f, 0xaf, 0xf5, 0x16, 0xf1,
+	0x90, 0xa0, 0x19, 0xc5, 0x47, 0x1b, 0x3f, 0x9a, 0x51, 0xe2, 0x52, 0xc2, 0x01, 0x22, 0xf2, 0x10,
+	0xf0, 0xe9, 0x0b, 0x8a, 0xdf, 0x80, 0xb6, 0xe3, 0xfb, 0xee, 0x4c, 0xfd, 0x22, 0xde, 0x10, 0x27,
+	0x60, 0xfa, 0xbf, 0x42, 0xc8, 0x7d, 0xfa, 0xb1, 0xef, 0x9a, 0xfb, 0xf4, 0xbe, 0x4f, 0x50, 0x78,
+	0xcd, 0x15, 0x12, 0x29, 0x03, 0x1c, 0xb7, 0xbb, 0x38, 0x0b, 0x41, 0xbb, 0xb6, 0x04, 0x58, 0x6d,
+	0x56, 0x02, 0x9c, 0x9c, 0x21, 0xda, 0xe7, 0xd6, 0x02, 0x36, 0xad, 0x05, 0x9c, 0x32, 0x2e, 0xf2,
+	0x1e, 0x02, 0x7c, 0x7a, 0x30, 0x80, 0xed, 0xda, 0x39, 0x83, 0x93, 0xf2, 0x66, 0xbe, 0xde, 0x9c,
+	0x21, 0x3d, 0xcc, 0x22, 0xfe, 0x4b, 0xe4, 0x17, 0x5e, 0xa0, 0x46, 0x19, 0xee, 0x78, 0x08, 0x11,
+	0xf9, 0x07, 0x7f, 0xed, 0x0c, 0x96, 0x72, 0xe3, 0x29, 0xe0, 0xd8, 0x3c, 0xcf, 0x01, 0xe2, 0xda,
+	0xfb, 0x3f, 0x75, 0xa0, 0xec, 0x31, 0xbb, 0x95, 0xd6, 0x45, 0x43, 0xb7, 0x4d, 0xa3, 0xa0, 0x04,
+	0x69, 0x2c, 0x22, 0xa6, 0xc2, 0x28, 0xf1, 0x38, 0xf0, 0xdb, 0x86, 0x65, 0xeb, 0xea, 0xae, 0xdb,
+	0x73, 0xa4, 0x3b, 0x3d, 0xae, 0x80, 0xe9, 0x0f, 0xbd, 0xe0, 0x94, 0xea, 0x3a, 0x5e, 0x80, 0x76,
+	0xb5, 0x6c, 0x65, 0xd4, 0x67, 0x19, 0x46, 0xee, 0x67, 0xe4, 0x37, 0xce, 0x45, 0x9b, 0x4d, 0x7b,
+	0x17, 0x9e, 0xad, 0x51, 0x11, 0xcf, 0xa1, 0xb3, 0x3a, 0x0f, 0x77, 0xe0, 0xe2, 0x2e, 0x3d, 0x0e,
+	0xbd, 0x6f, 0x66, 0xb7, 0x89, 0x65, 0x9b, 0xaa, 0x4d, 0x72, 0x2b, 0x9e, 0xb0, 0x74, 0x6f, 0x43,
+	0xb4, 0x3a, 0xaa, 0xda, 0x28, 0x64, 0xf3, 0xef, 0xd3, 0x26, 0x6a, 0x16, 0xae, 0x82, 0xc0, 0xda,
+	0xa0, 0x15, 0x9d, 0x4d, 0x1d, 0x59, 0x3e, 0x0b, 0x4c, 0x4b, 0x71, 0x29, 0x01, 0x83, 0xd0, 0x57,
+	0x95, 0x59, 0xb7, 0x8e, 0x92, 0x9f, 0x54, 0xd0, 0x6f, 0x41, 0x3f, 0xf0, 0x77, 0x5d, 0x3c, 0x06,
+	0xe1, 0x18, 0x3b, 0xe8, 0x04, 0x8e, 0x3a, 0xe3, 0x60, 0xd0, 0xb1, 0x00, 0xdc, 0x84, 0xfe, 0x85,
+	0x3d, 0x55, 0x2b, 0xa8, 0x9b, 0x5a, 0x41, 0xb3, 0xf7, 0xc5, 0x27, 0x86, 0x4e, 0xc4, 0xe8, 0xc2,
+	0x93, 0xb1, 0xc1, 0x8e, 0x3a, 0x14, 0x23, 0x3f, 0x0a, 0xb2, 0x2a, 0xa4, 0xe1, 0xa1, 0xbe, 0x99,
+	0xcc, 0x1d, 0x03, 0xff, 0xae, 0x5d, 0x62, 0xe6, 0xeb, 0x48, 0x5f, 0xfb, 0xac, 0x82, 0xb8, 0xe9,
+	0xd4, 0xd4, 0x14, 0x05, 0xad, 0x6b, 0xbc, 0x23, 0xdd, 0x3e, 0x25, 0xa5, 0xa6, 0xe3, 0x13, 0xd3,
+	0x33, 0x89, 0xb9, 0xa4, 0x42, 0x09, 0x71, 0x09, 0x24, 0xe7, 0x03, 0x81, 0xe1, 0x58, 0xa1, 0xae,
+	0x81, 0x3b, 0xb6, 0x66, 0x35, 0x6e, 0x35, 0x2f, 0x02, 0x6e, 0x52, 0x19, 0x1b, 0xc6, 0xba, 0x56,
+	0x3f, 0x21, 0xac, 0x9e, 0xb9, 0x1a, 0xc6, 0x2c, 0xb8, 0x75, 0x11, 0xb5, 0x5e, 0x5c, 0x83, 0xa6,
+	0x5a, 0x47, 0xcf, 0xd1, 0xea, 0x86, 0x39, 0x3c, 0x59, 0xeb, 0x9f, 0xcc, 0xcb, 0xaf, 0x30, 0x2f,
+	0xe7, 0xe9, 0xa5, 0xf8, 0xc9, 0x4f, 0x51, 0xad, 0x47, 0x51, 0x87, 0x9e, 0xff, 0x15, 0xf5, 0xa8,
+	0x61, 0xb8, 0x0e, 0xbd, 0xc7, 0x6e, 0x53, 0xd3, 0x5d, 0x07, 0xe2, 0x52, 0x82, 0x25, 0xf9, 0x9f,
+	0x21, 0x88, 0x40, 0xe7, 0x31, 0x0d, 0x65, 0xa6, 0x79, 0xbe, 0x5e, 0x1b, 0xfc, 0x39, 0x82, 0xae,
+	0x47, 0x9a, 0x69, 0x97, 0xd4, 0x82, 0xd7, 0x84, 0x8f, 0xff, 0x11, 0x82, 0xdf, 0x47, 0xdf, 0x64,
+	0xaa, 0x1f, 0x3b, 0x2f, 0xd5, 0xc7, 0x5b, 0xd7, 0x9d, 0x17, 0xe9, 0xd7, 0x61, 0xfc, 0x22, 0x46,
+	0x39, 0x91, 0x1f, 0xf9, 0x53, 0xf9, 0x91, 0x13, 0x02, 0x32, 0xc7, 0x07, 0x84, 0x60, 0xb5, 0x27,
+	0x6e, 0x15, 0x78, 0x99, 0xe3, 0x79, 0xa1, 0x4d, 0xe6, 0xf8, 0x76, 0xe1, 0x4a, 0xe4, 0xaf, 0x11,
+	0x0c, 0x9e, 0x3d, 0x65, 0xc4, 0x3f, 0x44, 0xd0, 0xd7, 0x68, 0x9a, 0x69, 0xb9, 0xf1, 0xf7, 0xf5,
+	0xaf, 0x3f, 0xc9, 0x64, 0x37, 0x27, 0x44, 0x6f, 0x4e, 0xc3, 0x90, 0xd2, 0x73, 0x7a, 0xaa, 0x69,
+	0x45, 0xfe, 0x2a, 0xc0, 0x3a, 0xd4, 0x06, 0x92, 0x1a, 0xdc, 0x61, 0xf4, 0xbf, 0xbf, 0xc3, 0x16,
+	0x74, 0xb2, 0xb3, 0x50, 0xd8, 0xf3, 0xa6, 0x51, 0x2a, 0xba, 0xd1, 0x78, 0xb5, 0xf9, 0xd7, 0x33,
+	0x16, 0x24, 0xa3, 0xe6, 0x68, 0x7c, 0xe4, 0x69, 0xd4, 0xca, 0x37, 0x4d, 0x7c, 0xef, 0x3c, 0x1d,
+	0x51, 0x3a, 0x3c, 0x1d, 0xcb, 0x54, 0x05, 0xfe, 0x01, 0x02, 0xac, 0xd6, 0x04, 0xb5, 0xcc, 0x33,
+	0x43, 0x27, 0x96, 0x1b, 0xc1, 0x2f, 0xfe, 0xf1, 0xa2, 0x46, 0x02, 0x8d, 0x8a, 0x16, 0x3b, 0x65,
+	0xe3, 0xf0, 0xdd, 0xad, 0x9e, 0x24, 0x9e, 0xff, 0x7b, 0xdf, 0xc7, 0x15, 0x94, 0x86, 0xeb, 0xd0,
+	0xff, 0x48, 0x79, 0x4b, 0x54, 0xf5, 0x9c, 0xb8, 0xee, 0x6e, 0x52, 0x74, 0x76, 0xe9, 0x9f, 0x96,
+	0x12, 0x70, 0x03, 0xae, 0x9d, 0x0e, 0xbf, 0x8c, 0xb8, 0xb4, 0xa9, 0x13, 0xdb, 0x89, 0xe6, 0xbf,
+	0x42, 0xdf, 0xf6, 0xfb, 0x46, 0x63, 0x46, 0xfd, 0xf1, 0x68, 0xcc, 0xa8, 0xb7, 0x3c, 0x8c, 0x42,
+	0x67, 0x75, 0xde, 0xb7, 0x68, 0x94, 0x74, 0x7b, 0xbe, 0xb7, 0x91, 0x9d, 0xdc, 0x12, 0xe6, 0xbf,
+	0x10, 0x1b, 0x20, 0xd6, 0x7f, 0xa0, 0xc2, 0xdb, 0xd0, 0xe6, 0x7c, 0xeb, 0xba, 0x44, 0x19, 0xd5,
+	0x57, 0x53, 0x46, 0x69, 0xe7, 0x95, 0x51, 0xad, 0x5a, 0xbe, 0xbc, 0x5c, 0x5e, 0xc9, 0xfd, 0x7f,
+	0xf5, 0x62, 0x91, 0x1f, 0x23, 0xe8, 0x6b, 0xf8, 0xdd, 0x0c, 0xbf, 0x0b, 0x41, 0xf7, 0x33, 0x9c,
+	0x13, 0x3a, 0x6e, 0x7f, 0xad, 0xcf, 0x70, 0x4c, 0xfd, 0x44, 0xb5, 0x8c, 0x7d, 0x89, 0x7c, 0x82,
+	0xff, 0xbc, 0x11, 0x45, 0x40, 0x57, 0xed, 0xe5, 0x72, 0xe4, 0x5f, 0xfc, 0xcc, 0x24, 0xf5, 0xb2,
+	0xf0, 0xf7, 0xa0, 0xcd, 0xd9, 0x16, 0x35, 0x89, 0x73, 0xbb, 0xdf, 0x38, 0x67, 0xb0, 0xa5, 0xab,
+	0xf6, 0x39, 0x56, 0x60, 0x0a, 0x9b, 0x58, 0x81, 0xfb, 0x86, 0x3b, 0xe2, 0x7f, 0xa3, 0xe9, 0x32,
+	0x02, 0x22, 0x5c, 0x5d, 0x5b, 0xd8, 0x10, 0xdd, 0xe3, 0x8a, 0xce, 0x3c, 0xaf, 0x64, 0x3a, 0x95,
+	0x96, 0x3f, 0x21, 0xd1, 0xdb, 0xf9, 0x77, 0x08, 0x06, 0xa1, 0xbd, 0x86, 0x6c, 0xb0, 0xbd, 0x06,
+	0x91, 0x6f, 0x69, 0xf7, 0x59, 0x4d, 0x70, 0xf4, 0xaa, 0xfd, 0x99, 0x0f, 0xfa, 0x1a, 0x46, 0x3b,
+	0xbc, 0x06, 0xdd, 0xa7, 0x2e, 0xa8, 0x7b, 0xed, 0x6e, 0x34, 0x1b, 0x05, 0x39, 0xf5, 0xb4, 0x70,
+	0x32, 0x2a, 0xe2, 0x02, 0xb4, 0x59, 0x2c, 0xb0, 0x51, 0x5f, 0x71, 0xca, 0xf8, 0xfb, 0xe7, 0xca,
+	0xa1, 0x0f, 0x63, 0xe6, 0xcd, 0xf8, 0x6b, 0x4f, 0xa3, 0x0e, 0x73, 0x73, 0xdf, 0xe1, 0x1d, 0xa2,
+	0x95, 0xdc, 0xfc, 0x9d, 0x4f, 0x2a, 0xe8, 0x4d, 0xb8, 0x09, 0x82, 0x7b, 0xb8, 0x6a, 0x84, 0x1d,
+	0xec, 0x69, 0x70, 0x2e, 0xe8, 0x83, 0xa0, 0x13, 0x75, 0xa9, 0x01, 0xab, 0xdb, 0x1c, 0xbf, 0x0f,
+	0xed, 0x6e, 0xc4, 0x65, 0x90, 0xf4, 0x03, 0x5e, 0x5f, 0xd9, 0x58, 0xca, 0xac, 0xde, 0x5f, 0x5c,
+	0x58, 0xcd, 0xdc, 0x7f, 0xb8, 0xb1, 0xbe, 0x72, 0x67, 0x49, 0x68, 0xc1, 0x7d, 0xd0, 0x5d, 0xf3,
+	0x7e, 0x65, 0x8d, 0xbd, 0x46, 0xb8, 0x1d, 0x5a, 0xd7, 0x97, 0x96, 0xef, 0x2d, 0xad, 0x6d, 0x08,
+	0xbe, 0x41, 0xee, 0xa0, 0x82, 0x5a, 0xd2, 0x1f, 0xa0, 0xc3, 0xcf, 0xc3, 0x2d, 0x9f, 0x7e, 0x1e,
+	0x6e, 0xf9, 0xf2, 0xf3, 0x30, 0x7a, 0x71, 0x14, 0x46, 0x3f, 0x39, 0x0a, 0xa3, 0x7f, 0x3a, 0x0a,
+	0xa3, 0xc3, 0xa3, 0x30, 0xfa, 0xf4, 0x28, 0x8c, 0x7e, 0x7e, 0x14, 0x46, 0xbf, 0x38, 0x0a, 0xb7,
+	0x7c, 0x79, 0x14, 0x46, 0xef, 0x7f, 0x11, 0x6e, 0x39, 0xf8, 0x22, 0x8c, 0x0e, 0xbf, 0x08, 0xb7,
+	0x7c, 0xfa, 0x45, 0xb8, 0xe5, 0xc9, 0x6f, 0xe7, 0x8d, 0xe2, 0x4e, 0x3e, 0xb6, 0x67, 0x14, 0x6c,
+	0x62, 0x9a, 0x6a, 0xac, 0x64, 0x4d, 0xb2, 0x07, 0xda, 0x02, 0x4c, 0x14, 0x4d, 0x63, 0x4f, 0xcb,
+	0x11, 0x73, 0xc2, 0x5b, 0x9e, 0x2c, 0x6e, 0xe6, 0x8d, 0x49, 0xf2, 0xb6, 0xed, 0xfe, 0x45, 0xe6,
+	0x9c, 0x3f, 0x27, 0x6d, 0x06, 0xd9, 0xff, 0x66, 0x12, 0xff, 0x13, 0x00, 0x00, 0xff, 0xff, 0xce,
+	0x38, 0xe3, 0x7c, 0xcd, 0x24, 0x00, 0x00,
 }
 
 func (x NetworkType) String() string {
@@ -1874,6 +2130,18 @@ func (this *AWSManagedMode) Equal(that interface{}) bool {
 	} else if this.DiskEncryptionChoice == nil {
 		return false
 	} else if !this.DiskEncryptionChoice.Equal(that1.DiskEncryptionChoice) {
+		return false
+	}
+	if this.CloudResourcePrefix != that1.CloudResourcePrefix {
+		return false
+	}
+	if that1.VipAutomationChoice == nil {
+		if this.VipAutomationChoice != nil {
+			return false
+		}
+	} else if this.VipAutomationChoice == nil {
+		return false
+	} else if !this.VipAutomationChoice.Equal(that1.VipAutomationChoice) {
 		return false
 	}
 	return true
@@ -2166,6 +2434,78 @@ func (this *AWSManagedMode_DiskEncryptionKey) Equal(that interface{}) bool {
 	}
 	return true
 }
+func (this *AWSManagedMode_DisableVipAutomation) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*AWSManagedMode_DisableVipAutomation)
+	if !ok {
+		that2, ok := that.(AWSManagedMode_DisableVipAutomation)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !this.DisableVipAutomation.Equal(that1.DisableVipAutomation) {
+		return false
+	}
+	return true
+}
+func (this *AWSManagedMode_EnableVipAutomation) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*AWSManagedMode_EnableVipAutomation)
+	if !ok {
+		that2, ok := that.(AWSManagedMode_EnableVipAutomation)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !this.EnableVipAutomation.Equal(that1.EnableVipAutomation) {
+		return false
+	}
+	return true
+}
+func (this *EnableVIPAutomationType) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*EnableVIPAutomationType)
+	if !ok {
+		that2, ok := that.(EnableVIPAutomationType)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !this.DnsConnectorRef.Equal(that1.DnsConnectorRef) {
+		return false
+	}
+	return true
+}
 func (this *AWSCloudLinkConfigType) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -2322,10 +2662,172 @@ func (this *EnablePrivateWorkloadRoutingType) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
-	if this.SubnetId != that1.SubnetId {
+	if this.RouteTableId != that1.RouteTableId {
 		return false
 	}
 	if !this.NetworkOption.Equal(that1.NetworkOption) {
+		return false
+	}
+	if that1.IpPrefixChoice == nil {
+		if this.IpPrefixChoice != nil {
+			return false
+		}
+	} else if this.IpPrefixChoice == nil {
+		return false
+	} else if !this.IpPrefixChoice.Equal(that1.IpPrefixChoice) {
+		return false
+	}
+	if !this.ForceUpdateRouting.Equal(that1.ForceUpdateRouting) {
+		return false
+	}
+	return true
+}
+func (this *EnablePrivateWorkloadRoutingType_DefaultIpPrefix) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*EnablePrivateWorkloadRoutingType_DefaultIpPrefix)
+	if !ok {
+		that2, ok := that.(EnablePrivateWorkloadRoutingType_DefaultIpPrefix)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !this.DefaultIpPrefix.Equal(that1.DefaultIpPrefix) {
+		return false
+	}
+	return true
+}
+func (this *EnablePrivateWorkloadRoutingType_CustomIpPrefix) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*EnablePrivateWorkloadRoutingType_CustomIpPrefix)
+	if !ok {
+		that2, ok := that.(EnablePrivateWorkloadRoutingType_CustomIpPrefix)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !this.CustomIpPrefix.Equal(that1.CustomIpPrefix) {
+		return false
+	}
+	return true
+}
+func (this *ForceUpdateRoutingType) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ForceUpdateRoutingType)
+	if !ok {
+		that2, ok := that.(ForceUpdateRoutingType)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if that1.ForceUpdateRoutingChoice == nil {
+		if this.ForceUpdateRoutingChoice != nil {
+			return false
+		}
+	} else if this.ForceUpdateRoutingChoice == nil {
+		return false
+	} else if !this.ForceUpdateRoutingChoice.Equal(that1.ForceUpdateRoutingChoice) {
+		return false
+	}
+	return true
+}
+func (this *ForceUpdateRoutingType_ForceRouteUpdateDisabled) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ForceUpdateRoutingType_ForceRouteUpdateDisabled)
+	if !ok {
+		that2, ok := that.(ForceUpdateRoutingType_ForceRouteUpdateDisabled)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !this.ForceRouteUpdateDisabled.Equal(that1.ForceRouteUpdateDisabled) {
+		return false
+	}
+	return true
+}
+func (this *ForceUpdateRoutingType_ForceRouteUpdateEnabled) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ForceUpdateRoutingType_ForceRouteUpdateEnabled)
+	if !ok {
+		that2, ok := that.(ForceUpdateRoutingType_ForceRouteUpdateEnabled)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !this.ForceRouteUpdateEnabled.Equal(that1.ForceRouteUpdateEnabled) {
+		return false
+	}
+	return true
+}
+func (this *CustomIpPrefixType) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*CustomIpPrefixType)
+	if !ok {
+		that2, ok := that.(CustomIpPrefixType)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.IpPrefix != that1.IpPrefix {
 		return false
 	}
 	return true
@@ -2350,9 +2852,6 @@ func (this *AWSTGWType) Equal(that interface{}) bool {
 		return false
 	}
 	if this.TgwId != that1.TgwId {
-		return false
-	}
-	if this.VolterraSiteAsn != that1.VolterraSiteAsn {
 		return false
 	}
 	return true
@@ -2458,7 +2957,7 @@ func (this *AWSOrchestratedInterface) Equal(that interface{}) bool {
 	} else if !this.SiteToSiteConnectivityInterfaceChoice.Equal(that1.SiteToSiteConnectivityInterfaceChoice) {
 		return false
 	}
-	if !this.AwsNodeInterfaceConfiguration.Equal(that1.AwsNodeInterfaceConfiguration) {
+	if this.InterfaceName != that1.InterfaceName {
 		return false
 	}
 	return true
@@ -2507,111 +3006,6 @@ func (this *AWSOrchestratedInterface_SiteToSiteConnectivityInterfaceEnabled) Equ
 		return false
 	}
 	if !this.SiteToSiteConnectivityInterfaceEnabled.Equal(that1.SiteToSiteConnectivityInterfaceEnabled) {
-		return false
-	}
-	return true
-}
-func (this *AWSNodeInterfaceConfigurationType) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*AWSNodeInterfaceConfigurationType)
-	if !ok {
-		that2, ok := that.(AWSNodeInterfaceConfigurationType)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if that1.AwsNodeInterfaceConfigurationChoice == nil {
-		if this.AwsNodeInterfaceConfigurationChoice != nil {
-			return false
-		}
-	} else if this.AwsNodeInterfaceConfigurationChoice == nil {
-		return false
-	} else if !this.AwsNodeInterfaceConfigurationChoice.Equal(that1.AwsNodeInterfaceConfigurationChoice) {
-		return false
-	}
-	return true
-}
-func (this *AWSNodeInterfaceConfigurationType_InheritAwsNodeInterfaceConfiguration) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*AWSNodeInterfaceConfigurationType_InheritAwsNodeInterfaceConfiguration)
-	if !ok {
-		that2, ok := that.(AWSNodeInterfaceConfigurationType_InheritAwsNodeInterfaceConfiguration)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if !this.InheritAwsNodeInterfaceConfiguration.Equal(that1.InheritAwsNodeInterfaceConfiguration) {
-		return false
-	}
-	return true
-}
-func (this *AWSNodeInterfaceConfigurationType_OverrideAwsNodeInterfaceConfiguration) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*AWSNodeInterfaceConfigurationType_OverrideAwsNodeInterfaceConfiguration)
-	if !ok {
-		that2, ok := that.(AWSNodeInterfaceConfigurationType_OverrideAwsNodeInterfaceConfiguration)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if !this.OverrideAwsNodeInterfaceConfiguration.Equal(that1.OverrideAwsNodeInterfaceConfiguration) {
-		return false
-	}
-	return true
-}
-func (this *AWSOverrideNodeInterfaceConfigurationType) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*AWSOverrideNodeInterfaceConfigurationType)
-	if !ok {
-		that2, ok := that.(AWSOverrideNodeInterfaceConfigurationType)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if this.SubnetId != that1.SubnetId {
-		return false
-	}
-	if this.SecurityGroup != that1.SecurityGroup {
 		return false
 	}
 	return true
@@ -2667,11 +3061,14 @@ func (this *AWSResourceMappingType) Equal(that interface{}) bool {
 	if !this.NetworkOption.Equal(that1.NetworkOption) {
 		return false
 	}
-	if len(this.AwsResources) != len(that1.AwsResources) {
+	if this.SecurityGroup != that1.SecurityGroup {
 		return false
 	}
-	for i := range this.AwsResources {
-		if !this.AwsResources[i].Equal(that1.AwsResources[i]) {
+	if len(this.AvailabilityZones) != len(that1.AvailabilityZones) {
+		return false
+	}
+	for i := range this.AvailabilityZones {
+		if !this.AvailabilityZones[i].Equal(that1.AvailabilityZones[i]) {
 			return false
 		}
 	}
@@ -2699,6 +3096,38 @@ func (this *AWSIGWGatewayType) Equal(that interface{}) bool {
 	if this.IgwGwId != that1.IgwGwId {
 		return false
 	}
+	if !this.ForceUpdateRouting.Equal(that1.ForceUpdateRouting) {
+		return false
+	}
+	return true
+}
+func (this *AWSNATGatewayListType) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*AWSNATGatewayListType)
+	if !ok {
+		that2, ok := that.(AWSNATGatewayListType)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if len(this.NatGw) != len(that1.NatGw) {
+		return false
+	}
+	for i := range this.NatGw {
+		if !this.NatGw[i].Equal(that1.NatGw[i]) {
+			return false
+		}
+	}
 	return true
 }
 func (this *AWSNATGatewayType) Equal(that interface{}) bool {
@@ -2720,24 +3149,22 @@ func (this *AWSNATGatewayType) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
-	if len(this.NatGwId) != len(that1.NatGwId) {
+	if this.NatGwId != that1.NatGwId {
 		return false
 	}
-	for i := range this.NatGwId {
-		if this.NatGwId[i] != that1.NatGwId[i] {
-			return false
-		}
+	if !this.ForceUpdateRouting.Equal(that1.ForceUpdateRouting) {
+		return false
 	}
 	return true
 }
-func (this *AWSResources) Equal(that interface{}) bool {
+func (this *AvailabilityZonesType) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
 	}
 
-	that1, ok := that.(*AWSResources)
+	that1, ok := that.(*AvailabilityZonesType)
 	if !ok {
-		that2, ok := that.(AWSResources)
+		that2, ok := that.(AvailabilityZonesType)
 		if ok {
 			that1 = &that2
 		} else {
@@ -2755,16 +3182,13 @@ func (this *AWSResources) Equal(that interface{}) bool {
 	if this.SubnetId != that1.SubnetId {
 		return false
 	}
-	if this.SecurityGroup != that1.SecurityGroup {
-		return false
-	}
 	return true
 }
 func (this *AWSManagedMode) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 24)
+	s := make([]string, 0, 27)
 	s = append(s, "&securemesh_site_v2.AWSManagedMode{")
 	s = append(s, "AwsRegion: "+fmt.Sprintf("%#v", this.AwsRegion)+",\n")
 	s = append(s, "VpcId: "+fmt.Sprintf("%#v", this.VpcId)+",\n")
@@ -2806,6 +3230,10 @@ func (this *AWSManagedMode) GoString() string {
 	}
 	if this.DiskEncryptionChoice != nil {
 		s = append(s, "DiskEncryptionChoice: "+fmt.Sprintf("%#v", this.DiskEncryptionChoice)+",\n")
+	}
+	s = append(s, "CloudResourcePrefix: "+fmt.Sprintf("%#v", this.CloudResourcePrefix)+",\n")
+	if this.VipAutomationChoice != nil {
+		s = append(s, "VipAutomationChoice: "+fmt.Sprintf("%#v", this.VipAutomationChoice)+",\n")
 	}
 	s = append(s, "}")
 	return strings.Join(s, "")
@@ -2906,6 +3334,34 @@ func (this *AWSManagedMode_DiskEncryptionKey) GoString() string {
 		`DiskEncryptionKey:` + fmt.Sprintf("%#v", this.DiskEncryptionKey) + `}`}, ", ")
 	return s
 }
+func (this *AWSManagedMode_DisableVipAutomation) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&securemesh_site_v2.AWSManagedMode_DisableVipAutomation{` +
+		`DisableVipAutomation:` + fmt.Sprintf("%#v", this.DisableVipAutomation) + `}`}, ", ")
+	return s
+}
+func (this *AWSManagedMode_EnableVipAutomation) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&securemesh_site_v2.AWSManagedMode_EnableVipAutomation{` +
+		`EnableVipAutomation:` + fmt.Sprintf("%#v", this.EnableVipAutomation) + `}`}, ", ")
+	return s
+}
+func (this *EnableVIPAutomationType) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&securemesh_site_v2.EnableVIPAutomationType{")
+	if this.DnsConnectorRef != nil {
+		s = append(s, "DnsConnectorRef: "+fmt.Sprintf("%#v", this.DnsConnectorRef)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
 func (this *AWSCloudLinkConfigType) GoString() string {
 	if this == nil {
 		return "nil"
@@ -2964,12 +3420,72 @@ func (this *EnablePrivateWorkloadRoutingType) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 6)
+	s := make([]string, 0, 9)
 	s = append(s, "&securemesh_site_v2.EnablePrivateWorkloadRoutingType{")
-	s = append(s, "SubnetId: "+fmt.Sprintf("%#v", this.SubnetId)+",\n")
+	s = append(s, "RouteTableId: "+fmt.Sprintf("%#v", this.RouteTableId)+",\n")
 	if this.NetworkOption != nil {
 		s = append(s, "NetworkOption: "+fmt.Sprintf("%#v", this.NetworkOption)+",\n")
 	}
+	if this.IpPrefixChoice != nil {
+		s = append(s, "IpPrefixChoice: "+fmt.Sprintf("%#v", this.IpPrefixChoice)+",\n")
+	}
+	if this.ForceUpdateRouting != nil {
+		s = append(s, "ForceUpdateRouting: "+fmt.Sprintf("%#v", this.ForceUpdateRouting)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *EnablePrivateWorkloadRoutingType_DefaultIpPrefix) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&securemesh_site_v2.EnablePrivateWorkloadRoutingType_DefaultIpPrefix{` +
+		`DefaultIpPrefix:` + fmt.Sprintf("%#v", this.DefaultIpPrefix) + `}`}, ", ")
+	return s
+}
+func (this *EnablePrivateWorkloadRoutingType_CustomIpPrefix) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&securemesh_site_v2.EnablePrivateWorkloadRoutingType_CustomIpPrefix{` +
+		`CustomIpPrefix:` + fmt.Sprintf("%#v", this.CustomIpPrefix) + `}`}, ", ")
+	return s
+}
+func (this *ForceUpdateRoutingType) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 6)
+	s = append(s, "&securemesh_site_v2.ForceUpdateRoutingType{")
+	if this.ForceUpdateRoutingChoice != nil {
+		s = append(s, "ForceUpdateRoutingChoice: "+fmt.Sprintf("%#v", this.ForceUpdateRoutingChoice)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *ForceUpdateRoutingType_ForceRouteUpdateDisabled) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&securemesh_site_v2.ForceUpdateRoutingType_ForceRouteUpdateDisabled{` +
+		`ForceRouteUpdateDisabled:` + fmt.Sprintf("%#v", this.ForceRouteUpdateDisabled) + `}`}, ", ")
+	return s
+}
+func (this *ForceUpdateRoutingType_ForceRouteUpdateEnabled) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&securemesh_site_v2.ForceUpdateRoutingType_ForceRouteUpdateEnabled{` +
+		`ForceRouteUpdateEnabled:` + fmt.Sprintf("%#v", this.ForceRouteUpdateEnabled) + `}`}, ", ")
+	return s
+}
+func (this *CustomIpPrefixType) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&securemesh_site_v2.CustomIpPrefixType{")
+	s = append(s, "IpPrefix: "+fmt.Sprintf("%#v", this.IpPrefix)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
@@ -2977,10 +3493,9 @@ func (this *AWSTGWType) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 6)
+	s := make([]string, 0, 5)
 	s = append(s, "&securemesh_site_v2.AWSTGWType{")
 	s = append(s, "TgwId: "+fmt.Sprintf("%#v", this.TgwId)+",\n")
-	s = append(s, "VolterraSiteAsn: "+fmt.Sprintf("%#v", this.VolterraSiteAsn)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
@@ -3024,9 +3539,7 @@ func (this *AWSOrchestratedInterface) GoString() string {
 	if this.SiteToSiteConnectivityInterfaceChoice != nil {
 		s = append(s, "SiteToSiteConnectivityInterfaceChoice: "+fmt.Sprintf("%#v", this.SiteToSiteConnectivityInterfaceChoice)+",\n")
 	}
-	if this.AwsNodeInterfaceConfiguration != nil {
-		s = append(s, "AwsNodeInterfaceConfiguration: "+fmt.Sprintf("%#v", this.AwsNodeInterfaceConfiguration)+",\n")
-	}
+	s = append(s, "InterfaceName: "+fmt.Sprintf("%#v", this.InterfaceName)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
@@ -3046,45 +3559,6 @@ func (this *AWSOrchestratedInterface_SiteToSiteConnectivityInterfaceEnabled) GoS
 		`SiteToSiteConnectivityInterfaceEnabled:` + fmt.Sprintf("%#v", this.SiteToSiteConnectivityInterfaceEnabled) + `}`}, ", ")
 	return s
 }
-func (this *AWSNodeInterfaceConfigurationType) GoString() string {
-	if this == nil {
-		return "nil"
-	}
-	s := make([]string, 0, 6)
-	s = append(s, "&securemesh_site_v2.AWSNodeInterfaceConfigurationType{")
-	if this.AwsNodeInterfaceConfigurationChoice != nil {
-		s = append(s, "AwsNodeInterfaceConfigurationChoice: "+fmt.Sprintf("%#v", this.AwsNodeInterfaceConfigurationChoice)+",\n")
-	}
-	s = append(s, "}")
-	return strings.Join(s, "")
-}
-func (this *AWSNodeInterfaceConfigurationType_InheritAwsNodeInterfaceConfiguration) GoString() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&securemesh_site_v2.AWSNodeInterfaceConfigurationType_InheritAwsNodeInterfaceConfiguration{` +
-		`InheritAwsNodeInterfaceConfiguration:` + fmt.Sprintf("%#v", this.InheritAwsNodeInterfaceConfiguration) + `}`}, ", ")
-	return s
-}
-func (this *AWSNodeInterfaceConfigurationType_OverrideAwsNodeInterfaceConfiguration) GoString() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&securemesh_site_v2.AWSNodeInterfaceConfigurationType_OverrideAwsNodeInterfaceConfiguration{` +
-		`OverrideAwsNodeInterfaceConfiguration:` + fmt.Sprintf("%#v", this.OverrideAwsNodeInterfaceConfiguration) + `}`}, ", ")
-	return s
-}
-func (this *AWSOverrideNodeInterfaceConfigurationType) GoString() string {
-	if this == nil {
-		return "nil"
-	}
-	s := make([]string, 0, 6)
-	s = append(s, "&securemesh_site_v2.AWSOverrideNodeInterfaceConfigurationType{")
-	s = append(s, "SubnetId: "+fmt.Sprintf("%#v", this.SubnetId)+",\n")
-	s = append(s, "SecurityGroup: "+fmt.Sprintf("%#v", this.SecurityGroup)+",\n")
-	s = append(s, "}")
-	return strings.Join(s, "")
-}
 func (this *AWSResourceMappingListType) GoString() string {
 	if this == nil {
 		return "nil"
@@ -3101,13 +3575,14 @@ func (this *AWSResourceMappingType) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 6)
+	s := make([]string, 0, 7)
 	s = append(s, "&securemesh_site_v2.AWSResourceMappingType{")
 	if this.NetworkOption != nil {
 		s = append(s, "NetworkOption: "+fmt.Sprintf("%#v", this.NetworkOption)+",\n")
 	}
-	if this.AwsResources != nil {
-		s = append(s, "AwsResources: "+fmt.Sprintf("%#v", this.AwsResources)+",\n")
+	s = append(s, "SecurityGroup: "+fmt.Sprintf("%#v", this.SecurityGroup)+",\n")
+	if this.AvailabilityZones != nil {
+		s = append(s, "AvailabilityZones: "+fmt.Sprintf("%#v", this.AvailabilityZones)+",\n")
 	}
 	s = append(s, "}")
 	return strings.Join(s, "")
@@ -3116,9 +3591,24 @@ func (this *AWSIGWGatewayType) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 5)
+	s := make([]string, 0, 6)
 	s = append(s, "&securemesh_site_v2.AWSIGWGatewayType{")
 	s = append(s, "IgwGwId: "+fmt.Sprintf("%#v", this.IgwGwId)+",\n")
+	if this.ForceUpdateRouting != nil {
+		s = append(s, "ForceUpdateRouting: "+fmt.Sprintf("%#v", this.ForceUpdateRouting)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *AWSNATGatewayListType) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&securemesh_site_v2.AWSNATGatewayListType{")
+	if this.NatGw != nil {
+		s = append(s, "NatGw: "+fmt.Sprintf("%#v", this.NatGw)+",\n")
+	}
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
@@ -3126,21 +3616,23 @@ func (this *AWSNATGatewayType) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 5)
+	s := make([]string, 0, 6)
 	s = append(s, "&securemesh_site_v2.AWSNATGatewayType{")
 	s = append(s, "NatGwId: "+fmt.Sprintf("%#v", this.NatGwId)+",\n")
+	if this.ForceUpdateRouting != nil {
+		s = append(s, "ForceUpdateRouting: "+fmt.Sprintf("%#v", this.ForceUpdateRouting)+",\n")
+	}
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
-func (this *AWSResources) GoString() string {
+func (this *AvailabilityZonesType) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 7)
-	s = append(s, "&securemesh_site_v2.AWSResources{")
+	s := make([]string, 0, 6)
+	s = append(s, "&securemesh_site_v2.AvailabilityZonesType{")
 	s = append(s, "AvailabilityZone: "+fmt.Sprintf("%#v", this.AvailabilityZone)+",\n")
 	s = append(s, "SubnetId: "+fmt.Sprintf("%#v", this.SubnetId)+",\n")
-	s = append(s, "SecurityGroup: "+fmt.Sprintf("%#v", this.SecurityGroup)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
@@ -3172,6 +3664,24 @@ func (m *AWSManagedMode) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.VipAutomationChoice != nil {
+		{
+			size := m.VipAutomationChoice.Size()
+			i -= size
+			if _, err := m.VipAutomationChoice.MarshalTo(dAtA[i:]); err != nil {
+				return 0, err
+			}
+		}
+	}
+	if m.EgressGatewayChoice != nil {
+		{
+			size := m.EgressGatewayChoice.Size()
+			i -= size
+			if _, err := m.EgressGatewayChoice.MarshalTo(dAtA[i:]); err != nil {
+				return 0, err
+			}
+		}
+	}
 	if m.PrivateConnectivityChoice != nil {
 		{
 			size := m.PrivateConnectivityChoice.Size()
@@ -3190,14 +3700,14 @@ func (m *AWSManagedMode) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			}
 		}
 	}
-	if m.EgressGatewayChoice != nil {
-		{
-			size := m.EgressGatewayChoice.Size()
-			i -= size
-			if _, err := m.EgressGatewayChoice.MarshalTo(dAtA[i:]); err != nil {
-				return 0, err
-			}
-		}
+	if len(m.CloudResourcePrefix) > 0 {
+		i -= len(m.CloudResourcePrefix)
+		copy(dAtA[i:], m.CloudResourcePrefix)
+		i = encodeVarintAwsTypes(dAtA, i, uint64(len(m.CloudResourcePrefix)))
+		i--
+		dAtA[i] = 0x3
+		i--
+		dAtA[i] = 0x9a
 	}
 	if m.DiskEncryptionChoice != nil {
 		{
@@ -3496,29 +4006,6 @@ func (m *AWSManagedMode_DiskEncryptionKey) MarshalToSizedBuffer(dAtA []byte) (in
 	}
 	return len(dAtA) - i, nil
 }
-func (m *AWSManagedMode_EgressNatGw) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *AWSManagedMode_EgressNatGw) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	if m.EgressNatGw != nil {
-		{
-			size, err := m.EgressNatGw.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintAwsTypes(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x3
-		i--
-		dAtA[i] = 0x82
-	}
-	return len(dAtA) - i, nil
-}
 func (m *AWSManagedMode_PrivateAdn) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
@@ -3588,6 +4075,110 @@ func (m *AWSManagedMode_CloudLinkConfig) MarshalToSizedBuffer(dAtA []byte) (int,
 	}
 	return len(dAtA) - i, nil
 }
+func (m *AWSManagedMode_EgressNatGw) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AWSManagedMode_EgressNatGw) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	if m.EgressNatGw != nil {
+		{
+			size, err := m.EgressNatGw.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintAwsTypes(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x3
+		i--
+		dAtA[i] = 0xba
+	}
+	return len(dAtA) - i, nil
+}
+func (m *AWSManagedMode_DisableVipAutomation) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AWSManagedMode_DisableVipAutomation) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	if m.DisableVipAutomation != nil {
+		{
+			size, err := m.DisableVipAutomation.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintAwsTypes(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x3
+		i--
+		dAtA[i] = 0xca
+	}
+	return len(dAtA) - i, nil
+}
+func (m *AWSManagedMode_EnableVipAutomation) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AWSManagedMode_EnableVipAutomation) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	if m.EnableVipAutomation != nil {
+		{
+			size, err := m.EnableVipAutomation.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintAwsTypes(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x3
+		i--
+		dAtA[i] = 0xd2
+	}
+	return len(dAtA) - i, nil
+}
+func (m *EnableVIPAutomationType) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *EnableVIPAutomationType) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *EnableVIPAutomationType) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.DnsConnectorRef != nil {
+		{
+			size, err := m.DnsConnectorRef.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintAwsTypes(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func (m *AWSCloudLinkConfigType) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -3768,12 +4359,33 @@ func (m *EnablePrivateWorkloadRoutingType) MarshalToSizedBuffer(dAtA []byte) (in
 	_ = i
 	var l int
 	_ = l
-	if len(m.SubnetId) > 0 {
-		i -= len(m.SubnetId)
-		copy(dAtA[i:], m.SubnetId)
-		i = encodeVarintAwsTypes(dAtA, i, uint64(len(m.SubnetId)))
+	if m.IpPrefixChoice != nil {
+		{
+			size := m.IpPrefixChoice.Size()
+			i -= size
+			if _, err := m.IpPrefixChoice.MarshalTo(dAtA[i:]); err != nil {
+				return 0, err
+			}
+		}
+	}
+	if m.ForceUpdateRouting != nil {
+		{
+			size, err := m.ForceUpdateRouting.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintAwsTypes(dAtA, i, uint64(size))
+		}
 		i--
-		dAtA[i] = 0x1a
+		dAtA[i] = 0x42
+	}
+	if len(m.RouteTableId) > 0 {
+		i -= len(m.RouteTableId)
+		copy(dAtA[i:], m.RouteTableId)
+		i = encodeVarintAwsTypes(dAtA, i, uint64(len(m.RouteTableId)))
+		i--
+		dAtA[i] = 0x2a
 	}
 	if m.NetworkOption != nil {
 		{
@@ -3786,6 +4398,152 @@ func (m *EnablePrivateWorkloadRoutingType) MarshalToSizedBuffer(dAtA []byte) (in
 		}
 		i--
 		dAtA[i] = 0x12
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *EnablePrivateWorkloadRoutingType_DefaultIpPrefix) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *EnablePrivateWorkloadRoutingType_DefaultIpPrefix) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	if m.DefaultIpPrefix != nil {
+		{
+			size, err := m.DefaultIpPrefix.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintAwsTypes(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x4a
+	}
+	return len(dAtA) - i, nil
+}
+func (m *EnablePrivateWorkloadRoutingType_CustomIpPrefix) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *EnablePrivateWorkloadRoutingType_CustomIpPrefix) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	if m.CustomIpPrefix != nil {
+		{
+			size, err := m.CustomIpPrefix.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintAwsTypes(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x52
+	}
+	return len(dAtA) - i, nil
+}
+func (m *ForceUpdateRoutingType) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ForceUpdateRoutingType) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ForceUpdateRoutingType) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.ForceUpdateRoutingChoice != nil {
+		{
+			size := m.ForceUpdateRoutingChoice.Size()
+			i -= size
+			if _, err := m.ForceUpdateRoutingChoice.MarshalTo(dAtA[i:]); err != nil {
+				return 0, err
+			}
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ForceUpdateRoutingType_ForceRouteUpdateDisabled) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ForceUpdateRoutingType_ForceRouteUpdateDisabled) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	if m.ForceRouteUpdateDisabled != nil {
+		{
+			size, err := m.ForceRouteUpdateDisabled.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintAwsTypes(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	return len(dAtA) - i, nil
+}
+func (m *ForceUpdateRoutingType_ForceRouteUpdateEnabled) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ForceUpdateRoutingType_ForceRouteUpdateEnabled) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	if m.ForceRouteUpdateEnabled != nil {
+		{
+			size, err := m.ForceRouteUpdateEnabled.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintAwsTypes(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	return len(dAtA) - i, nil
+}
+func (m *CustomIpPrefixType) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CustomIpPrefixType) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CustomIpPrefixType) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.IpPrefix) > 0 {
+		i -= len(m.IpPrefix)
+		copy(dAtA[i:], m.IpPrefix)
+		i = encodeVarintAwsTypes(dAtA, i, uint64(len(m.IpPrefix)))
+		i--
+		dAtA[i] = 0x22
 	}
 	return len(dAtA) - i, nil
 }
@@ -3810,11 +4568,6 @@ func (m *AWSTGWType) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.VolterraSiteAsn != 0 {
-		i = encodeVarintAwsTypes(dAtA, i, uint64(m.VolterraSiteAsn))
-		i--
-		dAtA[i] = 0x10
-	}
 	if len(m.TgwId) > 0 {
 		i -= len(m.TgwId)
 		copy(dAtA[i:], m.TgwId)
@@ -3940,17 +4693,12 @@ func (m *AWSOrchestratedInterface) MarshalToSizedBuffer(dAtA []byte) (int, error
 	_ = i
 	var l int
 	_ = l
-	if m.AwsNodeInterfaceConfiguration != nil {
-		{
-			size, err := m.AwsNodeInterfaceConfiguration.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintAwsTypes(dAtA, i, uint64(size))
-		}
+	if len(m.InterfaceName) > 0 {
+		i -= len(m.InterfaceName)
+		copy(dAtA[i:], m.InterfaceName)
+		i = encodeVarintAwsTypes(dAtA, i, uint64(len(m.InterfaceName)))
 		i--
-		dAtA[i] = 0x5a
+		dAtA[i] = 0x62
 	}
 	if m.SiteToSiteConnectivityInterfaceChoice != nil {
 		{
@@ -4023,117 +4771,6 @@ func (m *AWSOrchestratedInterface_SiteToSiteConnectivityInterfaceEnabled) Marsha
 	}
 	return len(dAtA) - i, nil
 }
-func (m *AWSNodeInterfaceConfigurationType) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *AWSNodeInterfaceConfigurationType) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *AWSNodeInterfaceConfigurationType) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.AwsNodeInterfaceConfigurationChoice != nil {
-		{
-			size := m.AwsNodeInterfaceConfigurationChoice.Size()
-			i -= size
-			if _, err := m.AwsNodeInterfaceConfigurationChoice.MarshalTo(dAtA[i:]); err != nil {
-				return 0, err
-			}
-		}
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *AWSNodeInterfaceConfigurationType_InheritAwsNodeInterfaceConfiguration) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *AWSNodeInterfaceConfigurationType_InheritAwsNodeInterfaceConfiguration) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	if m.InheritAwsNodeInterfaceConfiguration != nil {
-		{
-			size, err := m.InheritAwsNodeInterfaceConfiguration.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintAwsTypes(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x12
-	}
-	return len(dAtA) - i, nil
-}
-func (m *AWSNodeInterfaceConfigurationType_OverrideAwsNodeInterfaceConfiguration) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *AWSNodeInterfaceConfigurationType_OverrideAwsNodeInterfaceConfiguration) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	if m.OverrideAwsNodeInterfaceConfiguration != nil {
-		{
-			size, err := m.OverrideAwsNodeInterfaceConfiguration.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintAwsTypes(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x1a
-	}
-	return len(dAtA) - i, nil
-}
-func (m *AWSOverrideNodeInterfaceConfigurationType) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *AWSOverrideNodeInterfaceConfigurationType) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *AWSOverrideNodeInterfaceConfigurationType) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.SecurityGroup) > 0 {
-		i -= len(m.SecurityGroup)
-		copy(dAtA[i:], m.SecurityGroup)
-		i = encodeVarintAwsTypes(dAtA, i, uint64(len(m.SecurityGroup)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.SubnetId) > 0 {
-		i -= len(m.SubnetId)
-		copy(dAtA[i:], m.SubnetId)
-		i = encodeVarintAwsTypes(dAtA, i, uint64(len(m.SubnetId)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
 func (m *AWSResourceMappingListType) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -4191,10 +4828,10 @@ func (m *AWSResourceMappingType) MarshalToSizedBuffer(dAtA []byte) (int, error) 
 	_ = i
 	var l int
 	_ = l
-	if len(m.AwsResources) > 0 {
-		for iNdEx := len(m.AwsResources) - 1; iNdEx >= 0; iNdEx-- {
+	if len(m.AvailabilityZones) > 0 {
+		for iNdEx := len(m.AvailabilityZones) - 1; iNdEx >= 0; iNdEx-- {
 			{
-				size, err := m.AwsResources[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				size, err := m.AvailabilityZones[iNdEx].MarshalToSizedBuffer(dAtA[:i])
 				if err != nil {
 					return 0, err
 				}
@@ -4202,8 +4839,15 @@ func (m *AWSResourceMappingType) MarshalToSizedBuffer(dAtA []byte) (int, error) 
 				i = encodeVarintAwsTypes(dAtA, i, uint64(size))
 			}
 			i--
-			dAtA[i] = 0x12
+			dAtA[i] = 0x22
 		}
+	}
+	if len(m.SecurityGroup) > 0 {
+		i -= len(m.SecurityGroup)
+		copy(dAtA[i:], m.SecurityGroup)
+		i = encodeVarintAwsTypes(dAtA, i, uint64(len(m.SecurityGroup)))
+		i--
+		dAtA[i] = 0x1a
 	}
 	if m.NetworkOption != nil {
 		{
@@ -4240,12 +4884,61 @@ func (m *AWSIGWGatewayType) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.ForceUpdateRouting != nil {
+		{
+			size, err := m.ForceUpdateRouting.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintAwsTypes(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x42
+	}
 	if len(m.IgwGwId) > 0 {
 		i -= len(m.IgwGwId)
 		copy(dAtA[i:], m.IgwGwId)
 		i = encodeVarintAwsTypes(dAtA, i, uint64(len(m.IgwGwId)))
 		i--
 		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *AWSNATGatewayListType) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AWSNATGatewayListType) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AWSNATGatewayListType) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.NatGw) > 0 {
+		for iNdEx := len(m.NatGw) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.NatGw[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintAwsTypes(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
 	}
 	return len(dAtA) - i, nil
 }
@@ -4270,19 +4963,29 @@ func (m *AWSNATGatewayType) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.NatGwId) > 0 {
-		for iNdEx := len(m.NatGwId) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.NatGwId[iNdEx])
-			copy(dAtA[i:], m.NatGwId[iNdEx])
-			i = encodeVarintAwsTypes(dAtA, i, uint64(len(m.NatGwId[iNdEx])))
-			i--
-			dAtA[i] = 0x12
+	if m.ForceUpdateRouting != nil {
+		{
+			size, err := m.ForceUpdateRouting.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintAwsTypes(dAtA, i, uint64(size))
 		}
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.NatGwId) > 0 {
+		i -= len(m.NatGwId)
+		copy(dAtA[i:], m.NatGwId)
+		i = encodeVarintAwsTypes(dAtA, i, uint64(len(m.NatGwId)))
+		i--
+		dAtA[i] = 0x1a
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *AWSResources) Marshal() (dAtA []byte, err error) {
+func (m *AvailabilityZonesType) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -4292,23 +4995,16 @@ func (m *AWSResources) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *AWSResources) MarshalTo(dAtA []byte) (int, error) {
+func (m *AvailabilityZonesType) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *AWSResources) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *AvailabilityZonesType) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.SecurityGroup) > 0 {
-		i -= len(m.SecurityGroup)
-		copy(dAtA[i:], m.SecurityGroup)
-		i = encodeVarintAwsTypes(dAtA, i, uint64(len(m.SecurityGroup)))
-		i--
-		dAtA[i] = 0x1a
-	}
 	if len(m.SubnetId) > 0 {
 		i -= len(m.SubnetId)
 		copy(dAtA[i:], m.SubnetId)
@@ -4392,6 +5088,13 @@ func (m *AWSManagedMode) Size() (n int) {
 	}
 	if m.DiskEncryptionChoice != nil {
 		n += m.DiskEncryptionChoice.Size()
+	}
+	l = len(m.CloudResourcePrefix)
+	if l > 0 {
+		n += 2 + l + sovAwsTypes(uint64(l))
+	}
+	if m.VipAutomationChoice != nil {
+		n += m.VipAutomationChoice.Size()
 	}
 	return n
 }
@@ -4492,18 +5195,6 @@ func (m *AWSManagedMode_DiskEncryptionKey) Size() (n int) {
 	}
 	return n
 }
-func (m *AWSManagedMode_EgressNatGw) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.EgressNatGw != nil {
-		l = m.EgressNatGw.Size()
-		n += 2 + l + sovAwsTypes(uint64(l))
-	}
-	return n
-}
 func (m *AWSManagedMode_PrivateAdn) Size() (n int) {
 	if m == nil {
 		return 0
@@ -4540,6 +5231,55 @@ func (m *AWSManagedMode_CloudLinkConfig) Size() (n int) {
 	}
 	return n
 }
+func (m *AWSManagedMode_EgressNatGw) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.EgressNatGw != nil {
+		l = m.EgressNatGw.Size()
+		n += 2 + l + sovAwsTypes(uint64(l))
+	}
+	return n
+}
+func (m *AWSManagedMode_DisableVipAutomation) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.DisableVipAutomation != nil {
+		l = m.DisableVipAutomation.Size()
+		n += 2 + l + sovAwsTypes(uint64(l))
+	}
+	return n
+}
+func (m *AWSManagedMode_EnableVipAutomation) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.EnableVipAutomation != nil {
+		l = m.EnableVipAutomation.Size()
+		n += 2 + l + sovAwsTypes(uint64(l))
+	}
+	return n
+}
+func (m *EnableVIPAutomationType) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.DnsConnectorRef != nil {
+		l = m.DnsConnectorRef.Size()
+		n += 1 + l + sovAwsTypes(uint64(l))
+	}
+	return n
+}
+
 func (m *AWSCloudLinkConfigType) Size() (n int) {
 	if m == nil {
 		return 0
@@ -4622,7 +5362,87 @@ func (m *EnablePrivateWorkloadRoutingType) Size() (n int) {
 		l = m.NetworkOption.Size()
 		n += 1 + l + sovAwsTypes(uint64(l))
 	}
-	l = len(m.SubnetId)
+	l = len(m.RouteTableId)
+	if l > 0 {
+		n += 1 + l + sovAwsTypes(uint64(l))
+	}
+	if m.ForceUpdateRouting != nil {
+		l = m.ForceUpdateRouting.Size()
+		n += 1 + l + sovAwsTypes(uint64(l))
+	}
+	if m.IpPrefixChoice != nil {
+		n += m.IpPrefixChoice.Size()
+	}
+	return n
+}
+
+func (m *EnablePrivateWorkloadRoutingType_DefaultIpPrefix) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.DefaultIpPrefix != nil {
+		l = m.DefaultIpPrefix.Size()
+		n += 1 + l + sovAwsTypes(uint64(l))
+	}
+	return n
+}
+func (m *EnablePrivateWorkloadRoutingType_CustomIpPrefix) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.CustomIpPrefix != nil {
+		l = m.CustomIpPrefix.Size()
+		n += 1 + l + sovAwsTypes(uint64(l))
+	}
+	return n
+}
+func (m *ForceUpdateRoutingType) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.ForceUpdateRoutingChoice != nil {
+		n += m.ForceUpdateRoutingChoice.Size()
+	}
+	return n
+}
+
+func (m *ForceUpdateRoutingType_ForceRouteUpdateDisabled) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.ForceRouteUpdateDisabled != nil {
+		l = m.ForceRouteUpdateDisabled.Size()
+		n += 1 + l + sovAwsTypes(uint64(l))
+	}
+	return n
+}
+func (m *ForceUpdateRoutingType_ForceRouteUpdateEnabled) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.ForceRouteUpdateEnabled != nil {
+		l = m.ForceRouteUpdateEnabled.Size()
+		n += 1 + l + sovAwsTypes(uint64(l))
+	}
+	return n
+}
+func (m *CustomIpPrefixType) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.IpPrefix)
 	if l > 0 {
 		n += 1 + l + sovAwsTypes(uint64(l))
 	}
@@ -4638,9 +5458,6 @@ func (m *AWSTGWType) Size() (n int) {
 	l = len(m.TgwId)
 	if l > 0 {
 		n += 1 + l + sovAwsTypes(uint64(l))
-	}
-	if m.VolterraSiteAsn != 0 {
-		n += 1 + sovAwsTypes(uint64(m.VolterraSiteAsn))
 	}
 	return n
 }
@@ -4703,8 +5520,8 @@ func (m *AWSOrchestratedInterface) Size() (n int) {
 	if m.SiteToSiteConnectivityInterfaceChoice != nil {
 		n += m.SiteToSiteConnectivityInterfaceChoice.Size()
 	}
-	if m.AwsNodeInterfaceConfiguration != nil {
-		l = m.AwsNodeInterfaceConfiguration.Size()
+	l = len(m.InterfaceName)
+	if l > 0 {
 		n += 1 + l + sovAwsTypes(uint64(l))
 	}
 	return n
@@ -4734,59 +5551,6 @@ func (m *AWSOrchestratedInterface_SiteToSiteConnectivityInterfaceEnabled) Size()
 	}
 	return n
 }
-func (m *AWSNodeInterfaceConfigurationType) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.AwsNodeInterfaceConfigurationChoice != nil {
-		n += m.AwsNodeInterfaceConfigurationChoice.Size()
-	}
-	return n
-}
-
-func (m *AWSNodeInterfaceConfigurationType_InheritAwsNodeInterfaceConfiguration) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.InheritAwsNodeInterfaceConfiguration != nil {
-		l = m.InheritAwsNodeInterfaceConfiguration.Size()
-		n += 1 + l + sovAwsTypes(uint64(l))
-	}
-	return n
-}
-func (m *AWSNodeInterfaceConfigurationType_OverrideAwsNodeInterfaceConfiguration) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.OverrideAwsNodeInterfaceConfiguration != nil {
-		l = m.OverrideAwsNodeInterfaceConfiguration.Size()
-		n += 1 + l + sovAwsTypes(uint64(l))
-	}
-	return n
-}
-func (m *AWSOverrideNodeInterfaceConfigurationType) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.SubnetId)
-	if l > 0 {
-		n += 1 + l + sovAwsTypes(uint64(l))
-	}
-	l = len(m.SecurityGroup)
-	if l > 0 {
-		n += 1 + l + sovAwsTypes(uint64(l))
-	}
-	return n
-}
-
 func (m *AWSResourceMappingListType) Size() (n int) {
 	if m == nil {
 		return 0
@@ -4812,8 +5576,12 @@ func (m *AWSResourceMappingType) Size() (n int) {
 		l = m.NetworkOption.Size()
 		n += 1 + l + sovAwsTypes(uint64(l))
 	}
-	if len(m.AwsResources) > 0 {
-		for _, e := range m.AwsResources {
+	l = len(m.SecurityGroup)
+	if l > 0 {
+		n += 1 + l + sovAwsTypes(uint64(l))
+	}
+	if len(m.AvailabilityZones) > 0 {
+		for _, e := range m.AvailabilityZones {
 			l = e.Size()
 			n += 1 + l + sovAwsTypes(uint64(l))
 		}
@@ -4831,6 +5599,25 @@ func (m *AWSIGWGatewayType) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovAwsTypes(uint64(l))
 	}
+	if m.ForceUpdateRouting != nil {
+		l = m.ForceUpdateRouting.Size()
+		n += 1 + l + sovAwsTypes(uint64(l))
+	}
+	return n
+}
+
+func (m *AWSNATGatewayListType) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.NatGw) > 0 {
+		for _, e := range m.NatGw {
+			l = e.Size()
+			n += 1 + l + sovAwsTypes(uint64(l))
+		}
+	}
 	return n
 }
 
@@ -4840,16 +5627,18 @@ func (m *AWSNATGatewayType) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if len(m.NatGwId) > 0 {
-		for _, s := range m.NatGwId {
-			l = len(s)
-			n += 1 + l + sovAwsTypes(uint64(l))
-		}
+	l = len(m.NatGwId)
+	if l > 0 {
+		n += 1 + l + sovAwsTypes(uint64(l))
+	}
+	if m.ForceUpdateRouting != nil {
+		l = m.ForceUpdateRouting.Size()
+		n += 1 + l + sovAwsTypes(uint64(l))
 	}
 	return n
 }
 
-func (m *AWSResources) Size() (n int) {
+func (m *AvailabilityZonesType) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -4860,10 +5649,6 @@ func (m *AWSResources) Size() (n int) {
 		n += 1 + l + sovAwsTypes(uint64(l))
 	}
 	l = len(m.SubnetId)
-	if l > 0 {
-		n += 1 + l + sovAwsTypes(uint64(l))
-	}
-	l = len(m.SecurityGroup)
 	if l > 0 {
 		n += 1 + l + sovAwsTypes(uint64(l))
 	}
@@ -4904,6 +5689,8 @@ func (this *AWSManagedMode) String() string {
 		`PrivateWorkloadRoutingChoice:` + fmt.Sprintf("%v", this.PrivateWorkloadRoutingChoice) + `,`,
 		`AwsCloudUserAccount:` + strings.Replace(fmt.Sprintf("%v", this.AwsCloudUserAccount), "ObjectRefType", "views.ObjectRefType", 1) + `,`,
 		`DiskEncryptionChoice:` + fmt.Sprintf("%v", this.DiskEncryptionChoice) + `,`,
+		`CloudResourcePrefix:` + fmt.Sprintf("%v", this.CloudResourcePrefix) + `,`,
+		`VipAutomationChoice:` + fmt.Sprintf("%v", this.VipAutomationChoice) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -4988,16 +5775,6 @@ func (this *AWSManagedMode_DiskEncryptionKey) String() string {
 	}, "")
 	return s
 }
-func (this *AWSManagedMode_EgressNatGw) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&AWSManagedMode_EgressNatGw{`,
-		`EgressNatGw:` + strings.Replace(fmt.Sprintf("%v", this.EgressNatGw), "AWSNATGatewayType", "AWSNATGatewayType", 1) + `,`,
-		`}`,
-	}, "")
-	return s
-}
 func (this *AWSManagedMode_PrivateAdn) String() string {
 	if this == nil {
 		return "nil"
@@ -5024,6 +5801,46 @@ func (this *AWSManagedMode_CloudLinkConfig) String() string {
 	}
 	s := strings.Join([]string{`&AWSManagedMode_CloudLinkConfig{`,
 		`CloudLinkConfig:` + strings.Replace(fmt.Sprintf("%v", this.CloudLinkConfig), "AWSCloudLinkConfigType", "AWSCloudLinkConfigType", 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *AWSManagedMode_EgressNatGw) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&AWSManagedMode_EgressNatGw{`,
+		`EgressNatGw:` + strings.Replace(fmt.Sprintf("%v", this.EgressNatGw), "AWSNATGatewayListType", "AWSNATGatewayListType", 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *AWSManagedMode_DisableVipAutomation) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&AWSManagedMode_DisableVipAutomation{`,
+		`DisableVipAutomation:` + strings.Replace(fmt.Sprintf("%v", this.DisableVipAutomation), "Empty", "schema.Empty", 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *AWSManagedMode_EnableVipAutomation) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&AWSManagedMode_EnableVipAutomation{`,
+		`EnableVipAutomation:` + strings.Replace(fmt.Sprintf("%v", this.EnableVipAutomation), "EnableVIPAutomationType", "EnableVIPAutomationType", 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *EnableVIPAutomationType) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&EnableVIPAutomationType{`,
+		`DnsConnectorRef:` + strings.Replace(fmt.Sprintf("%v", this.DnsConnectorRef), "ObjectRefType", "views.ObjectRefType", 1) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -5091,7 +5908,69 @@ func (this *EnablePrivateWorkloadRoutingType) String() string {
 	}
 	s := strings.Join([]string{`&EnablePrivateWorkloadRoutingType{`,
 		`NetworkOption:` + strings.Replace(fmt.Sprintf("%v", this.NetworkOption), "NetworkSelectType", "views.NetworkSelectType", 1) + `,`,
-		`SubnetId:` + fmt.Sprintf("%v", this.SubnetId) + `,`,
+		`RouteTableId:` + fmt.Sprintf("%v", this.RouteTableId) + `,`,
+		`ForceUpdateRouting:` + strings.Replace(this.ForceUpdateRouting.String(), "ForceUpdateRoutingType", "ForceUpdateRoutingType", 1) + `,`,
+		`IpPrefixChoice:` + fmt.Sprintf("%v", this.IpPrefixChoice) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *EnablePrivateWorkloadRoutingType_DefaultIpPrefix) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&EnablePrivateWorkloadRoutingType_DefaultIpPrefix{`,
+		`DefaultIpPrefix:` + strings.Replace(fmt.Sprintf("%v", this.DefaultIpPrefix), "Empty", "schema.Empty", 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *EnablePrivateWorkloadRoutingType_CustomIpPrefix) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&EnablePrivateWorkloadRoutingType_CustomIpPrefix{`,
+		`CustomIpPrefix:` + strings.Replace(fmt.Sprintf("%v", this.CustomIpPrefix), "CustomIpPrefixType", "CustomIpPrefixType", 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *ForceUpdateRoutingType) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&ForceUpdateRoutingType{`,
+		`ForceUpdateRoutingChoice:` + fmt.Sprintf("%v", this.ForceUpdateRoutingChoice) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *ForceUpdateRoutingType_ForceRouteUpdateDisabled) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&ForceUpdateRoutingType_ForceRouteUpdateDisabled{`,
+		`ForceRouteUpdateDisabled:` + strings.Replace(fmt.Sprintf("%v", this.ForceRouteUpdateDisabled), "Empty", "schema.Empty", 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *ForceUpdateRoutingType_ForceRouteUpdateEnabled) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&ForceUpdateRoutingType_ForceRouteUpdateEnabled{`,
+		`ForceRouteUpdateEnabled:` + strings.Replace(fmt.Sprintf("%v", this.ForceRouteUpdateEnabled), "Empty", "schema.Empty", 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *CustomIpPrefixType) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&CustomIpPrefixType{`,
+		`IpPrefix:` + fmt.Sprintf("%v", this.IpPrefix) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -5102,7 +5981,6 @@ func (this *AWSTGWType) String() string {
 	}
 	s := strings.Join([]string{`&AWSTGWType{`,
 		`TgwId:` + fmt.Sprintf("%v", this.TgwId) + `,`,
-		`VolterraSiteAsn:` + fmt.Sprintf("%v", this.VolterraSiteAsn) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -5148,7 +6026,7 @@ func (this *AWSOrchestratedInterface) String() string {
 		`NetworkOption:` + strings.Replace(fmt.Sprintf("%v", this.NetworkOption), "NetworkSelectType", "views.NetworkSelectType", 1) + `,`,
 		`Mtu:` + fmt.Sprintf("%v", this.Mtu) + `,`,
 		`SiteToSiteConnectivityInterfaceChoice:` + fmt.Sprintf("%v", this.SiteToSiteConnectivityInterfaceChoice) + `,`,
-		`AwsNodeInterfaceConfiguration:` + strings.Replace(this.AwsNodeInterfaceConfiguration.String(), "AWSNodeInterfaceConfigurationType", "AWSNodeInterfaceConfigurationType", 1) + `,`,
+		`InterfaceName:` + fmt.Sprintf("%v", this.InterfaceName) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -5173,47 +6051,6 @@ func (this *AWSOrchestratedInterface_SiteToSiteConnectivityInterfaceEnabled) Str
 	}, "")
 	return s
 }
-func (this *AWSNodeInterfaceConfigurationType) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&AWSNodeInterfaceConfigurationType{`,
-		`AwsNodeInterfaceConfigurationChoice:` + fmt.Sprintf("%v", this.AwsNodeInterfaceConfigurationChoice) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *AWSNodeInterfaceConfigurationType_InheritAwsNodeInterfaceConfiguration) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&AWSNodeInterfaceConfigurationType_InheritAwsNodeInterfaceConfiguration{`,
-		`InheritAwsNodeInterfaceConfiguration:` + strings.Replace(fmt.Sprintf("%v", this.InheritAwsNodeInterfaceConfiguration), "Empty", "schema.Empty", 1) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *AWSNodeInterfaceConfigurationType_OverrideAwsNodeInterfaceConfiguration) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&AWSNodeInterfaceConfigurationType_OverrideAwsNodeInterfaceConfiguration{`,
-		`OverrideAwsNodeInterfaceConfiguration:` + strings.Replace(fmt.Sprintf("%v", this.OverrideAwsNodeInterfaceConfiguration), "AWSOverrideNodeInterfaceConfigurationType", "AWSOverrideNodeInterfaceConfigurationType", 1) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *AWSOverrideNodeInterfaceConfigurationType) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&AWSOverrideNodeInterfaceConfigurationType{`,
-		`SubnetId:` + fmt.Sprintf("%v", this.SubnetId) + `,`,
-		`SecurityGroup:` + fmt.Sprintf("%v", this.SecurityGroup) + `,`,
-		`}`,
-	}, "")
-	return s
-}
 func (this *AWSResourceMappingListType) String() string {
 	if this == nil {
 		return "nil"
@@ -5233,14 +6070,15 @@ func (this *AWSResourceMappingType) String() string {
 	if this == nil {
 		return "nil"
 	}
-	repeatedStringForAwsResources := "[]*AWSResources{"
-	for _, f := range this.AwsResources {
-		repeatedStringForAwsResources += strings.Replace(f.String(), "AWSResources", "AWSResources", 1) + ","
+	repeatedStringForAvailabilityZones := "[]*AvailabilityZonesType{"
+	for _, f := range this.AvailabilityZones {
+		repeatedStringForAvailabilityZones += strings.Replace(f.String(), "AvailabilityZonesType", "AvailabilityZonesType", 1) + ","
 	}
-	repeatedStringForAwsResources += "}"
+	repeatedStringForAvailabilityZones += "}"
 	s := strings.Join([]string{`&AWSResourceMappingType{`,
 		`NetworkOption:` + strings.Replace(fmt.Sprintf("%v", this.NetworkOption), "NetworkSelectType", "views.NetworkSelectType", 1) + `,`,
-		`AwsResources:` + repeatedStringForAwsResources + `,`,
+		`SecurityGroup:` + fmt.Sprintf("%v", this.SecurityGroup) + `,`,
+		`AvailabilityZones:` + repeatedStringForAvailabilityZones + `,`,
 		`}`,
 	}, "")
 	return s
@@ -5251,6 +6089,22 @@ func (this *AWSIGWGatewayType) String() string {
 	}
 	s := strings.Join([]string{`&AWSIGWGatewayType{`,
 		`IgwGwId:` + fmt.Sprintf("%v", this.IgwGwId) + `,`,
+		`ForceUpdateRouting:` + strings.Replace(this.ForceUpdateRouting.String(), "ForceUpdateRoutingType", "ForceUpdateRoutingType", 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *AWSNATGatewayListType) String() string {
+	if this == nil {
+		return "nil"
+	}
+	repeatedStringForNatGw := "[]*AWSNATGatewayType{"
+	for _, f := range this.NatGw {
+		repeatedStringForNatGw += strings.Replace(f.String(), "AWSNATGatewayType", "AWSNATGatewayType", 1) + ","
+	}
+	repeatedStringForNatGw += "}"
+	s := strings.Join([]string{`&AWSNATGatewayListType{`,
+		`NatGw:` + repeatedStringForNatGw + `,`,
 		`}`,
 	}, "")
 	return s
@@ -5261,18 +6115,18 @@ func (this *AWSNATGatewayType) String() string {
 	}
 	s := strings.Join([]string{`&AWSNATGatewayType{`,
 		`NatGwId:` + fmt.Sprintf("%v", this.NatGwId) + `,`,
+		`ForceUpdateRouting:` + strings.Replace(this.ForceUpdateRouting.String(), "ForceUpdateRoutingType", "ForceUpdateRoutingType", 1) + `,`,
 		`}`,
 	}, "")
 	return s
 }
-func (this *AWSResources) String() string {
+func (this *AvailabilityZonesType) String() string {
 	if this == nil {
 		return "nil"
 	}
-	s := strings.Join([]string{`&AWSResources{`,
+	s := strings.Join([]string{`&AvailabilityZonesType{`,
 		`AvailabilityZone:` + fmt.Sprintf("%v", this.AvailabilityZone) + `,`,
 		`SubnetId:` + fmt.Sprintf("%v", this.SubnetId) + `,`,
-		`SecurityGroup:` + fmt.Sprintf("%v", this.SecurityGroup) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -5944,41 +6798,6 @@ func (m *AWSManagedMode) Unmarshal(dAtA []byte) error {
 			}
 			m.DiskEncryptionChoice = &AWSManagedMode_DiskEncryptionKey{v}
 			iNdEx = postIndex
-		case 48:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field EgressNatGw", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAwsTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthAwsTypes
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthAwsTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			v := &AWSNATGatewayType{}
-			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			m.EgressGatewayChoice = &AWSManagedMode_EgressNatGw{v}
-			iNdEx = postIndex
 		case 50:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field PrivateAdn", wireType)
@@ -6013,6 +6832,38 @@ func (m *AWSManagedMode) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			m.EgressGatewayChoice = &AWSManagedMode_PrivateAdn{v}
+			iNdEx = postIndex
+		case 51:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CloudResourcePrefix", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAwsTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CloudResourcePrefix = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 53:
 			if wireType != 2 {
@@ -6083,6 +6934,200 @@ func (m *AWSManagedMode) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			m.PrivateConnectivityChoice = &AWSManagedMode_CloudLinkConfig{v}
+			iNdEx = postIndex
+		case 55:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EgressNatGw", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAwsTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			v := &AWSNATGatewayListType{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			m.EgressGatewayChoice = &AWSManagedMode_EgressNatGw{v}
+			iNdEx = postIndex
+		case 57:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DisableVipAutomation", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAwsTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			v := &schema.Empty{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			m.VipAutomationChoice = &AWSManagedMode_DisableVipAutomation{v}
+			iNdEx = postIndex
+		case 58:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EnableVipAutomation", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAwsTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			v := &EnableVIPAutomationType{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			m.VipAutomationChoice = &AWSManagedMode_EnableVipAutomation{v}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipAwsTypes(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *EnableVIPAutomationType) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowAwsTypes
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: EnableVIPAutomationType: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: EnableVIPAutomationType: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DnsConnectorRef", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAwsTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.DnsConnectorRef == nil {
+				m.DnsConnectorRef = &views.ObjectRefType{}
+			}
+			if err := m.DnsConnectorRef.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -6536,9 +7581,9 @@ func (m *EnablePrivateWorkloadRoutingType) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 3:
+		case 5:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SubnetId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field RouteTableId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -6566,7 +7611,321 @@ func (m *EnablePrivateWorkloadRoutingType) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.SubnetId = string(dAtA[iNdEx:postIndex])
+			m.RouteTableId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ForceUpdateRouting", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAwsTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.ForceUpdateRouting == nil {
+				m.ForceUpdateRouting = &ForceUpdateRoutingType{}
+			}
+			if err := m.ForceUpdateRouting.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DefaultIpPrefix", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAwsTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			v := &schema.Empty{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			m.IpPrefixChoice = &EnablePrivateWorkloadRoutingType_DefaultIpPrefix{v}
+			iNdEx = postIndex
+		case 10:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CustomIpPrefix", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAwsTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			v := &CustomIpPrefixType{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			m.IpPrefixChoice = &EnablePrivateWorkloadRoutingType_CustomIpPrefix{v}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipAwsTypes(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ForceUpdateRoutingType) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowAwsTypes
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ForceUpdateRoutingType: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ForceUpdateRoutingType: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ForceRouteUpdateDisabled", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAwsTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			v := &schema.Empty{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			m.ForceUpdateRoutingChoice = &ForceUpdateRoutingType_ForceRouteUpdateDisabled{v}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ForceRouteUpdateEnabled", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAwsTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			v := &schema.Empty{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			m.ForceUpdateRoutingChoice = &ForceUpdateRoutingType_ForceRouteUpdateEnabled{v}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipAwsTypes(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CustomIpPrefixType) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowAwsTypes
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CustomIpPrefixType: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CustomIpPrefixType: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IpPrefix", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAwsTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.IpPrefix = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -6653,25 +8012,6 @@ func (m *AWSTGWType) Unmarshal(dAtA []byte) error {
 			}
 			m.TgwId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field VolterraSiteAsn", wireType)
-			}
-			m.VolterraSiteAsn = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAwsTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.VolterraSiteAsn |= uint32(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipAwsTypes(dAtA[iNdEx:])
@@ -7120,221 +8460,9 @@ func (m *AWSOrchestratedInterface) Unmarshal(dAtA []byte) error {
 			}
 			m.SiteToSiteConnectivityInterfaceChoice = &AWSOrchestratedInterface_SiteToSiteConnectivityInterfaceEnabled{v}
 			iNdEx = postIndex
-		case 11:
+		case 12:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AwsNodeInterfaceConfiguration", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAwsTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthAwsTypes
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthAwsTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.AwsNodeInterfaceConfiguration == nil {
-				m.AwsNodeInterfaceConfiguration = &AWSNodeInterfaceConfigurationType{}
-			}
-			if err := m.AwsNodeInterfaceConfiguration.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipAwsTypes(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthAwsTypes
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthAwsTypes
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *AWSNodeInterfaceConfigurationType) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowAwsTypes
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: AWSNodeInterfaceConfigurationType: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: AWSNodeInterfaceConfigurationType: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field InheritAwsNodeInterfaceConfiguration", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAwsTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthAwsTypes
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthAwsTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			v := &schema.Empty{}
-			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			m.AwsNodeInterfaceConfigurationChoice = &AWSNodeInterfaceConfigurationType_InheritAwsNodeInterfaceConfiguration{v}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OverrideAwsNodeInterfaceConfiguration", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAwsTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthAwsTypes
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthAwsTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			v := &AWSOverrideNodeInterfaceConfigurationType{}
-			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			m.AwsNodeInterfaceConfigurationChoice = &AWSNodeInterfaceConfigurationType_OverrideAwsNodeInterfaceConfiguration{v}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipAwsTypes(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthAwsTypes
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthAwsTypes
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *AWSOverrideNodeInterfaceConfigurationType) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowAwsTypes
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: AWSOverrideNodeInterfaceConfigurationType: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: AWSOverrideNodeInterfaceConfigurationType: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SubnetId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field InterfaceName", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -7362,39 +8490,7 @@ func (m *AWSOverrideNodeInterfaceConfigurationType) Unmarshal(dAtA []byte) error
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.SubnetId = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SecurityGroup", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAwsTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthAwsTypes
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthAwsTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.SecurityGroup = string(dAtA[iNdEx:postIndex])
+			m.InterfaceName = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -7572,9 +8668,41 @@ func (m *AWSResourceMappingType) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 2:
+		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AwsResources", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field SecurityGroup", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAwsTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.SecurityGroup = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AvailabilityZones", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -7601,8 +8729,8 @@ func (m *AWSResourceMappingType) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.AwsResources = append(m.AwsResources, &AWSResources{})
-			if err := m.AwsResources[len(m.AwsResources)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.AvailabilityZones = append(m.AvailabilityZones, &AvailabilityZonesType{})
+			if err := m.AvailabilityZones[len(m.AvailabilityZones)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -7691,6 +8819,129 @@ func (m *AWSIGWGatewayType) Unmarshal(dAtA []byte) error {
 			}
 			m.IgwGwId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ForceUpdateRouting", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAwsTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.ForceUpdateRouting == nil {
+				m.ForceUpdateRouting = &ForceUpdateRoutingType{}
+			}
+			if err := m.ForceUpdateRouting.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipAwsTypes(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AWSNATGatewayListType) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowAwsTypes
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AWSNATGatewayListType: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AWSNATGatewayListType: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NatGw", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAwsTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NatGw = append(m.NatGw, &AWSNATGatewayType{})
+			if err := m.NatGw[len(m.NatGw)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipAwsTypes(dAtA[iNdEx:])
@@ -7744,7 +8995,7 @@ func (m *AWSNATGatewayType) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: AWSNATGatewayType: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
-		case 2:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field NatGwId", wireType)
 			}
@@ -7774,7 +9025,43 @@ func (m *AWSNATGatewayType) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.NatGwId = append(m.NatGwId, string(dAtA[iNdEx:postIndex]))
+			m.NatGwId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ForceUpdateRouting", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAwsTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthAwsTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.ForceUpdateRouting == nil {
+				m.ForceUpdateRouting = &ForceUpdateRoutingType{}
+			}
+			if err := m.ForceUpdateRouting.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -7800,7 +9087,7 @@ func (m *AWSNATGatewayType) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *AWSResources) Unmarshal(dAtA []byte) error {
+func (m *AvailabilityZonesType) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -7823,10 +9110,10 @@ func (m *AWSResources) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: AWSResources: wiretype end group for non-group")
+			return fmt.Errorf("proto: AvailabilityZonesType: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: AWSResources: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: AvailabilityZonesType: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -7892,38 +9179,6 @@ func (m *AWSResources) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.SubnetId = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SecurityGroup", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAwsTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthAwsTypes
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthAwsTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.SecurityGroup = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

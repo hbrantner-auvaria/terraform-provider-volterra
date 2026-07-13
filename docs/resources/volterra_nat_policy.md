@@ -42,7 +42,7 @@ resource "volterra_nat_policy" "example" {
       destination_port {
         // One of the arguments from this list "no_port_match port port_ranges" can be set
 
-        port_ranges = "8080-8191"
+        port = "6443"
       }
 
       // One of the arguments from this list "segment site_local_inside_network site_local_network virtual_network" can be set
@@ -74,7 +74,7 @@ resource "volterra_nat_policy" "example" {
 
     // One of the arguments from this list "cloud_connect network_interface node_interface segment virtual_network" must be set
 
-    cloud_connect {
+    network_interface {
       refs {
         name      = "test1"
         namespace = "staging"

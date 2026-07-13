@@ -10338,11 +10338,6 @@ func resourceVolterraCdnLoadbalancer() *schema.Resource {
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
 
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
-
 															"name": {
 																Type:     schema.TypeString,
 																Optional: true,
@@ -10386,11 +10381,6 @@ func resourceVolterraCdnLoadbalancer() *schema.Resource {
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
 
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
-
 																		"name": {
 																			Type:     schema.TypeString,
 																			Optional: true,
@@ -10420,11 +10410,6 @@ func resourceVolterraCdnLoadbalancer() *schema.Resource {
 																Optional: true,
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
-
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
 
 																		"name": {
 																			Type:     schema.TypeString,
@@ -10574,11 +10559,6 @@ func resourceVolterraCdnLoadbalancer() *schema.Resource {
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
 
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
-
 																		"name": {
 																			Type:     schema.TypeString,
 																			Optional: true,
@@ -10608,11 +10588,6 @@ func resourceVolterraCdnLoadbalancer() *schema.Resource {
 																Optional: true,
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
-
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
 
 																		"name": {
 																			Type:     schema.TypeString,
@@ -17973,7 +17948,7 @@ func resourceVolterraCdnLoadbalancer() *schema.Resource {
 															"actions": {
 																Type: schema.TypeList,
 
-																Optional:   true,
+																Required:   true,
 																Deprecated: "This field is deprecated and will be removed in future release.",
 																Elem: &schema.Schema{
 																	Type: schema.TypeString,
@@ -22304,7 +22279,7 @@ func resourceVolterraCdnLoadbalancer() *schema.Resource {
 															"actions": {
 																Type: schema.TypeList,
 
-																Optional:   true,
+																Required:   true,
 																Deprecated: "This field is deprecated and will be removed in future release.",
 																Elem: &schema.Schema{
 																	Type: schema.TypeString,
@@ -27787,21 +27762,21 @@ func resourceVolterraCdnLoadbalancerCreate(d *schema.ResourceData, meta interfac
 				if v, ok := cs["api_definition"]; ok && !isIntfNil(v) {
 
 					sl := v.([]interface{})
-					apiDefinitionIntNew := &ves_io_schema_views.ObjectRefType{}
-					apiDefinitionChoiceInt.ApiSpecification.ApiDefinition = apiDefinitionIntNew
+					apiDefinitionChoiceIntNew := &ves_io_schema_views.ObjectRefType{}
+					apiDefinitionChoiceInt.ApiSpecification.ApiDefinition = apiDefinitionChoiceIntNew
 
 					for _, set := range sl {
 						if set != nil {
 							adMapToStrVal := set.(map[string]interface{})
 							if val, ok := adMapToStrVal["name"]; ok && !isIntfNil(v) {
-								apiDefinitionIntNew.Name = val.(string)
+								apiDefinitionChoiceIntNew.Name = val.(string)
 							}
 							if val, ok := adMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-								apiDefinitionIntNew.Namespace = val.(string)
+								apiDefinitionChoiceIntNew.Namespace = val.(string)
 							}
 
 							if val, ok := adMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-								apiDefinitionIntNew.Tenant = val.(string)
+								apiDefinitionChoiceIntNew.Tenant = val.(string)
 							}
 						}
 					}
@@ -29084,21 +29059,21 @@ func resourceVolterraCdnLoadbalancerCreate(d *schema.ResourceData, meta interfac
 				if v, ok := cs["api_definition"]; ok && !isIntfNil(v) {
 
 					sl := v.([]interface{})
-					apiDefinitionIntNew := &ves_io_schema_views.ObjectRefType{}
-					apiDefinitionChoiceInt.ApiSpecificationOnCacheMiss.ApiDefinition = apiDefinitionIntNew
+					apiDefinitionChoiceIntNew := &ves_io_schema_views.ObjectRefType{}
+					apiDefinitionChoiceInt.ApiSpecificationOnCacheMiss.ApiDefinition = apiDefinitionChoiceIntNew
 
 					for _, set := range sl {
 						if set != nil {
 							adMapToStrVal := set.(map[string]interface{})
 							if val, ok := adMapToStrVal["name"]; ok && !isIntfNil(v) {
-								apiDefinitionIntNew.Name = val.(string)
+								apiDefinitionChoiceIntNew.Name = val.(string)
 							}
 							if val, ok := adMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-								apiDefinitionIntNew.Namespace = val.(string)
+								apiDefinitionChoiceIntNew.Namespace = val.(string)
 							}
 
 							if val, ok := adMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-								apiDefinitionIntNew.Tenant = val.(string)
+								apiDefinitionChoiceIntNew.Tenant = val.(string)
 							}
 						}
 					}
@@ -44970,21 +44945,21 @@ func resourceVolterraCdnLoadbalancerCreate(d *schema.ResourceData, meta interfac
 													if v, ok := cs["api_definition"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														apiDefinitionIntNew := &ves_io_schema_views.ObjectRefType{}
-														apiDefinitionChoiceInt.ApiSpecification.ApiDefinition = apiDefinitionIntNew
+														apiDefinitionChoiceIntNew := &ves_io_schema_views.ObjectRefType{}
+														apiDefinitionChoiceInt.ApiSpecification.ApiDefinition = apiDefinitionChoiceIntNew
 
 														for _, set := range sl {
 															if set != nil {
 																adMapToStrVal := set.(map[string]interface{})
 																if val, ok := adMapToStrVal["name"]; ok && !isIntfNil(v) {
-																	apiDefinitionIntNew.Name = val.(string)
+																	apiDefinitionChoiceIntNew.Name = val.(string)
 																}
 																if val, ok := adMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-																	apiDefinitionIntNew.Namespace = val.(string)
+																	apiDefinitionChoiceIntNew.Namespace = val.(string)
 																}
 
 																if val, ok := adMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-																	apiDefinitionIntNew.Tenant = val.(string)
+																	apiDefinitionChoiceIntNew.Tenant = val.(string)
 																}
 															}
 														}
@@ -46267,21 +46242,21 @@ func resourceVolterraCdnLoadbalancerCreate(d *schema.ResourceData, meta interfac
 													if v, ok := cs["api_definition"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														apiDefinitionIntNew := &ves_io_schema_views.ObjectRefType{}
-														apiDefinitionChoiceInt.ApiSpecificationOnCacheMiss.ApiDefinition = apiDefinitionIntNew
+														apiDefinitionChoiceIntNew := &ves_io_schema_views.ObjectRefType{}
+														apiDefinitionChoiceInt.ApiSpecificationOnCacheMiss.ApiDefinition = apiDefinitionChoiceIntNew
 
 														for _, set := range sl {
 															if set != nil {
 																adMapToStrVal := set.(map[string]interface{})
 																if val, ok := adMapToStrVal["name"]; ok && !isIntfNil(v) {
-																	apiDefinitionIntNew.Name = val.(string)
+																	apiDefinitionChoiceIntNew.Name = val.(string)
 																}
 																if val, ok := adMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-																	apiDefinitionIntNew.Namespace = val.(string)
+																	apiDefinitionChoiceIntNew.Namespace = val.(string)
 																}
 
 																if val, ok := adMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-																	apiDefinitionIntNew.Tenant = val.(string)
+																	apiDefinitionChoiceIntNew.Tenant = val.(string)
 																}
 															}
 														}
@@ -66047,6 +66022,7 @@ func resourceVolterraCdnLoadbalancerRead(d *schema.ResourceData, meta interface{
 		}
 		return fmt.Errorf("Error finding Volterra CdnLoadbalancer %q: %s", d.Id(), err)
 	}
+
 	return setCdnLoadbalancerFields(client, d, resp)
 }
 
@@ -66145,21 +66121,21 @@ func resourceVolterraCdnLoadbalancerUpdate(d *schema.ResourceData, meta interfac
 				if v, ok := cs["api_definition"]; ok && !isIntfNil(v) {
 
 					sl := v.([]interface{})
-					apiDefinitionIntNew := &ves_io_schema_views.ObjectRefType{}
-					apiDefinitionChoiceInt.ApiSpecification.ApiDefinition = apiDefinitionIntNew
+					apiDefinitionChoiceIntNew := &ves_io_schema_views.ObjectRefType{}
+					apiDefinitionChoiceInt.ApiSpecification.ApiDefinition = apiDefinitionChoiceIntNew
 
 					for _, set := range sl {
 						if set != nil {
 							adMapToStrVal := set.(map[string]interface{})
 							if val, ok := adMapToStrVal["name"]; ok && !isIntfNil(v) {
-								apiDefinitionIntNew.Name = val.(string)
+								apiDefinitionChoiceIntNew.Name = val.(string)
 							}
 							if val, ok := adMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-								apiDefinitionIntNew.Namespace = val.(string)
+								apiDefinitionChoiceIntNew.Namespace = val.(string)
 							}
 
 							if val, ok := adMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-								apiDefinitionIntNew.Tenant = val.(string)
+								apiDefinitionChoiceIntNew.Tenant = val.(string)
 							}
 						}
 					}
@@ -67442,21 +67418,21 @@ func resourceVolterraCdnLoadbalancerUpdate(d *schema.ResourceData, meta interfac
 				if v, ok := cs["api_definition"]; ok && !isIntfNil(v) {
 
 					sl := v.([]interface{})
-					apiDefinitionIntNew := &ves_io_schema_views.ObjectRefType{}
-					apiDefinitionChoiceInt.ApiSpecificationOnCacheMiss.ApiDefinition = apiDefinitionIntNew
+					apiDefinitionChoiceIntNew := &ves_io_schema_views.ObjectRefType{}
+					apiDefinitionChoiceInt.ApiSpecificationOnCacheMiss.ApiDefinition = apiDefinitionChoiceIntNew
 
 					for _, set := range sl {
 						if set != nil {
 							adMapToStrVal := set.(map[string]interface{})
 							if val, ok := adMapToStrVal["name"]; ok && !isIntfNil(v) {
-								apiDefinitionIntNew.Name = val.(string)
+								apiDefinitionChoiceIntNew.Name = val.(string)
 							}
 							if val, ok := adMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-								apiDefinitionIntNew.Namespace = val.(string)
+								apiDefinitionChoiceIntNew.Namespace = val.(string)
 							}
 
 							if val, ok := adMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-								apiDefinitionIntNew.Tenant = val.(string)
+								apiDefinitionChoiceIntNew.Tenant = val.(string)
 							}
 						}
 					}
@@ -83299,21 +83275,21 @@ func resourceVolterraCdnLoadbalancerUpdate(d *schema.ResourceData, meta interfac
 													if v, ok := cs["api_definition"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														apiDefinitionIntNew := &ves_io_schema_views.ObjectRefType{}
-														apiDefinitionChoiceInt.ApiSpecification.ApiDefinition = apiDefinitionIntNew
+														apiDefinitionChoiceIntNew := &ves_io_schema_views.ObjectRefType{}
+														apiDefinitionChoiceInt.ApiSpecification.ApiDefinition = apiDefinitionChoiceIntNew
 
 														for _, set := range sl {
 															if set != nil {
 																adMapToStrVal := set.(map[string]interface{})
 																if val, ok := adMapToStrVal["name"]; ok && !isIntfNil(v) {
-																	apiDefinitionIntNew.Name = val.(string)
+																	apiDefinitionChoiceIntNew.Name = val.(string)
 																}
 																if val, ok := adMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-																	apiDefinitionIntNew.Namespace = val.(string)
+																	apiDefinitionChoiceIntNew.Namespace = val.(string)
 																}
 
 																if val, ok := adMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-																	apiDefinitionIntNew.Tenant = val.(string)
+																	apiDefinitionChoiceIntNew.Tenant = val.(string)
 																}
 															}
 														}
@@ -84596,21 +84572,21 @@ func resourceVolterraCdnLoadbalancerUpdate(d *schema.ResourceData, meta interfac
 													if v, ok := cs["api_definition"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														apiDefinitionIntNew := &ves_io_schema_views.ObjectRefType{}
-														apiDefinitionChoiceInt.ApiSpecificationOnCacheMiss.ApiDefinition = apiDefinitionIntNew
+														apiDefinitionChoiceIntNew := &ves_io_schema_views.ObjectRefType{}
+														apiDefinitionChoiceInt.ApiSpecificationOnCacheMiss.ApiDefinition = apiDefinitionChoiceIntNew
 
 														for _, set := range sl {
 															if set != nil {
 																adMapToStrVal := set.(map[string]interface{})
 																if val, ok := adMapToStrVal["name"]; ok && !isIntfNil(v) {
-																	apiDefinitionIntNew.Name = val.(string)
+																	apiDefinitionChoiceIntNew.Name = val.(string)
 																}
 																if val, ok := adMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-																	apiDefinitionIntNew.Namespace = val.(string)
+																	apiDefinitionChoiceIntNew.Namespace = val.(string)
 																}
 
 																if val, ok := adMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-																	apiDefinitionIntNew.Tenant = val.(string)
+																	apiDefinitionChoiceIntNew.Tenant = val.(string)
 																}
 															}
 														}
@@ -104360,5 +104336,11 @@ func resourceVolterraCdnLoadbalancerDelete(d *schema.ResourceData, meta interfac
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_views_cdn_loadbalancer.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_views_cdn_loadbalancer.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting CdnLoadbalancer: %w", err)
+	}
+	return nil
+
 }

@@ -2298,30 +2298,30 @@ func resourceVolterraBgpCreate(d *schema.ResourceData, meta interface{}) error {
 							if v, ok := cs["ref"]; ok && !isIntfNil(v) {
 
 								sl := v.([]interface{})
-								refIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
-								refOrSelectorInt.Site.Ref = refIntNew
+								refOrSelectorIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
+								refOrSelectorInt.Site.Ref = refOrSelectorIntNew
 								for i, ps := range sl {
 									if ps != nil {
 
 										rMapToStrVal := ps.(map[string]interface{})
-										refIntNew[i] = &ves_io_schema.ObjectRefType{}
+										refOrSelectorIntNew[i] = &ves_io_schema.ObjectRefType{}
 
-										refIntNew[i].Kind = "site"
+										refOrSelectorIntNew[i].Kind = "site"
 
 										if v, ok := rMapToStrVal["name"]; ok && !isIntfNil(v) {
-											refIntNew[i].Name = v.(string)
+											refOrSelectorIntNew[i].Name = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-											refIntNew[i].Namespace = v.(string)
+											refOrSelectorIntNew[i].Namespace = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-											refIntNew[i].Tenant = v.(string)
+											refOrSelectorIntNew[i].Tenant = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["uid"]; ok && !isIntfNil(v) {
-											refIntNew[i].Uid = v.(string)
+											refOrSelectorIntNew[i].Uid = v.(string)
 										}
 
 									}
@@ -2415,30 +2415,30 @@ func resourceVolterraBgpCreate(d *schema.ResourceData, meta interface{}) error {
 							if v, ok := cs["ref"]; ok && !isIntfNil(v) {
 
 								sl := v.([]interface{})
-								refIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
-								refOrSelectorInt.VirtualSite.Ref = refIntNew
+								refOrSelectorIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
+								refOrSelectorInt.VirtualSite.Ref = refOrSelectorIntNew
 								for i, ps := range sl {
 									if ps != nil {
 
 										rMapToStrVal := ps.(map[string]interface{})
-										refIntNew[i] = &ves_io_schema.ObjectRefType{}
+										refOrSelectorIntNew[i] = &ves_io_schema.ObjectRefType{}
 
-										refIntNew[i].Kind = "virtual_site"
+										refOrSelectorIntNew[i].Kind = "virtual_site"
 
 										if v, ok := rMapToStrVal["name"]; ok && !isIntfNil(v) {
-											refIntNew[i].Name = v.(string)
+											refOrSelectorIntNew[i].Name = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-											refIntNew[i].Namespace = v.(string)
+											refOrSelectorIntNew[i].Namespace = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-											refIntNew[i].Tenant = v.(string)
+											refOrSelectorIntNew[i].Tenant = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["uid"]; ok && !isIntfNil(v) {
-											refIntNew[i].Uid = v.(string)
+											refOrSelectorIntNew[i].Uid = v.(string)
 										}
 
 									}
@@ -2515,6 +2515,7 @@ func resourceVolterraBgpRead(d *schema.ResourceData, meta interface{}) error {
 		}
 		return fmt.Errorf("Error finding Volterra Bgp %q: %s", d.Id(), err)
 	}
+
 	return setBgpFields(client, d, resp)
 }
 
@@ -3827,30 +3828,30 @@ func resourceVolterraBgpUpdate(d *schema.ResourceData, meta interface{}) error {
 							if v, ok := cs["ref"]; ok && !isIntfNil(v) {
 
 								sl := v.([]interface{})
-								refIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
-								refOrSelectorInt.Site.Ref = refIntNew
+								refOrSelectorIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
+								refOrSelectorInt.Site.Ref = refOrSelectorIntNew
 								for i, ps := range sl {
 									if ps != nil {
 
 										rMapToStrVal := ps.(map[string]interface{})
-										refIntNew[i] = &ves_io_schema.ObjectRefType{}
+										refOrSelectorIntNew[i] = &ves_io_schema.ObjectRefType{}
 
-										refIntNew[i].Kind = "site"
+										refOrSelectorIntNew[i].Kind = "site"
 
 										if v, ok := rMapToStrVal["name"]; ok && !isIntfNil(v) {
-											refIntNew[i].Name = v.(string)
+											refOrSelectorIntNew[i].Name = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-											refIntNew[i].Namespace = v.(string)
+											refOrSelectorIntNew[i].Namespace = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-											refIntNew[i].Tenant = v.(string)
+											refOrSelectorIntNew[i].Tenant = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["uid"]; ok && !isIntfNil(v) {
-											refIntNew[i].Uid = v.(string)
+											refOrSelectorIntNew[i].Uid = v.(string)
 										}
 
 									}
@@ -3944,30 +3945,30 @@ func resourceVolterraBgpUpdate(d *schema.ResourceData, meta interface{}) error {
 							if v, ok := cs["ref"]; ok && !isIntfNil(v) {
 
 								sl := v.([]interface{})
-								refIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
-								refOrSelectorInt.VirtualSite.Ref = refIntNew
+								refOrSelectorIntNew := make([]*ves_io_schema.ObjectRefType, len(sl))
+								refOrSelectorInt.VirtualSite.Ref = refOrSelectorIntNew
 								for i, ps := range sl {
 									if ps != nil {
 
 										rMapToStrVal := ps.(map[string]interface{})
-										refIntNew[i] = &ves_io_schema.ObjectRefType{}
+										refOrSelectorIntNew[i] = &ves_io_schema.ObjectRefType{}
 
-										refIntNew[i].Kind = "virtual_site"
+										refOrSelectorIntNew[i].Kind = "virtual_site"
 
 										if v, ok := rMapToStrVal["name"]; ok && !isIntfNil(v) {
-											refIntNew[i].Name = v.(string)
+											refOrSelectorIntNew[i].Name = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-											refIntNew[i].Namespace = v.(string)
+											refOrSelectorIntNew[i].Namespace = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-											refIntNew[i].Tenant = v.(string)
+											refOrSelectorIntNew[i].Tenant = v.(string)
 										}
 
 										if v, ok := rMapToStrVal["uid"]; ok && !isIntfNil(v) {
-											refIntNew[i].Uid = v.(string)
+											refOrSelectorIntNew[i].Uid = v.(string)
 										}
 
 									}
@@ -4048,5 +4049,11 @@ func resourceVolterraBgpDelete(d *schema.ResourceData, meta interface{}) error {
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_bgp.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_bgp.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting Bgp: %w", err)
+	}
+	return nil
+
 }

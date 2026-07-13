@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
@@ -216,6 +217,7 @@ func resourceVolterraCloudElasticIpRead(d *schema.ResourceData, meta interface{}
 		}
 		return fmt.Errorf("Error finding Volterra CloudElasticIp %q: %s", d.Id(), err)
 	}
+
 	return setCloudElasticIpFields(client, d, resp)
 }
 
@@ -359,5 +361,63 @@ func resourceVolterraCloudElasticIpDelete(d *schema.ResourceData, meta interface
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_cloud_elastic_ip.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_cloud_elastic_ip.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting CloudElasticIp: %w", err)
+	}
+	return waitForDeleteFinalizersCloudElasticIp(d, meta)
+
+}
+
+// waitForDeleteFinalizersCloudElasticIp waits for delete finalizers of a Volterra CloudElasticIp resource to complete.
+// It polls the resource GET API with exponential backoff, up to a maximum number of retries.
+// When the GET API returns a 404, the resource has been fully deleted and finalizers are complete.
+// If the resource still exists after all retries, it returns an error.
+//
+// Parameters:
+//   - d: Terraform resource data containing the CloudElasticIp name and namespace.
+//   - meta: Provider meta, expected to be an *APIClient.
+//
+// Returns:
+//   - error: nil if resource is deleted, otherwise an error.
+func waitForDeleteFinalizersCloudElasticIp(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*APIClient)
+	name := d.Get("name").(string)
+	namespace := d.Get("namespace").(string)
+
+	const (
+		maxRetries     = 30
+		initialBackoff = 2 * time.Second
+		maxBackoff     = 10 * time.Second
+	)
+
+	backoff := initialBackoff
+
+	for attempt := 0; attempt <= maxRetries; attempt++ {
+		time.Sleep(backoff)
+
+		_, err := client.GetObject(context.Background(), ves_io_schema_cloud_elastic_ip.ObjectType, namespace, name)
+		if err != nil {
+			if strings.Contains(err.Error(), "status code 404") {
+				log.Printf("[INFO] CloudElasticIp %s has been successfully deleted", name)
+				d.SetId("")
+				return nil
+			}
+			return fmt.Errorf("error checking deletion status of CloudElasticIp %q: %w", d.Id(), err)
+		}
+
+		if attempt == maxRetries {
+			return fmt.Errorf("CloudElasticIp %s still exists after %d retries, delete finalizers may not have completed", name, maxRetries)
+		}
+
+		log.Printf("[INFO] CloudElasticIp %s still exists (delete finalizers pending). Retrying in %s...", name, backoff)
+
+		backoff *= 2
+		if backoff > maxBackoff {
+			backoff = maxBackoff
+		}
+	}
+
+	return nil
 }

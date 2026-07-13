@@ -1791,7 +1791,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2015,7 +2015,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2269,7 +2269,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -3591,12 +3591,12 @@ var APISwaggerJSON string = `{
                 },
                 "regex_value": {
                     "type": "string",
-                    "description": "Exclusive with [exact_value suffix_value]\n Regular Expression value for the domain name\n\nExample: - \"([a-z]([-a-z0-9]*[a-z0-9])?)\\.com$'\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.max_len: 256\n  ves.io.schema.rules.string.min_len: 1\n  ves.io.schema.rules.string.regex: true\n",
+                    "description": "Exclusive with [exact_value suffix_value]\n Regular Expression value for the domain name\n\nExample: - \"([a-z]([-a-z0-9]*[a-z0-9])?)\\\\.com$\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.max_len: 256\n  ves.io.schema.rules.string.min_len: 1\n  ves.io.schema.rules.string.regex: true\n",
                     "title": "regex values of Domains",
                     "minLength": 1,
                     "maxLength": 256,
                     "x-displayname": "Regex Values of Domains",
-                    "x-ves-example": "([a-z]([-a-z0-9]*[a-z0-9])?)\\.com$'",
+                    "x-ves-example": "([a-z]([-a-z0-9]*[a-z0-9])?)\\\\.com$",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.string.max_len": "256",
                         "ves.io.schema.rules.string.min_len": "1",
@@ -6651,13 +6651,18 @@ var APISwaggerJSON string = `{
         },
         "virtual_hostProxyType": {
             "type": "string",
-            "description": "ProxyType tells the type of proxy to install for the virtual host.\n\nOnly the following combination of VirtualHosts within same AdvertisePolicy is permitted\n(None of them should have \"*\" in domains when used with other VirtualHosts in same AdvertisePolicy)\n1. Multiple TCP_PROXY_WITH_SNI and multiple HTTPS_PROXY\n2. Multiple HTTP_PROXY\n3. Multiple HTTPS_PROXY\n4. Multiple TCP_PROXY_WITH_SNI\n\nHTTPS_PROXY without TLS parameters is not permitted\nHTTP_PROXY/HTTPS_PROXY/TCP_PROXY_WITH_SNI/SMA_PROXY with empty domains is not permitted\nTCP_PROXY_WITH_SNI/SMA_PROXY should not have \"*\" in domains\n\n - HTTP_PROXY: HTTP_PROXY\n\nInstall HTTP proxy. HTTP Proxy is the default proxy installed.\n - TCP_PROXY: TCP_PROXY\n\nInstall TCP proxy\n - TCP_PROXY_WITH_SNI: TCP_PROXY_WITH_SNI\n\nInstall TCP proxy with SNI Routing\n - TLS_TCP_PROXY: TCP_PROXY\n\nInstall TCP proxy\n - TLS_TCP_PROXY_WITH_SNI: TCP_PROXY_WITH_SNI\n\nInstall TCP proxy with SNI Routing\n - HTTPS_PROXY: HTTPS_PROXY\n\nInstall HTTPS proxy\n - UDP_PROXY: UDP_PROXY\n\nInstall UDP proxy\n - SMA_PROXY: SMA_PROXY\n\nInstall Secret Management Access proxy\n - DNS_PROXY: DNS_PROXY\n\nInstall DNS proxy\n - ZTNA_PROXY: ZTNA_PROXY\n\nInstall ZTNA proxy.This is going to be deprecated with UZTNA_PROXY.\n - UZTNA_PROXY: UZTNA_PROXY\n\nInstall UZTNA proxy",
+            "description": "ProxyType tells the type of proxy to install for the virtual host.\n\nOnly the following combination of VirtualHosts within same AdvertisePolicy is permitted\n(None of them should have \"*\" in domains when used with other VirtualHosts in same AdvertisePolicy)\n1. Multiple TCP_PROXY_WITH_SNI and multiple HTTPS_PROXY\n2. Multiple HTTP_PROXY\n3. Multiple HTTPS_PROXY\n4. Multiple TCP_PROXY_WITH_SNI\n\nHTTPS_PROXY without TLS parameters is not permitted\nHTTP_PROXY/HTTPS_PROXY/TCP_PROXY_WITH_SNI/SMA_PROXY with empty domains is not permitted\nTCP_PROXY_WITH_SNI/SMA_PROXY should not have \"*\" in domains\n\n - HTTP_PROXY: HTTP_PROXY\n\nInstall HTTP proxy. HTTP Proxy is the default proxy installed.\n - TCP_PROXY: TCP_PROXY\n\nInstall TCP proxy\n - TCP_PROXY_WITH_SNI: TCP_PROXY_WITH_SNI\n\nInstall TCP proxy with SNI Routing\n - TLS_TCP_PROXY: TCP_PROXY\n\nInstall TCP proxy\n - TLS_TCP_PROXY_WITH_SNI: TCP_PROXY_WITH_SNI\n\nInstall TCP proxy with SNI Routing\n - HTTPS_PROXY: HTTPS_PROXY\n\nInstall HTTPS proxy\n - UDP_PROXY: UDP_PROXY\n\nInstall UDP proxy\n - SMA_PROXY: SMA_PROXY\n\nInstall Secret Management Access proxy\n - DNS_PROXY: DNS_PROXY\n\nInstall DNS proxy\n - ZTNA_PROXY: ZTNA_PROXY\n\nInstall ZTNA proxy.This is going to be deprecated with UZTNA_PROXY.\n - UZTNA_PROXY: UZTNA_PROXY\n\nInstall UZTNA proxy\n - TMM_HTTP_PROXY: TMM_HTTP_PROXY\n\nInstall TMM HTTP proxy for HTTP/1.1 and HTTP/2 traffic. Used by TMM proxy type.\n - TMM_HTTPS_PROXY: TMM_HTTPS_PROXY\n\nInstall TMM HTTPS proxy for HTTP/1.1 and HTTP/2 traffic. Used by TMM proxy type.\n - TMM_TCP_PROXY: TMM_TCP_PROXY\n\nInstall TMM TCP proxy for TCP traffic. Used by TMM proxy type.\n - TMM_UDP_PROXY: TMM_UDP_PROXY\n\nInstall TMM UDP proxy for UDP traffic. Used by TMM proxy type.\n - TMM_QUIC_PROXY: TMM_QUIC_PROXY\n\nInstall TMM QUIC proxy for HTTP/3 traffic. Used by TMM proxy type.",
             "enum": [
                 "UDP_PROXY",
                 "SMA_PROXY",
                 "DNS_PROXY",
                 "ZTNA_PROXY",
-                "UZTNA_PROXY"
+                "UZTNA_PROXY",
+                "TMM_HTTP_PROXY",
+                "TMM_HTTPS_PROXY",
+                "TMM_TCP_PROXY",
+                "TMM_UDP_PROXY",
+                "TMM_QUIC_PROXY"
             ],
             "default": "HTTP_PROXY",
             "x-displayname": "Type of Proxy",

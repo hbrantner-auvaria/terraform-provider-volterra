@@ -32,13 +32,19 @@ resource "volterra_dns_zone" "example" {
 
       // One of the arguments from this list "a_record aaaa_record afsdb_record alias_record caa_record cds_record cert_record cname_record dlv_record ds_record eui48_record eui64_record lb_record loc_record mx_record naptr_record ns_record ptr_record srv_record sshfp_record tlsa_record txt_record" must be set
 
-      lb_record {
+      dlv_record {
         name = "www or mail or * or ww* or *ab"
 
-        value {
-          name      = "test1"
-          namespace = "staging"
-          tenant    = "acmecorp"
+        values {
+          // One of the arguments from this list "sha1_digest sha256_digest sha384_digest" must be set
+
+          sha1_digest {
+            digest = "addf120b430021c36c232c99ef8d926aea2acd6b"
+          }
+
+          ds_key_algorithm = "ds_key_algorithm"
+
+          key_tag = "15228"
         }
       }
     }
@@ -46,7 +52,7 @@ resource "volterra_dns_zone" "example" {
     dnssec_mode {
       // One of the arguments from this list "disable enable" must be set
 
-      enable {}
+      disable = true
     }
 
     rr_set_group {
@@ -65,13 +71,20 @@ resource "volterra_dns_zone" "example" {
 
         // One of the arguments from this list "a_record aaaa_record afsdb_record alias_record caa_record cds_record cert_record cname_record dlv_record ds_record eui48_record eui64_record lb_record loc_record mx_record naptr_record ns_record ptr_record srv_record sshfp_record tlsa_record txt_record" must be set
 
-        afsdb_record {
+        sshfp_record {
           name = "www or mail or * or ww* or *ab"
 
           values {
-            hostname = "mail.example.com"
+            algorithm = "algorithm"
 
-            subtype = "1"
+            fingerprint = "Ab100cFg"
+
+            // One of the arguments from this list "sha1_fingerprint sha256_fingerprint" must be set
+
+            sha1_fingerprint {
+              fingerprint = "addf120b430021c36c232c99ef8d926aea2acd6b"
+            }
+            fingerprinttype = "fingerprinttype"
           }
         }
       }

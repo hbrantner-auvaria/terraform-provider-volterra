@@ -730,11 +730,6 @@ func resourceVolterraEnhancedFirewallPolicy() *schema.Resource {
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
 
-												"kind": {
-													Type:     schema.TypeString,
-													Computed: true,
-												},
-
 												"name": {
 													Type:     schema.TypeString,
 													Optional: true,
@@ -779,11 +774,6 @@ func resourceVolterraEnhancedFirewallPolicy() *schema.Resource {
 										Required: true,
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
-
-												"kind": {
-													Type:     schema.TypeString,
-													Computed: true,
-												},
 
 												"name": {
 													Type:     schema.TypeString,
@@ -2037,6 +2027,7 @@ func resourceVolterraEnhancedFirewallPolicyRead(d *schema.ResourceData, meta int
 		}
 		return fmt.Errorf("Error finding Volterra EnhancedFirewallPolicy %q: %s", d.Id(), err)
 	}
+
 	return setEnhancedFirewallPolicyFields(client, d, resp)
 }
 
@@ -3286,5 +3277,11 @@ func resourceVolterraEnhancedFirewallPolicyDelete(d *schema.ResourceData, meta i
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_enhanced_firewall_policy.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_enhanced_firewall_policy.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting EnhancedFirewallPolicy: %w", err)
+	}
+	return nil
+
 }

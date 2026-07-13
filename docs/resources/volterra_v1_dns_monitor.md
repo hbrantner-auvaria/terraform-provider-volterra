@@ -19,7 +19,7 @@ Example Usage
 resource "volterra_v1_dns_monitor" "example" {
   name      = "acmecorp-web"
   namespace = "staging"
-  domain    = "www.example.com"
+  domain    = ["www.example.com"]
 
   external_sources {
     // One of the arguments from this list "aws f5xc" must be set
@@ -31,16 +31,16 @@ resource "volterra_v1_dns_monitor" "example" {
 
   // One of the arguments from this list "interval_12_hours interval_15_mins interval_1_day interval_1_hour interval_1_min interval_30_mins interval_30_secs interval_5_mins interval_6_hours" must be set
 
-  interval_1_hour  = true
-  lookup_timeout   = "5000"
-  on_failure_count = "2"
+  interval_1_min   = true
+  lookup_timeout   = ["5000"]
+  on_failure_count = ["2"]
 
   // One of the arguments from this list "on_failure_to_all on_failure_to_any" must be set
 
   on_failure_to_any         = true
-  protocol                  = "UDP"
-  record_type               = "A"
-  source_critical_threshold = "1"
+  protocol                  = ["UDP"]
+  record_type               = ["A"]
+  source_critical_threshold = ["1"]
 }
 ```
 

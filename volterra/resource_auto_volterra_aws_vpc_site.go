@@ -15,13 +15,14 @@ import (
 
 	"gopkg.volterra.us/stdlib/client/vesapi"
 
+statemigration "github.com/volterraedge/terraform-provider-volterra/volterra/state_migration"
+
 	ves_io_schema "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema"
 	ves_io_schema_fleet "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/fleet"
 	ves_io_schema_network_firewall "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/network_firewall"
 	ves_io_schema_site "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/site"
 	ves_io_schema_views "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/views"
 	ves_io_schema_views_aws_vpc_site "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/views/aws_vpc_site"
-	statemigration "github.com/volterraedge/terraform-provider-volterra/volterra/state_migration"
 )
 
 // resourceVolterraAwsVpcSite is implementation of Volterra's AwsVpcSite resources
@@ -506,11 +507,6 @@ func resourceVolterraAwsVpcSite() *schema.Resource {
 							Required: true,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
-
-									"kind": {
-										Type:     schema.TypeString,
-										Computed: true,
-									},
 
 									"name": {
 										Type:     schema.TypeString,
@@ -1187,11 +1183,6 @@ func resourceVolterraAwsVpcSite() *schema.Resource {
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
 
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
-
 																		"name": {
 																			Type:     schema.TypeString,
 																			Optional: true,
@@ -1225,11 +1216,6 @@ func resourceVolterraAwsVpcSite() *schema.Resource {
 																Required: true,
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
-
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
 
 																		"name": {
 																			Type:     schema.TypeString,
@@ -2607,11 +2593,6 @@ func resourceVolterraAwsVpcSite() *schema.Resource {
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
 
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
-
 																		"name": {
 																			Type:     schema.TypeString,
 																			Optional: true,
@@ -2645,11 +2626,6 @@ func resourceVolterraAwsVpcSite() *schema.Resource {
 																Required: true,
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
-
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
 
 																		"name": {
 																			Type:     schema.TypeString,
@@ -4204,24 +4180,22 @@ func resourceVolterraAwsVpcSiteCreate(d *schema.ResourceData, meta interface{}) 
 				if v, ok := cs["cloud_link"]; ok && !isIntfNil(v) {
 
 					sl := v.([]interface{})
-					cloudLink := &ves_io_schema_views.ObjectRefType{}
-					directConnectChoiceInt.PrivateConnectivity.CloudLink = cloudLink
+					cloudLinkInt := &ves_io_schema_views.ObjectRefType{}
+					directConnectChoiceInt.PrivateConnectivity.CloudLink = cloudLinkInt
+
 					for _, set := range sl {
 						if set != nil {
-							cloudLinkMapStrToI := set.(map[string]interface{})
-
-							if w, ok := cloudLinkMapStrToI["name"]; ok && !isIntfNil(w) {
-								cloudLink.Name = w.(string)
+							clMapToStrVal := set.(map[string]interface{})
+							if val, ok := clMapToStrVal["name"]; ok && !isIntfNil(v) {
+								cloudLinkInt.Name = val.(string)
+							}
+							if val, ok := clMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								cloudLinkInt.Namespace = val.(string)
 							}
 
-							if w, ok := cloudLinkMapStrToI["namespace"]; ok && !isIntfNil(w) {
-								cloudLink.Namespace = w.(string)
+							if val, ok := clMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								cloudLinkInt.Tenant = val.(string)
 							}
-
-							if w, ok := cloudLinkMapStrToI["tenant"]; ok && !isIntfNil(w) {
-								cloudLink.Tenant = w.(string)
-							}
-
 						}
 					}
 
@@ -5324,24 +5298,22 @@ func resourceVolterraAwsVpcSiteCreate(d *schema.ResourceData, meta interface{}) 
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -5367,24 +5339,22 @@ func resourceVolterraAwsVpcSiteCreate(d *schema.ResourceData, meta interface{}) 
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -7386,24 +7356,22 @@ func resourceVolterraAwsVpcSiteCreate(d *schema.ResourceData, meta interface{}) 
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -7429,24 +7397,22 @@ func resourceVolterraAwsVpcSiteCreate(d *schema.ResourceData, meta interface{}) 
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -8728,6 +8694,7 @@ func resourceVolterraAwsVpcSiteRead(d *schema.ResourceData, meta interface{}) er
 		}
 		return fmt.Errorf("Error finding Volterra AwsVpcSite %q: %s", d.Id(), err)
 	}
+
 	return setAwsVpcSiteFields(client, d, resp)
 }
 
@@ -9217,24 +9184,22 @@ func resourceVolterraAwsVpcSiteUpdate(d *schema.ResourceData, meta interface{}) 
 				if v, ok := cs["cloud_link"]; ok && !isIntfNil(v) {
 
 					sl := v.([]interface{})
-					cloudLink := &ves_io_schema_views.ObjectRefType{}
-					directConnectChoiceInt.PrivateConnectivity.CloudLink = cloudLink
+					cloudLinkInt := &ves_io_schema_views.ObjectRefType{}
+					directConnectChoiceInt.PrivateConnectivity.CloudLink = cloudLinkInt
+
 					for _, set := range sl {
 						if set != nil {
-							cloudLinkMapStrToI := set.(map[string]interface{})
-
-							if w, ok := cloudLinkMapStrToI["name"]; ok && !isIntfNil(w) {
-								cloudLink.Name = w.(string)
+							clMapToStrVal := set.(map[string]interface{})
+							if val, ok := clMapToStrVal["name"]; ok && !isIntfNil(v) {
+								cloudLinkInt.Name = val.(string)
+							}
+							if val, ok := clMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								cloudLinkInt.Namespace = val.(string)
 							}
 
-							if w, ok := cloudLinkMapStrToI["namespace"]; ok && !isIntfNil(w) {
-								cloudLink.Namespace = w.(string)
+							if val, ok := clMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								cloudLinkInt.Tenant = val.(string)
 							}
-
-							if w, ok := cloudLinkMapStrToI["tenant"]; ok && !isIntfNil(w) {
-								cloudLink.Tenant = w.(string)
-							}
-
 						}
 					}
 
@@ -10210,24 +10175,22 @@ func resourceVolterraAwsVpcSiteUpdate(d *schema.ResourceData, meta interface{}) 
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -10253,24 +10216,22 @@ func resourceVolterraAwsVpcSiteUpdate(d *schema.ResourceData, meta interface{}) 
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -12260,24 +12221,22 @@ func resourceVolterraAwsVpcSiteUpdate(d *schema.ResourceData, meta interface{}) 
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -12303,24 +12262,22 @@ func resourceVolterraAwsVpcSiteUpdate(d *schema.ResourceData, meta interface{}) 
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -13498,5 +13455,11 @@ func resourceVolterraAwsVpcSiteDelete(d *schema.ResourceData, meta interface{}) 
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_views_aws_vpc_site.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_views_aws_vpc_site.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting AwsVpcSite: %w", err)
+	}
+	return nil
+
 }

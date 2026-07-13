@@ -354,6 +354,7 @@ func resourceVolterraSecretPolicyRuleRead(d *schema.ResourceData, meta interface
 		}
 		return fmt.Errorf("Error finding Volterra SecretPolicyRule %q: %s", d.Id(), err)
 	}
+
 	return setSecretPolicyRuleFields(client, d, resp)
 }
 
@@ -582,5 +583,11 @@ func resourceVolterraSecretPolicyRuleDelete(d *schema.ResourceData, meta interfa
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_secret_policy_rule.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_secret_policy_rule.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting SecretPolicyRule: %w", err)
+	}
+	return nil
+
 }

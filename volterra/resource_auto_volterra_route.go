@@ -4812,6 +4812,7 @@ func resourceVolterraRouteRead(d *schema.ResourceData, meta interface{}) error {
 		}
 		return fmt.Errorf("Error finding Volterra Route %q: %s", d.Id(), err)
 	}
+
 	return setRouteFields(client, d, resp)
 }
 
@@ -7627,5 +7628,11 @@ func resourceVolterraRouteDelete(d *schema.ResourceData, meta interface{}) error
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_route.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_route.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting Route: %w", err)
+	}
+	return nil
+
 }

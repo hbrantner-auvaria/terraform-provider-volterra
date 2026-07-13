@@ -20,12 +20,13 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.data_privacy.lma_region.ListRequest"] = ListRequestValidator()
 	vr["ves.io.schema.data_privacy.lma_region.ListResponse"] = ListResponseValidator()
 	vr["ves.io.schema.data_privacy.lma_region.ListResponseItem"] = ListResponseItemValidator()
-	vr["ves.io.schema.data_privacy.lma_region.AWSParams"] = AWSParamsValidator()
+	vr["ves.io.schema.data_privacy.lma_region.AWSCredentials"] = AWSCredentialsValidator()
 	vr["ves.io.schema.data_privacy.lma_region.ClickhouseParams"] = ClickhouseParamsValidator()
 	vr["ves.io.schema.data_privacy.lma_region.ElasticParams"] = ElasticParamsValidator()
 	vr["ves.io.schema.data_privacy.lma_region.GetSpecType"] = GetSpecTypeValidator()
 	vr["ves.io.schema.data_privacy.lma_region.GlobalSpecType"] = GlobalSpecTypeValidator()
 	vr["ves.io.schema.data_privacy.lma_region.KafkaParams"] = KafkaParamsValidator()
+	vr["ves.io.schema.data_privacy.lma_region.S3Params"] = S3ParamsValidator()
 }
 
 func initializeEntryRegistry(mdr *svcfw.MDRegistry) {

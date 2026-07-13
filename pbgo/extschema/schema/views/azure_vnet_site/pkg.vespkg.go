@@ -174,10 +174,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 			AllowedEnvironments: []string{"crt", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
-			FieldPath:           "spec.encryption_choice",
-			AllowedEnvironments: []string{"crt", "demo1"},
-		},
-		{
 			FieldPath:           "spec.ingress_egress_gw.az_nodes.#.inside_subnet.subnet_param.ipv6",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
@@ -293,10 +289,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		{
 			FieldPath:           "create_form.spec.custom_dns.outside_nameserver_v6",
 			AllowedEnvironments: []string{"crt", "prod", "softbank_mec", "staging", "test"},
-		},
-		{
-			FieldPath:           "create_form.spec.encryption_choice",
-			AllowedEnvironments: []string{"crt", "demo1"},
 		},
 		{
 			FieldPath:           "create_form.spec.ingress_egress_gw.az_nodes.#.inside_subnet.subnet_param.ipv6",

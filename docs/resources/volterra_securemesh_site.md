@@ -30,7 +30,11 @@ resource "volterra_securemesh_site" "example" {
 
   // One of the arguments from this list "log_receiver logs_streaming_disabled" must be set
 
-  logs_streaming_disabled = true
+  log_receiver {
+    name      = "test1"
+    namespace = "staging"
+    tenant    = "acmecorp"
+  }
   master_node_configuration {
     name = "master-0"
 
@@ -40,7 +44,7 @@ resource "volterra_securemesh_site" "example" {
   // One of the arguments from this list "custom_network_config default_network_config" must be set
 
   default_network_config = true
-  volterra_certified_hw  = "isv-8000-series-voltmesh"
+  volterra_certified_hw  = ["isv-8000-series-voltmesh"]
 }
 ```
 

@@ -30,7 +30,7 @@ resource "volterra_app_setting" "example" {
     business_logic_markup_setting {
       // One of the arguments from this list "disable enable" can be set
 
-      disable = true
+      enable = true
     }
 
     timeseries_analyses_setting {
@@ -51,11 +51,7 @@ resource "volterra_app_setting" "example" {
       enable_detection {
         // One of the arguments from this list "bola_detection_automatic bola_detection_manual exclude_bola_detection" can be set
 
-        bola_detection_manual {
-          // One of the arguments from this list "threshold_level_1 threshold_level_2 threshold_level_3 threshold_level_4 threshold_level_5 threshold_level_6" must be set
-
-          threshold_level_1 = true
-        }
+        exclude_bola_detection = true
 
         // One of the arguments from this list "exclude_bot_defense_activity include_bot_defense_activity" must be set
 
@@ -83,11 +79,7 @@ resource "volterra_app_setting" "example" {
 
         // One of the arguments from this list "exclude_non_existent_url_activity include_non_existent_url_activity_automatic include_non_existent_url_activity_custom" can be set
 
-        include_non_existent_url_activity_automatic {
-          // One of the arguments from this list "high low medium" must be set
-
-          low = true
-        }
+        exclude_non_existent_url_activity = true
 
         // One of the arguments from this list "exclude_rate_limit include_rate_limit" must be set
 

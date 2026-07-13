@@ -7,6 +7,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
+	"regexp"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -21,6 +24,19 @@ var (
 	EnvVarP12Password = "VES_P12_PASSWORD"
 	// EnvVarP12Content is the name of environment variable that holds content of P12 bundle file
 	EnvVarP12Content = "VES_P12_CONTENT"
+
+	// providerBinaryVersionRE extracts version in X.Y.Z format from anywhere in the binary name
+	// Extracts: group 1 = X.Y.Z
+	// Example: terraform-provider-volterra_v1.2.3_darwin_amd64 -> 1.2.3
+	providerBinaryVersionRE = regexp.MustCompile(`(\d+\.\d+\.\d+)`)
+	// providerBinaryNameRE extracts the provider name from binary name starting with terraform-provider-
+	// Extracts: group 1 = terraform-provider-<name>
+	// Example: terraform-provider-volterra
+	providerBinaryNameRE = regexp.MustCompile(`^(terraform-provider-[^_]+)`)
+
+	ProviderName     = "terraform-provider-volterra"
+	ProviderVersion  = "1.0.0"
+	TerraformVersion = "0.11+compatible"
 )
 
 const (
@@ -153,105 +169,151 @@ func Provider() *schema.Provider {
 			"volterra_parse_aws_cgw_configuration": dataSourceVolterraParseAWSCGWConfiguration(),
 			"volterra_http_loadbalancer_state":     dataSourceVolterraHttpLoadbalancerState(),
 		},
-		ConfigureContextFunc: providerConfigure,
 	}
+	provider.ConfigureContextFunc = providerConfigure(provider)
 
 	if provider.TerraformVersion == "" {
-		provider.TerraformVersion = "0.11+compatible"
+		provider.TerraformVersion = TerraformVersion
 	}
 
 	return provider
 }
 
-func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
-	config := Config{}
-	if v, ok := d.GetOk("url"); ok {
-		config.url = v.(string)
+func providerBinaryInfo() (string, string) {
+	// Get binary path (e.g., /path/to/terraform-provider-volterra_v1.2.3_darwin_amd64)
+	execPath, err := os.Executable()
+	if err != nil {
+		// Fallback to default name and Version if binary path unavailable
+		return ProviderName, ProviderVersion
 	}
 
-	if v, ok := d.GetOk("vesenv"); ok {
-		config.vesenv = v.(bool)
-		if v, ok := d.GetOk("tenant"); ok {
-			config.tenant = v.(string)
-		}
-		log.Printf(`[DEBUG] VESENV is set for tenant %s`, config.tenant)
+	// Extract binary name without path and extension
+	binaryName := strings.TrimSuffix(filepath.Base(execPath), filepath.Ext(execPath))
+	if binaryName == "" {
+		return ProviderName, ProviderVersion
 	}
 
-	config.timeout = d.Get("timeout").(string)
-
-	if v, ok := d.GetOk("limiter"); ok {
-		limiterList := v.([]interface{})
-		limiterMap := limiterList[0].(map[string]interface{})
-		rateVal := limiterMap["rate"].(float64)
-		burstVal := int32(limiterMap["burst"].(int))
-
-		config.limiter = &ProviderLimiter{
-			Rate:  rate.Limit(rateVal),
-			Burst: burstVal,
-		}
-	} else {
-		config.limiter = &ProviderLimiter{Rate: rate.Inf, Burst: 1}
+	// Extract provider name from binary name
+	name := ProviderName
+	if nameMatches := providerBinaryNameRE.FindStringSubmatch(binaryName); len(nameMatches) > 1 {
+		name = nameMatches[1]
 	}
 
-	if v, ok := d.GetOk("test"); ok {
-		config.test = v.(bool)
-		return config.Client()
+	// Try to extract version from binary name first
+	if matches := providerBinaryVersionRE.FindStringSubmatch(binaryName); len(matches) > 1 {
+		return name, matches[1]
 	}
 
-	if v, ok := d.GetOk("api_p12_file"); ok {
-		if len(os.Getenv(EnvVarP12Password)) == 0 {
-			return nil, diag.FromErr(fmt.Errorf("environment variable %s must be set when api_p12_file is provided as provider config", EnvVarP12Password))
-		}
-
-		config.apiP12File = fmt.Sprintf("file:///%s", v.(string))
-		config.apiP12Password = os.Getenv(EnvVarP12Password)
-	} else if v, ok := d.GetOk("api_cert"); ok {
-		config.apiCert = fmt.Sprintf("file:///%s", v.(string))
-		if v, ok = d.GetOk("api_key"); !ok {
-			return nil, diag.FromErr(fmt.Errorf("api_key must be provided with api_cert as provider config"))
-		}
-		config.apiKey = fmt.Sprintf("file:///%s", v.(string))
-	} else {
-		apiP12Content := os.Getenv(EnvVarP12Content)
-		apiP12Contents, err := base64.StdEncoding.DecodeString(apiP12Content)
-
-		if err != nil {
-			return nil, diag.FromErr(fmt.Errorf("error decoding base64 content: %s", err))
-		}
-		if len(apiP12Content) == 0 {
-			return nil, diag.FromErr(fmt.Errorf("neither VES_P12_CONTENT, api_p12 bundle or api_cert/api_key is provided as provider config"))
-		}
-
-		tmp, err := os.CreateTemp(".", "volterra-cert")
-		if err != nil {
-			return nil, diag.FromErr(fmt.Errorf("error in creating temporary file : %s", err))
-		}
-
-		err = os.WriteFile(tmp.Name(), []byte(apiP12Contents), 0600)
-		if err != nil {
-			return nil, diag.FromErr(fmt.Errorf("error in writing credential on temp file : %s", err))
-		}
-
-		defer cleanupTempFile(tmp.Name())
-
-		config.apiP12File = fmt.Sprintf("file:///%s", tmp.Name())
-		config.apiP12Password = os.Getenv(EnvVarP12Password)
+	// Fallback: extract version from full executable path
+	// e.g. .terraform.d/plugins/.../volterra/0.11.48/darwin_arm64/terraform-provider-volterra
+	if matches := providerBinaryVersionRE.FindStringSubmatch(execPath); len(matches) > 1 {
+		return name, matches[1]
 	}
 
-	if v, ok := d.GetOk("api_ca_cert"); ok {
-		config.apiCACert = fmt.Sprintf("file:///%s", v.(string))
-	}
+	return name, ProviderVersion
+}
 
-	log.Printf(`[DEBUG] Creating volterra client with config
+func providerUserAgent(terraformVersion string) string {
+	providerName, providerVersion := providerBinaryInfo()
+	return fmt.Sprintf("terraform/%s %s/%s", terraformVersion, providerName, providerVersion)
+}
+
+func providerConfigure(provider *schema.Provider) schema.ConfigureContextFunc {
+	return func(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
+		config := Config{}
+		tfVersion := provider.TerraformVersion
+		if tfVersion == "" {
+			tfVersion = TerraformVersion
+		}
+		config.userAgent = providerUserAgent(tfVersion)
+		if v, ok := d.GetOk("url"); ok {
+			config.url = v.(string)
+		}
+
+		if v, ok := d.GetOk("vesenv"); ok {
+			config.vesenv = v.(bool)
+			if v, ok := d.GetOk("tenant"); ok {
+				config.tenant = v.(string)
+			}
+			log.Printf(`[DEBUG] VESENV is set for tenant %s`, config.tenant)
+		}
+
+		config.timeout = d.Get("timeout").(string)
+
+		if v, ok := d.GetOk("limiter"); ok {
+			limiterList := v.([]interface{})
+			limiterMap := limiterList[0].(map[string]interface{})
+			rateVal := limiterMap["rate"].(float64)
+			burstVal := int32(limiterMap["burst"].(int))
+
+			config.limiter = &ProviderLimiter{
+				Rate:  rate.Limit(rateVal),
+				Burst: burstVal,
+			}
+		} else {
+			config.limiter = &ProviderLimiter{Rate: rate.Inf, Burst: 1}
+		}
+
+		if v, ok := d.GetOk("test"); ok {
+			config.test = v.(bool)
+			return config.Client()
+		}
+
+		if v, ok := d.GetOk("api_p12_file"); ok {
+			if len(os.Getenv(EnvVarP12Password)) == 0 {
+				return nil, diag.FromErr(fmt.Errorf("environment variable %s must be set when api_p12_file is provided as provider config", EnvVarP12Password))
+			}
+
+			config.apiP12File = fmt.Sprintf("file:///%s", v.(string))
+			config.apiP12Password = os.Getenv(EnvVarP12Password)
+		} else if v, ok := d.GetOk("api_cert"); ok {
+			config.apiCert = fmt.Sprintf("file:///%s", v.(string))
+			if v, ok = d.GetOk("api_key"); !ok {
+				return nil, diag.FromErr(fmt.Errorf("api_key must be provided with api_cert as provider config"))
+			}
+			config.apiKey = fmt.Sprintf("file:///%s", v.(string))
+		} else {
+			apiP12Content := os.Getenv(EnvVarP12Content)
+			apiP12Contents, err := base64.StdEncoding.DecodeString(apiP12Content)
+
+			if err != nil {
+				return nil, diag.FromErr(fmt.Errorf("error decoding base64 content: %s", err))
+			}
+			if len(apiP12Content) == 0 {
+				return nil, diag.FromErr(fmt.Errorf("neither VES_P12_CONTENT, api_p12 bundle or api_cert/api_key is provided as provider config"))
+			}
+
+			tmp, err := os.CreateTemp(".", "volterra-cert")
+			if err != nil {
+				return nil, diag.FromErr(fmt.Errorf("error in creating temporary file : %s", err))
+			}
+
+			err = os.WriteFile(tmp.Name(), []byte(apiP12Contents), 0600)
+			if err != nil {
+				return nil, diag.FromErr(fmt.Errorf("error in writing credential on temp file : %s", err))
+			}
+
+			defer cleanupTempFile(tmp.Name())
+
+			config.apiP12File = fmt.Sprintf("file:///%s", tmp.Name())
+			config.apiP12Password = os.Getenv(EnvVarP12Password)
+		}
+
+		if v, ok := d.GetOk("api_ca_cert"); ok {
+			config.apiCACert = fmt.Sprintf("file:///%s", v.(string))
+		}
+
+		log.Printf(`[DEBUG] Creating volterra client with config
 		certFile: %s
 		pvtKeyFile: %s
 		cacertFile: %s
 		p12File: %s
 		testURL: %s
 		`, config.apiCert, config.apiKey, config.apiCACert,
-		config.apiP12File, config.url)
+			config.apiP12File, config.url)
 
-	return config.Client()
+		return config.Client()
+	}
 }
 
 // cleanupTempFile removes the specified temporary file

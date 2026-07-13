@@ -204,6 +204,7 @@ func resourceVolterraInfraprotectAsnPrefixRead(d *schema.ResourceData, meta inte
 		}
 		return fmt.Errorf("Error finding Volterra InfraprotectAsnPrefix %q: %s", d.Id(), err)
 	}
+
 	return setInfraprotectAsnPrefixFields(client, d, resp)
 }
 
@@ -307,5 +308,11 @@ func resourceVolterraInfraprotectAsnPrefixDelete(d *schema.ResourceData, meta in
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_infraprotect_asn_prefix.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_infraprotect_asn_prefix.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting InfraprotectAsnPrefix: %w", err)
+	}
+	return nil
+
 }

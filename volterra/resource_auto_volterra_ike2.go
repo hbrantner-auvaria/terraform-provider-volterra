@@ -373,6 +373,7 @@ func resourceVolterraIke2Read(d *schema.ResourceData, meta interface{}) error {
 		}
 		return fmt.Errorf("Error finding Volterra Ike2 %q: %s", d.Id(), err)
 	}
+
 	return setIke2Fields(client, d, resp)
 }
 
@@ -606,5 +607,11 @@ func resourceVolterraIke2Delete(d *schema.ResourceData, meta interface{}) error 
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_ike2.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_ike2.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting Ike2: %w", err)
+	}
+	return nil
+
 }

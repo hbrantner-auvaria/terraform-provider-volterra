@@ -1232,6 +1232,24 @@ func (v *ValidateStatusObject) Validate(ctx context.Context, pm interface{}, opt
 			}
 		}
 	}
+	if fv, exists := v.FldValidators["finalizers"]; exists {
+		vOpts := append(opts, db.WithValidateField("finalizers"))
+		for key, value := range e.GetFinalizers() {
+			vOpts := append(vOpts, db.WithValidateMapKey(key))
+			if err := fv(ctx, value, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	if fv, exists := v.FldValidators["initializers"]; exists {
+		vOpts := append(opts, db.WithValidateField("initializers"))
+		for key, value := range e.GetInitializers() {
+			vOpts := append(vOpts, db.WithValidateMapKey(key))
+			if err := fv(ctx, value, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
 	if fv, exists := v.FldValidators["metadata"]; exists {
 		vOpts := append(opts, db.WithValidateField("metadata"))
 		if err := fv(ctx, e.GetMetadata(), vOpts...); err != nil {

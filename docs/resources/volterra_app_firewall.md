@@ -40,64 +40,12 @@ resource "volterra_app_firewall" "example" {
 
   // One of the arguments from this list "ai_risk_based_blocking default_detection_settings detection_settings" must be set
 
-  detection_settings {
-    // One of the arguments from this list "bot_protection_setting default_bot_setting" must be set
+  ai_risk_based_blocking {
+    high_risk_action = "high_risk_action"
 
-    bot_protection_setting {
-      good_bot_action = "good_bot_action"
+    low_risk_action = "low_risk_action"
 
-      malicious_bot_action = "malicious_bot_action"
-
-      suspicious_bot_action = "suspicious_bot_action"
-    }
-
-    configured_violations {
-      name = "VIOL_MANDATORY_HEADER"
-
-      // One of the arguments from this list "disabled enabled" must be set
-
-      enabled = true
-    }
-
-    // One of the arguments from this list "disable_suppression enable_suppression" must be set
-
-    enable_suppression = true
-    signature_selection_setting {
-      // One of the arguments from this list "attack_type_settings default_attack_type_settings" must be set
-
-      default_attack_type_settings = true
-
-      // One of the arguments from this list "high_medium_accuracy_signatures high_medium_low_accuracy_signatures only_high_accuracy_signatures" must be set
-
-      only_high_accuracy_signatures = true
-    }
-
-    // One of the arguments from this list "disable_staging stage_new_and_updated_signatures stage_new_signatures" can be set
-
-    stage_new_and_updated_signatures {
-      staging_period = "7"
-    }
-
-    // One of the arguments from this list "disable_threat_campaigns enable_threat_campaigns" must be set
-
-    enable_threat_campaigns = true
-
-    // One of the arguments from this list "default_violation_settings violation_settings" must be set
-
-    violation_settings {
-      disabled_violation_types = ["disabled_violation_types"]
-    }
-    violations_view {
-      description = "description"
-
-      enabled = true
-
-      enabled_by_default = "enabled_by_default"
-
-      name = "name"
-
-      title = "title"
-    }
+    medium_risk_action = "medium_risk_action"
   }
 
   // One of the arguments from this list "blocking monitoring use_loadbalancer_setting" must be set

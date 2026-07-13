@@ -5451,6 +5451,7 @@ func resourceVolterraDnsZoneRead(d *schema.ResourceData, meta interface{}) error
 		}
 		return fmt.Errorf("Error finding Volterra DnsZone %q: %s", d.Id(), err)
 	}
+
 	return setDnsZoneFields(client, d, resp)
 }
 
@@ -8554,5 +8555,11 @@ func resourceVolterraDnsZoneDelete(d *schema.ResourceData, meta interface{}) err
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_dns_zone.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_dns_zone.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting DnsZone: %w", err)
+	}
+	return nil
+
 }

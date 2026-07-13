@@ -2021,6 +2021,43 @@ var APISwaggerJSON string = `{
                 }
             }
         },
+        "namespaceFinalizerStatus": {
+            "type": "string",
+            "description": "x-displayName: \"Finalizer Status\"\nIt specifies the deletion status in remote service\n\n - FINALIZER_UNKNOWN: FINALIZER UNKNOWN\n\nx-displayName: \"FINALIZER UNKNOWN\"\nUnknown state\n - REMOVING_REF_OBJECTS: Removing Namespace Reference Objects\n\nx-displayName: \"Remove Namespace Reference Objects\"\nIt means that namespace reference objects are getting removed from remote service\n - REF_OBJECTS_REMOVED: Namespace Reference Removed\n\nx-displayName: \"Namespace Reference Removed\"\nIt means that namespace reference objects are successfully removed from remote service\n - DELETION_IN_PROGRESS: Deleting\n\nx-displayName: \"Deleting\"\nIt means that namespace is deleting from remote service or in retry mode.\n - DELETED: Deleted\n\nx-displayName: \"Deleted\"\nIt means that object is successfully deleted in the remote service\n - DELETE_FAILED: Delete Failed\n\nx-displayName: \"Delete Failed\"\nIt means that object is failed to delete in the remote service. All retries are exhausted",
+            "title": "Finalizer Status",
+            "enum": [
+                "FINALIZER_UNKNOWN",
+                "REMOVING_REF_OBJECTS",
+                "REF_OBJECTS_REMOVED",
+                "DELETION_IN_PROGRESS",
+                "DELETED",
+                "DELETE_FAILED"
+            ],
+            "default": "FINALIZER_UNKNOWN"
+        },
+        "namespaceFinalizersInfo": {
+            "type": "object",
+            "description": "x-displayName: \"Finalizers Info\"\nIt gives information about the finalizers",
+            "title": "Finalizers Info",
+            "properties": {
+                "last_update": {
+                    "description": "x-displayName: \"Last Update\"\nit specifies the details regarding the last programming attempt",
+                    "title": "Last Update",
+                    "$ref": "#/definitions/namespaceLastProgrammingUpdate"
+                },
+                "programming_initiated": {
+                    "type": "string",
+                    "description": "x-displayName: \"Programming Start Initiated\"\ntimestamp at which first programming attempt was made to the remote service",
+                    "title": "Programming Start Initiated",
+                    "format": "date-time"
+                },
+                "status": {
+                    "description": "x-displayName: \"Finalizers Status\"\nit specifies finalizer status that whether the programming done in remote service or not",
+                    "title": "Finalizers Status",
+                    "$ref": "#/definitions/namespaceFinalizerStatus"
+                }
+            }
+        },
         "namespaceGetResponse": {
             "type": "object",
             "description": "This is the output message of the 'Get' RPC",
@@ -2110,6 +2147,65 @@ var APISwaggerJSON string = `{
                 "GET_RSP_FORMAT_BROKEN_REFERENCES"
             ],
             "default": "GET_RSP_FORMAT_DEFAULT"
+        },
+        "namespaceInitializerInfo": {
+            "type": "object",
+            "description": "x-displayName: \"Initializer Info\"\nIt gives information about the initializers",
+            "title": "Initializer Info",
+            "properties": {
+                "last_update": {
+                    "description": "x-displayName: \"Last Update\"\nit specifies the details regarding the last programming attempt",
+                    "title": "Last Update",
+                    "$ref": "#/definitions/namespaceLastProgrammingUpdate"
+                },
+                "programming_initiated": {
+                    "type": "string",
+                    "description": "x-displayName: \"Programming Start Initiated\"\ntimestamp at which first programming attempt was made to the remote service",
+                    "title": "Programming Start Initiated",
+                    "format": "date-time"
+                },
+                "status": {
+                    "description": "x-displayName: \"Initializer Status\"\nit specifies initializer status that whether the programming done in remote service or not",
+                    "title": "Initializer Status",
+                    "$ref": "#/definitions/namespaceInitializerStatus"
+                }
+            }
+        },
+        "namespaceInitializerStatus": {
+            "type": "string",
+            "description": "x-displayName: \"Initializer Status\"\nIt specifies the creation status in remote service\n\n - INITIALIZER_UNKNOWN: INITIALIZER UNKNOWN\n\nx-displayName: \"INITIALIZER UNKNOWN\"\nUnknown state\n - CREATION_IN_PROGRESS: CREATION IN PROGRESS\n\nx-displayName: \"CREATION IN PROGRESS\"\nIt means that object is creating in the remote service or in retry mode.\n - CREATED: CREATED\n\nx-displayName: \"CREATED\"\nIt means that object is successfully created in the remote service\n - CREATION_FAILED: Creation Failed\n\nx-displayName: \"Creation Failed\"\nIt means that object is failed to create in the remote service. All retries are exhausted",
+            "title": "Initializer Status",
+            "enum": [
+                "INITIALIZER_UNKNOWN",
+                "CREATION_IN_PROGRESS",
+                "CREATED",
+                "CREATION_FAILED"
+            ],
+            "default": "INITIALIZER_UNKNOWN"
+        },
+        "namespaceLastProgrammingUpdate": {
+            "type": "object",
+            "description": "x-displayName: \"Last Programming Update\"\nIt specifies the information regarding the last retry of programming to service",
+            "title": "Last Programming Update",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "description": "x-displayName: \"Message\"\nany successful or any error message",
+                    "title": "Message"
+                },
+                "time": {
+                    "type": "string",
+                    "description": "x-displayName: \"Last retry timestamp\"\ntimestamp of last retry of programming to service",
+                    "title": "Last retry timestamp",
+                    "format": "date-time"
+                },
+                "total_retries": {
+                    "type": "integer",
+                    "description": "x-displayName: \"Total Retries\"\ntotal number of retries done",
+                    "title": "Total Retries",
+                    "format": "int32"
+                }
+            }
         },
         "namespaceListResponse": {
             "type": "object",
@@ -2880,6 +2976,18 @@ var APISwaggerJSON string = `{
                         "$ref": "#/definitions/schemaConditionType"
                     },
                     "x-displayname": "Conditions"
+                },
+                "finalizers": {
+                    "type": "object",
+                    "description": " It specifies programming information of all the finalizers",
+                    "title": "Finalizers",
+                    "x-displayname": "Finalizers"
+                },
+                "initializers": {
+                    "type": "object",
+                    "description": " It specifies programming information of all the initializers",
+                    "title": "Initializers",
+                    "x-displayname": "Initializers"
                 },
                 "metadata": {
                     "description": " Standard status's metadata.",

@@ -29,6 +29,7 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.certificate.GetSpecType"] = GetSpecTypeValidator()
 	vr["ves.io.schema.certificate.GlobalSpecType"] = GlobalSpecTypeValidator()
 	vr["ves.io.schema.certificate.ReplaceSpecType"] = ReplaceSpecTypeValidator()
+	vr["ves.io.schema.certificate.VirtualHostAutoCert"] = VirtualHostAutoCertValidator()
 }
 
 func initializeEntryRegistry(mdr *svcfw.MDRegistry) {

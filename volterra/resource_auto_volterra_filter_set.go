@@ -439,6 +439,7 @@ func resourceVolterraFilterSetRead(d *schema.ResourceData, meta interface{}) err
 		}
 		return fmt.Errorf("Error finding Volterra FilterSet %q: %s", d.Id(), err)
 	}
+
 	return setFilterSetFields(client, d, resp)
 }
 
@@ -720,5 +721,11 @@ func resourceVolterraFilterSetDelete(d *schema.ResourceData, meta interface{}) e
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_filter_set.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_filter_set.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting FilterSet: %w", err)
+	}
+	return nil
+
 }

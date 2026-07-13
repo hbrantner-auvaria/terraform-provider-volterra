@@ -67,7 +67,7 @@ func resourceVolterraServicePolicy() *schema.Resource {
 
 			"algo": {
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
 			},
 
 			"port_matcher": {
@@ -213,7 +213,7 @@ func resourceVolterraServicePolicy() *schema.Resource {
 
 										Type: schema.TypeList,
 
-										Required: true,
+										Optional: true,
 										Elem: &schema.Schema{
 											Type: schema.TypeString,
 										},
@@ -223,7 +223,7 @@ func resourceVolterraServicePolicy() *schema.Resource {
 
 										Type: schema.TypeList,
 
-										Required: true,
+										Optional: true,
 										Elem: &schema.Schema{
 											Type: schema.TypeString,
 										},
@@ -373,7 +373,7 @@ func resourceVolterraServicePolicy() *schema.Resource {
 
 										Type: schema.TypeList,
 
-										Required: true,
+										Optional: true,
 										Elem: &schema.Schema{
 											Type: schema.TypeString,
 										},
@@ -383,7 +383,7 @@ func resourceVolterraServicePolicy() *schema.Resource {
 
 										Type: schema.TypeList,
 
-										Required: true,
+										Optional: true,
 										Elem: &schema.Schema{
 											Type: schema.TypeString,
 										},
@@ -1441,6 +1441,11 @@ func resourceVolterraServicePolicy() *schema.Resource {
 													Optional: true,
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
+
+															"encoded_path_matcher": {
+																Type:     schema.TypeBool,
+																Optional: true,
+															},
 
 															"exact_values": {
 
@@ -4341,6 +4346,10 @@ func resourceVolterraServicePolicyCreate(d *schema.ResourceData, meta interface{
 										if set != nil {
 
 											pathMapStrToI := set.(map[string]interface{})
+
+											if w, ok := pathMapStrToI["encoded_path_matcher"]; ok && !isIntfNil(w) {
+												path.EncodedPathMatcher = w.(bool)
+											}
 
 											if w, ok := pathMapStrToI["exact_values"]; ok && !isIntfNil(w) {
 												ls := make([]string, len(w.([]interface{})))
@@ -7749,6 +7758,10 @@ func resourceVolterraServicePolicyUpdate(d *schema.ResourceData, meta interface{
 									for _, set := range sl {
 										if set != nil {
 											pathMapStrToI := set.(map[string]interface{})
+
+											if w, ok := pathMapStrToI["encoded_path_matcher"]; ok && !isIntfNil(w) {
+												path.EncodedPathMatcher = w.(bool)
+											}
 
 											if w, ok := pathMapStrToI["exact_values"]; ok && !isIntfNil(w) {
 												ls := make([]string, len(w.([]interface{})))

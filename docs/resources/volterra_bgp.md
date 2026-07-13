@@ -67,11 +67,11 @@ resource "volterra_bgp" "example" {
     external {
       // One of the arguments from this list "address default_gateway disable external_connector from_site subnet_begin_offset subnet_end_offset" must be set
 
-      subnet_end_offset = "subnet_end_offset"
+      disable = true
 
       // One of the arguments from this list "address_ipv6 default_gateway_v6 disable_v6 from_site_v6 subnet_begin_offset_v6 subnet_end_offset_v6" must be set
 
-      address_ipv6 = "address_ipv6"
+      from_site_v6 = true
       asn = "64512"
 
       // One of the arguments from this list "md5_auth_key no_authentication" can be set
@@ -80,32 +80,12 @@ resource "volterra_bgp" "example" {
       family_inet {
         // One of the arguments from this list "disable enable" must be set
 
-        enable {
-          aggregation {
-            ip_prefix = "ip_prefix"
-
-            options {
-              // One of the arguments from this list "summary_only" must be set
-
-              summary_only = true
-            }
-          }
-        }
+        disable = true
       }
       family_inet_v6 {
         // One of the arguments from this list "disable enable" must be set
 
-        enable {
-          aggregation {
-            ip_prefix = "ip_prefix"
-
-            options {
-              // One of the arguments from this list "summary_only" must be set
-
-              summary_only = true
-            }
-          }
-        }
+        disable = true
       }
 
       // One of the arguments from this list "inside_interfaces interface interface_list outside_interfaces" must be set
@@ -125,7 +105,7 @@ resource "volterra_bgp" "example" {
     site {
       // One of the arguments from this list "disable_internet_vip enable_internet_vip" must be set
 
-      disable_internet_vip = true
+      enable_internet_vip = true
 
       network_type = "network_type"
 

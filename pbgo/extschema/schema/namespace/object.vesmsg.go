@@ -24,6 +24,264 @@ var (
 
 // augmented methods on protoc/std generated struct
 
+func (m *FinalizersInfo) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *FinalizersInfo) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *FinalizersInfo) DeepCopy() *FinalizersInfo {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &FinalizersInfo{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *FinalizersInfo) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *FinalizersInfo) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return FinalizersInfoValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateFinalizersInfo struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateFinalizersInfo) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*FinalizersInfo)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *FinalizersInfo got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["last_update"]; exists {
+		vOpts := append(opts, db.WithValidateField("last_update"))
+		if err := fv(ctx, m.GetLastUpdate(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["programming_initiated"]; exists {
+		vOpts := append(opts, db.WithValidateField("programming_initiated"))
+		if err := fv(ctx, m.GetProgrammingInitiated(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["status"]; exists {
+		vOpts := append(opts, db.WithValidateField("status"))
+		if err := fv(ctx, m.GetStatus(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultFinalizersInfoValidator = func() *ValidateFinalizersInfo {
+	v := &ValidateFinalizersInfo{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func FinalizersInfoValidator() db.Validator {
+	return DefaultFinalizersInfoValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *InitializerInfo) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *InitializerInfo) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *InitializerInfo) DeepCopy() *InitializerInfo {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &InitializerInfo{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *InitializerInfo) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *InitializerInfo) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return InitializerInfoValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateInitializerInfo struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateInitializerInfo) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*InitializerInfo)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *InitializerInfo got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["last_update"]; exists {
+		vOpts := append(opts, db.WithValidateField("last_update"))
+		if err := fv(ctx, m.GetLastUpdate(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["programming_initiated"]; exists {
+		vOpts := append(opts, db.WithValidateField("programming_initiated"))
+		if err := fv(ctx, m.GetProgrammingInitiated(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["status"]; exists {
+		vOpts := append(opts, db.WithValidateField("status"))
+		if err := fv(ctx, m.GetStatus(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultInitializerInfoValidator = func() *ValidateInitializerInfo {
+	v := &ValidateInitializerInfo{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func InitializerInfoValidator() db.Validator {
+	return DefaultInitializerInfoValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *LastProgrammingUpdate) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *LastProgrammingUpdate) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *LastProgrammingUpdate) DeepCopy() *LastProgrammingUpdate {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &LastProgrammingUpdate{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *LastProgrammingUpdate) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *LastProgrammingUpdate) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return LastProgrammingUpdateValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateLastProgrammingUpdate struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateLastProgrammingUpdate) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*LastProgrammingUpdate)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *LastProgrammingUpdate got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["message"]; exists {
+		vOpts := append(opts, db.WithValidateField("message"))
+		if err := fv(ctx, m.GetMessage(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["time"]; exists {
+		vOpts := append(opts, db.WithValidateField("time"))
+		if err := fv(ctx, m.GetTime(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["total_retries"]; exists {
+		vOpts := append(opts, db.WithValidateField("total_retries"))
+		if err := fv(ctx, m.GetTotalRetries(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultLastProgrammingUpdateValidator = func() *ValidateLastProgrammingUpdate {
+	v := &ValidateLastProgrammingUpdate{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func LastProgrammingUpdateValidator() db.Validator {
+	return DefaultLastProgrammingUpdateValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *SpecType) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }

@@ -280,6 +280,7 @@ func resourceVolterraK8SPodSecurityAdmissionRead(d *schema.ResourceData, meta in
 		}
 		return fmt.Errorf("Error finding Volterra K8SPodSecurityAdmission %q: %s", d.Id(), err)
 	}
+
 	return setK8SPodSecurityAdmissionFields(client, d, resp)
 }
 
@@ -474,5 +475,11 @@ func resourceVolterraK8SPodSecurityAdmissionDelete(d *schema.ResourceData, meta 
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_k8s_pod_security_admission.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_k8s_pod_security_admission.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting K8SPodSecurityAdmission: %w", err)
+	}
+	return nil
+
 }

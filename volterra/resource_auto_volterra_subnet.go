@@ -540,6 +540,7 @@ func resourceVolterraSubnetRead(d *schema.ResourceData, meta interface{}) error 
 		}
 		return fmt.Errorf("Error finding Volterra Subnet %q: %s", d.Id(), err)
 	}
+
 	return setSubnetFields(client, d, resp)
 }
 
@@ -756,5 +757,11 @@ func resourceVolterraSubnetDelete(d *schema.ResourceData, meta interface{}) erro
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_subnet.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_subnet.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting Subnet: %w", err)
+	}
+	return nil
+
 }

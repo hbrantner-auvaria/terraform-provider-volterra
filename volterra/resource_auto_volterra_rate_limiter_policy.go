@@ -545,11 +545,6 @@ func resourceVolterraRateLimiterPolicy() *schema.Resource {
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
 
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
-
 																		"name": {
 																			Type:     schema.TypeString,
 																			Optional: true,
@@ -594,11 +589,6 @@ func resourceVolterraRateLimiterPolicy() *schema.Resource {
 																Required: true,
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
-
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
 
 																		"name": {
 																			Type:     schema.TypeString,
@@ -1688,6 +1678,7 @@ func resourceVolterraRateLimiterPolicyRead(d *schema.ResourceData, meta interfac
 		}
 		return fmt.Errorf("Error finding Volterra RateLimiterPolicy %q: %s", d.Id(), err)
 	}
+
 	return setRateLimiterPolicyFields(client, d, resp)
 }
 
@@ -2699,5 +2690,11 @@ func resourceVolterraRateLimiterPolicyDelete(d *schema.ResourceData, meta interf
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_views_rate_limiter_policy.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_views_rate_limiter_policy.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting RateLimiterPolicy: %w", err)
+	}
+	return nil
+
 }

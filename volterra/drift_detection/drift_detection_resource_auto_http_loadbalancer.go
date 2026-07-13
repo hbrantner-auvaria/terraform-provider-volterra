@@ -3955,14 +3955,46 @@ func FlattenMPRAction(x *ves_io_schema.Action) []interface{} {
 	return actionValue
 }
 
+func FlattenClientSideActionCaptchaChallenge(x *ves_io_schema_virtual_host.CaptchaChallengeType) []interface{} {
+	rslt := make([]interface{}, 0)
+	if x != nil {
+		val := map[string]interface{}{
+			"cookie_expiry": x.GetCookieExpiry(),
+			"custom_page":   x.GetCustomPage(),
+		}
+		rslt = append(rslt, val)
+	}
+	return rslt
+}
+
+func FlattenClientSideActionJsChallenge(x *ves_io_schema_virtual_host.JavascriptChallengeType) []interface{} {
+	rslt := make([]interface{}, 0)
+	if x != nil {
+		val := map[string]interface{}{
+			"cookie_expiry":   x.GetCookieExpiry(),
+			"custom_page":     x.GetCustomPage(),
+			"js_script_delay": x.GetJsScriptDelay(),
+		}
+		rslt = append(rslt, val)
+	}
+	return rslt
+}
+
 func FlattenL7DdosProtection(x *ves_io_schema_views_http_loadbalancer.L7DDoSProtectionSettings) []interface{} {
 	rslt := make([]interface{}, 0)
 	if x != nil {
 		val := map[string]interface{}{
-			"ddos_policy_custom":      FlattenObjectRefTypeSet(x.GetDdosPolicyCustom()),
-			"ddos_policy_none":        isEmpty(x.GetDdosPolicyNone()),
-			"mitigation_block":        isEmpty(x.GetMitigationBlock()),
-			"mitigation_js_challenge": FlattenJSChallenge(x.GetMitigationJsChallenge()),
+			"clientside_action_captcha_challenge": FlattenClientSideActionCaptchaChallenge(x.GetClientsideActionCaptchaChallenge()),
+			"clientside_action_js_challenge":      FlattenClientSideActionJsChallenge(x.GetClientsideActionJsChallenge()),
+			"clientside_action_none":              isEmpty(x.GetClientsideActionNone()),
+			"ddos_policy_custom":                  FlattenObjectRefTypeSet(x.GetDdosPolicyCustom()),
+			"ddos_policy_none":                    isEmpty(x.GetDdosPolicyNone()),
+			"mitigation_block":                    isEmpty(x.GetMitigationBlock()),
+			"mitigation_captcha_challenge":        FlattenCaptchaChallenge(x.GetMitigationCaptchaChallenge()),
+			"mitigation_js_challenge":             FlattenJSChallenge(x.GetMitigationJsChallenge()),
+			"mitigation_none":                     isEmpty(x.GetMitigationNone()),
+			"default_rps_threshold":               isEmpty(x.GetDefaultRpsThreshold()),
+			"rps_threshold":                       x.GetRpsThreshold(),
 		}
 		rslt = append(rslt, val)
 	}

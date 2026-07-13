@@ -1692,50 +1692,38 @@ var APISwaggerJSON string = `{
         },
         "bot_defenseCookie": {
             "type": "object",
+            "description": "x-displayName: \"Cookie\"",
             "title": "Cookie",
-            "x-displayname": "Cookie",
-            "x-ves-oneof-field-cookiechoice": "[\"cookie_all\",\"cookie_and\",\"cookie_none\",\"cookie_or\",\"not_present_cookie\"]",
-            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.Cookie",
             "properties": {
                 "cookie_all": {
-                    "description": "Exclusive with [cookie_and cookie_none cookie_or not_present_cookie]\n Match Anything. No request matcher is needed.",
+                    "description": "x-displayName: \"ANYTHING\"\nMatch Anything. No request matcher is needed.",
                     "title": "ALL Response Header",
-                    "$ref": "#/definitions/bot_defenseGenericEmptyType",
-                    "x-displayname": "ANYTHING"
+                    "$ref": "#/definitions/bot_defenseGenericEmptyType"
                 },
                 "cookie_and": {
-                    "description": "Exclusive with [cookie_all cookie_none cookie_or not_present_cookie]\n Match requests when all conditions are met ('And').",
+                    "description": "x-displayName: \"ALL\"\nMatch requests when all conditions are met ('And').",
                     "title": "use AND operator",
-                    "$ref": "#/definitions/bot_defenseCookieMatcher",
-                    "x-displayname": "ALL"
+                    "$ref": "#/definitions/bot_defenseCookieMatcher"
                 },
                 "cookie_none": {
-                    "description": "Exclusive with [cookie_all cookie_and cookie_or not_present_cookie]\n Match all requests except for the specified conditions defined.",
+                    "description": "x-displayName: \"NONE\"\nMatch all requests except for the specified conditions defined.",
                     "title": "use None operator",
-                    "$ref": "#/definitions/bot_defenseCookieMatcher",
-                    "x-displayname": "NONE"
+                    "$ref": "#/definitions/bot_defenseCookieMatcher"
                 },
                 "cookie_or": {
-                    "description": "Exclusive with [cookie_all cookie_and cookie_none not_present_cookie]\n Match requests when at least one condition is met ('Or').",
+                    "description": "x-displayName: \"ANY\"\nMatch requests when at least one condition is met ('Or').",
                     "title": "use ANY operator",
-                    "$ref": "#/definitions/bot_defenseCookieMatcher",
-                    "x-displayname": "ANY"
+                    "$ref": "#/definitions/bot_defenseCookieMatcher"
                 },
                 "name": {
                     "type": "string",
-                    "description": " Operator Name\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
-                    "title": "Operator Name",
-                    "x-displayname": "Cookie Name",
-                    "x-ves-required": "true",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.message.required": "true"
-                    }
+                    "description": "x-displayName: \"Cookie Name\"\nx-required\nOperator Name",
+                    "title": "Operator Name"
                 },
                 "not_present_cookie": {
-                    "description": "Exclusive with [cookie_all cookie_and cookie_none cookie_or]\n Match requires cookie to not exist.",
+                    "description": "x-displayName: \"NOT PRESENT\"\nMatch requires cookie to not exist.",
                     "title": "NOT PRESENT",
-                    "$ref": "#/definitions/ioschemaEmpty",
-                    "x-displayname": "NOT PRESENT"
+                    "$ref": "#/definitions/ioschemaEmpty"
                 }
             }
         },
@@ -1754,9 +1742,12 @@ var APISwaggerJSON string = `{
                 },
                 "name": {
                     "type": "string",
-                    "description": " The name of the cookie.",
+                    "description": " The name of the cookie.\n\nValidation Rules:\n  ves.io.schema.rules.string.cookie_name: true\n",
                     "title": "Cookie Name",
-                    "x-displayname": "Name"
+                    "x-displayname": "Name",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.string.cookie_name": "true"
+                    }
                 }
             }
         },
@@ -1767,12 +1758,12 @@ var APISwaggerJSON string = `{
             "x-displayname": "Cookie Matcher",
             "x-ves-proto-message": "ves.io.schema.shape.bot_defense.CookieMatcher",
             "properties": {
-                "cookie_match": {
+                "cookie_match_v2": {
                     "type": "array",
                     "description": "Cookie Matchers\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "Cookie Matchers",
                     "items": {
-                        "$ref": "#/definitions/bot_defenseCookieMatcherType"
+                        "$ref": "#/definitions/bot_defenseCookieMatcherTypeV2"
                     },
                     "x-displayname": "Cookie Matcher(s)",
                     "x-ves-required": "true",
@@ -1785,43 +1776,36 @@ var APISwaggerJSON string = `{
         },
         "bot_defenseCookieMatcherType": {
             "type": "object",
+            "description": "x-displayName: \"Cookie Matcher Type\"",
             "title": "Cookie Matcher Type",
-            "x-displayname": "Cookie Matcher Type",
-            "x-ves-oneof-field-compare_type_choice": "[\"contains\",\"ends_with\",\"equals\",\"starts_with\"]",
-            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.CookieMatcherType",
             "properties": {
                 "contains": {
-                    "description": "Exclusive with [ends_with equals starts_with]\n",
+                    "description": "x-displayName: \"Contains\"",
                     "title": "Contains value",
-                    "$ref": "#/definitions/bot_defenseCookieMatcherValue",
-                    "x-displayname": "Contains"
+                    "$ref": "#/definitions/bot_defenseCookieMatcherValue"
                 },
                 "ends_with": {
-                    "description": "Exclusive with [contains equals starts_with]\n",
+                    "description": "x-displayName: \"Ends With\"",
                     "title": "Ends with value",
-                    "$ref": "#/definitions/bot_defenseCookieMatcherValue",
-                    "x-displayname": "Ends With"
+                    "$ref": "#/definitions/bot_defenseCookieMatcherValue"
                 },
                 "equals": {
-                    "description": "Exclusive with [contains ends_with starts_with]\n",
+                    "description": "x-displayName: \"Equals\"",
                     "title": "Equals value",
-                    "$ref": "#/definitions/bot_defenseCookieMatcherValue",
-                    "x-displayname": "Equals"
+                    "$ref": "#/definitions/bot_defenseCookieMatcherValue"
                 },
                 "starts_with": {
-                    "description": "Exclusive with [contains ends_with equals]\n",
+                    "description": "x-displayName: \"Starts With\"",
                     "title": "Starts with value",
-                    "$ref": "#/definitions/bot_defenseCookieMatcherValue",
-                    "x-displayname": "Starts With"
+                    "$ref": "#/definitions/bot_defenseCookieMatcherValue"
                 }
             }
         },
-        "bot_defenseCookieMatcherValue": {
+        "bot_defenseCookieMatcherTypeV2": {
             "type": "object",
-            "description": "Cookie Matcher Value",
-            "title": "Cookie Matcher Value",
-            "x-displayname": "Value",
-            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.CookieMatcherValue",
+            "title": "Cookie Matcher Type",
+            "x-displayname": "Cookie Matcher Type",
+            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.CookieMatcherTypeV2",
             "properties": {
                 "case_sensitive": {
                     "type": "boolean",
@@ -1829,16 +1813,26 @@ var APISwaggerJSON string = `{
                     "format": "boolean",
                     "x-displayname": "Case Sensitive"
                 },
-                "not_value": {
+                "not": {
                     "type": "boolean",
-                    "title": "Negation",
+                    "title": "Check not",
                     "format": "boolean",
                     "x-displayname": "Not(!)"
+                },
+                "operator": {
+                    "description": "\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "title": "Comparison Operator for Cookie",
+                    "$ref": "#/definitions/bot_defenseResponseOperator",
+                    "x-displayname": "Comparison Operator",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true"
+                    }
                 },
                 "value": {
                     "type": "string",
                     "description": "\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.max_len: 256\n  ves.io.schema.rules.string.min_len: 1\n",
-                    "title": "Response Cookie Matcher Value",
+                    "title": "Response Header Matcher Value",
                     "minLength": 1,
                     "maxLength": 256,
                     "x-displayname": "Value",
@@ -1848,6 +1842,151 @@ var APISwaggerJSON string = `{
                         "ves.io.schema.rules.string.max_len": "256",
                         "ves.io.schema.rules.string.min_len": "1"
                     }
+                }
+            }
+        },
+        "bot_defenseCookieMatcherValue": {
+            "type": "object",
+            "description": "x-displayName: \"Value\"\nCookie Matcher Value",
+            "title": "Cookie Matcher Value",
+            "properties": {
+                "case_sensitive": {
+                    "type": "boolean",
+                    "description": "x-displayName: \"Case Sensitive\"",
+                    "title": "Case sensitive",
+                    "format": "boolean"
+                },
+                "not_value": {
+                    "type": "boolean",
+                    "description": "x-displayName: \"Not(!)\"",
+                    "title": "Negation",
+                    "format": "boolean"
+                },
+                "value": {
+                    "type": "string",
+                    "description": "x-displayName: \"Value\"\nx-required",
+                    "title": "Response Cookie Matcher Value"
+                }
+            }
+        },
+        "bot_defenseCookieOperator": {
+            "type": "object",
+            "description": "Cookie matcher choice",
+            "title": "Cookies Operator",
+            "x-displayname": "Cookies Matcher",
+            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.CookieOperator",
+            "properties": {
+                "cookie_operator": {
+                    "type": "array",
+                    "description": "\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "title": "Cookies",
+                    "items": {
+                        "$ref": "#/definitions/bot_defenseCookieV2"
+                    },
+                    "x-displayname": "Cookies",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true"
+                    }
+                }
+            }
+        },
+        "bot_defenseCookieOperatorChoice": {
+            "type": "object",
+            "description": "Operator",
+            "title": "Operator",
+            "x-displayname": "Operator",
+            "x-ves-oneof-field-cookiechoice": "[\"cookie_and\",\"cookie_anything\",\"cookie_none\",\"cookie_not_present\",\"cookie_or\"]",
+            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.CookieOperatorChoice",
+            "properties": {
+                "cookie_and": {
+                    "description": "Exclusive with [cookie_anything cookie_none cookie_not_present cookie_or]\n Match cookie when all conditions are met ('And').",
+                    "title": "use AND operator",
+                    "$ref": "#/definitions/bot_defenseCookieMatcher",
+                    "x-displayname": "ALL"
+                },
+                "cookie_anything": {
+                    "description": "Exclusive with [cookie_and cookie_none cookie_not_present cookie_or]\n Match Anything. No cookie matcher is needed.",
+                    "title": "use ANYTHING Operator",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "ANYTHING"
+                },
+                "cookie_none": {
+                    "description": "Exclusive with [cookie_and cookie_anything cookie_not_present cookie_or]\n Match all cookies except for the specified conditions defined.",
+                    "title": "use None operator",
+                    "$ref": "#/definitions/bot_defenseCookieMatcher",
+                    "x-displayname": "NONE"
+                },
+                "cookie_not_present": {
+                    "description": "Exclusive with [cookie_and cookie_anything cookie_none cookie_or]\n Match requires cookie to not exist.",
+                    "title": "use NOT PRESENT Operator",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "NOT PRESENT"
+                },
+                "cookie_or": {
+                    "description": "Exclusive with [cookie_and cookie_anything cookie_none cookie_not_present]\n Match cookie when at least one condition is met ('Or').",
+                    "title": "use ANY operator",
+                    "$ref": "#/definitions/bot_defenseCookieMatcher",
+                    "x-displayname": "ANY"
+                }
+            }
+        },
+        "bot_defenseCookieV2": {
+            "type": "object",
+            "title": "Cookie",
+            "x-displayname": "Cookie",
+            "x-ves-displayorder": "1,2",
+            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.CookieV2",
+            "properties": {
+                "cookie": {
+                    "title": "Cookie operator",
+                    "$ref": "#/definitions/bot_defenseCookieOperatorChoice",
+                    "x-displayname": "Cookie Operator"
+                },
+                "name": {
+                    "type": "string",
+                    "description": " Operator Name\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.cookie_name: true\n",
+                    "title": "Operator Name",
+                    "x-displayname": "Cookie Name",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.string.cookie_name": "true"
+                    }
+                }
+            }
+        },
+        "bot_defenseCookies": {
+            "type": "object",
+            "title": "Cookies",
+            "x-displayname": "Cookies",
+            "x-ves-displayorder": "1",
+            "x-ves-oneof-field-cookieschoice": "[\"cookies_all\",\"cookies_and\",\"cookies_none\",\"cookies_or\"]",
+            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.Cookies",
+            "properties": {
+                "cookies_all": {
+                    "description": "Exclusive with [cookies_and cookies_none cookies_or]\n Match Anything. No request matcher is needed.",
+                    "title": "ALL Cookies",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "ANYTHING"
+                },
+                "cookies_and": {
+                    "description": "Exclusive with [cookies_all cookies_none cookies_or]\n Match requests when all conditions are met ('And').",
+                    "title": "use AND operator",
+                    "$ref": "#/definitions/bot_defenseCookieOperator",
+                    "x-displayname": "ALL"
+                },
+                "cookies_none": {
+                    "description": "Exclusive with [cookies_all cookies_and cookies_or]\n Match all requests except for the specified conditions defined.",
+                    "title": "use None operator",
+                    "$ref": "#/definitions/bot_defenseCookieOperator",
+                    "x-displayname": "NONE"
+                },
+                "cookies_or": {
+                    "description": "Exclusive with [cookies_all cookies_and cookies_none]\n Match requests when at least one condition is met ('Or').",
+                    "title": "use ANY operator",
+                    "$ref": "#/definitions/bot_defenseCookieOperator",
+                    "x-displayname": "ANY"
                 }
             }
         },
@@ -1923,10 +2062,8 @@ var APISwaggerJSON string = `{
         },
         "bot_defenseGenericEmptyType": {
             "type": "object",
-            "description": "This can be used for the choice where no values are needed",
-            "title": "Generic Empty Type",
-            "x-displayname": "Empty",
-            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.GenericEmptyType"
+            "description": "x-displayName: \"Empty\"\nThis can be used for the choice where no values are needed",
+            "title": "Generic Empty Type"
         },
         "bot_defenseHeaderMatcher": {
             "type": "object",
@@ -1959,12 +2096,13 @@ var APISwaggerJSON string = `{
             "properties": {
                 "header_name": {
                     "type": "string",
-                    "description": " Enter the Header Name\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "description": " Enter the Header Name\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.http_header_field: true\n",
                     "title": "Header Name",
                     "x-displayname": "Header",
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
-                        "ves.io.schema.rules.message.required": "true"
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.string.http_header_field": "true"
                     }
                 },
                 "header_value": {
@@ -2013,12 +2151,13 @@ var APISwaggerJSON string = `{
                 },
                 "name": {
                     "type": "string",
-                    "description": " Operator Name\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "description": " Operator Name\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.http_header_field: true\n",
                     "title": "Operator Name",
                     "x-displayname": "Name",
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
-                        "ves.io.schema.rules.message.required": "true"
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.string.http_header_field": "true"
                     }
                 },
                 "not_present_header": {
@@ -2026,6 +2165,47 @@ var APISwaggerJSON string = `{
                     "title": "NOT PRESENT",
                     "$ref": "#/definitions/bot_defenseHeaderOperatorEmptyType",
                     "x-displayname": "NOT PRESENT"
+                }
+            }
+        },
+        "bot_defenseHeaderOperatorChoice": {
+            "type": "object",
+            "description": "Operator",
+            "title": "Operator",
+            "x-displayname": "Operator",
+            "x-ves-displayorder": "1",
+            "x-ves-oneof-field-header_operator_choice": "[\"header_and\",\"header_anything\",\"header_none\",\"header_not_present\",\"header_or\"]",
+            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.HeaderOperatorChoice",
+            "properties": {
+                "header_and": {
+                    "description": "Exclusive with [header_anything header_none header_not_present header_or]\n Match response when all conditions are met ('And').",
+                    "title": "use AND operator for defined header",
+                    "$ref": "#/definitions/bot_defenseResponseHeaderMatcher",
+                    "x-displayname": "ALL"
+                },
+                "header_anything": {
+                    "description": "Exclusive with [header_and header_none header_not_present header_or]\n Match Anything. No response matcher is needed.",
+                    "title": "use ANYTHING for defined header",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "ANYTHING"
+                },
+                "header_none": {
+                    "description": "Exclusive with [header_and header_anything header_not_present header_or]\n Match all responses except for the specified conditions defined.",
+                    "title": "use None operator for defined header",
+                    "$ref": "#/definitions/bot_defenseResponseHeaderMatcher",
+                    "x-displayname": "NONE"
+                },
+                "header_not_present": {
+                    "description": "Exclusive with [header_and header_anything header_none header_or]\n Match requires header to not exist.",
+                    "title": "use NOT PRESENT for defined header",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "NOT PRESENT"
+                },
+                "header_or": {
+                    "description": "Exclusive with [header_and header_anything header_none header_not_present]\n Match response when at least one condition is met ('Or').",
+                    "title": "use ANY operator for defined header",
+                    "$ref": "#/definitions/bot_defenseResponseHeaderMatcher",
+                    "x-displayname": "ANY"
                 }
             }
         },
@@ -2400,7 +2580,7 @@ var APISwaggerJSON string = `{
                 },
                 "usernames": {
                     "type": "array",
-                    "description": " Add the condition for fetching the username from the Request Body\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 64\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "description": " Add the field name where you store username on the Request Body\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 64\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "Username Reporting",
                     "maxItems": 64,
                     "items": {
@@ -2557,7 +2737,7 @@ var APISwaggerJSON string = `{
                 },
                 "usernames": {
                     "type": "array",
-                    "description": " Add the condition for fetching the username from the Request Body\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 64\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "description": " Add the field name where you store username on the Request Body\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 64\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "Username Reporting",
                     "maxItems": 64,
                     "items": {
@@ -2750,12 +2930,12 @@ var APISwaggerJSON string = `{
             "x-displayname": "Response Body Matcher",
             "x-ves-proto-message": "ves.io.schema.shape.bot_defense.ResponseBodyMatcher",
             "properties": {
-                "responseBody_match": {
+                "response_body_match_v2": {
                     "type": "array",
                     "description": "Response Body Matchers\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "Response Body Matchers",
                     "items": {
-                        "$ref": "#/definitions/bot_defenseResponseBodyMatcherType"
+                        "$ref": "#/definitions/bot_defenseResponseBodyMatcherTypeV2"
                     },
                     "x-displayname": "Response Body Matcher(s)",
                     "x-ves-required": "true",
@@ -2768,42 +2948,36 @@ var APISwaggerJSON string = `{
         },
         "bot_defenseResponseBodyMatcherType": {
             "type": "object",
+            "description": "x-displayName: \"Response Body Matcher Type\"",
             "title": "Response Body Matcher Type",
-            "x-displayname": "Response Body Matcher Type",
-            "x-ves-oneof-field-compare_type_choice": "[\"contains\",\"ends_with\",\"equals\",\"starts_with\"]",
-            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.ResponseBodyMatcherType",
             "properties": {
                 "contains": {
-                    "description": "Exclusive with [ends_with equals starts_with]\n",
+                    "description": "x-displayName: \"Contains\"",
                     "title": "Contains value",
-                    "$ref": "#/definitions/bot_defenseResponseBodyMatcherValue",
-                    "x-displayname": "Contains"
+                    "$ref": "#/definitions/bot_defenseResponseBodyMatcherValue"
                 },
                 "ends_with": {
-                    "description": "Exclusive with [contains equals starts_with]\n",
+                    "description": "x-displayName: \"Ends With\"",
                     "title": "Ends with value",
-                    "$ref": "#/definitions/bot_defenseResponseBodyMatcherValue",
-                    "x-displayname": "Ends With"
+                    "$ref": "#/definitions/bot_defenseResponseBodyMatcherValue"
                 },
                 "equals": {
-                    "description": "Exclusive with [contains ends_with starts_with]\n",
+                    "description": "x-displayName: \"Equals\"",
                     "title": "Equals value",
-                    "$ref": "#/definitions/bot_defenseResponseBodyMatcherValue",
-                    "x-displayname": "Equals"
+                    "$ref": "#/definitions/bot_defenseResponseBodyMatcherValue"
                 },
                 "starts_with": {
-                    "description": "Exclusive with [contains ends_with equals]\n",
+                    "description": "x-displayName: \"Starts With\"",
                     "title": "Starts with value",
-                    "$ref": "#/definitions/bot_defenseResponseBodyMatcherValue",
-                    "x-displayname": "Starts With"
+                    "$ref": "#/definitions/bot_defenseResponseBodyMatcherValue"
                 }
             }
         },
-        "bot_defenseResponseBodyMatcherValue": {
+        "bot_defenseResponseBodyMatcherTypeV2": {
             "type": "object",
-            "title": "Response Body Matcher Value",
-            "x-displayname": "Value",
-            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.ResponseBodyMatcherValue",
+            "title": "Response Body Matcher Type",
+            "x-displayname": "Response Body Matcher Type",
+            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.ResponseBodyMatcherTypeV2",
             "properties": {
                 "case_sensitive": {
                     "type": "boolean",
@@ -2811,11 +2985,21 @@ var APISwaggerJSON string = `{
                     "format": "boolean",
                     "x-displayname": "Case Sensitive"
                 },
-                "not_value": {
+                "not": {
                     "type": "boolean",
-                    "title": "Negation",
+                    "title": "Check not",
                     "format": "boolean",
                     "x-displayname": "Not(!)"
+                },
+                "operator": {
+                    "description": "\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "title": "Comparison Operator for Response Body",
+                    "$ref": "#/definitions/bot_defenseResponseOperator",
+                    "x-displayname": "Comparison Operator",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true"
+                    }
                 },
                 "value": {
                     "type": "string",
@@ -2830,6 +3014,30 @@ var APISwaggerJSON string = `{
                         "ves.io.schema.rules.string.max_len": "256",
                         "ves.io.schema.rules.string.min_len": "1"
                     }
+                }
+            }
+        },
+        "bot_defenseResponseBodyMatcherValue": {
+            "type": "object",
+            "description": "x-displayName: \"Value\"",
+            "title": "Response Body Matcher Value",
+            "properties": {
+                "case_sensitive": {
+                    "type": "boolean",
+                    "description": "x-displayName: \"Case Sensitive\"",
+                    "title": "Case sensitive",
+                    "format": "boolean"
+                },
+                "not_value": {
+                    "type": "boolean",
+                    "description": "x-displayName: \"Not(!)\"",
+                    "title": "Negation",
+                    "format": "boolean"
+                },
+                "value": {
+                    "type": "string",
+                    "description": "x-displayName: \"Value\"\nx-required",
+                    "title": "Response Body Matcher Value"
                 }
             }
         },
@@ -2869,13 +3077,14 @@ var APISwaggerJSON string = `{
         },
         "bot_defenseResponseCodeMatcher": {
             "type": "object",
+            "description": "Response Header matcher choice",
             "title": "Response Code Matcher",
             "x-displayname": "Response Code Matcher",
             "x-ves-proto-message": "ves.io.schema.shape.bot_defense.ResponseCodeMatcher",
             "properties": {
                 "responseCode_match": {
                     "type": "array",
-                    "description": "\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "description": " Response Code Matchers\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "Response Code Matchers",
                     "items": {
                         "$ref": "#/definitions/bot_defenseResponseCodeMatcherType"
@@ -2937,51 +3146,38 @@ var APISwaggerJSON string = `{
         },
         "bot_defenseResponseHeader": {
             "type": "object",
-            "description": "Response Header values",
+            "description": "x-displayName: \"Response Header Values\"\nResponse Header values",
             "title": "Response Header Name Operator Pair",
-            "x-displayname": "Response Header Values",
-            "x-ves-oneof-field-header_operator_choice": "[\"header_all\",\"header_and\",\"header_none\",\"header_or\",\"not_present_header\"]",
-            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.ResponseHeader",
             "properties": {
                 "header_all": {
-                    "description": "Exclusive with [header_and header_none header_or not_present_header]\n Match Anything. No request matcher is needed.",
+                    "description": "x-displayName: \"ANYTHING\"\nMatch Anything. No request matcher is needed.",
                     "title": "ALL header",
-                    "$ref": "#/definitions/bot_defenseGenericEmptyType",
-                    "x-displayname": "ANYTHING"
+                    "$ref": "#/definitions/bot_defenseGenericEmptyType"
                 },
                 "header_and": {
-                    "description": "Exclusive with [header_all header_none header_or not_present_header]\n Match requests when all conditions are met ('And').",
+                    "description": "x-displayName: \"ALL\"\nMatch requests when all conditions are met ('And').",
                     "title": "use AND operator for defined header",
-                    "$ref": "#/definitions/bot_defenseResponseHeaderMatcher",
-                    "x-displayname": "ALL"
+                    "$ref": "#/definitions/bot_defenseResponseHeaderMatcher"
                 },
                 "header_none": {
-                    "description": "Exclusive with [header_all header_and header_or not_present_header]\n Match all requests except for the specified conditions defined.",
+                    "description": "x-displayName: \"NONE\"\nMatch all requests except for the specified conditions defined.",
                     "title": "use None operator for defined header",
-                    "$ref": "#/definitions/bot_defenseResponseHeaderMatcher",
-                    "x-displayname": "NONE"
+                    "$ref": "#/definitions/bot_defenseResponseHeaderMatcher"
                 },
                 "header_or": {
-                    "description": "Exclusive with [header_all header_and header_none not_present_header]\n Match requests when at least one condition is met ('Or').",
+                    "description": "x-displayName: \"ANY\"\nMatch requests when at least one condition is met ('Or').",
                     "title": "use ANY operator for defined header",
-                    "$ref": "#/definitions/bot_defenseResponseHeaderMatcher",
-                    "x-displayname": "ANY"
+                    "$ref": "#/definitions/bot_defenseResponseHeaderMatcher"
                 },
                 "name": {
                     "type": "string",
-                    "description": " Operator Name\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
-                    "title": "Operator Name",
-                    "x-displayname": "Header Name",
-                    "x-ves-required": "true",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.message.required": "true"
-                    }
+                    "description": "x-displayName: \"Header Name\"\nx-required\nOperator Name",
+                    "title": "Operator Name"
                 },
                 "not_present_header": {
-                    "description": "Exclusive with [header_all header_and header_none header_or]\n Match requires header to not exist.",
+                    "description": "x-displayName: \"NOT PRESENT\"\nMatch requires header to not exist.",
                     "title": "NOT PRESENT",
-                    "$ref": "#/definitions/ioschemaEmpty",
-                    "x-displayname": "NOT PRESENT"
+                    "$ref": "#/definitions/ioschemaEmpty"
                 }
             }
         },
@@ -2989,15 +3185,15 @@ var APISwaggerJSON string = `{
             "type": "object",
             "description": "Response Header matcher Choice.",
             "title": "Response Header Matcher",
-            "x-displayname": "Response Header Matcher",
+            "x-displayname": "Header Matcher",
             "x-ves-proto-message": "ves.io.schema.shape.bot_defense.ResponseHeaderMatcher",
             "properties": {
-                "responseHeader_match": {
+                "response_header_match_v2": {
                     "type": "array",
-                    "description": "Response Code Matchers\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "description": "Response Header Matchers\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "Response Header Matchers",
                     "items": {
-                        "$ref": "#/definitions/bot_defenseResponseHeaderMatcherType"
+                        "$ref": "#/definitions/bot_defenseResponseHeaderMatcherTypeV2"
                     },
                     "x-displayname": "Response Header Matcher(s)",
                     "x-ves-required": "true",
@@ -3010,42 +3206,36 @@ var APISwaggerJSON string = `{
         },
         "bot_defenseResponseHeaderMatcherType": {
             "type": "object",
+            "description": "x-displayName: \"Response Header Matcher Type\"",
             "title": "Response Header Matcher Type",
-            "x-displayname": "Response Header Matcher Type",
-            "x-ves-oneof-field-compare_type_choice": "[\"contains\",\"ends_with\",\"equals\",\"starts_with\"]",
-            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.ResponseHeaderMatcherType",
             "properties": {
                 "contains": {
-                    "description": "Exclusive with [ends_with equals starts_with]\n",
+                    "description": "x-displayName: \"Contains\"",
                     "title": "Contains value",
-                    "$ref": "#/definitions/bot_defenseResponseHeaderMatcherValue",
-                    "x-displayname": "Contains"
+                    "$ref": "#/definitions/bot_defenseResponseHeaderMatcherValue"
                 },
                 "ends_with": {
-                    "description": "Exclusive with [contains equals starts_with]\n",
+                    "description": "x-displayName: \"Ends With\"",
                     "title": "Ends with value",
-                    "$ref": "#/definitions/bot_defenseResponseHeaderMatcherValue",
-                    "x-displayname": "Ends With"
+                    "$ref": "#/definitions/bot_defenseResponseHeaderMatcherValue"
                 },
                 "equals": {
-                    "description": "Exclusive with [contains ends_with starts_with]\n",
+                    "description": "x-displayName: \"Equals\"",
                     "title": "Equals value",
-                    "$ref": "#/definitions/bot_defenseResponseHeaderMatcherValue",
-                    "x-displayname": "Equals"
+                    "$ref": "#/definitions/bot_defenseResponseHeaderMatcherValue"
                 },
                 "starts_with": {
-                    "description": "Exclusive with [contains ends_with equals]\n",
+                    "description": "x-displayName: \"Starts With\"",
                     "title": "Starts with value",
-                    "$ref": "#/definitions/bot_defenseResponseHeaderMatcherValue",
-                    "x-displayname": "Starts With"
+                    "$ref": "#/definitions/bot_defenseResponseHeaderMatcherValue"
                 }
             }
         },
-        "bot_defenseResponseHeaderMatcherValue": {
+        "bot_defenseResponseHeaderMatcherTypeV2": {
             "type": "object",
-            "title": "Response Header Matcher Value",
-            "x-displayname": "Value",
-            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.ResponseHeaderMatcherValue",
+            "title": "Response Header Matcher Type",
+            "x-displayname": "Response Header Matcher Type",
+            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.ResponseHeaderMatcherTypeV2",
             "properties": {
                 "case_sensitive": {
                     "type": "boolean",
@@ -3053,11 +3243,21 @@ var APISwaggerJSON string = `{
                     "format": "boolean",
                     "x-displayname": "Case Sensitive"
                 },
-                "not_value": {
+                "not": {
                     "type": "boolean",
-                    "title": "Negation",
+                    "title": "Check not",
                     "format": "boolean",
                     "x-displayname": "Not(!)"
+                },
+                "operator": {
+                    "description": "\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "title": "Comparison Operator for Response Header",
+                    "$ref": "#/definitions/bot_defenseResponseOperator",
+                    "x-displayname": "Comparison Operator",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true"
+                    }
                 },
                 "value": {
                     "type": "string",
@@ -3075,6 +3275,126 @@ var APISwaggerJSON string = `{
                 }
             }
         },
+        "bot_defenseResponseHeaderMatcherValue": {
+            "type": "object",
+            "description": "x-displayName: \"Value\"",
+            "title": "Response Header Matcher Value",
+            "properties": {
+                "case_sensitive": {
+                    "type": "boolean",
+                    "description": "x-displayName: \"Case Sensitive\"",
+                    "title": "Case sensitive",
+                    "format": "boolean"
+                },
+                "not_value": {
+                    "type": "boolean",
+                    "description": "x-displayName: \"Not(!)\"",
+                    "title": "Negation",
+                    "format": "boolean"
+                },
+                "value": {
+                    "type": "string",
+                    "description": "x-displayName: \"Value\"\nx-required",
+                    "title": "Response Header Matcher Value"
+                }
+            }
+        },
+        "bot_defenseResponseHeaderOperator": {
+            "type": "object",
+            "description": "Response Header matcher choice",
+            "title": "Response Header Operator",
+            "x-displayname": "Response Header Matcher",
+            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.ResponseHeaderOperator",
+            "properties": {
+                "response_header_operator": {
+                    "type": "array",
+                    "description": "\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "title": "Response Header",
+                    "items": {
+                        "$ref": "#/definitions/bot_defenseResponseHeaderV2"
+                    },
+                    "x-displayname": "Response Header",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true"
+                    }
+                }
+            }
+        },
+        "bot_defenseResponseHeaderV2": {
+            "type": "object",
+            "description": "Response Header values",
+            "title": "Response Header Name Operator Pair",
+            "x-displayname": "Response Header Values",
+            "x-ves-displayorder": "1,2",
+            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.ResponseHeaderV2",
+            "properties": {
+                "header": {
+                    "title": "Operator",
+                    "$ref": "#/definitions/bot_defenseHeaderOperatorChoice",
+                    "x-displayname": "Header Operator"
+                },
+                "name": {
+                    "type": "string",
+                    "description": " Header Name\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.http_header_field: true\n",
+                    "title": "Header Name",
+                    "x-displayname": "Header Name",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.string.http_header_field": "true"
+                    }
+                }
+            }
+        },
+        "bot_defenseResponseHeaders": {
+            "type": "object",
+            "title": "Response Headers",
+            "x-displayname": "Response Headers",
+            "x-ves-displayorder": "1",
+            "x-ves-oneof-field-responseheaderchoice": "[\"response_header_all\",\"response_header_and\",\"response_header_none\",\"response_header_or\"]",
+            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.ResponseHeaders",
+            "properties": {
+                "response_header_all": {
+                    "description": "Exclusive with [response_header_and response_header_none response_header_or]\n Match Anything. No request matcher is needed.",
+                    "title": "use ANYTHING Header",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "ANYTHING"
+                },
+                "response_header_and": {
+                    "description": "Exclusive with [response_header_all response_header_none response_header_or]\n Match requests when all conditions are met ('And').",
+                    "title": "use AND operator",
+                    "$ref": "#/definitions/bot_defenseResponseHeaderOperator",
+                    "x-displayname": "ALL"
+                },
+                "response_header_none": {
+                    "description": "Exclusive with [response_header_all response_header_and response_header_or]\n Match all requests except for the specified conditions defined.",
+                    "title": "use None operator",
+                    "$ref": "#/definitions/bot_defenseResponseHeaderOperator",
+                    "x-displayname": "NONE"
+                },
+                "response_header_or": {
+                    "description": "Exclusive with [response_header_all response_header_and response_header_none]\n Match requests when at least one condition is met ('Or').",
+                    "title": "use ANY operator",
+                    "$ref": "#/definitions/bot_defenseResponseHeaderOperator",
+                    "x-displayname": "ANY"
+                }
+            }
+        },
+        "bot_defenseResponseOperator": {
+            "type": "string",
+            "description": "\n - RESPONSE_OPERATOR_EQUALS_TO: EQUALS_TO value\n\n - RESPONSE_OPERATOR_CONTAINS: CONTAINS value\n\n - RESPONSE_OPERATOR_STARTS_WITH: STARTS_WITH value\n\n - RESPONSE_OPERATOR_ENDS_WITH: ENDS_WITH value\n",
+            "title": "Transaction Details Comparison Operator for Body, Header and Cookies",
+            "enum": [
+                "RESPONSE_OPERATOR_EQUALS_TO",
+                "RESPONSE_OPERATOR_CONTAINS",
+                "RESPONSE_OPERATOR_STARTS_WITH",
+                "RESPONSE_OPERATOR_ENDS_WITH"
+            ],
+            "default": "RESPONSE_OPERATOR_EQUALS_TO",
+            "x-displayname": "Comparison Operator",
+            "x-ves-proto-enum": "ves.io.schema.shape.bot_defense.ResponseOperator"
+        },
         "bot_defenseTransactionResult": {
             "type": "object",
             "description": "Transaction Result",
@@ -3089,7 +3409,7 @@ var APISwaggerJSON string = `{
                     "x-displayname": "Failure Conditions"
                 },
                 "transaction_result_success": {
-                    "description": " Define the conditions that will replicate success conditions for requests on this endpoint",
+                    "description": " Define the conditions that will replicate success conditions for requests on this endpoint\n x-textBlockContent:\n **Define Condition**\n\n Set success and failure conditions based on the origin's response code, headers, body, or cookie",
                     "title": "Success Conditions",
                     "$ref": "#/definitions/bot_defenseTransactionResultType",
                     "x-displayname": "Success Conditions"
@@ -3101,17 +3421,14 @@ var APISwaggerJSON string = `{
             "description": "Transaction Result Type",
             "title": "Transaction Result Type",
             "x-displayname": "Transaction Result Type",
-            "x-ves-displayorder": "26,27,28,29",
+            "x-ves-displayorder": "26,30,31,27",
             "x-ves-proto-message": "ves.io.schema.shape.bot_defense.TransactionResultType",
             "properties": {
-                "cookie": {
-                    "type": "array",
+                "cookie_v2": {
                     "description": " Conditions in Cookie, if any, that would help identify valid Requests to the Origin.",
                     "title": "Cookie",
-                    "items": {
-                        "$ref": "#/definitions/bot_defenseCookie"
-                    },
-                    "x-displayname": "Cookie"
+                    "$ref": "#/definitions/bot_defenseCookies",
+                    "x-displayname": "Cookies"
                 },
                 "responseBody": {
                     "description": " Conditions in Response Body, if any, that would help identify valid Requests to the Origin.",
@@ -3125,13 +3442,10 @@ var APISwaggerJSON string = `{
                     "$ref": "#/definitions/bot_defenseResponseCode",
                     "x-displayname": "Response Code"
                 },
-                "responseHeader": {
-                    "type": "array",
+                "response_header_v2": {
                     "description": " Conditions in Response Header, if any, that would help identify valid Requests to the Origin.",
                     "title": "Response Header",
-                    "items": {
-                        "$ref": "#/definitions/bot_defenseResponseHeader"
-                    },
+                    "$ref": "#/definitions/bot_defenseResponseHeaders",
                     "x-displayname": "Response Header"
                 }
             }
@@ -3142,13 +3456,23 @@ var APISwaggerJSON string = `{
             "x-displayname": "Username Type",
             "x-ves-proto-message": "ves.io.schema.shape.bot_defense.UserNameType",
             "properties": {
+                "encryption_type": {
+                    "description": "\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "title": "Username Encryption Type",
+                    "$ref": "#/definitions/bot_defenseUsernameEncryptionType",
+                    "x-displayname": "Encryption",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true"
+                    }
+                },
                 "username_reporting": {
                     "type": "string",
                     "description": "\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.max_len: 256\n  ves.io.schema.rules.string.min_len: 1\n",
                     "title": "Username Reporting",
                     "minLength": 1,
                     "maxLength": 256,
-                    "x-displayname": "Value",
+                    "x-displayname": "Field",
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true",
@@ -3157,6 +3481,18 @@ var APISwaggerJSON string = `{
                     }
                 }
             }
+        },
+        "bot_defenseUsernameEncryptionType": {
+            "type": "string",
+            "description": "Encryption Type for username reporting\n\n - PlainText: plaintext\n\n - Hashed: hashed\n",
+            "title": "Encryption Type",
+            "enum": [
+                "PlainText",
+                "Hashed"
+            ],
+            "default": "PlainText",
+            "x-displayname": "Encryption Type",
+            "x-ves-proto-enum": "ves.io.schema.shape.bot_defense.UsernameEncryptionType"
         },
         "bot_defenseWebClientAddHeaderToRequest": {
             "type": "object",

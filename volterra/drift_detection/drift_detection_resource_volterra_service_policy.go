@@ -175,12 +175,13 @@ func FlattenPathServicePolicy(f *ves_io_schema_policy.PathMatcherType) interface
 	rslt := make([]interface{}, 0)
 	if f != nil {
 		val := map[string]interface{}{
-			"exact_values":   f.GetExactValues(),
-			"prefix_values":  f.GetPrefixValues(),
-			"regex_values":   f.GetRegexValues(),
-			"suffix_values":  f.GetSuffixValues(),
-			"transformers":   FlattenTransformers(f.GetTransformers()),
-			"invert_matcher": f.GetInvertMatcher(),
+			"encoded_path_matcher": f.GetEncodedPathMatcher(),
+			"exact_values":         f.GetExactValues(),
+			"prefix_values":        f.GetPrefixValues(),
+			"regex_values":         f.GetRegexValues(),
+			"suffix_values":        f.GetSuffixValues(),
+			"transformers":         FlattenTransformers(f.GetTransformers()),
+			"invert_matcher":       f.GetInvertMatcher(),
 		}
 		rslt = append(rslt, val)
 	}

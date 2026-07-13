@@ -237,6 +237,18 @@ func resourceVolterraSecuremeshSiteV2() *schema.Resource {
 				},
 			},
 
+			"disable_advanced_delivery": {
+
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
+
+			"enable_advanced_delivery": {
+
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
+
 			"block_all_services": {
 
 				Type:     schema.TypeBool,
@@ -1286,6 +1298,20 @@ func resourceVolterraSecuremeshSiteV2() *schema.Resource {
 				},
 			},
 
+			"disable_log_anonymization": {
+
+				Type:       schema.TypeBool,
+				Optional:   true,
+				Deprecated: "This field is deprecated and will be removed in future release.",
+			},
+
+			"enable_log_anonymization": {
+
+				Type:       schema.TypeBool,
+				Optional:   true,
+				Deprecated: "This field is deprecated and will be removed in future release.",
+			},
+
 			"log_receiver": {
 
 				Type:       schema.TypeList,
@@ -1516,555 +1542,6 @@ func resourceVolterraSecuremeshSiteV2() *schema.Resource {
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-
-						"managed": {
-
-							Type:     schema.TypeList,
-							MaxItems: 1,
-							Optional: true,
-							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{
-
-									"aws_cloud_user_account": {
-										Type:     schema.TypeList,
-										MaxItems: 1,
-										Required: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-
-												"name": {
-													Type:     schema.TypeString,
-													Optional: true,
-												},
-												"namespace": {
-													Type:     schema.TypeString,
-													Optional: true,
-												},
-												"tenant": {
-													Type:     schema.TypeString,
-													Optional: true,
-												},
-											},
-										},
-									},
-
-									"aws_region": {
-										Type:     schema.TypeString,
-										Required: true,
-									},
-
-									"aws_resource_mapping_list": {
-
-										Type:     schema.TypeList,
-										MaxItems: 1,
-										Optional: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-
-												"aws_resource_mappings": {
-
-													Type:     schema.TypeList,
-													Required: true,
-													Elem: &schema.Resource{
-														Schema: map[string]*schema.Schema{
-
-															"aws_resources": {
-
-																Type:     schema.TypeList,
-																Required: true,
-																Elem: &schema.Resource{
-																	Schema: map[string]*schema.Schema{
-
-																		"availability_zone": {
-																			Type:     schema.TypeString,
-																			Required: true,
-																		},
-
-																		"security_group": {
-																			Type:     schema.TypeString,
-																			Required: true,
-																		},
-
-																		"subnet_id": {
-																			Type:     schema.TypeString,
-																			Required: true,
-																		},
-																	},
-																},
-															},
-
-															"network_option": {
-
-																Type:     schema.TypeList,
-																MaxItems: 1,
-																Required: true,
-																Elem: &schema.Resource{
-																	Schema: map[string]*schema.Schema{
-
-																		"segment_network": {
-
-																			Type:     schema.TypeList,
-																			MaxItems: 1,
-																			Optional: true,
-																			Elem: &schema.Resource{
-																				Schema: map[string]*schema.Schema{
-
-																					"kind": {
-																						Type:     schema.TypeString,
-																						Computed: true,
-																					},
-
-																					"name": {
-																						Type:     schema.TypeString,
-																						Optional: true,
-																					},
-																					"namespace": {
-																						Type:     schema.TypeString,
-																						Optional: true,
-																					},
-																					"tenant": {
-																						Type:     schema.TypeString,
-																						Optional: true,
-																					},
-																				},
-																			},
-																		},
-
-																		"site_local_inside_network": {
-
-																			Type:     schema.TypeBool,
-																			Optional: true,
-																		},
-
-																		"site_local_network": {
-
-																			Type:     schema.TypeBool,
-																			Optional: true,
-																		},
-																	},
-																},
-															},
-														},
-													},
-												},
-											},
-										},
-									},
-
-									"disable_cloud_connect": {
-
-										Type:     schema.TypeBool,
-										Optional: true,
-									},
-
-									"enable_cloud_connect": {
-
-										Type:     schema.TypeList,
-										MaxItems: 1,
-										Optional: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-
-												"tgw_id": {
-													Type:     schema.TypeString,
-													Required: true,
-												},
-
-												"volterra_site_asn": {
-													Type:     schema.TypeInt,
-													Required: true,
-												},
-											},
-										},
-									},
-
-									"disable_disk_encryption": {
-
-										Type:     schema.TypeBool,
-										Optional: true,
-									},
-
-									"disk_encryption_key": {
-
-										Type:     schema.TypeList,
-										MaxItems: 1,
-										Optional: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-
-												"key_id": {
-													Type:     schema.TypeString,
-													Required: true,
-												},
-											},
-										},
-									},
-
-									"disk_size": {
-										Type:     schema.TypeInt,
-										Required: true,
-									},
-
-									"egress_igw_gw": {
-
-										Type:     schema.TypeList,
-										MaxItems: 1,
-										Optional: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-
-												"igw_gw_id": {
-													Type:     schema.TypeString,
-													Required: true,
-												},
-											},
-										},
-									},
-
-									"egress_nat_gw": {
-
-										Type:     schema.TypeList,
-										MaxItems: 1,
-										Optional: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-
-												"nat_gw_id": {
-													Type: schema.TypeList,
-
-													Required: true,
-													Elem: &schema.Schema{
-														Type: schema.TypeString,
-													},
-												},
-											},
-										},
-									},
-
-									"no_egress": {
-
-										Type:     schema.TypeBool,
-										Optional: true,
-									},
-
-									"private_adn": {
-
-										Type:     schema.TypeBool,
-										Optional: true,
-									},
-
-									"instance_type": {
-										Type:     schema.TypeString,
-										Required: true,
-									},
-
-									"node_list": {
-
-										Type:     schema.TypeList,
-										MaxItems: 1,
-										Required: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-
-												"node_list": {
-
-													Type:     schema.TypeList,
-													Required: true,
-													Elem: &schema.Resource{
-														Schema: map[string]*schema.Schema{
-
-															"aws_az_name": {
-																Type:     schema.TypeString,
-																Required: true,
-															},
-
-															"hostname": {
-																Type:     schema.TypeString,
-																Required: true,
-															},
-
-															"interface_list": {
-
-																Type:     schema.TypeList,
-																Required: true,
-																Elem: &schema.Resource{
-																	Schema: map[string]*schema.Schema{
-
-																		"aws_node_interface_configuration": {
-
-																			Type:     schema.TypeList,
-																			MaxItems: 1,
-																			Required: true,
-																			Elem: &schema.Resource{
-																				Schema: map[string]*schema.Schema{
-
-																					"inherit_aws_node_interface_configuration": {
-
-																						Type:     schema.TypeBool,
-																						Optional: true,
-																					},
-
-																					"override_aws_node_interface_configuration": {
-
-																						Type:     schema.TypeList,
-																						MaxItems: 1,
-																						Optional: true,
-																						Elem: &schema.Resource{
-																							Schema: map[string]*schema.Schema{
-
-																								"security_group": {
-																									Type:     schema.TypeString,
-																									Required: true,
-																								},
-
-																								"subnet_id": {
-																									Type:     schema.TypeString,
-																									Required: true,
-																								},
-																							},
-																						},
-																					},
-																				},
-																			},
-																		},
-
-																		"mtu": {
-																			Type:     schema.TypeInt,
-																			Optional: true,
-																		},
-
-																		"network_option": {
-
-																			Type:     schema.TypeList,
-																			MaxItems: 1,
-																			Required: true,
-																			Elem: &schema.Resource{
-																				Schema: map[string]*schema.Schema{
-
-																					"segment_network": {
-
-																						Type:     schema.TypeList,
-																						MaxItems: 1,
-																						Optional: true,
-																						Elem: &schema.Resource{
-																							Schema: map[string]*schema.Schema{
-
-																								"kind": {
-																									Type:     schema.TypeString,
-																									Computed: true,
-																								},
-
-																								"name": {
-																									Type:     schema.TypeString,
-																									Optional: true,
-																								},
-																								"namespace": {
-																									Type:     schema.TypeString,
-																									Optional: true,
-																								},
-																								"tenant": {
-																									Type:     schema.TypeString,
-																									Optional: true,
-																								},
-																							},
-																						},
-																					},
-
-																					"site_local_inside_network": {
-
-																						Type:     schema.TypeBool,
-																						Optional: true,
-																					},
-
-																					"site_local_network": {
-
-																						Type:     schema.TypeBool,
-																						Optional: true,
-																					},
-																				},
-																			},
-																		},
-
-																		"site_to_site_connectivity_interface_disabled": {
-
-																			Type:     schema.TypeBool,
-																			Optional: true,
-																		},
-
-																		"site_to_site_connectivity_interface_enabled": {
-
-																			Type:     schema.TypeBool,
-																			Optional: true,
-																		},
-																	},
-																},
-															},
-
-															"type": {
-																Type:     schema.TypeString,
-																Required: true,
-															},
-														},
-													},
-												},
-											},
-										},
-									},
-
-									"cloud_link_config": {
-
-										Type:     schema.TypeList,
-										MaxItems: 1,
-										Optional: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-
-												"cloud_link": {
-													Type:     schema.TypeList,
-													MaxItems: 1,
-													Required: true,
-													Elem: &schema.Resource{
-														Schema: map[string]*schema.Schema{
-
-															"name": {
-																Type:     schema.TypeString,
-																Optional: true,
-															},
-															"namespace": {
-																Type:     schema.TypeString,
-																Optional: true,
-															},
-															"tenant": {
-																Type:     schema.TypeString,
-																Optional: true,
-															},
-														},
-													},
-												},
-
-												"inside": {
-
-													Type:     schema.TypeBool,
-													Optional: true,
-												},
-
-												"outside": {
-
-													Type:     schema.TypeBool,
-													Optional: true,
-												},
-
-												"vgw_id": {
-													Type:     schema.TypeString,
-													Required: true,
-												},
-											},
-										},
-									},
-
-									"private_connectivity_disabled": {
-
-										Type:     schema.TypeBool,
-										Optional: true,
-									},
-
-									"disable_private_workload_routing_to_ce": {
-
-										Type:     schema.TypeBool,
-										Optional: true,
-									},
-
-									"enable_private_workload_routing_list": {
-
-										Type:     schema.TypeList,
-										MaxItems: 1,
-										Optional: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-
-												"enable_private_workload_routing_to_ce": {
-
-													Type:     schema.TypeList,
-													Required: true,
-													Elem: &schema.Resource{
-														Schema: map[string]*schema.Schema{
-
-															"network_option": {
-
-																Type:     schema.TypeList,
-																MaxItems: 1,
-																Required: true,
-																Elem: &schema.Resource{
-																	Schema: map[string]*schema.Schema{
-
-																		"segment_network": {
-
-																			Type:     schema.TypeList,
-																			MaxItems: 1,
-																			Optional: true,
-																			Elem: &schema.Resource{
-																				Schema: map[string]*schema.Schema{
-
-																					"kind": {
-																						Type:     schema.TypeString,
-																						Computed: true,
-																					},
-
-																					"name": {
-																						Type:     schema.TypeString,
-																						Optional: true,
-																					},
-																					"namespace": {
-																						Type:     schema.TypeString,
-																						Optional: true,
-																					},
-																					"tenant": {
-																						Type:     schema.TypeString,
-																						Optional: true,
-																					},
-																				},
-																			},
-																		},
-
-																		"site_local_inside_network": {
-
-																			Type:     schema.TypeBool,
-																			Optional: true,
-																		},
-
-																		"site_local_network": {
-
-																			Type:     schema.TypeBool,
-																			Optional: true,
-																		},
-																	},
-																},
-															},
-
-															"subnet_id": {
-																Type:     schema.TypeString,
-																Required: true,
-															},
-														},
-													},
-												},
-											},
-										},
-									},
-
-									"tags": {
-										Type:     schema.TypeMap,
-										Optional: true,
-									},
-
-									"vpc_id": {
-										Type:     schema.TypeString,
-										Required: true,
-									},
-								},
-							},
-						},
-
 						"not_managed": {
 
 							Type:     schema.TypeList,
@@ -2825,11 +2302,6 @@ func resourceVolterraSecuremeshSiteV2() *schema.Resource {
 																			Optional: true,
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
-
-																					"kind": {
-																						Type:     schema.TypeString,
-																						Computed: true,
-																					},
 
 																					"name": {
 																						Type:     schema.TypeString,
@@ -2908,547 +2380,6 @@ func resourceVolterraSecuremeshSiteV2() *schema.Resource {
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-
-						"managed": {
-
-							Type:     schema.TypeList,
-							MaxItems: 1,
-							Optional: true,
-							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{
-
-									"accelerated_networking": {
-
-										Type:     schema.TypeList,
-										MaxItems: 1,
-										Optional: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-
-												"disable": {
-
-													Type:     schema.TypeBool,
-													Optional: true,
-												},
-
-												"enable": {
-
-													Type:     schema.TypeBool,
-													Optional: true,
-												},
-											},
-										},
-									},
-
-									"azure_cred": {
-										Type:     schema.TypeList,
-										MaxItems: 1,
-										Required: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-
-												"name": {
-													Type:     schema.TypeString,
-													Optional: true,
-												},
-												"namespace": {
-													Type:     schema.TypeString,
-													Optional: true,
-												},
-												"tenant": {
-													Type:     schema.TypeString,
-													Optional: true,
-												},
-											},
-										},
-									},
-
-									"azure_region": {
-										Type:     schema.TypeString,
-										Required: true,
-									},
-
-									"disabled": {
-
-										Type:     schema.TypeBool,
-										Optional: true,
-									},
-
-									"enabled": {
-
-										Type:     schema.TypeBool,
-										Optional: true,
-									},
-
-									"disk_size": {
-										Type:     schema.TypeInt,
-										Optional: true,
-									},
-
-									"machine_type": {
-										Type:     schema.TypeString,
-										Required: true,
-									},
-
-									"resource_group": {
-										Type:     schema.TypeString,
-										Required: true,
-									},
-
-									"multiple_interface": {
-
-										Type:     schema.TypeList,
-										MaxItems: 1,
-										Optional: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-
-												"node_list": {
-
-													Type:     schema.TypeList,
-													MaxItems: 1,
-													Optional: true,
-													Elem: &schema.Resource{
-														Schema: map[string]*schema.Schema{
-
-															"node_list": {
-
-																Type:     schema.TypeList,
-																Required: true,
-																Elem: &schema.Resource{
-																	Schema: map[string]*schema.Schema{
-
-																		"azure_az": {
-																			Type:     schema.TypeString,
-																			Required: true,
-																		},
-
-																		"hostname": {
-																			Type:     schema.TypeString,
-																			Optional: true,
-																		},
-
-																		"interface_list": {
-
-																			Type:     schema.TypeList,
-																			Required: true,
-																			Elem: &schema.Resource{
-																				Schema: map[string]*schema.Schema{
-
-																					"mtu": {
-																						Type:     schema.TypeInt,
-																						Optional: true,
-																					},
-
-																					"network_option": {
-
-																						Type:     schema.TypeList,
-																						MaxItems: 1,
-																						Required: true,
-																						Elem: &schema.Resource{
-																							Schema: map[string]*schema.Schema{
-
-																								"segment_network": {
-
-																									Type:     schema.TypeList,
-																									MaxItems: 1,
-																									Optional: true,
-																									Elem: &schema.Resource{
-																										Schema: map[string]*schema.Schema{
-
-																											"kind": {
-																												Type:     schema.TypeString,
-																												Computed: true,
-																											},
-
-																											"name": {
-																												Type:     schema.TypeString,
-																												Optional: true,
-																											},
-																											"namespace": {
-																												Type:     schema.TypeString,
-																												Optional: true,
-																											},
-																											"tenant": {
-																												Type:     schema.TypeString,
-																												Optional: true,
-																											},
-																										},
-																									},
-																								},
-
-																								"site_local_inside_network": {
-
-																									Type:     schema.TypeBool,
-																									Optional: true,
-																								},
-
-																								"site_local_network": {
-
-																									Type:     schema.TypeBool,
-																									Optional: true,
-																								},
-																							},
-																						},
-																					},
-
-																					"site_to_site_connectivity_interface_disabled": {
-
-																						Type:     schema.TypeBool,
-																						Optional: true,
-																					},
-
-																					"site_to_site_connectivity_interface_enabled": {
-
-																						Type:     schema.TypeBool,
-																						Optional: true,
-																					},
-
-																					"subnet": {
-
-																						Type:     schema.TypeList,
-																						MaxItems: 1,
-																						Optional: true,
-																						Elem: &schema.Resource{
-																							Schema: map[string]*schema.Schema{
-
-																								"existing_subnet": {
-
-																									Type:     schema.TypeList,
-																									MaxItems: 1,
-																									Optional: true,
-																									Elem: &schema.Resource{
-																										Schema: map[string]*schema.Schema{
-
-																											"vnet_resource_group": {
-
-																												Type:     schema.TypeBool,
-																												Optional: true,
-																											},
-
-																											"subnet_name": {
-																												Type:     schema.TypeString,
-																												Required: true,
-																											},
-																										},
-																									},
-																								},
-
-																								"subnet_param": {
-
-																									Type:     schema.TypeList,
-																									MaxItems: 1,
-																									Optional: true,
-																									Elem: &schema.Resource{
-																										Schema: map[string]*schema.Schema{
-
-																											"ipv4": {
-																												Type:     schema.TypeString,
-																												Required: true,
-																											},
-
-																											"autogenerate": {
-
-																												Type:     schema.TypeBool,
-																												Optional: true,
-																											},
-
-																											"name": {
-
-																												Type:     schema.TypeString,
-																												Optional: true,
-																											},
-																										},
-																									},
-																								},
-																							},
-																						},
-																					},
-																				},
-																			},
-																		},
-
-																		"type": {
-																			Type:     schema.TypeString,
-																			Required: true,
-																		},
-																	},
-																},
-															},
-														},
-													},
-												},
-											},
-										},
-									},
-
-									"single_interface": {
-
-										Type:     schema.TypeList,
-										MaxItems: 1,
-										Optional: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-
-												"node_list": {
-
-													Type:     schema.TypeList,
-													MaxItems: 1,
-													Optional: true,
-													Elem: &schema.Resource{
-														Schema: map[string]*schema.Schema{
-
-															"node_list": {
-
-																Type:     schema.TypeList,
-																Required: true,
-																Elem: &schema.Resource{
-																	Schema: map[string]*schema.Schema{
-
-																		"azure_az": {
-																			Type:     schema.TypeString,
-																			Required: true,
-																		},
-
-																		"hostname": {
-																			Type:     schema.TypeString,
-																			Optional: true,
-																		},
-
-																		"interface_list": {
-
-																			Type:     schema.TypeList,
-																			Required: true,
-																			Elem: &schema.Resource{
-																				Schema: map[string]*schema.Schema{
-
-																					"mtu": {
-																						Type:     schema.TypeInt,
-																						Optional: true,
-																					},
-
-																					"network_option": {
-
-																						Type:     schema.TypeList,
-																						MaxItems: 1,
-																						Required: true,
-																						Elem: &schema.Resource{
-																							Schema: map[string]*schema.Schema{
-
-																								"segment_network": {
-
-																									Type:     schema.TypeList,
-																									MaxItems: 1,
-																									Optional: true,
-																									Elem: &schema.Resource{
-																										Schema: map[string]*schema.Schema{
-
-																											"kind": {
-																												Type:     schema.TypeString,
-																												Computed: true,
-																											},
-
-																											"name": {
-																												Type:     schema.TypeString,
-																												Optional: true,
-																											},
-																											"namespace": {
-																												Type:     schema.TypeString,
-																												Optional: true,
-																											},
-																											"tenant": {
-																												Type:     schema.TypeString,
-																												Optional: true,
-																											},
-																										},
-																									},
-																								},
-
-																								"site_local_inside_network": {
-
-																									Type:     schema.TypeBool,
-																									Optional: true,
-																								},
-
-																								"site_local_network": {
-
-																									Type:     schema.TypeBool,
-																									Optional: true,
-																								},
-																							},
-																						},
-																					},
-
-																					"site_to_site_connectivity_interface_disabled": {
-
-																						Type:     schema.TypeBool,
-																						Optional: true,
-																					},
-
-																					"site_to_site_connectivity_interface_enabled": {
-
-																						Type:     schema.TypeBool,
-																						Optional: true,
-																					},
-
-																					"subnet": {
-
-																						Type:     schema.TypeList,
-																						MaxItems: 1,
-																						Optional: true,
-																						Elem: &schema.Resource{
-																							Schema: map[string]*schema.Schema{
-
-																								"existing_subnet": {
-
-																									Type:     schema.TypeList,
-																									MaxItems: 1,
-																									Optional: true,
-																									Elem: &schema.Resource{
-																										Schema: map[string]*schema.Schema{
-
-																											"vnet_resource_group": {
-
-																												Type:     schema.TypeBool,
-																												Optional: true,
-																											},
-
-																											"subnet_name": {
-																												Type:     schema.TypeString,
-																												Required: true,
-																											},
-																										},
-																									},
-																								},
-
-																								"subnet_param": {
-
-																									Type:     schema.TypeList,
-																									MaxItems: 1,
-																									Optional: true,
-																									Elem: &schema.Resource{
-																										Schema: map[string]*schema.Schema{
-
-																											"ipv4": {
-																												Type:     schema.TypeString,
-																												Required: true,
-																											},
-
-																											"autogenerate": {
-
-																												Type:     schema.TypeBool,
-																												Optional: true,
-																											},
-
-																											"name": {
-
-																												Type:     schema.TypeString,
-																												Optional: true,
-																											},
-																										},
-																									},
-																								},
-																							},
-																						},
-																					},
-																				},
-																			},
-																		},
-
-																		"type": {
-																			Type:     schema.TypeString,
-																			Required: true,
-																		},
-																	},
-																},
-															},
-														},
-													},
-												},
-											},
-										},
-									},
-
-									"tags": {
-										Type:     schema.TypeMap,
-										Optional: true,
-									},
-
-									"vnet": {
-
-										Type:     schema.TypeList,
-										MaxItems: 1,
-										Required: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-
-												"existing_vnet": {
-
-													Type:     schema.TypeList,
-													MaxItems: 1,
-													Optional: true,
-													Elem: &schema.Resource{
-														Schema: map[string]*schema.Schema{
-
-															"resource_group": {
-																Type:     schema.TypeString,
-																Required: true,
-															},
-
-															"f5_orchestrated_routing": {
-
-																Type:     schema.TypeBool,
-																Optional: true,
-															},
-
-															"manual_routing": {
-
-																Type:     schema.TypeBool,
-																Optional: true,
-															},
-
-															"vnet_name": {
-																Type:     schema.TypeString,
-																Required: true,
-															},
-														},
-													},
-												},
-
-												"new_vnet": {
-
-													Type:     schema.TypeList,
-													MaxItems: 1,
-													Optional: true,
-													Elem: &schema.Resource{
-														Schema: map[string]*schema.Schema{
-
-															"autogenerate": {
-
-																Type:     schema.TypeBool,
-																Optional: true,
-															},
-
-															"name": {
-
-																Type:     schema.TypeString,
-																Optional: true,
-															},
-
-															"primary_ipv4": {
-																Type:     schema.TypeString,
-																Required: true,
-															},
-														},
-													},
-												},
-											},
-										},
-									},
-								},
-							},
-						},
-
 						"not_managed": {
 
 							Type:     schema.TypeList,
@@ -4209,11 +3140,6 @@ func resourceVolterraSecuremeshSiteV2() *schema.Resource {
 																			Optional: true,
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
-
-																					"kind": {
-																						Type:     schema.TypeString,
-																						Computed: true,
-																					},
 
 																					"name": {
 																						Type:     schema.TypeString,
@@ -5054,11 +3980,6 @@ func resourceVolterraSecuremeshSiteV2() *schema.Resource {
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
 
-																					"kind": {
-																						Type:     schema.TypeString,
-																						Computed: true,
-																					},
-
 																					"name": {
 																						Type:     schema.TypeString,
 																						Optional: true,
@@ -5898,11 +4819,6 @@ func resourceVolterraSecuremeshSiteV2() *schema.Resource {
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
 
-																					"kind": {
-																						Type:     schema.TypeString,
-																						Computed: true,
-																					},
-
 																					"name": {
 																						Type:     schema.TypeString,
 																						Optional: true,
@@ -5980,529 +4896,6 @@ func resourceVolterraSecuremeshSiteV2() *schema.Resource {
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-
-						"managed": {
-
-							Type:     schema.TypeList,
-							MaxItems: 1,
-							Optional: true,
-							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{
-
-									"disk_size": {
-										Type:     schema.TypeInt,
-										Optional: true,
-									},
-
-									"gcp_cred": {
-										Type:     schema.TypeList,
-										MaxItems: 1,
-										Required: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-
-												"name": {
-													Type:     schema.TypeString,
-													Optional: true,
-												},
-												"namespace": {
-													Type:     schema.TypeString,
-													Optional: true,
-												},
-												"tenant": {
-													Type:     schema.TypeString,
-													Optional: true,
-												},
-											},
-										},
-									},
-
-									"gcp_region": {
-										Type:     schema.TypeString,
-										Required: true,
-									},
-
-									"instance_type": {
-										Type:     schema.TypeString,
-										Required: true,
-									},
-
-									"private_connectivity": {
-
-										Type:     schema.TypeList,
-										MaxItems: 1,
-										Optional: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-
-												"cloud_link": {
-													Type:     schema.TypeList,
-													MaxItems: 1,
-													Required: true,
-													Elem: &schema.Resource{
-														Schema: map[string]*schema.Schema{
-
-															"kind": {
-																Type:     schema.TypeString,
-																Computed: true,
-															},
-
-															"name": {
-																Type:     schema.TypeString,
-																Optional: true,
-															},
-															"namespace": {
-																Type:     schema.TypeString,
-																Optional: true,
-															},
-															"tenant": {
-																Type:     schema.TypeString,
-																Optional: true,
-															},
-														},
-													},
-												},
-
-												"inside": {
-
-													Type:     schema.TypeBool,
-													Optional: true,
-												},
-
-												"outside": {
-
-													Type:     schema.TypeBool,
-													Optional: true,
-												},
-											},
-										},
-									},
-
-									"private_connectivity_disabled": {
-
-										Type:     schema.TypeBool,
-										Optional: true,
-									},
-
-									"multiple_interface": {
-
-										Type:     schema.TypeList,
-										MaxItems: 1,
-										Optional: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-
-												"node_list": {
-
-													Type:     schema.TypeList,
-													MaxItems: 1,
-													Optional: true,
-													Elem: &schema.Resource{
-														Schema: map[string]*schema.Schema{
-
-															"node_list": {
-
-																Type:     schema.TypeList,
-																Required: true,
-																Elem: &schema.Resource{
-																	Schema: map[string]*schema.Schema{
-
-																		"gcp_az_name": {
-																			Type:     schema.TypeString,
-																			Required: true,
-																		},
-
-																		"hostname": {
-																			Type:     schema.TypeString,
-																			Optional: true,
-																		},
-
-																		"interface_list": {
-
-																			Type:     schema.TypeList,
-																			Required: true,
-																			Elem: &schema.Resource{
-																				Schema: map[string]*schema.Schema{
-
-																					"mtu": {
-																						Type:     schema.TypeInt,
-																						Optional: true,
-																					},
-
-																					"network_option": {
-
-																						Type:     schema.TypeList,
-																						MaxItems: 1,
-																						Required: true,
-																						Elem: &schema.Resource{
-																							Schema: map[string]*schema.Schema{
-
-																								"segment_network": {
-
-																									Type:     schema.TypeList,
-																									MaxItems: 1,
-																									Optional: true,
-																									Elem: &schema.Resource{
-																										Schema: map[string]*schema.Schema{
-
-																											"kind": {
-																												Type:     schema.TypeString,
-																												Computed: true,
-																											},
-
-																											"name": {
-																												Type:     schema.TypeString,
-																												Optional: true,
-																											},
-																											"namespace": {
-																												Type:     schema.TypeString,
-																												Optional: true,
-																											},
-																											"tenant": {
-																												Type:     schema.TypeString,
-																												Optional: true,
-																											},
-																										},
-																									},
-																								},
-
-																								"site_local_inside_network": {
-
-																									Type:     schema.TypeBool,
-																									Optional: true,
-																								},
-
-																								"site_local_network": {
-
-																									Type:     schema.TypeBool,
-																									Optional: true,
-																								},
-																							},
-																						},
-																					},
-
-																					"site_to_site_connectivity_interface_disabled": {
-
-																						Type:     schema.TypeBool,
-																						Optional: true,
-																					},
-
-																					"site_to_site_connectivity_interface_enabled": {
-
-																						Type:     schema.TypeBool,
-																						Optional: true,
-																					},
-
-																					"subnet": {
-
-																						Type:     schema.TypeList,
-																						MaxItems: 1,
-																						Optional: true,
-																						Elem: &schema.Resource{
-																							Schema: map[string]*schema.Schema{
-
-																								"existing_subnet_id": {
-
-																									Type:     schema.TypeString,
-																									Optional: true,
-																								},
-
-																								"subnet_param": {
-
-																									Type:     schema.TypeList,
-																									MaxItems: 1,
-																									Optional: true,
-																									Elem: &schema.Resource{
-																										Schema: map[string]*schema.Schema{
-
-																											"ipv4": {
-																												Type:     schema.TypeString,
-																												Required: true,
-																											},
-
-																											"autogenerate": {
-
-																												Type:     schema.TypeBool,
-																												Optional: true,
-																											},
-
-																											"name": {
-
-																												Type:     schema.TypeString,
-																												Optional: true,
-																											},
-																										},
-																									},
-																								},
-																							},
-																						},
-																					},
-
-																					"vpc": {
-
-																						Type:     schema.TypeList,
-																						MaxItems: 1,
-																						Optional: true,
-																						Elem: &schema.Resource{
-																							Schema: map[string]*schema.Schema{
-
-																								"existing_vpc_id": {
-
-																									Type:     schema.TypeString,
-																									Optional: true,
-																								},
-
-																								"new_vpc": {
-
-																									Type:     schema.TypeList,
-																									MaxItems: 1,
-																									Optional: true,
-																									Elem: &schema.Resource{
-																										Schema: map[string]*schema.Schema{
-
-																											"autogenerate": {
-
-																												Type:     schema.TypeBool,
-																												Optional: true,
-																											},
-
-																											"name_tag": {
-
-																												Type:     schema.TypeString,
-																												Optional: true,
-																											},
-																										},
-																									},
-																								},
-																							},
-																						},
-																					},
-																				},
-																			},
-																		},
-																	},
-																},
-															},
-														},
-													},
-												},
-											},
-										},
-									},
-
-									"single_interface": {
-
-										Type:     schema.TypeList,
-										MaxItems: 1,
-										Optional: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-
-												"node_list": {
-
-													Type:     schema.TypeList,
-													MaxItems: 1,
-													Optional: true,
-													Elem: &schema.Resource{
-														Schema: map[string]*schema.Schema{
-
-															"node_list": {
-
-																Type:     schema.TypeList,
-																Required: true,
-																Elem: &schema.Resource{
-																	Schema: map[string]*schema.Schema{
-
-																		"gcp_az_name": {
-																			Type:     schema.TypeString,
-																			Required: true,
-																		},
-
-																		"hostname": {
-																			Type:     schema.TypeString,
-																			Optional: true,
-																		},
-
-																		"interface_list": {
-
-																			Type:     schema.TypeList,
-																			Required: true,
-																			Elem: &schema.Resource{
-																				Schema: map[string]*schema.Schema{
-
-																					"mtu": {
-																						Type:     schema.TypeInt,
-																						Optional: true,
-																					},
-
-																					"network_option": {
-
-																						Type:     schema.TypeList,
-																						MaxItems: 1,
-																						Required: true,
-																						Elem: &schema.Resource{
-																							Schema: map[string]*schema.Schema{
-
-																								"segment_network": {
-
-																									Type:     schema.TypeList,
-																									MaxItems: 1,
-																									Optional: true,
-																									Elem: &schema.Resource{
-																										Schema: map[string]*schema.Schema{
-
-																											"kind": {
-																												Type:     schema.TypeString,
-																												Computed: true,
-																											},
-
-																											"name": {
-																												Type:     schema.TypeString,
-																												Optional: true,
-																											},
-																											"namespace": {
-																												Type:     schema.TypeString,
-																												Optional: true,
-																											},
-																											"tenant": {
-																												Type:     schema.TypeString,
-																												Optional: true,
-																											},
-																										},
-																									},
-																								},
-
-																								"site_local_inside_network": {
-
-																									Type:     schema.TypeBool,
-																									Optional: true,
-																								},
-
-																								"site_local_network": {
-
-																									Type:     schema.TypeBool,
-																									Optional: true,
-																								},
-																							},
-																						},
-																					},
-
-																					"site_to_site_connectivity_interface_disabled": {
-
-																						Type:     schema.TypeBool,
-																						Optional: true,
-																					},
-
-																					"site_to_site_connectivity_interface_enabled": {
-
-																						Type:     schema.TypeBool,
-																						Optional: true,
-																					},
-
-																					"subnet": {
-
-																						Type:     schema.TypeList,
-																						MaxItems: 1,
-																						Optional: true,
-																						Elem: &schema.Resource{
-																							Schema: map[string]*schema.Schema{
-
-																								"existing_subnet_id": {
-
-																									Type:     schema.TypeString,
-																									Optional: true,
-																								},
-
-																								"subnet_param": {
-
-																									Type:     schema.TypeList,
-																									MaxItems: 1,
-																									Optional: true,
-																									Elem: &schema.Resource{
-																										Schema: map[string]*schema.Schema{
-
-																											"ipv4": {
-																												Type:     schema.TypeString,
-																												Required: true,
-																											},
-
-																											"autogenerate": {
-
-																												Type:     schema.TypeBool,
-																												Optional: true,
-																											},
-
-																											"name": {
-
-																												Type:     schema.TypeString,
-																												Optional: true,
-																											},
-																										},
-																									},
-																								},
-																							},
-																						},
-																					},
-
-																					"vpc": {
-
-																						Type:     schema.TypeList,
-																						MaxItems: 1,
-																						Optional: true,
-																						Elem: &schema.Resource{
-																							Schema: map[string]*schema.Schema{
-
-																								"existing_vpc_id": {
-
-																									Type:     schema.TypeString,
-																									Optional: true,
-																								},
-
-																								"new_vpc": {
-
-																									Type:     schema.TypeList,
-																									MaxItems: 1,
-																									Optional: true,
-																									Elem: &schema.Resource{
-																										Schema: map[string]*schema.Schema{
-
-																											"autogenerate": {
-
-																												Type:     schema.TypeBool,
-																												Optional: true,
-																											},
-
-																											"name_tag": {
-
-																												Type:     schema.TypeString,
-																												Optional: true,
-																											},
-																										},
-																									},
-																								},
-																							},
-																						},
-																					},
-																				},
-																			},
-																		},
-																	},
-																},
-															},
-														},
-													},
-												},
-											},
-										},
-									},
-
-									"tags": {
-										Type:     schema.TypeMap,
-										Optional: true,
-									},
-								},
-							},
-						},
 
 						"not_managed": {
 
@@ -7264,11 +5657,6 @@ func resourceVolterraSecuremeshSiteV2() *schema.Resource {
 																			Optional: true,
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
-
-																					"kind": {
-																						Type:     schema.TypeString,
-																						Computed: true,
-																					},
 
 																					"name": {
 																						Type:     schema.TypeString,
@@ -8109,11 +6497,6 @@ func resourceVolterraSecuremeshSiteV2() *schema.Resource {
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
 
-																					"kind": {
-																						Type:     schema.TypeString,
-																						Computed: true,
-																					},
-
 																					"name": {
 																						Type:     schema.TypeString,
 																						Optional: true,
@@ -8952,11 +7335,6 @@ func resourceVolterraSecuremeshSiteV2() *schema.Resource {
 																			Optional: true,
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
-
-																					"kind": {
-																						Type:     schema.TypeString,
-																						Computed: true,
-																					},
 
 																					"name": {
 																						Type:     schema.TypeString,
@@ -9797,11 +8175,6 @@ func resourceVolterraSecuremeshSiteV2() *schema.Resource {
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
 
-																					"kind": {
-																						Type:     schema.TypeString,
-																						Computed: true,
-																					},
-
 																					"name": {
 																						Type:     schema.TypeString,
 																						Optional: true,
@@ -10641,11 +9014,6 @@ func resourceVolterraSecuremeshSiteV2() *schema.Resource {
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
 
-																					"kind": {
-																						Type:     schema.TypeString,
-																						Computed: true,
-																					},
-
 																					"name": {
 																						Type:     schema.TypeString,
 																						Optional: true,
@@ -11484,11 +9852,6 @@ func resourceVolterraSecuremeshSiteV2() *schema.Resource {
 																			Optional: true,
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
-
-																					"kind": {
-																						Type:     schema.TypeString,
-																						Computed: true,
-																					},
 
 																					"name": {
 																						Type:     schema.TypeString,
@@ -12395,12 +10758,6 @@ func resourceVolterraSecuremeshSiteV2() *schema.Resource {
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
 
-																					"kind": {
-																						Type:       schema.TypeString,
-																						Computed:   true,
-																						Deprecated: "This field is deprecated and will be removed in future release.",
-																					},
-
 																					"name": {
 																						Type:       schema.TypeString,
 																						Optional:   true,
@@ -13249,11 +11606,6 @@ func resourceVolterraSecuremeshSiteV2() *schema.Resource {
 																			Optional: true,
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
-
-																					"kind": {
-																						Type:     schema.TypeString,
-																						Computed: true,
-																					},
 
 																					"name": {
 																						Type:     schema.TypeString,
@@ -14265,6 +12617,34 @@ func resourceVolterraSecuremeshSiteV2Create(d *schema.ResourceData, meta interfa
 				}
 
 			}
+		}
+
+	}
+
+	//advanced_delivery_choice
+
+	advancedDeliveryChoiceTypeFound := false
+
+	if v, ok := d.GetOk("disable_advanced_delivery"); ok && !advancedDeliveryChoiceTypeFound {
+
+		advancedDeliveryChoiceTypeFound = true
+
+		if v.(bool) {
+			advancedDeliveryChoiceInt := &ves_io_schema_views_securemesh_site_v2.CreateSpecType_DisableAdvancedDelivery{}
+			advancedDeliveryChoiceInt.DisableAdvancedDelivery = &ves_io_schema.Empty{}
+			createSpec.AdvancedDeliveryChoice = advancedDeliveryChoiceInt
+		}
+
+	}
+
+	if v, ok := d.GetOk("enable_advanced_delivery"); ok && !advancedDeliveryChoiceTypeFound {
+
+		advancedDeliveryChoiceTypeFound = true
+
+		if v.(bool) {
+			advancedDeliveryChoiceInt := &ves_io_schema_views_securemesh_site_v2.CreateSpecType_EnableAdvancedDelivery{}
+			advancedDeliveryChoiceInt.EnableAdvancedDelivery = &ves_io_schema.Empty{}
+			createSpec.AdvancedDeliveryChoice = advancedDeliveryChoiceInt
 		}
 
 	}
@@ -15803,6 +14183,34 @@ func resourceVolterraSecuremeshSiteV2Create(d *schema.ResourceData, meta interfa
 
 	}
 
+	//log_anonymization_choice
+
+	logAnonymizationChoiceTypeFound := false
+
+	if v, ok := d.GetOk("disable_log_anonymization"); ok && !logAnonymizationChoiceTypeFound {
+
+		logAnonymizationChoiceTypeFound = true
+
+		if v.(bool) {
+			logAnonymizationChoiceInt := &ves_io_schema_views_securemesh_site_v2.CreateSpecType_DisableLogAnonymization{}
+			logAnonymizationChoiceInt.DisableLogAnonymization = &ves_io_schema.Empty{}
+			createSpec.LogAnonymizationChoice = logAnonymizationChoiceInt
+		}
+
+	}
+
+	if v, ok := d.GetOk("enable_log_anonymization"); ok && !logAnonymizationChoiceTypeFound {
+
+		logAnonymizationChoiceTypeFound = true
+
+		if v.(bool) {
+			logAnonymizationChoiceInt := &ves_io_schema_views_securemesh_site_v2.CreateSpecType_EnableLogAnonymization{}
+			logAnonymizationChoiceInt.EnableLogAnonymization = &ves_io_schema.Empty{}
+			createSpec.LogAnonymizationChoice = logAnonymizationChoiceInt
+		}
+
+	}
+
 	//logs_receiver_choice
 
 	logsReceiverChoiceTypeFound := false
@@ -16261,26 +14669,22 @@ func resourceVolterraSecuremeshSiteV2Create(d *schema.ResourceData, meta interfa
 													awsResourceMappings[i] = &ves_io_schema_views_securemesh_site_v2.AWSResourceMappingType{}
 													awsResourceMappingsMapStrToI := set.(map[string]interface{})
 
-													if v, ok := awsResourceMappingsMapStrToI["aws_resources"]; ok && !isIntfNil(v) {
+													if v, ok := awsResourceMappingsMapStrToI["availability_zones"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														awsResources := make([]*ves_io_schema_views_securemesh_site_v2.AWSResources, len(sl))
-														awsResourceMappings[i].AwsResources = awsResources
+														availabilityZones := make([]*ves_io_schema_views_securemesh_site_v2.AvailabilityZonesType, len(sl))
+														awsResourceMappings[i].AvailabilityZones = availabilityZones
 														for i, set := range sl {
 															if set != nil {
-																awsResources[i] = &ves_io_schema_views_securemesh_site_v2.AWSResources{}
-																awsResourcesMapStrToI := set.(map[string]interface{})
+																availabilityZones[i] = &ves_io_schema_views_securemesh_site_v2.AvailabilityZonesType{}
+																availabilityZonesMapStrToI := set.(map[string]interface{})
 
-																if w, ok := awsResourcesMapStrToI["availability_zone"]; ok && !isIntfNil(w) {
-																	awsResources[i].AvailabilityZone = w.(string)
+																if w, ok := availabilityZonesMapStrToI["availability_zone"]; ok && !isIntfNil(w) {
+																	availabilityZones[i].AvailabilityZone = w.(string)
 																}
 
-																if w, ok := awsResourcesMapStrToI["security_group"]; ok && !isIntfNil(w) {
-																	awsResources[i].SecurityGroup = w.(string)
-																}
-
-																if w, ok := awsResourcesMapStrToI["subnet_id"]; ok && !isIntfNil(w) {
-																	awsResources[i].SubnetId = w.(string)
+																if w, ok := availabilityZonesMapStrToI["subnet_id"]; ok && !isIntfNil(w) {
+																	availabilityZones[i].SubnetId = w.(string)
 																}
 
 															}
@@ -16363,6 +14767,10 @@ func resourceVolterraSecuremeshSiteV2Create(d *schema.ResourceData, meta interfa
 
 													}
 
+													if w, ok := awsResourceMappingsMapStrToI["security_group"]; ok && !isIntfNil(w) {
+														awsResourceMappings[i].SecurityGroup = w.(string)
+													}
+
 												}
 											}
 
@@ -16405,14 +14813,14 @@ func resourceVolterraSecuremeshSiteV2Create(d *schema.ResourceData, meta interfa
 
 										}
 
-										if v, ok := cs["volterra_site_asn"]; ok && !isIntfNil(v) {
-
-											cloudConnectChoiceInt.EnableCloudConnect.VolterraSiteAsn = uint32(v.(int))
-
-										}
-
 									}
 								}
+
+							}
+
+							if v, ok := cs["cloud_resource_prefix"]; ok && !isIntfNil(v) {
+
+								orchestrationChoiceInt.Managed.CloudResourcePrefix = v.(string)
 
 							}
 
@@ -16473,6 +14881,46 @@ func resourceVolterraSecuremeshSiteV2Create(d *schema.ResourceData, meta interfa
 									if set != nil {
 										cs := set.(map[string]interface{})
 
+										if v, ok := cs["force_update_routing"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											forceUpdateRouting := &ves_io_schema_views_securemesh_site_v2.ForceUpdateRoutingType{}
+											egressGatewayChoiceInt.EgressIgwGw.ForceUpdateRouting = forceUpdateRouting
+											for _, set := range sl {
+												if set != nil {
+													forceUpdateRoutingMapStrToI := set.(map[string]interface{})
+
+													forceUpdateRoutingChoiceTypeFound := false
+
+													if v, ok := forceUpdateRoutingMapStrToI["force_route_update_disabled"]; ok && !isIntfNil(v) && !forceUpdateRoutingChoiceTypeFound {
+
+														forceUpdateRoutingChoiceTypeFound = true
+
+														if v.(bool) {
+															forceUpdateRoutingChoiceInt := &ves_io_schema_views_securemesh_site_v2.ForceUpdateRoutingType_ForceRouteUpdateDisabled{}
+															forceUpdateRoutingChoiceInt.ForceRouteUpdateDisabled = &ves_io_schema.Empty{}
+															forceUpdateRouting.ForceUpdateRoutingChoice = forceUpdateRoutingChoiceInt
+														}
+
+													}
+
+													if v, ok := forceUpdateRoutingMapStrToI["force_route_update_enabled"]; ok && !isIntfNil(v) && !forceUpdateRoutingChoiceTypeFound {
+
+														forceUpdateRoutingChoiceTypeFound = true
+
+														if v.(bool) {
+															forceUpdateRoutingChoiceInt := &ves_io_schema_views_securemesh_site_v2.ForceUpdateRoutingType_ForceRouteUpdateEnabled{}
+															forceUpdateRoutingChoiceInt.ForceRouteUpdateEnabled = &ves_io_schema.Empty{}
+															forceUpdateRouting.ForceUpdateRoutingChoice = forceUpdateRoutingChoiceInt
+														}
+
+													}
+
+												}
+											}
+
+										}
+
 										if v, ok := cs["igw_gw_id"]; ok && !isIntfNil(v) {
 
 											egressGatewayChoiceInt.EgressIgwGw.IgwGwId = v.(string)
@@ -16488,7 +14936,7 @@ func resourceVolterraSecuremeshSiteV2Create(d *schema.ResourceData, meta interfa
 
 								egressGatewayChoiceTypeFound = true
 								egressGatewayChoiceInt := &ves_io_schema_views_securemesh_site_v2.AWSManagedMode_EgressNatGw{}
-								egressGatewayChoiceInt.EgressNatGw = &ves_io_schema_views_securemesh_site_v2.AWSNATGatewayType{}
+								egressGatewayChoiceInt.EgressNatGw = &ves_io_schema_views_securemesh_site_v2.AWSNATGatewayListType{}
 								orchestrationChoiceInt.Managed.EgressGatewayChoice = egressGatewayChoiceInt
 
 								sl := v.([]interface{})
@@ -16496,18 +14944,62 @@ func resourceVolterraSecuremeshSiteV2Create(d *schema.ResourceData, meta interfa
 									if set != nil {
 										cs := set.(map[string]interface{})
 
-										if v, ok := cs["nat_gw_id"]; ok && !isIntfNil(v) {
+										if v, ok := cs["nat_gw"]; ok && !isIntfNil(v) {
 
-											ls := make([]string, len(v.([]interface{})))
-											for i, v := range v.([]interface{}) {
-												if v == nil {
-													return fmt.Errorf("please provide valid non-empty string value of field nat_gw_id")
-												}
-												if str, ok := v.(string); ok {
-													ls[i] = str
+											sl := v.([]interface{})
+											natGw := make([]*ves_io_schema_views_securemesh_site_v2.AWSNATGatewayType, len(sl))
+											egressGatewayChoiceInt.EgressNatGw.NatGw = natGw
+											for i, set := range sl {
+												if set != nil {
+													natGw[i] = &ves_io_schema_views_securemesh_site_v2.AWSNATGatewayType{}
+													natGwMapStrToI := set.(map[string]interface{})
+
+													if v, ok := natGwMapStrToI["force_update_routing"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														forceUpdateRouting := &ves_io_schema_views_securemesh_site_v2.ForceUpdateRoutingType{}
+														natGw[i].ForceUpdateRouting = forceUpdateRouting
+														for _, set := range sl {
+															if set != nil {
+																forceUpdateRoutingMapStrToI := set.(map[string]interface{})
+
+																forceUpdateRoutingChoiceTypeFound := false
+
+																if v, ok := forceUpdateRoutingMapStrToI["force_route_update_disabled"]; ok && !isIntfNil(v) && !forceUpdateRoutingChoiceTypeFound {
+
+																	forceUpdateRoutingChoiceTypeFound = true
+
+																	if v.(bool) {
+																		forceUpdateRoutingChoiceInt := &ves_io_schema_views_securemesh_site_v2.ForceUpdateRoutingType_ForceRouteUpdateDisabled{}
+																		forceUpdateRoutingChoiceInt.ForceRouteUpdateDisabled = &ves_io_schema.Empty{}
+																		forceUpdateRouting.ForceUpdateRoutingChoice = forceUpdateRoutingChoiceInt
+																	}
+
+																}
+
+																if v, ok := forceUpdateRoutingMapStrToI["force_route_update_enabled"]; ok && !isIntfNil(v) && !forceUpdateRoutingChoiceTypeFound {
+
+																	forceUpdateRoutingChoiceTypeFound = true
+
+																	if v.(bool) {
+																		forceUpdateRoutingChoiceInt := &ves_io_schema_views_securemesh_site_v2.ForceUpdateRoutingType_ForceRouteUpdateEnabled{}
+																		forceUpdateRoutingChoiceInt.ForceRouteUpdateEnabled = &ves_io_schema.Empty{}
+																		forceUpdateRouting.ForceUpdateRoutingChoice = forceUpdateRoutingChoiceInt
+																	}
+
+																}
+
+															}
+														}
+
+													}
+
+													if w, ok := natGwMapStrToI["nat_gw_id"]; ok && !isIntfNil(w) {
+														natGw[i].NatGwId = w.(string)
+													}
+
 												}
 											}
-											egressGatewayChoiceInt.EgressNatGw.NatGwId = ls
 
 										}
 
@@ -16583,61 +15075,8 @@ func resourceVolterraSecuremeshSiteV2Create(d *schema.ResourceData, meta interfa
 																interfaceList[i] = &ves_io_schema_views_securemesh_site_v2.AWSOrchestratedInterface{}
 																interfaceListMapStrToI := set.(map[string]interface{})
 
-																if v, ok := interfaceListMapStrToI["aws_node_interface_configuration"]; ok && !isIntfNil(v) {
-
-																	sl := v.([]interface{})
-																	awsNodeInterfaceConfiguration := &ves_io_schema_views_securemesh_site_v2.AWSNodeInterfaceConfigurationType{}
-																	interfaceList[i].AwsNodeInterfaceConfiguration = awsNodeInterfaceConfiguration
-																	for _, set := range sl {
-																		if set != nil {
-																			awsNodeInterfaceConfigurationMapStrToI := set.(map[string]interface{})
-
-																			awsNodeInterfaceConfigurationChoiceTypeFound := false
-
-																			if v, ok := awsNodeInterfaceConfigurationMapStrToI["inherit_aws_node_interface_configuration"]; ok && !isIntfNil(v) && !awsNodeInterfaceConfigurationChoiceTypeFound {
-
-																				awsNodeInterfaceConfigurationChoiceTypeFound = true
-
-																				if v.(bool) {
-																					awsNodeInterfaceConfigurationChoiceInt := &ves_io_schema_views_securemesh_site_v2.AWSNodeInterfaceConfigurationType_InheritAwsNodeInterfaceConfiguration{}
-																					awsNodeInterfaceConfigurationChoiceInt.InheritAwsNodeInterfaceConfiguration = &ves_io_schema.Empty{}
-																					awsNodeInterfaceConfiguration.AwsNodeInterfaceConfigurationChoice = awsNodeInterfaceConfigurationChoiceInt
-																				}
-
-																			}
-
-																			if v, ok := awsNodeInterfaceConfigurationMapStrToI["override_aws_node_interface_configuration"]; ok && !isIntfNil(v) && !awsNodeInterfaceConfigurationChoiceTypeFound {
-
-																				awsNodeInterfaceConfigurationChoiceTypeFound = true
-																				awsNodeInterfaceConfigurationChoiceInt := &ves_io_schema_views_securemesh_site_v2.AWSNodeInterfaceConfigurationType_OverrideAwsNodeInterfaceConfiguration{}
-																				awsNodeInterfaceConfigurationChoiceInt.OverrideAwsNodeInterfaceConfiguration = &ves_io_schema_views_securemesh_site_v2.AWSOverrideNodeInterfaceConfigurationType{}
-																				awsNodeInterfaceConfiguration.AwsNodeInterfaceConfigurationChoice = awsNodeInterfaceConfigurationChoiceInt
-
-																				sl := v.([]interface{})
-																				for _, set := range sl {
-																					if set != nil {
-																						cs := set.(map[string]interface{})
-
-																						if v, ok := cs["security_group"]; ok && !isIntfNil(v) {
-
-																							awsNodeInterfaceConfigurationChoiceInt.OverrideAwsNodeInterfaceConfiguration.SecurityGroup = v.(string)
-
-																						}
-
-																						if v, ok := cs["subnet_id"]; ok && !isIntfNil(v) {
-
-																							awsNodeInterfaceConfigurationChoiceInt.OverrideAwsNodeInterfaceConfiguration.SubnetId = v.(string)
-
-																						}
-
-																					}
-																				}
-
-																			}
-
-																		}
-																	}
-
+																if w, ok := interfaceListMapStrToI["interface_name"]; ok && !isIntfNil(w) {
+																	interfaceList[i].InterfaceName = w.(string)
 																}
 
 																if w, ok := interfaceListMapStrToI["mtu"]; ok && !isIntfNil(w) {
@@ -16887,6 +15326,83 @@ func resourceVolterraSecuremeshSiteV2Create(d *schema.ResourceData, meta interfa
 													enablePrivateWorkloadRoutingToCe[i] = &ves_io_schema_views_securemesh_site_v2.EnablePrivateWorkloadRoutingType{}
 													enablePrivateWorkloadRoutingToCeMapStrToI := set.(map[string]interface{})
 
+													if v, ok := enablePrivateWorkloadRoutingToCeMapStrToI["force_update_routing"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														forceUpdateRouting := &ves_io_schema_views_securemesh_site_v2.ForceUpdateRoutingType{}
+														enablePrivateWorkloadRoutingToCe[i].ForceUpdateRouting = forceUpdateRouting
+														for _, set := range sl {
+															if set != nil {
+																forceUpdateRoutingMapStrToI := set.(map[string]interface{})
+
+																forceUpdateRoutingChoiceTypeFound := false
+
+																if v, ok := forceUpdateRoutingMapStrToI["force_route_update_disabled"]; ok && !isIntfNil(v) && !forceUpdateRoutingChoiceTypeFound {
+
+																	forceUpdateRoutingChoiceTypeFound = true
+
+																	if v.(bool) {
+																		forceUpdateRoutingChoiceInt := &ves_io_schema_views_securemesh_site_v2.ForceUpdateRoutingType_ForceRouteUpdateDisabled{}
+																		forceUpdateRoutingChoiceInt.ForceRouteUpdateDisabled = &ves_io_schema.Empty{}
+																		forceUpdateRouting.ForceUpdateRoutingChoice = forceUpdateRoutingChoiceInt
+																	}
+
+																}
+
+																if v, ok := forceUpdateRoutingMapStrToI["force_route_update_enabled"]; ok && !isIntfNil(v) && !forceUpdateRoutingChoiceTypeFound {
+
+																	forceUpdateRoutingChoiceTypeFound = true
+
+																	if v.(bool) {
+																		forceUpdateRoutingChoiceInt := &ves_io_schema_views_securemesh_site_v2.ForceUpdateRoutingType_ForceRouteUpdateEnabled{}
+																		forceUpdateRoutingChoiceInt.ForceRouteUpdateEnabled = &ves_io_schema.Empty{}
+																		forceUpdateRouting.ForceUpdateRoutingChoice = forceUpdateRoutingChoiceInt
+																	}
+
+																}
+
+															}
+														}
+
+													}
+
+													ipPrefixChoiceTypeFound := false
+
+													if v, ok := enablePrivateWorkloadRoutingToCeMapStrToI["custom_ip_prefix"]; ok && !isIntfNil(v) && !ipPrefixChoiceTypeFound {
+
+														ipPrefixChoiceTypeFound = true
+														ipPrefixChoiceInt := &ves_io_schema_views_securemesh_site_v2.EnablePrivateWorkloadRoutingType_CustomIpPrefix{}
+														ipPrefixChoiceInt.CustomIpPrefix = &ves_io_schema_views_securemesh_site_v2.CustomIpPrefixType{}
+														enablePrivateWorkloadRoutingToCe[i].IpPrefixChoice = ipPrefixChoiceInt
+
+														sl := v.([]interface{})
+														for _, set := range sl {
+															if set != nil {
+																cs := set.(map[string]interface{})
+
+																if v, ok := cs["ip_prefix"]; ok && !isIntfNil(v) {
+
+																	ipPrefixChoiceInt.CustomIpPrefix.IpPrefix = v.(string)
+
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := enablePrivateWorkloadRoutingToCeMapStrToI["default_ip_prefix"]; ok && !isIntfNil(v) && !ipPrefixChoiceTypeFound {
+
+														ipPrefixChoiceTypeFound = true
+
+														if v.(bool) {
+															ipPrefixChoiceInt := &ves_io_schema_views_securemesh_site_v2.EnablePrivateWorkloadRoutingType_DefaultIpPrefix{}
+															ipPrefixChoiceInt.DefaultIpPrefix = &ves_io_schema.Empty{}
+															enablePrivateWorkloadRoutingToCe[i].IpPrefixChoice = ipPrefixChoiceInt
+														}
+
+													}
+
 													if v, ok := enablePrivateWorkloadRoutingToCeMapStrToI["network_option"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
@@ -16962,8 +15478,8 @@ func resourceVolterraSecuremeshSiteV2Create(d *schema.ResourceData, meta interfa
 
 													}
 
-													if w, ok := enablePrivateWorkloadRoutingToCeMapStrToI["subnet_id"]; ok && !isIntfNil(w) {
-														enablePrivateWorkloadRoutingToCe[i].SubnetId = w.(string)
+													if w, ok := enablePrivateWorkloadRoutingToCeMapStrToI["route_table_id"]; ok && !isIntfNil(w) {
+														enablePrivateWorkloadRoutingToCe[i].RouteTableId = w.(string)
 													}
 
 												}
@@ -16983,6 +15499,61 @@ func resourceVolterraSecuremeshSiteV2Create(d *schema.ResourceData, meta interfa
 									ms[k] = v.(string)
 								}
 								orchestrationChoiceInt.Managed.Tags = ms
+							}
+
+							vipAutomationChoiceTypeFound := false
+
+							if v, ok := cs["disable_vip_automation"]; ok && !isIntfNil(v) && !vipAutomationChoiceTypeFound {
+
+								vipAutomationChoiceTypeFound = true
+
+								if v.(bool) {
+									vipAutomationChoiceInt := &ves_io_schema_views_securemesh_site_v2.AWSManagedMode_DisableVipAutomation{}
+									vipAutomationChoiceInt.DisableVipAutomation = &ves_io_schema.Empty{}
+									orchestrationChoiceInt.Managed.VipAutomationChoice = vipAutomationChoiceInt
+								}
+
+							}
+
+							if v, ok := cs["enable_vip_automation"]; ok && !isIntfNil(v) && !vipAutomationChoiceTypeFound {
+
+								vipAutomationChoiceTypeFound = true
+								vipAutomationChoiceInt := &ves_io_schema_views_securemesh_site_v2.AWSManagedMode_EnableVipAutomation{}
+								vipAutomationChoiceInt.EnableVipAutomation = &ves_io_schema_views_securemesh_site_v2.EnableVIPAutomationType{}
+								orchestrationChoiceInt.Managed.VipAutomationChoice = vipAutomationChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["dns_connector_ref"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											dnsConnectorRefInt := &ves_io_schema_views.ObjectRefType{}
+											vipAutomationChoiceInt.EnableVipAutomation.DnsConnectorRef = dnsConnectorRefInt
+
+											for _, set := range sl {
+												if set != nil {
+													dcrMapToStrVal := set.(map[string]interface{})
+													if val, ok := dcrMapToStrVal["name"]; ok && !isIntfNil(v) {
+														dnsConnectorRefInt.Name = val.(string)
+													}
+													if val, ok := dcrMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+														dnsConnectorRefInt.Namespace = val.(string)
+													}
+
+													if val, ok := dcrMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+														dnsConnectorRefInt.Tenant = val.(string)
+													}
+												}
+											}
+
+										}
+
+									}
+								}
+
 							}
 
 							if v, ok := cs["vpc_id"]; ok && !isIntfNil(v) {
@@ -22686,24 +21257,22 @@ func resourceVolterraSecuremeshSiteV2Create(d *schema.ResourceData, meta interfa
 										if v, ok := cs["cloud_link"]; ok && !isIntfNil(v) {
 
 											sl := v.([]interface{})
-											cloudLink := &ves_io_schema_views.ObjectRefType{}
-											privateConnectivityChoiceInt.PrivateConnectivity.CloudLink = cloudLink
+											cloudLinkInt := &ves_io_schema_views.ObjectRefType{}
+											privateConnectivityChoiceInt.PrivateConnectivity.CloudLink = cloudLinkInt
+
 											for _, set := range sl {
 												if set != nil {
-													cloudLinkMapStrToI := set.(map[string]interface{})
-
-													if w, ok := cloudLinkMapStrToI["name"]; ok && !isIntfNil(w) {
-														cloudLink.Name = w.(string)
+													clMapToStrVal := set.(map[string]interface{})
+													if val, ok := clMapToStrVal["name"]; ok && !isIntfNil(v) {
+														cloudLinkInt.Name = val.(string)
+													}
+													if val, ok := clMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+														cloudLinkInt.Namespace = val.(string)
 													}
 
-													if w, ok := cloudLinkMapStrToI["namespace"]; ok && !isIntfNil(w) {
-														cloudLink.Namespace = w.(string)
+													if val, ok := clMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+														cloudLinkInt.Tenant = val.(string)
 													}
-
-													if w, ok := cloudLinkMapStrToI["tenant"]; ok && !isIntfNil(w) {
-														cloudLink.Tenant = w.(string)
-													}
-
 												}
 											}
 
@@ -34050,6 +32619,7 @@ func resourceVolterraSecuremeshSiteV2Read(d *schema.ResourceData, meta interface
 		}
 		return fmt.Errorf("Error finding Volterra SecuremeshSiteV2 %q: %s", d.Id(), err)
 	}
+
 	return setSecuremeshSiteV2Fields(client, d, resp)
 }
 
@@ -34320,6 +32890,32 @@ func resourceVolterraSecuremeshSiteV2Update(d *schema.ResourceData, meta interfa
 				}
 
 			}
+		}
+
+	}
+
+	advancedDeliveryChoiceTypeFound := false
+
+	if v, ok := d.GetOk("disable_advanced_delivery"); ok && !advancedDeliveryChoiceTypeFound {
+
+		advancedDeliveryChoiceTypeFound = true
+
+		if v.(bool) {
+			advancedDeliveryChoiceInt := &ves_io_schema_views_securemesh_site_v2.ReplaceSpecType_DisableAdvancedDelivery{}
+			advancedDeliveryChoiceInt.DisableAdvancedDelivery = &ves_io_schema.Empty{}
+			updateSpec.AdvancedDeliveryChoice = advancedDeliveryChoiceInt
+		}
+
+	}
+
+	if v, ok := d.GetOk("enable_advanced_delivery"); ok && !advancedDeliveryChoiceTypeFound {
+
+		advancedDeliveryChoiceTypeFound = true
+
+		if v.(bool) {
+			advancedDeliveryChoiceInt := &ves_io_schema_views_securemesh_site_v2.ReplaceSpecType_EnableAdvancedDelivery{}
+			advancedDeliveryChoiceInt.EnableAdvancedDelivery = &ves_io_schema.Empty{}
+			updateSpec.AdvancedDeliveryChoice = advancedDeliveryChoiceInt
 		}
 
 	}
@@ -35849,6 +34445,32 @@ func resourceVolterraSecuremeshSiteV2Update(d *schema.ResourceData, meta interfa
 
 	}
 
+	logAnonymizationChoiceTypeFound := false
+
+	if v, ok := d.GetOk("disable_log_anonymization"); ok && !logAnonymizationChoiceTypeFound {
+
+		logAnonymizationChoiceTypeFound = true
+
+		if v.(bool) {
+			logAnonymizationChoiceInt := &ves_io_schema_views_securemesh_site_v2.ReplaceSpecType_DisableLogAnonymization{}
+			logAnonymizationChoiceInt.DisableLogAnonymization = &ves_io_schema.Empty{}
+			updateSpec.LogAnonymizationChoice = logAnonymizationChoiceInt
+		}
+
+	}
+
+	if v, ok := d.GetOk("enable_log_anonymization"); ok && !logAnonymizationChoiceTypeFound {
+
+		logAnonymizationChoiceTypeFound = true
+
+		if v.(bool) {
+			logAnonymizationChoiceInt := &ves_io_schema_views_securemesh_site_v2.ReplaceSpecType_EnableLogAnonymization{}
+			logAnonymizationChoiceInt.EnableLogAnonymization = &ves_io_schema.Empty{}
+			updateSpec.LogAnonymizationChoice = logAnonymizationChoiceInt
+		}
+
+	}
+
 	logsReceiverChoiceTypeFound := false
 
 	if v, ok := d.GetOk("log_receiver"); ok && !isIntfNil(v) && !logsReceiverChoiceTypeFound {
@@ -36269,26 +34891,22 @@ func resourceVolterraSecuremeshSiteV2Update(d *schema.ResourceData, meta interfa
 													awsResourceMappings[i] = &ves_io_schema_views_securemesh_site_v2.AWSResourceMappingType{}
 													awsResourceMappingsMapStrToI := set.(map[string]interface{})
 
-													if v, ok := awsResourceMappingsMapStrToI["aws_resources"]; ok && !isIntfNil(v) {
+													if v, ok := awsResourceMappingsMapStrToI["availability_zones"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														awsResources := make([]*ves_io_schema_views_securemesh_site_v2.AWSResources, len(sl))
-														awsResourceMappings[i].AwsResources = awsResources
+														availabilityZones := make([]*ves_io_schema_views_securemesh_site_v2.AvailabilityZonesType, len(sl))
+														awsResourceMappings[i].AvailabilityZones = availabilityZones
 														for i, set := range sl {
 															if set != nil {
-																awsResources[i] = &ves_io_schema_views_securemesh_site_v2.AWSResources{}
-																awsResourcesMapStrToI := set.(map[string]interface{})
+																availabilityZones[i] = &ves_io_schema_views_securemesh_site_v2.AvailabilityZonesType{}
+																availabilityZonesMapStrToI := set.(map[string]interface{})
 
-																if w, ok := awsResourcesMapStrToI["availability_zone"]; ok && !isIntfNil(w) {
-																	awsResources[i].AvailabilityZone = w.(string)
+																if w, ok := availabilityZonesMapStrToI["availability_zone"]; ok && !isIntfNil(w) {
+																	availabilityZones[i].AvailabilityZone = w.(string)
 																}
 
-																if w, ok := awsResourcesMapStrToI["security_group"]; ok && !isIntfNil(w) {
-																	awsResources[i].SecurityGroup = w.(string)
-																}
-
-																if w, ok := awsResourcesMapStrToI["subnet_id"]; ok && !isIntfNil(w) {
-																	awsResources[i].SubnetId = w.(string)
+																if w, ok := availabilityZonesMapStrToI["subnet_id"]; ok && !isIntfNil(w) {
+																	availabilityZones[i].SubnetId = w.(string)
 																}
 
 															}
@@ -36371,6 +34989,10 @@ func resourceVolterraSecuremeshSiteV2Update(d *schema.ResourceData, meta interfa
 
 													}
 
+													if w, ok := awsResourceMappingsMapStrToI["security_group"]; ok && !isIntfNil(w) {
+														awsResourceMappings[i].SecurityGroup = w.(string)
+													}
+
 												}
 											}
 
@@ -36413,14 +35035,14 @@ func resourceVolterraSecuremeshSiteV2Update(d *schema.ResourceData, meta interfa
 
 										}
 
-										if v, ok := cs["volterra_site_asn"]; ok && !isIntfNil(v) {
-
-											cloudConnectChoiceInt.EnableCloudConnect.VolterraSiteAsn = uint32(v.(int))
-
-										}
-
 									}
 								}
+
+							}
+
+							if v, ok := cs["cloud_resource_prefix"]; ok && !isIntfNil(v) {
+
+								orchestrationChoiceInt.Managed.CloudResourcePrefix = v.(string)
 
 							}
 
@@ -36481,6 +35103,46 @@ func resourceVolterraSecuremeshSiteV2Update(d *schema.ResourceData, meta interfa
 									if set != nil {
 										cs := set.(map[string]interface{})
 
+										if v, ok := cs["force_update_routing"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											forceUpdateRouting := &ves_io_schema_views_securemesh_site_v2.ForceUpdateRoutingType{}
+											egressGatewayChoiceInt.EgressIgwGw.ForceUpdateRouting = forceUpdateRouting
+											for _, set := range sl {
+												if set != nil {
+													forceUpdateRoutingMapStrToI := set.(map[string]interface{})
+
+													forceUpdateRoutingChoiceTypeFound := false
+
+													if v, ok := forceUpdateRoutingMapStrToI["force_route_update_disabled"]; ok && !isIntfNil(v) && !forceUpdateRoutingChoiceTypeFound {
+
+														forceUpdateRoutingChoiceTypeFound = true
+
+														if v.(bool) {
+															forceUpdateRoutingChoiceInt := &ves_io_schema_views_securemesh_site_v2.ForceUpdateRoutingType_ForceRouteUpdateDisabled{}
+															forceUpdateRoutingChoiceInt.ForceRouteUpdateDisabled = &ves_io_schema.Empty{}
+															forceUpdateRouting.ForceUpdateRoutingChoice = forceUpdateRoutingChoiceInt
+														}
+
+													}
+
+													if v, ok := forceUpdateRoutingMapStrToI["force_route_update_enabled"]; ok && !isIntfNil(v) && !forceUpdateRoutingChoiceTypeFound {
+
+														forceUpdateRoutingChoiceTypeFound = true
+
+														if v.(bool) {
+															forceUpdateRoutingChoiceInt := &ves_io_schema_views_securemesh_site_v2.ForceUpdateRoutingType_ForceRouteUpdateEnabled{}
+															forceUpdateRoutingChoiceInt.ForceRouteUpdateEnabled = &ves_io_schema.Empty{}
+															forceUpdateRouting.ForceUpdateRoutingChoice = forceUpdateRoutingChoiceInt
+														}
+
+													}
+
+												}
+											}
+
+										}
+
 										if v, ok := cs["igw_gw_id"]; ok && !isIntfNil(v) {
 
 											egressGatewayChoiceInt.EgressIgwGw.IgwGwId = v.(string)
@@ -36496,7 +35158,7 @@ func resourceVolterraSecuremeshSiteV2Update(d *schema.ResourceData, meta interfa
 
 								egressGatewayChoiceTypeFound = true
 								egressGatewayChoiceInt := &ves_io_schema_views_securemesh_site_v2.AWSManagedMode_EgressNatGw{}
-								egressGatewayChoiceInt.EgressNatGw = &ves_io_schema_views_securemesh_site_v2.AWSNATGatewayType{}
+								egressGatewayChoiceInt.EgressNatGw = &ves_io_schema_views_securemesh_site_v2.AWSNATGatewayListType{}
 								orchestrationChoiceInt.Managed.EgressGatewayChoice = egressGatewayChoiceInt
 
 								sl := v.([]interface{})
@@ -36504,18 +35166,62 @@ func resourceVolterraSecuremeshSiteV2Update(d *schema.ResourceData, meta interfa
 									if set != nil {
 										cs := set.(map[string]interface{})
 
-										if v, ok := cs["nat_gw_id"]; ok && !isIntfNil(v) {
+										if v, ok := cs["nat_gw"]; ok && !isIntfNil(v) {
 
-											ls := make([]string, len(v.([]interface{})))
-											for i, v := range v.([]interface{}) {
-												if v == nil {
-													return fmt.Errorf("please provide valid non-empty string value of field nat_gw_id")
-												}
-												if str, ok := v.(string); ok {
-													ls[i] = str
+											sl := v.([]interface{})
+											natGw := make([]*ves_io_schema_views_securemesh_site_v2.AWSNATGatewayType, len(sl))
+											egressGatewayChoiceInt.EgressNatGw.NatGw = natGw
+											for i, set := range sl {
+												if set != nil {
+													natGw[i] = &ves_io_schema_views_securemesh_site_v2.AWSNATGatewayType{}
+													natGwMapStrToI := set.(map[string]interface{})
+
+													if v, ok := natGwMapStrToI["force_update_routing"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														forceUpdateRouting := &ves_io_schema_views_securemesh_site_v2.ForceUpdateRoutingType{}
+														natGw[i].ForceUpdateRouting = forceUpdateRouting
+														for _, set := range sl {
+															if set != nil {
+																forceUpdateRoutingMapStrToI := set.(map[string]interface{})
+
+																forceUpdateRoutingChoiceTypeFound := false
+
+																if v, ok := forceUpdateRoutingMapStrToI["force_route_update_disabled"]; ok && !isIntfNil(v) && !forceUpdateRoutingChoiceTypeFound {
+
+																	forceUpdateRoutingChoiceTypeFound = true
+
+																	if v.(bool) {
+																		forceUpdateRoutingChoiceInt := &ves_io_schema_views_securemesh_site_v2.ForceUpdateRoutingType_ForceRouteUpdateDisabled{}
+																		forceUpdateRoutingChoiceInt.ForceRouteUpdateDisabled = &ves_io_schema.Empty{}
+																		forceUpdateRouting.ForceUpdateRoutingChoice = forceUpdateRoutingChoiceInt
+																	}
+
+																}
+
+																if v, ok := forceUpdateRoutingMapStrToI["force_route_update_enabled"]; ok && !isIntfNil(v) && !forceUpdateRoutingChoiceTypeFound {
+
+																	forceUpdateRoutingChoiceTypeFound = true
+
+																	if v.(bool) {
+																		forceUpdateRoutingChoiceInt := &ves_io_schema_views_securemesh_site_v2.ForceUpdateRoutingType_ForceRouteUpdateEnabled{}
+																		forceUpdateRoutingChoiceInt.ForceRouteUpdateEnabled = &ves_io_schema.Empty{}
+																		forceUpdateRouting.ForceUpdateRoutingChoice = forceUpdateRoutingChoiceInt
+																	}
+
+																}
+
+															}
+														}
+
+													}
+
+													if w, ok := natGwMapStrToI["nat_gw_id"]; ok && !isIntfNil(w) {
+														natGw[i].NatGwId = w.(string)
+													}
+
 												}
 											}
-											egressGatewayChoiceInt.EgressNatGw.NatGwId = ls
 
 										}
 
@@ -36591,61 +35297,8 @@ func resourceVolterraSecuremeshSiteV2Update(d *schema.ResourceData, meta interfa
 																interfaceList[i] = &ves_io_schema_views_securemesh_site_v2.AWSOrchestratedInterface{}
 																interfaceListMapStrToI := set.(map[string]interface{})
 
-																if v, ok := interfaceListMapStrToI["aws_node_interface_configuration"]; ok && !isIntfNil(v) {
-
-																	sl := v.([]interface{})
-																	awsNodeInterfaceConfiguration := &ves_io_schema_views_securemesh_site_v2.AWSNodeInterfaceConfigurationType{}
-																	interfaceList[i].AwsNodeInterfaceConfiguration = awsNodeInterfaceConfiguration
-																	for _, set := range sl {
-																		if set != nil {
-																			awsNodeInterfaceConfigurationMapStrToI := set.(map[string]interface{})
-
-																			awsNodeInterfaceConfigurationChoiceTypeFound := false
-
-																			if v, ok := awsNodeInterfaceConfigurationMapStrToI["inherit_aws_node_interface_configuration"]; ok && !isIntfNil(v) && !awsNodeInterfaceConfigurationChoiceTypeFound {
-
-																				awsNodeInterfaceConfigurationChoiceTypeFound = true
-
-																				if v.(bool) {
-																					awsNodeInterfaceConfigurationChoiceInt := &ves_io_schema_views_securemesh_site_v2.AWSNodeInterfaceConfigurationType_InheritAwsNodeInterfaceConfiguration{}
-																					awsNodeInterfaceConfigurationChoiceInt.InheritAwsNodeInterfaceConfiguration = &ves_io_schema.Empty{}
-																					awsNodeInterfaceConfiguration.AwsNodeInterfaceConfigurationChoice = awsNodeInterfaceConfigurationChoiceInt
-																				}
-
-																			}
-
-																			if v, ok := awsNodeInterfaceConfigurationMapStrToI["override_aws_node_interface_configuration"]; ok && !isIntfNil(v) && !awsNodeInterfaceConfigurationChoiceTypeFound {
-
-																				awsNodeInterfaceConfigurationChoiceTypeFound = true
-																				awsNodeInterfaceConfigurationChoiceInt := &ves_io_schema_views_securemesh_site_v2.AWSNodeInterfaceConfigurationType_OverrideAwsNodeInterfaceConfiguration{}
-																				awsNodeInterfaceConfigurationChoiceInt.OverrideAwsNodeInterfaceConfiguration = &ves_io_schema_views_securemesh_site_v2.AWSOverrideNodeInterfaceConfigurationType{}
-																				awsNodeInterfaceConfiguration.AwsNodeInterfaceConfigurationChoice = awsNodeInterfaceConfigurationChoiceInt
-
-																				sl := v.([]interface{})
-																				for _, set := range sl {
-																					if set != nil {
-																						cs := set.(map[string]interface{})
-
-																						if v, ok := cs["security_group"]; ok && !isIntfNil(v) {
-
-																							awsNodeInterfaceConfigurationChoiceInt.OverrideAwsNodeInterfaceConfiguration.SecurityGroup = v.(string)
-
-																						}
-
-																						if v, ok := cs["subnet_id"]; ok && !isIntfNil(v) {
-
-																							awsNodeInterfaceConfigurationChoiceInt.OverrideAwsNodeInterfaceConfiguration.SubnetId = v.(string)
-
-																						}
-
-																					}
-																				}
-
-																			}
-
-																		}
-																	}
-
+																if w, ok := interfaceListMapStrToI["interface_name"]; ok && !isIntfNil(w) {
+																	interfaceList[i].InterfaceName = w.(string)
 																}
 
 																if w, ok := interfaceListMapStrToI["mtu"]; ok && !isIntfNil(w) {
@@ -36895,6 +35548,83 @@ func resourceVolterraSecuremeshSiteV2Update(d *schema.ResourceData, meta interfa
 													enablePrivateWorkloadRoutingToCe[i] = &ves_io_schema_views_securemesh_site_v2.EnablePrivateWorkloadRoutingType{}
 													enablePrivateWorkloadRoutingToCeMapStrToI := set.(map[string]interface{})
 
+													if v, ok := enablePrivateWorkloadRoutingToCeMapStrToI["force_update_routing"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														forceUpdateRouting := &ves_io_schema_views_securemesh_site_v2.ForceUpdateRoutingType{}
+														enablePrivateWorkloadRoutingToCe[i].ForceUpdateRouting = forceUpdateRouting
+														for _, set := range sl {
+															if set != nil {
+																forceUpdateRoutingMapStrToI := set.(map[string]interface{})
+
+																forceUpdateRoutingChoiceTypeFound := false
+
+																if v, ok := forceUpdateRoutingMapStrToI["force_route_update_disabled"]; ok && !isIntfNil(v) && !forceUpdateRoutingChoiceTypeFound {
+
+																	forceUpdateRoutingChoiceTypeFound = true
+
+																	if v.(bool) {
+																		forceUpdateRoutingChoiceInt := &ves_io_schema_views_securemesh_site_v2.ForceUpdateRoutingType_ForceRouteUpdateDisabled{}
+																		forceUpdateRoutingChoiceInt.ForceRouteUpdateDisabled = &ves_io_schema.Empty{}
+																		forceUpdateRouting.ForceUpdateRoutingChoice = forceUpdateRoutingChoiceInt
+																	}
+
+																}
+
+																if v, ok := forceUpdateRoutingMapStrToI["force_route_update_enabled"]; ok && !isIntfNil(v) && !forceUpdateRoutingChoiceTypeFound {
+
+																	forceUpdateRoutingChoiceTypeFound = true
+
+																	if v.(bool) {
+																		forceUpdateRoutingChoiceInt := &ves_io_schema_views_securemesh_site_v2.ForceUpdateRoutingType_ForceRouteUpdateEnabled{}
+																		forceUpdateRoutingChoiceInt.ForceRouteUpdateEnabled = &ves_io_schema.Empty{}
+																		forceUpdateRouting.ForceUpdateRoutingChoice = forceUpdateRoutingChoiceInt
+																	}
+
+																}
+
+															}
+														}
+
+													}
+
+													ipPrefixChoiceTypeFound := false
+
+													if v, ok := enablePrivateWorkloadRoutingToCeMapStrToI["custom_ip_prefix"]; ok && !isIntfNil(v) && !ipPrefixChoiceTypeFound {
+
+														ipPrefixChoiceTypeFound = true
+														ipPrefixChoiceInt := &ves_io_schema_views_securemesh_site_v2.EnablePrivateWorkloadRoutingType_CustomIpPrefix{}
+														ipPrefixChoiceInt.CustomIpPrefix = &ves_io_schema_views_securemesh_site_v2.CustomIpPrefixType{}
+														enablePrivateWorkloadRoutingToCe[i].IpPrefixChoice = ipPrefixChoiceInt
+
+														sl := v.([]interface{})
+														for _, set := range sl {
+															if set != nil {
+																cs := set.(map[string]interface{})
+
+																if v, ok := cs["ip_prefix"]; ok && !isIntfNil(v) {
+
+																	ipPrefixChoiceInt.CustomIpPrefix.IpPrefix = v.(string)
+
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := enablePrivateWorkloadRoutingToCeMapStrToI["default_ip_prefix"]; ok && !isIntfNil(v) && !ipPrefixChoiceTypeFound {
+
+														ipPrefixChoiceTypeFound = true
+
+														if v.(bool) {
+															ipPrefixChoiceInt := &ves_io_schema_views_securemesh_site_v2.EnablePrivateWorkloadRoutingType_DefaultIpPrefix{}
+															ipPrefixChoiceInt.DefaultIpPrefix = &ves_io_schema.Empty{}
+															enablePrivateWorkloadRoutingToCe[i].IpPrefixChoice = ipPrefixChoiceInt
+														}
+
+													}
+
 													if v, ok := enablePrivateWorkloadRoutingToCeMapStrToI["network_option"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
@@ -36970,8 +35700,8 @@ func resourceVolterraSecuremeshSiteV2Update(d *schema.ResourceData, meta interfa
 
 													}
 
-													if w, ok := enablePrivateWorkloadRoutingToCeMapStrToI["subnet_id"]; ok && !isIntfNil(w) {
-														enablePrivateWorkloadRoutingToCe[i].SubnetId = w.(string)
+													if w, ok := enablePrivateWorkloadRoutingToCeMapStrToI["route_table_id"]; ok && !isIntfNil(w) {
+														enablePrivateWorkloadRoutingToCe[i].RouteTableId = w.(string)
 													}
 
 												}
@@ -36991,6 +35721,61 @@ func resourceVolterraSecuremeshSiteV2Update(d *schema.ResourceData, meta interfa
 									ms[k] = v.(string)
 								}
 								orchestrationChoiceInt.Managed.Tags = ms
+							}
+
+							vipAutomationChoiceTypeFound := false
+
+							if v, ok := cs["disable_vip_automation"]; ok && !isIntfNil(v) && !vipAutomationChoiceTypeFound {
+
+								vipAutomationChoiceTypeFound = true
+
+								if v.(bool) {
+									vipAutomationChoiceInt := &ves_io_schema_views_securemesh_site_v2.AWSManagedMode_DisableVipAutomation{}
+									vipAutomationChoiceInt.DisableVipAutomation = &ves_io_schema.Empty{}
+									orchestrationChoiceInt.Managed.VipAutomationChoice = vipAutomationChoiceInt
+								}
+
+							}
+
+							if v, ok := cs["enable_vip_automation"]; ok && !isIntfNil(v) && !vipAutomationChoiceTypeFound {
+
+								vipAutomationChoiceTypeFound = true
+								vipAutomationChoiceInt := &ves_io_schema_views_securemesh_site_v2.AWSManagedMode_EnableVipAutomation{}
+								vipAutomationChoiceInt.EnableVipAutomation = &ves_io_schema_views_securemesh_site_v2.EnableVIPAutomationType{}
+								orchestrationChoiceInt.Managed.VipAutomationChoice = vipAutomationChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["dns_connector_ref"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											dnsConnectorRefInt := &ves_io_schema_views.ObjectRefType{}
+											vipAutomationChoiceInt.EnableVipAutomation.DnsConnectorRef = dnsConnectorRefInt
+
+											for _, set := range sl {
+												if set != nil {
+													dcrMapToStrVal := set.(map[string]interface{})
+													if val, ok := dcrMapToStrVal["name"]; ok && !isIntfNil(v) {
+														dnsConnectorRefInt.Name = val.(string)
+													}
+													if val, ok := dcrMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+														dnsConnectorRefInt.Namespace = val.(string)
+													}
+
+													if val, ok := dcrMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+														dnsConnectorRefInt.Tenant = val.(string)
+													}
+												}
+											}
+
+										}
+
+									}
+								}
+
 							}
 
 							if v, ok := cs["vpc_id"]; ok && !isIntfNil(v) {
@@ -42694,24 +41479,22 @@ func resourceVolterraSecuremeshSiteV2Update(d *schema.ResourceData, meta interfa
 										if v, ok := cs["cloud_link"]; ok && !isIntfNil(v) {
 
 											sl := v.([]interface{})
-											cloudLink := &ves_io_schema_views.ObjectRefType{}
-											privateConnectivityChoiceInt.PrivateConnectivity.CloudLink = cloudLink
+											cloudLinkInt := &ves_io_schema_views.ObjectRefType{}
+											privateConnectivityChoiceInt.PrivateConnectivity.CloudLink = cloudLinkInt
+
 											for _, set := range sl {
 												if set != nil {
-													cloudLinkMapStrToI := set.(map[string]interface{})
-
-													if w, ok := cloudLinkMapStrToI["name"]; ok && !isIntfNil(w) {
-														cloudLink.Name = w.(string)
+													clMapToStrVal := set.(map[string]interface{})
+													if val, ok := clMapToStrVal["name"]; ok && !isIntfNil(v) {
+														cloudLinkInt.Name = val.(string)
+													}
+													if val, ok := clMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+														cloudLinkInt.Namespace = val.(string)
 													}
 
-													if w, ok := cloudLinkMapStrToI["namespace"]; ok && !isIntfNil(w) {
-														cloudLink.Namespace = w.(string)
+													if val, ok := clMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+														cloudLinkInt.Tenant = val.(string)
 													}
-
-													if w, ok := cloudLinkMapStrToI["tenant"]; ok && !isIntfNil(w) {
-														cloudLink.Tenant = w.(string)
-													}
-
 												}
 											}
 
@@ -54048,5 +52831,11 @@ func resourceVolterraSecuremeshSiteV2Delete(d *schema.ResourceData, meta interfa
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_views_securemesh_site_v2.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_views_securemesh_site_v2.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting SecuremeshSiteV2: %w", err)
+	}
+	return nil
+
 }

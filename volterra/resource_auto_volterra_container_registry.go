@@ -518,6 +518,7 @@ func resourceVolterraContainerRegistryRead(d *schema.ResourceData, meta interfac
 		}
 		return fmt.Errorf("Error finding Volterra ContainerRegistry %q: %s", d.Id(), err)
 	}
+
 	return setContainerRegistryFields(client, d, resp)
 }
 
@@ -824,5 +825,11 @@ func resourceVolterraContainerRegistryDelete(d *schema.ResourceData, meta interf
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_container_registry.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_container_registry.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting ContainerRegistry: %w", err)
+	}
+	return nil
+
 }

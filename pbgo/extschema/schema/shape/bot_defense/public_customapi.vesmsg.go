@@ -26,6 +26,187 @@ var (
 
 // augmented methods on protoc/std generated struct
 
+func (m *GetArtifactRegistryTokenReq) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *GetArtifactRegistryTokenReq) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *GetArtifactRegistryTokenReq) DeepCopy() *GetArtifactRegistryTokenReq {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &GetArtifactRegistryTokenReq{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *GetArtifactRegistryTokenReq) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *GetArtifactRegistryTokenReq) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return GetArtifactRegistryTokenReqValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateGetArtifactRegistryTokenReq struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateGetArtifactRegistryTokenReq) NamespaceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for namespace")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateGetArtifactRegistryTokenReq) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*GetArtifactRegistryTokenReq)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *GetArtifactRegistryTokenReq got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["namespace"]; exists {
+		vOpts := append(opts, db.WithValidateField("namespace"))
+		if err := fv(ctx, m.GetNamespace(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultGetArtifactRegistryTokenReqValidator = func() *ValidateGetArtifactRegistryTokenReq {
+	v := &ValidateGetArtifactRegistryTokenReq{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhNamespace := v.NamespaceValidationRuleHandler
+	rulesNamespace := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhNamespace(rulesNamespace)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for GetArtifactRegistryTokenReq.namespace: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["namespace"] = vFn
+
+	return v
+}()
+
+func GetArtifactRegistryTokenReqValidator() db.Validator {
+	return DefaultGetArtifactRegistryTokenReqValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *GetArtifactRegistryTokenResp) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *GetArtifactRegistryTokenResp) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *GetArtifactRegistryTokenResp) DeepCopy() *GetArtifactRegistryTokenResp {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &GetArtifactRegistryTokenResp{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *GetArtifactRegistryTokenResp) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *GetArtifactRegistryTokenResp) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return GetArtifactRegistryTokenRespValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateGetArtifactRegistryTokenResp struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateGetArtifactRegistryTokenResp) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*GetArtifactRegistryTokenResp)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *GetArtifactRegistryTokenResp got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["expiration_time"]; exists {
+		vOpts := append(opts, db.WithValidateField("expiration_time"))
+		if err := fv(ctx, m.GetExpirationTime(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["token"]; exists {
+		vOpts := append(opts, db.WithValidateField("token"))
+		if err := fv(ctx, m.GetToken(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultGetArtifactRegistryTokenRespValidator = func() *ValidateGetArtifactRegistryTokenResp {
+	v := &ValidateGetArtifactRegistryTokenResp{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func GetArtifactRegistryTokenRespValidator() db.Validator {
+	return DefaultGetArtifactRegistryTokenRespValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *SuggestValuesReq) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }

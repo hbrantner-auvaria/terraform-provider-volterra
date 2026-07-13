@@ -706,6 +706,7 @@ func resourceVolterraDataTypeRead(d *schema.ResourceData, meta interface{}) erro
 		}
 		return fmt.Errorf("Error finding Volterra DataType %q: %s", d.Id(), err)
 	}
+
 	return setDataTypeFields(client, d, resp)
 }
 
@@ -1156,5 +1157,11 @@ func resourceVolterraDataTypeDelete(d *schema.ResourceData, meta interface{}) er
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_data_type.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_data_type.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting DataType: %w", err)
+	}
+	return nil
+
 }

@@ -30,15 +30,6 @@ resource "volterra_api_testing" "example" {
 
       basic_auth {
         password {
-          blindfold_secret_info_internal {
-            decryption_provider = "value"
-
-            location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
-
-            store_provider = "value"
-          }
-
-          secret_encoding_type = "secret_encoding_type"
 
           // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
 
@@ -113,10 +104,6 @@ Add and configure testing domains and credentials.
 
 x-displayName: "Value".
 
-`blindfold_secret_info_internal` - (Optional) Blindfold Secret Internal is used for the putting re-encrypted blindfold secret. See [Value Blindfold Secret Info Internal ](#value-blindfold-secret-info-internal) below for details.(Deprecated)
-
-`secret_encoding_type` - (Optional) e.g. if a secret is base64 encoded and then put into vault. (`String`).(Deprecated)
-
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 
 `blindfold_secret_info` - (Optional) Blindfold Secret is used for the secrets managed by F5XC Secret Management Service. See [Secret Info Oneof Blindfold Secret Info ](#secret-info-oneof-blindfold-secret-info) below for details.
@@ -131,10 +118,6 @@ x-displayName: "Value".
 
 x-displayName: "Password".
 
-`blindfold_secret_info_internal` - (Optional) Blindfold Secret Internal is used for the putting re-encrypted blindfold secret. See [Password Blindfold Secret Info Internal ](#password-blindfold-secret-info-internal) below for details.(Deprecated)
-
-`secret_encoding_type` - (Optional) e.g. if a secret is base64 encoded and then put into vault. (`String`).(Deprecated)
-
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 
 `blindfold_secret_info` - (Optional) Blindfold Secret is used for the secrets managed by F5XC Secret Management Service. See [Secret Info Oneof Blindfold Secret Info ](#secret-info-oneof-blindfold-secret-info) below for details.
@@ -148,10 +131,6 @@ x-displayName: "Password".
 ### Bearer Token Token
 
 x-displayName: "Token".
-
-`blindfold_secret_info_internal` - (Optional) Blindfold Secret Internal is used for the putting re-encrypted blindfold secret. See [Token Blindfold Secret Info Internal ](#token-blindfold-secret-info-internal) below for details.(Deprecated)
-
-`secret_encoding_type` - (Optional) e.g. if a secret is base64 encoded and then put into vault. (`String`).(Deprecated)
 
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 
@@ -232,10 +211,6 @@ Blindfold Secret Internal is used for the putting re-encrypted blindfold secret.
 ### Login Endpoint Json Payload
 
 x-displayName: "JSON Payload".
-
-`blindfold_secret_info_internal` - (Optional) Blindfold Secret Internal is used for the putting re-encrypted blindfold secret. See [Json Payload Blindfold Secret Info Internal ](#json-payload-blindfold-secret-info-internal) below for details.(Deprecated)
-
-`secret_encoding_type` - (Optional) e.g. if a secret is base64 encoded and then put into vault. (`String`).(Deprecated)
 
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 

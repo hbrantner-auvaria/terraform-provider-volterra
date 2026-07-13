@@ -134,7 +134,7 @@ func resourceVolterraApplicationProfiles() *schema.Resource {
 				},
 			},
 
-			"traffic_policies": {
+			"pmf_traffic_policies": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Resource{
@@ -804,6 +804,87 @@ func resourceVolterraApplicationProfiles() *schema.Resource {
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 
+									"client_ssl_profile": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"kind": {
+													Type:     schema.TypeString,
+													Computed: true,
+												},
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"http2_client_profile": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"kind": {
+													Type:     schema.TypeString,
+													Computed: true,
+												},
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"http2_server_profile": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"kind": {
+													Type:     schema.TypeString,
+													Computed: true,
+												},
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
 									"http_client_profile": {
 										Type:     schema.TypeList,
 										Optional: true,
@@ -832,6 +913,60 @@ func resourceVolterraApplicationProfiles() *schema.Resource {
 									},
 
 									"http_server_profile": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"kind": {
+													Type:     schema.TypeString,
+													Computed: true,
+												},
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"ocsp_profile": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"kind": {
+													Type:     schema.TypeString,
+													Computed: true,
+												},
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"server_ssl_profile": {
 										Type:     schema.TypeList,
 										Optional: true,
 										Elem: &schema.Resource{
@@ -996,13 +1131,67 @@ func resourceVolterraApplicationProfiles() *schema.Resource {
 							},
 						},
 
-						"https": {
+						"http3": {
 
 							Type:     schema.TypeList,
 							MaxItems: 1,
 							Optional: true,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
+
+									"client_ssl_profile": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"kind": {
+													Type:     schema.TypeString,
+													Computed: true,
+												},
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"http3_profile": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"kind": {
+													Type:     schema.TypeString,
+													Computed: true,
+												},
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
 
 									"http_client_profile": {
 										Type:     schema.TypeList,
@@ -1032,6 +1221,341 @@ func resourceVolterraApplicationProfiles() *schema.Resource {
 									},
 
 									"http_server_profile": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"kind": {
+													Type:     schema.TypeString,
+													Computed: true,
+												},
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"quic_profile": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"kind": {
+													Type:     schema.TypeString,
+													Computed: true,
+												},
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"server_ssl_profile": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"kind": {
+													Type:     schema.TypeString,
+													Computed: true,
+												},
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"tcp_server_profile": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"kind": {
+													Type:     schema.TypeString,
+													Computed: true,
+												},
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"udp_client_profile": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"kind": {
+													Type:     schema.TypeString,
+													Computed: true,
+												},
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"udp_server_profile": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"kind": {
+													Type:     schema.TypeString,
+													Computed: true,
+												},
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+
+						"https": {
+
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"client_ssl_profile": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"kind": {
+													Type:     schema.TypeString,
+													Computed: true,
+												},
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"http2_client_profile": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"kind": {
+													Type:     schema.TypeString,
+													Computed: true,
+												},
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"http2_server_profile": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"kind": {
+													Type:     schema.TypeString,
+													Computed: true,
+												},
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"http_client_profile": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"kind": {
+													Type:     schema.TypeString,
+													Computed: true,
+												},
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"http_server_profile": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"kind": {
+													Type:     schema.TypeString,
+													Computed: true,
+												},
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"ocsp_profile": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"kind": {
+													Type:     schema.TypeString,
+													Computed: true,
+												},
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"server_ssl_profile": {
 										Type:     schema.TypeList,
 										Optional: true,
 										Elem: &schema.Resource{
@@ -1204,6 +1728,87 @@ func resourceVolterraApplicationProfiles() *schema.Resource {
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 
+									"client_ssl_profile": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"kind": {
+													Type:     schema.TypeString,
+													Computed: true,
+												},
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"ocsp_profile": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"kind": {
+													Type:     schema.TypeString,
+													Computed: true,
+												},
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"server_ssl_profile": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"kind": {
+													Type:     schema.TypeString,
+													Computed: true,
+												},
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
 									"tcp_client_profile": {
 										Type:     schema.TypeList,
 										Optional: true,
@@ -1269,7 +1874,7 @@ func resourceVolterraApplicationProfiles() *schema.Resource {
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 
-									"tcp_client_profile": {
+									"client_ssl_profile": {
 										Type:     schema.TypeList,
 										Optional: true,
 										Elem: &schema.Resource{
@@ -1296,7 +1901,61 @@ func resourceVolterraApplicationProfiles() *schema.Resource {
 										},
 									},
 
-									"tcp_server_profile": {
+									"server_ssl_profile": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"kind": {
+													Type:     schema.TypeString,
+													Computed: true,
+												},
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"udp_client_profile": {
+										Type:     schema.TypeList,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"kind": {
+													Type:     schema.TypeString,
+													Computed: true,
+												},
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"udp_server_profile": {
 										Type:     schema.TypeList,
 										Optional: true,
 										Elem: &schema.Resource{
@@ -1507,34 +2166,34 @@ func resourceVolterraApplicationProfilesCreate(d *schema.ResourceData, meta inte
 
 	}
 
-	//traffic_policies
-	if v, ok := d.GetOk("traffic_policies"); ok && !isIntfNil(v) {
+	//pmf_traffic_policies
+	if v, ok := d.GetOk("pmf_traffic_policies"); ok && !isIntfNil(v) {
 
 		sl := v.([]interface{})
-		trafficPoliciesInt := make([]*ves_io_schema.ObjectRefType, len(sl))
-		createSpec.TrafficPolicies = trafficPoliciesInt
+		pmfTrafficPoliciesInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+		createSpec.PmfTrafficPolicies = pmfTrafficPoliciesInt
 		for i, ps := range sl {
 			if ps != nil {
 
-				tpMapToStrVal := ps.(map[string]interface{})
-				trafficPoliciesInt[i] = &ves_io_schema.ObjectRefType{}
+				ptpMapToStrVal := ps.(map[string]interface{})
+				pmfTrafficPoliciesInt[i] = &ves_io_schema.ObjectRefType{}
 
-				trafficPoliciesInt[i].Kind = "traffic_policy"
+				pmfTrafficPoliciesInt[i].Kind = "pmf_traffic_policy"
 
-				if v, ok := tpMapToStrVal["name"]; ok && !isIntfNil(v) {
-					trafficPoliciesInt[i].Name = v.(string)
+				if v, ok := ptpMapToStrVal["name"]; ok && !isIntfNil(v) {
+					pmfTrafficPoliciesInt[i].Name = v.(string)
 				}
 
-				if v, ok := tpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-					trafficPoliciesInt[i].Namespace = v.(string)
+				if v, ok := ptpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+					pmfTrafficPoliciesInt[i].Namespace = v.(string)
 				}
 
-				if v, ok := tpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-					trafficPoliciesInt[i].Tenant = v.(string)
+				if v, ok := ptpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+					pmfTrafficPoliciesInt[i].Tenant = v.(string)
 				}
 
-				if v, ok := tpMapToStrVal["uid"]; ok && !isIntfNil(v) {
-					trafficPoliciesInt[i].Uid = v.(string)
+				if v, ok := ptpMapToStrVal["uid"]; ok && !isIntfNil(v) {
+					pmfTrafficPoliciesInt[i].Uid = v.(string)
 				}
 
 			}
@@ -2311,6 +2970,108 @@ func resourceVolterraApplicationProfilesCreate(d *schema.ResourceData, meta inte
 						if set != nil {
 							cs := set.(map[string]interface{})
 
+							if v, ok := cs["client_ssl_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								clientSslProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Http.ClientSslProfile = clientSslProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										cspMapToStrVal := ps.(map[string]interface{})
+										clientSslProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										clientSslProfileInt[i].Kind = "ssl_client_profile"
+
+										if v, ok := cspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := cspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := cspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := cspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["http2_client_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								http2ClientProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Http.Http2ClientProfile = http2ClientProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										hcpMapToStrVal := ps.(map[string]interface{})
+										http2ClientProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										http2ClientProfileInt[i].Kind = "http2_profile"
+
+										if v, ok := hcpMapToStrVal["name"]; ok && !isIntfNil(v) {
+											http2ClientProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := hcpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											http2ClientProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := hcpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											http2ClientProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := hcpMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											http2ClientProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["http2_server_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								http2ServerProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Http.Http2ServerProfile = http2ServerProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										hspMapToStrVal := ps.(map[string]interface{})
+										http2ServerProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										http2ServerProfileInt[i].Kind = "http2_profile"
+
+										if v, ok := hspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											http2ServerProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := hspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											http2ServerProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := hspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											http2ServerProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := hspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											http2ServerProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
 							if v, ok := cs["http_client_profile"]; ok && !isIntfNil(v) {
 
 								sl := v.([]interface{})
@@ -2372,6 +3133,74 @@ func resourceVolterraApplicationProfilesCreate(d *schema.ResourceData, meta inte
 
 										if v, ok := hspMapToStrVal["uid"]; ok && !isIntfNil(v) {
 											httpServerProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["ocsp_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								ocspProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Http.OcspProfile = ocspProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										opMapToStrVal := ps.(map[string]interface{})
+										ocspProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										ocspProfileInt[i].Kind = "ocsp_profile"
+
+										if v, ok := opMapToStrVal["name"]; ok && !isIntfNil(v) {
+											ocspProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := opMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											ocspProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := opMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											ocspProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := opMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											ocspProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["server_ssl_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								serverSslProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Http.ServerSslProfile = serverSslProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										sspMapToStrVal := ps.(map[string]interface{})
+										serverSslProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										serverSslProfileInt[i].Kind = "ssl_server_profile"
+
+										if v, ok := sspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Uid = v.(string)
 										}
 
 									}
@@ -2554,17 +3383,442 @@ func resourceVolterraApplicationProfilesCreate(d *schema.ResourceData, meta inte
 
 				}
 
-				if v, ok := virtualServerMapStrToI["https"]; ok && !isIntfNil(v) && !virtualServerTypeTypeFound {
+				if v, ok := virtualServerMapStrToI["http3"]; ok && !isIntfNil(v) && !virtualServerTypeTypeFound {
 
 					virtualServerTypeTypeFound = true
-					virtualServerTypeInt := &ves_io_schema_bigcne_application_profiles.VirtualServerType_Https{}
-					virtualServerTypeInt.Https = &ves_io_schema_bigcne_application_profiles.HTTPSProfileType{}
+					virtualServerTypeInt := &ves_io_schema_bigcne_application_profiles.VirtualServerType_Http3{}
+					virtualServerTypeInt.Http3 = &ves_io_schema_bigcne_application_profiles.HTTP3ProfileType{}
 					virtualServer.VirtualServerType = virtualServerTypeInt
 
 					sl := v.([]interface{})
 					for _, set := range sl {
 						if set != nil {
 							cs := set.(map[string]interface{})
+
+							if v, ok := cs["client_ssl_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								clientSslProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Http3.ClientSslProfile = clientSslProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										cspMapToStrVal := ps.(map[string]interface{})
+										clientSslProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										clientSslProfileInt[i].Kind = "ssl_client_profile"
+
+										if v, ok := cspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := cspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := cspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := cspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["http3_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								http3ProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Http3.Http3Profile = http3ProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										hpMapToStrVal := ps.(map[string]interface{})
+										http3ProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										http3ProfileInt[i].Kind = "http3_profile"
+
+										if v, ok := hpMapToStrVal["name"]; ok && !isIntfNil(v) {
+											http3ProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := hpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											http3ProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := hpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											http3ProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := hpMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											http3ProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["http_client_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								httpClientProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Http3.HttpClientProfile = httpClientProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										hcpMapToStrVal := ps.(map[string]interface{})
+										httpClientProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										httpClientProfileInt[i].Kind = "http_profile"
+
+										if v, ok := hcpMapToStrVal["name"]; ok && !isIntfNil(v) {
+											httpClientProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := hcpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											httpClientProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := hcpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											httpClientProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := hcpMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											httpClientProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["http_server_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								httpServerProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Http3.HttpServerProfile = httpServerProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										hspMapToStrVal := ps.(map[string]interface{})
+										httpServerProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										httpServerProfileInt[i].Kind = "http_profile"
+
+										if v, ok := hspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											httpServerProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := hspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											httpServerProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := hspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											httpServerProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := hspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											httpServerProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["quic_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								quicProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Http3.QuicProfile = quicProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										qpMapToStrVal := ps.(map[string]interface{})
+										quicProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										quicProfileInt[i].Kind = "quic_profile"
+
+										if v, ok := qpMapToStrVal["name"]; ok && !isIntfNil(v) {
+											quicProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := qpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											quicProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := qpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											quicProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := qpMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											quicProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["server_ssl_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								serverSslProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Http3.ServerSslProfile = serverSslProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										sspMapToStrVal := ps.(map[string]interface{})
+										serverSslProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										serverSslProfileInt[i].Kind = "ssl_server_profile"
+
+										if v, ok := sspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["tcp_server_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								tcpServerProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Http3.TcpServerProfile = tcpServerProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										tspMapToStrVal := ps.(map[string]interface{})
+										tcpServerProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										tcpServerProfileInt[i].Kind = "tcp_profile"
+
+										if v, ok := tspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											tcpServerProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := tspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											tcpServerProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := tspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											tcpServerProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := tspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											tcpServerProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["udp_client_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								udpClientProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Http3.UdpClientProfile = udpClientProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										ucpMapToStrVal := ps.(map[string]interface{})
+										udpClientProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										udpClientProfileInt[i].Kind = "udp_profile"
+
+										if v, ok := ucpMapToStrVal["name"]; ok && !isIntfNil(v) {
+											udpClientProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := ucpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											udpClientProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := ucpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											udpClientProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := ucpMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											udpClientProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["udp_server_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								udpServerProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Http3.UdpServerProfile = udpServerProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										uspMapToStrVal := ps.(map[string]interface{})
+										udpServerProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										udpServerProfileInt[i].Kind = "udp_profile"
+
+										if v, ok := uspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											udpServerProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := uspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											udpServerProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := uspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											udpServerProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := uspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											udpServerProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := virtualServerMapStrToI["https"]; ok && !isIntfNil(v) && !virtualServerTypeTypeFound {
+
+					virtualServerTypeTypeFound = true
+					virtualServerTypeInt := &ves_io_schema_bigcne_application_profiles.VirtualServerType_Https{}
+					virtualServerTypeInt.Https = &ves_io_schema_bigcne_application_profiles.HTTPProfileType{}
+					virtualServer.VirtualServerType = virtualServerTypeInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							if v, ok := cs["client_ssl_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								clientSslProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Https.ClientSslProfile = clientSslProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										cspMapToStrVal := ps.(map[string]interface{})
+										clientSslProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										clientSslProfileInt[i].Kind = "ssl_client_profile"
+
+										if v, ok := cspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := cspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := cspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := cspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["http2_client_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								http2ClientProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Https.Http2ClientProfile = http2ClientProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										hcpMapToStrVal := ps.(map[string]interface{})
+										http2ClientProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										http2ClientProfileInt[i].Kind = "http2_profile"
+
+										if v, ok := hcpMapToStrVal["name"]; ok && !isIntfNil(v) {
+											http2ClientProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := hcpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											http2ClientProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := hcpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											http2ClientProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := hcpMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											http2ClientProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["http2_server_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								http2ServerProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Https.Http2ServerProfile = http2ServerProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										hspMapToStrVal := ps.(map[string]interface{})
+										http2ServerProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										http2ServerProfileInt[i].Kind = "http2_profile"
+
+										if v, ok := hspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											http2ServerProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := hspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											http2ServerProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := hspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											http2ServerProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := hspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											http2ServerProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
 
 							if v, ok := cs["http_client_profile"]; ok && !isIntfNil(v) {
 
@@ -2627,6 +3881,74 @@ func resourceVolterraApplicationProfilesCreate(d *schema.ResourceData, meta inte
 
 										if v, ok := hspMapToStrVal["uid"]; ok && !isIntfNil(v) {
 											httpServerProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["ocsp_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								ocspProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Https.OcspProfile = ocspProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										opMapToStrVal := ps.(map[string]interface{})
+										ocspProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										ocspProfileInt[i].Kind = "ocsp_profile"
+
+										if v, ok := opMapToStrVal["name"]; ok && !isIntfNil(v) {
+											ocspProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := opMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											ocspProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := opMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											ocspProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := opMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											ocspProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["server_ssl_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								serverSslProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Https.ServerSslProfile = serverSslProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										sspMapToStrVal := ps.(map[string]interface{})
+										serverSslProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										serverSslProfileInt[i].Kind = "ssl_server_profile"
+
+										if v, ok := sspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Uid = v.(string)
 										}
 
 									}
@@ -2821,6 +4143,108 @@ func resourceVolterraApplicationProfilesCreate(d *schema.ResourceData, meta inte
 						if set != nil {
 							cs := set.(map[string]interface{})
 
+							if v, ok := cs["client_ssl_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								clientSslProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Tcp.ClientSslProfile = clientSslProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										cspMapToStrVal := ps.(map[string]interface{})
+										clientSslProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										clientSslProfileInt[i].Kind = "ssl_client_profile"
+
+										if v, ok := cspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := cspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := cspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := cspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["ocsp_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								ocspProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Tcp.OcspProfile = ocspProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										opMapToStrVal := ps.(map[string]interface{})
+										ocspProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										ocspProfileInt[i].Kind = "ocsp_profile"
+
+										if v, ok := opMapToStrVal["name"]; ok && !isIntfNil(v) {
+											ocspProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := opMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											ocspProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := opMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											ocspProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := opMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											ocspProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["server_ssl_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								serverSslProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Tcp.ServerSslProfile = serverSslProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										sspMapToStrVal := ps.(map[string]interface{})
+										serverSslProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										serverSslProfileInt[i].Kind = "ssl_server_profile"
+
+										if v, ok := sspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
 							if v, ok := cs["tcp_client_profile"]; ok && !isIntfNil(v) {
 
 								sl := v.([]interface{})
@@ -2906,33 +4330,33 @@ func resourceVolterraApplicationProfilesCreate(d *schema.ResourceData, meta inte
 						if set != nil {
 							cs := set.(map[string]interface{})
 
-							if v, ok := cs["tcp_client_profile"]; ok && !isIntfNil(v) {
+							if v, ok := cs["client_ssl_profile"]; ok && !isIntfNil(v) {
 
 								sl := v.([]interface{})
-								tcpClientProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
-								virtualServerTypeInt.Udp.TcpClientProfile = tcpClientProfileInt
+								clientSslProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Udp.ClientSslProfile = clientSslProfileInt
 								for i, ps := range sl {
 									if ps != nil {
 
-										tcpMapToStrVal := ps.(map[string]interface{})
-										tcpClientProfileInt[i] = &ves_io_schema.ObjectRefType{}
+										cspMapToStrVal := ps.(map[string]interface{})
+										clientSslProfileInt[i] = &ves_io_schema.ObjectRefType{}
 
-										tcpClientProfileInt[i].Kind = "tcp_profile"
+										clientSslProfileInt[i].Kind = "ssl_client_profile"
 
-										if v, ok := tcpMapToStrVal["name"]; ok && !isIntfNil(v) {
-											tcpClientProfileInt[i].Name = v.(string)
+										if v, ok := cspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Name = v.(string)
 										}
 
-										if v, ok := tcpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-											tcpClientProfileInt[i].Namespace = v.(string)
+										if v, ok := cspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Namespace = v.(string)
 										}
 
-										if v, ok := tcpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-											tcpClientProfileInt[i].Tenant = v.(string)
+										if v, ok := cspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Tenant = v.(string)
 										}
 
-										if v, ok := tcpMapToStrVal["uid"]; ok && !isIntfNil(v) {
-											tcpClientProfileInt[i].Uid = v.(string)
+										if v, ok := cspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Uid = v.(string)
 										}
 
 									}
@@ -2940,33 +4364,101 @@ func resourceVolterraApplicationProfilesCreate(d *schema.ResourceData, meta inte
 
 							}
 
-							if v, ok := cs["tcp_server_profile"]; ok && !isIntfNil(v) {
+							if v, ok := cs["server_ssl_profile"]; ok && !isIntfNil(v) {
 
 								sl := v.([]interface{})
-								tcpServerProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
-								virtualServerTypeInt.Udp.TcpServerProfile = tcpServerProfileInt
+								serverSslProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Udp.ServerSslProfile = serverSslProfileInt
 								for i, ps := range sl {
 									if ps != nil {
 
-										tspMapToStrVal := ps.(map[string]interface{})
-										tcpServerProfileInt[i] = &ves_io_schema.ObjectRefType{}
+										sspMapToStrVal := ps.(map[string]interface{})
+										serverSslProfileInt[i] = &ves_io_schema.ObjectRefType{}
 
-										tcpServerProfileInt[i].Kind = "tcp_profile"
+										serverSslProfileInt[i].Kind = "ssl_server_profile"
 
-										if v, ok := tspMapToStrVal["name"]; ok && !isIntfNil(v) {
-											tcpServerProfileInt[i].Name = v.(string)
+										if v, ok := sspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Name = v.(string)
 										}
 
-										if v, ok := tspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-											tcpServerProfileInt[i].Namespace = v.(string)
+										if v, ok := sspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Namespace = v.(string)
 										}
 
-										if v, ok := tspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-											tcpServerProfileInt[i].Tenant = v.(string)
+										if v, ok := sspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Tenant = v.(string)
 										}
 
-										if v, ok := tspMapToStrVal["uid"]; ok && !isIntfNil(v) {
-											tcpServerProfileInt[i].Uid = v.(string)
+										if v, ok := sspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["udp_client_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								udpClientProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Udp.UdpClientProfile = udpClientProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										ucpMapToStrVal := ps.(map[string]interface{})
+										udpClientProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										udpClientProfileInt[i].Kind = "udp_profile"
+
+										if v, ok := ucpMapToStrVal["name"]; ok && !isIntfNil(v) {
+											udpClientProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := ucpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											udpClientProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := ucpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											udpClientProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := ucpMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											udpClientProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["udp_server_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								udpServerProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Udp.UdpServerProfile = udpServerProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										uspMapToStrVal := ps.(map[string]interface{})
+										udpServerProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										udpServerProfileInt[i].Kind = "udp_profile"
+
+										if v, ok := uspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											udpServerProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := uspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											udpServerProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := uspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											udpServerProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := uspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											udpServerProfileInt[i].Uid = v.(string)
 										}
 
 									}
@@ -3013,6 +4505,7 @@ func resourceVolterraApplicationProfilesRead(d *schema.ResourceData, meta interf
 		}
 		return fmt.Errorf("Error finding Volterra ApplicationProfiles %q: %s", d.Id(), err)
 	}
+
 	return setApplicationProfilesFields(client, d, resp)
 }
 
@@ -3201,33 +4694,33 @@ func resourceVolterraApplicationProfilesUpdate(d *schema.ResourceData, meta inte
 
 	}
 
-	if v, ok := d.GetOk("traffic_policies"); ok && !isIntfNil(v) {
+	if v, ok := d.GetOk("pmf_traffic_policies"); ok && !isIntfNil(v) {
 
 		sl := v.([]interface{})
-		trafficPoliciesInt := make([]*ves_io_schema.ObjectRefType, len(sl))
-		updateSpec.TrafficPolicies = trafficPoliciesInt
+		pmfTrafficPoliciesInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+		updateSpec.PmfTrafficPolicies = pmfTrafficPoliciesInt
 		for i, ps := range sl {
 			if ps != nil {
 
-				tpMapToStrVal := ps.(map[string]interface{})
-				trafficPoliciesInt[i] = &ves_io_schema.ObjectRefType{}
+				ptpMapToStrVal := ps.(map[string]interface{})
+				pmfTrafficPoliciesInt[i] = &ves_io_schema.ObjectRefType{}
 
-				trafficPoliciesInt[i].Kind = "traffic_policy"
+				pmfTrafficPoliciesInt[i].Kind = "pmf_traffic_policy"
 
-				if v, ok := tpMapToStrVal["name"]; ok && !isIntfNil(v) {
-					trafficPoliciesInt[i].Name = v.(string)
+				if v, ok := ptpMapToStrVal["name"]; ok && !isIntfNil(v) {
+					pmfTrafficPoliciesInt[i].Name = v.(string)
 				}
 
-				if v, ok := tpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-					trafficPoliciesInt[i].Namespace = v.(string)
+				if v, ok := ptpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+					pmfTrafficPoliciesInt[i].Namespace = v.(string)
 				}
 
-				if v, ok := tpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-					trafficPoliciesInt[i].Tenant = v.(string)
+				if v, ok := ptpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+					pmfTrafficPoliciesInt[i].Tenant = v.(string)
 				}
 
-				if v, ok := tpMapToStrVal["uid"]; ok && !isIntfNil(v) {
-					trafficPoliciesInt[i].Uid = v.(string)
+				if v, ok := ptpMapToStrVal["uid"]; ok && !isIntfNil(v) {
+					pmfTrafficPoliciesInt[i].Uid = v.(string)
 				}
 
 			}
@@ -4003,6 +5496,108 @@ func resourceVolterraApplicationProfilesUpdate(d *schema.ResourceData, meta inte
 						if set != nil {
 							cs := set.(map[string]interface{})
 
+							if v, ok := cs["client_ssl_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								clientSslProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Http.ClientSslProfile = clientSslProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										cspMapToStrVal := ps.(map[string]interface{})
+										clientSslProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										clientSslProfileInt[i].Kind = "ssl_client_profile"
+
+										if v, ok := cspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := cspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := cspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := cspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["http2_client_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								http2ClientProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Http.Http2ClientProfile = http2ClientProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										hcpMapToStrVal := ps.(map[string]interface{})
+										http2ClientProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										http2ClientProfileInt[i].Kind = "http2_profile"
+
+										if v, ok := hcpMapToStrVal["name"]; ok && !isIntfNil(v) {
+											http2ClientProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := hcpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											http2ClientProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := hcpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											http2ClientProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := hcpMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											http2ClientProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["http2_server_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								http2ServerProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Http.Http2ServerProfile = http2ServerProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										hspMapToStrVal := ps.(map[string]interface{})
+										http2ServerProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										http2ServerProfileInt[i].Kind = "http2_profile"
+
+										if v, ok := hspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											http2ServerProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := hspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											http2ServerProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := hspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											http2ServerProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := hspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											http2ServerProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
 							if v, ok := cs["http_client_profile"]; ok && !isIntfNil(v) {
 
 								sl := v.([]interface{})
@@ -4064,6 +5659,74 @@ func resourceVolterraApplicationProfilesUpdate(d *schema.ResourceData, meta inte
 
 										if v, ok := hspMapToStrVal["uid"]; ok && !isIntfNil(v) {
 											httpServerProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["ocsp_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								ocspProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Http.OcspProfile = ocspProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										opMapToStrVal := ps.(map[string]interface{})
+										ocspProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										ocspProfileInt[i].Kind = "ocsp_profile"
+
+										if v, ok := opMapToStrVal["name"]; ok && !isIntfNil(v) {
+											ocspProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := opMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											ocspProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := opMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											ocspProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := opMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											ocspProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["server_ssl_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								serverSslProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Http.ServerSslProfile = serverSslProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										sspMapToStrVal := ps.(map[string]interface{})
+										serverSslProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										serverSslProfileInt[i].Kind = "ssl_server_profile"
+
+										if v, ok := sspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Uid = v.(string)
 										}
 
 									}
@@ -4246,17 +5909,442 @@ func resourceVolterraApplicationProfilesUpdate(d *schema.ResourceData, meta inte
 
 				}
 
-				if v, ok := virtualServerMapStrToI["https"]; ok && !isIntfNil(v) && !virtualServerTypeTypeFound {
+				if v, ok := virtualServerMapStrToI["http3"]; ok && !isIntfNil(v) && !virtualServerTypeTypeFound {
 
 					virtualServerTypeTypeFound = true
-					virtualServerTypeInt := &ves_io_schema_bigcne_application_profiles.VirtualServerType_Https{}
-					virtualServerTypeInt.Https = &ves_io_schema_bigcne_application_profiles.HTTPSProfileType{}
+					virtualServerTypeInt := &ves_io_schema_bigcne_application_profiles.VirtualServerType_Http3{}
+					virtualServerTypeInt.Http3 = &ves_io_schema_bigcne_application_profiles.HTTP3ProfileType{}
 					virtualServer.VirtualServerType = virtualServerTypeInt
 
 					sl := v.([]interface{})
 					for _, set := range sl {
 						if set != nil {
 							cs := set.(map[string]interface{})
+
+							if v, ok := cs["client_ssl_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								clientSslProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Http3.ClientSslProfile = clientSslProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										cspMapToStrVal := ps.(map[string]interface{})
+										clientSslProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										clientSslProfileInt[i].Kind = "ssl_client_profile"
+
+										if v, ok := cspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := cspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := cspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := cspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["http3_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								http3ProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Http3.Http3Profile = http3ProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										hpMapToStrVal := ps.(map[string]interface{})
+										http3ProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										http3ProfileInt[i].Kind = "http3_profile"
+
+										if v, ok := hpMapToStrVal["name"]; ok && !isIntfNil(v) {
+											http3ProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := hpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											http3ProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := hpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											http3ProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := hpMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											http3ProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["http_client_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								httpClientProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Http3.HttpClientProfile = httpClientProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										hcpMapToStrVal := ps.(map[string]interface{})
+										httpClientProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										httpClientProfileInt[i].Kind = "http_profile"
+
+										if v, ok := hcpMapToStrVal["name"]; ok && !isIntfNil(v) {
+											httpClientProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := hcpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											httpClientProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := hcpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											httpClientProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := hcpMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											httpClientProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["http_server_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								httpServerProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Http3.HttpServerProfile = httpServerProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										hspMapToStrVal := ps.(map[string]interface{})
+										httpServerProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										httpServerProfileInt[i].Kind = "http_profile"
+
+										if v, ok := hspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											httpServerProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := hspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											httpServerProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := hspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											httpServerProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := hspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											httpServerProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["quic_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								quicProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Http3.QuicProfile = quicProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										qpMapToStrVal := ps.(map[string]interface{})
+										quicProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										quicProfileInt[i].Kind = "quic_profile"
+
+										if v, ok := qpMapToStrVal["name"]; ok && !isIntfNil(v) {
+											quicProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := qpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											quicProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := qpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											quicProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := qpMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											quicProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["server_ssl_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								serverSslProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Http3.ServerSslProfile = serverSslProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										sspMapToStrVal := ps.(map[string]interface{})
+										serverSslProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										serverSslProfileInt[i].Kind = "ssl_server_profile"
+
+										if v, ok := sspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["tcp_server_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								tcpServerProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Http3.TcpServerProfile = tcpServerProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										tspMapToStrVal := ps.(map[string]interface{})
+										tcpServerProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										tcpServerProfileInt[i].Kind = "tcp_profile"
+
+										if v, ok := tspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											tcpServerProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := tspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											tcpServerProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := tspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											tcpServerProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := tspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											tcpServerProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["udp_client_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								udpClientProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Http3.UdpClientProfile = udpClientProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										ucpMapToStrVal := ps.(map[string]interface{})
+										udpClientProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										udpClientProfileInt[i].Kind = "udp_profile"
+
+										if v, ok := ucpMapToStrVal["name"]; ok && !isIntfNil(v) {
+											udpClientProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := ucpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											udpClientProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := ucpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											udpClientProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := ucpMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											udpClientProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["udp_server_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								udpServerProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Http3.UdpServerProfile = udpServerProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										uspMapToStrVal := ps.(map[string]interface{})
+										udpServerProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										udpServerProfileInt[i].Kind = "udp_profile"
+
+										if v, ok := uspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											udpServerProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := uspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											udpServerProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := uspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											udpServerProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := uspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											udpServerProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := virtualServerMapStrToI["https"]; ok && !isIntfNil(v) && !virtualServerTypeTypeFound {
+
+					virtualServerTypeTypeFound = true
+					virtualServerTypeInt := &ves_io_schema_bigcne_application_profiles.VirtualServerType_Https{}
+					virtualServerTypeInt.Https = &ves_io_schema_bigcne_application_profiles.HTTPProfileType{}
+					virtualServer.VirtualServerType = virtualServerTypeInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							if v, ok := cs["client_ssl_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								clientSslProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Https.ClientSslProfile = clientSslProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										cspMapToStrVal := ps.(map[string]interface{})
+										clientSslProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										clientSslProfileInt[i].Kind = "ssl_client_profile"
+
+										if v, ok := cspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := cspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := cspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := cspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["http2_client_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								http2ClientProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Https.Http2ClientProfile = http2ClientProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										hcpMapToStrVal := ps.(map[string]interface{})
+										http2ClientProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										http2ClientProfileInt[i].Kind = "http2_profile"
+
+										if v, ok := hcpMapToStrVal["name"]; ok && !isIntfNil(v) {
+											http2ClientProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := hcpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											http2ClientProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := hcpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											http2ClientProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := hcpMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											http2ClientProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["http2_server_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								http2ServerProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Https.Http2ServerProfile = http2ServerProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										hspMapToStrVal := ps.(map[string]interface{})
+										http2ServerProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										http2ServerProfileInt[i].Kind = "http2_profile"
+
+										if v, ok := hspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											http2ServerProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := hspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											http2ServerProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := hspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											http2ServerProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := hspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											http2ServerProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
 
 							if v, ok := cs["http_client_profile"]; ok && !isIntfNil(v) {
 
@@ -4319,6 +6407,74 @@ func resourceVolterraApplicationProfilesUpdate(d *schema.ResourceData, meta inte
 
 										if v, ok := hspMapToStrVal["uid"]; ok && !isIntfNil(v) {
 											httpServerProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["ocsp_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								ocspProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Https.OcspProfile = ocspProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										opMapToStrVal := ps.(map[string]interface{})
+										ocspProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										ocspProfileInt[i].Kind = "ocsp_profile"
+
+										if v, ok := opMapToStrVal["name"]; ok && !isIntfNil(v) {
+											ocspProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := opMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											ocspProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := opMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											ocspProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := opMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											ocspProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["server_ssl_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								serverSslProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Https.ServerSslProfile = serverSslProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										sspMapToStrVal := ps.(map[string]interface{})
+										serverSslProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										serverSslProfileInt[i].Kind = "ssl_server_profile"
+
+										if v, ok := sspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Uid = v.(string)
 										}
 
 									}
@@ -4513,6 +6669,108 @@ func resourceVolterraApplicationProfilesUpdate(d *schema.ResourceData, meta inte
 						if set != nil {
 							cs := set.(map[string]interface{})
 
+							if v, ok := cs["client_ssl_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								clientSslProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Tcp.ClientSslProfile = clientSslProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										cspMapToStrVal := ps.(map[string]interface{})
+										clientSslProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										clientSslProfileInt[i].Kind = "ssl_client_profile"
+
+										if v, ok := cspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := cspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := cspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := cspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["ocsp_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								ocspProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Tcp.OcspProfile = ocspProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										opMapToStrVal := ps.(map[string]interface{})
+										ocspProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										ocspProfileInt[i].Kind = "ocsp_profile"
+
+										if v, ok := opMapToStrVal["name"]; ok && !isIntfNil(v) {
+											ocspProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := opMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											ocspProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := opMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											ocspProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := opMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											ocspProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["server_ssl_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								serverSslProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Tcp.ServerSslProfile = serverSslProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										sspMapToStrVal := ps.(map[string]interface{})
+										serverSslProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										serverSslProfileInt[i].Kind = "ssl_server_profile"
+
+										if v, ok := sspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := sspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
 							if v, ok := cs["tcp_client_profile"]; ok && !isIntfNil(v) {
 
 								sl := v.([]interface{})
@@ -4598,33 +6856,33 @@ func resourceVolterraApplicationProfilesUpdate(d *schema.ResourceData, meta inte
 						if set != nil {
 							cs := set.(map[string]interface{})
 
-							if v, ok := cs["tcp_client_profile"]; ok && !isIntfNil(v) {
+							if v, ok := cs["client_ssl_profile"]; ok && !isIntfNil(v) {
 
 								sl := v.([]interface{})
-								tcpClientProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
-								virtualServerTypeInt.Udp.TcpClientProfile = tcpClientProfileInt
+								clientSslProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Udp.ClientSslProfile = clientSslProfileInt
 								for i, ps := range sl {
 									if ps != nil {
 
-										tcpMapToStrVal := ps.(map[string]interface{})
-										tcpClientProfileInt[i] = &ves_io_schema.ObjectRefType{}
+										cspMapToStrVal := ps.(map[string]interface{})
+										clientSslProfileInt[i] = &ves_io_schema.ObjectRefType{}
 
-										tcpClientProfileInt[i].Kind = "tcp_profile"
+										clientSslProfileInt[i].Kind = "ssl_client_profile"
 
-										if v, ok := tcpMapToStrVal["name"]; ok && !isIntfNil(v) {
-											tcpClientProfileInt[i].Name = v.(string)
+										if v, ok := cspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Name = v.(string)
 										}
 
-										if v, ok := tcpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-											tcpClientProfileInt[i].Namespace = v.(string)
+										if v, ok := cspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Namespace = v.(string)
 										}
 
-										if v, ok := tcpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-											tcpClientProfileInt[i].Tenant = v.(string)
+										if v, ok := cspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Tenant = v.(string)
 										}
 
-										if v, ok := tcpMapToStrVal["uid"]; ok && !isIntfNil(v) {
-											tcpClientProfileInt[i].Uid = v.(string)
+										if v, ok := cspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											clientSslProfileInt[i].Uid = v.(string)
 										}
 
 									}
@@ -4632,33 +6890,101 @@ func resourceVolterraApplicationProfilesUpdate(d *schema.ResourceData, meta inte
 
 							}
 
-							if v, ok := cs["tcp_server_profile"]; ok && !isIntfNil(v) {
+							if v, ok := cs["server_ssl_profile"]; ok && !isIntfNil(v) {
 
 								sl := v.([]interface{})
-								tcpServerProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
-								virtualServerTypeInt.Udp.TcpServerProfile = tcpServerProfileInt
+								serverSslProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Udp.ServerSslProfile = serverSslProfileInt
 								for i, ps := range sl {
 									if ps != nil {
 
-										tspMapToStrVal := ps.(map[string]interface{})
-										tcpServerProfileInt[i] = &ves_io_schema.ObjectRefType{}
+										sspMapToStrVal := ps.(map[string]interface{})
+										serverSslProfileInt[i] = &ves_io_schema.ObjectRefType{}
 
-										tcpServerProfileInt[i].Kind = "tcp_profile"
+										serverSslProfileInt[i].Kind = "ssl_server_profile"
 
-										if v, ok := tspMapToStrVal["name"]; ok && !isIntfNil(v) {
-											tcpServerProfileInt[i].Name = v.(string)
+										if v, ok := sspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Name = v.(string)
 										}
 
-										if v, ok := tspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
-											tcpServerProfileInt[i].Namespace = v.(string)
+										if v, ok := sspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Namespace = v.(string)
 										}
 
-										if v, ok := tspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
-											tcpServerProfileInt[i].Tenant = v.(string)
+										if v, ok := sspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Tenant = v.(string)
 										}
 
-										if v, ok := tspMapToStrVal["uid"]; ok && !isIntfNil(v) {
-											tcpServerProfileInt[i].Uid = v.(string)
+										if v, ok := sspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											serverSslProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["udp_client_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								udpClientProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Udp.UdpClientProfile = udpClientProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										ucpMapToStrVal := ps.(map[string]interface{})
+										udpClientProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										udpClientProfileInt[i].Kind = "udp_profile"
+
+										if v, ok := ucpMapToStrVal["name"]; ok && !isIntfNil(v) {
+											udpClientProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := ucpMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											udpClientProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := ucpMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											udpClientProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := ucpMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											udpClientProfileInt[i].Uid = v.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["udp_server_profile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								udpServerProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+								virtualServerTypeInt.Udp.UdpServerProfile = udpServerProfileInt
+								for i, ps := range sl {
+									if ps != nil {
+
+										uspMapToStrVal := ps.(map[string]interface{})
+										udpServerProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+										udpServerProfileInt[i].Kind = "udp_profile"
+
+										if v, ok := uspMapToStrVal["name"]; ok && !isIntfNil(v) {
+											udpServerProfileInt[i].Name = v.(string)
+										}
+
+										if v, ok := uspMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											udpServerProfileInt[i].Namespace = v.(string)
+										}
+
+										if v, ok := uspMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											udpServerProfileInt[i].Tenant = v.(string)
+										}
+
+										if v, ok := uspMapToStrVal["uid"]; ok && !isIntfNil(v) {
+											udpServerProfileInt[i].Uid = v.(string)
 										}
 
 									}
@@ -4709,5 +7035,11 @@ func resourceVolterraApplicationProfilesDelete(d *schema.ResourceData, meta inte
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_bigcne_application_profiles.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_bigcne_application_profiles.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting ApplicationProfiles: %w", err)
+	}
+	return nil
+
 }

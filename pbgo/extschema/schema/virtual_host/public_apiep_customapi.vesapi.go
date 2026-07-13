@@ -3363,7 +3363,7 @@ var ApiepCustomAPISwaggerJSON string = `{
                     },
                     {
                         "name": "apiep_category",
-                        "description": "x-example: \"DISCOVERED\"\nCategory of api endpoints. Can be DISCOVERED, INVENTORY or SHADOW API.\nOptional filter by api_category. If absent, endpoints of all categories are considered.\n\nDiscovered API Endpoint.\nThe API Endpoint is imported from user swagger.\nThe API Endpoint is present at the API Inventory.\nThe API Endpoint is considered as part of Shadow API.\nDeprecated API Endpoint.\nNon-API Endpoint.",
+                        "description": "x-example: \"DISCOVERED\"\nCategory of api endpoints. Can be DISCOVERED, INVENTORY or SHADOW API.\nOptional filter by api_category. If absent, endpoints of all categories are considered.\n\nDiscovered API Endpoint.\nThe API Endpoint is imported from user swagger.\nThe API Endpoint is present at the API Inventory.\nThe API Endpoint is considered as part of Shadow API.\nDeprecated API Endpoint.\nNon-API Endpoint.\n - APIEP_CATEGORY_DISCOVERY_POLICY: x-displayName: Policy\nUser-Defined Discovery Policy",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -3375,7 +3375,8 @@ var ApiepCustomAPISwaggerJSON string = `{
                                 "APIEP_CATEGORY_INVENTORY",
                                 "APIEP_CATEGORY_SHADOW",
                                 "APIEP_CATEGORY_DEPRECATED",
-                                "APIEP_CATEGORY_NON_API"
+                                "APIEP_CATEGORY_NON_API",
+                                "APIEP_CATEGORY_DISCOVERY_POLICY"
                             ]
                         },
                         "collectionFormat": "multi",
@@ -4513,7 +4514,7 @@ var ApiepCustomAPISwaggerJSON string = `{
         },
         "app_typeAPIEPCategory": {
             "type": "string",
-            "description": "The category of an API endpoint.\n\nDiscovered API Endpoint.\nThe API Endpoint is imported from user swagger.\nThe API Endpoint is present at the API Inventory.\nThe API Endpoint is considered as part of Shadow API.\nDeprecated API Endpoint.\nNon-API Endpoint.",
+            "description": "The category of an API endpoint.\n\nDiscovered API Endpoint.\nThe API Endpoint is imported from user swagger.\nThe API Endpoint is present at the API Inventory.\nThe API Endpoint is considered as part of Shadow API.\nDeprecated API Endpoint.\nNon-API Endpoint.\n - APIEP_CATEGORY_DISCOVERY_POLICY: x-displayName: Policy\nUser-Defined Discovery Policy",
             "title": "APIEP Category",
             "enum": [
                 "APIEP_CATEGORY_DISCOVERED",
@@ -4521,7 +4522,8 @@ var ApiepCustomAPISwaggerJSON string = `{
                 "APIEP_CATEGORY_INVENTORY",
                 "APIEP_CATEGORY_SHADOW",
                 "APIEP_CATEGORY_DEPRECATED",
-                "APIEP_CATEGORY_NON_API"
+                "APIEP_CATEGORY_NON_API",
+                "APIEP_CATEGORY_DISCOVERY_POLICY"
             ],
             "default": "APIEP_CATEGORY_DISCOVERED",
             "x-displayname": "Category of the API Endpoint",
@@ -5902,7 +5904,7 @@ var ApiepCustomAPISwaggerJSON string = `{
                 },
                 "domains": {
                     "type": "array",
-                    "description": " List of domains for which top api endpoints summary should be returned.\n Optional filter by domains. If absent, endpoints for all domains are considered.\n\nExample: - \"www.example.com\"-\n\nValidation Rules:\n  ves.io.schema.rules.repeated.items.string.max_len: 256\n  ves.io.schema.rules.repeated.items.string.min_len: 1\n  ves.io.schema.rules.repeated.items.string.vh_domain: true\n  ves.io.schema.rules.repeated.max_items: 5\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "description": " List of domains for which top api endpoints summary should be returned.\n Optional filter by domains. If absent, endpoints for all domains are considered.\n\nExample: - \"www.example.com\"-\n\nValidation Rules:\n  ves.io.schema.rules.repeated.items.string.max_len: 256\n  ves.io.schema.rules.repeated.items.string.min_len: 1\n  ves.io.schema.rules.repeated.items.string.vh_domain_or_ip: true\n  ves.io.schema.rules.repeated.max_items: 5\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "List of Domain",
                     "maxItems": 5,
                     "items": {
@@ -5915,7 +5917,7 @@ var ApiepCustomAPISwaggerJSON string = `{
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.repeated.items.string.max_len": "256",
                         "ves.io.schema.rules.repeated.items.string.min_len": "1",
-                        "ves.io.schema.rules.repeated.items.string.vh_domain": "true",
+                        "ves.io.schema.rules.repeated.items.string.vh_domain_or_ip": "true",
                         "ves.io.schema.rules.repeated.max_items": "5",
                         "ves.io.schema.rules.repeated.unique": "true"
                     }
@@ -6032,7 +6034,7 @@ var ApiepCustomAPISwaggerJSON string = `{
                 },
                 "domains": {
                     "type": "array",
-                    "description": " List of domains that needs to be sent as part of the request\n Optional filter by domains. If absent, all domains are considered.\n\nExample: - \"www.example.com\"-\n\nValidation Rules:\n  ves.io.schema.rules.repeated.items.string.max_len: 256\n  ves.io.schema.rules.repeated.items.string.min_len: 1\n  ves.io.schema.rules.repeated.items.string.vh_domain: true\n  ves.io.schema.rules.repeated.max_items: 5\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "description": " List of domains that needs to be sent as part of the request\n Optional filter by domains. If absent, all domains are considered.\n\nExample: - \"www.example.com\"-\n\nValidation Rules:\n  ves.io.schema.rules.repeated.items.string.max_len: 256\n  ves.io.schema.rules.repeated.items.string.min_len: 1\n  ves.io.schema.rules.repeated.items.string.vh_domain_or_ip: true\n  ves.io.schema.rules.repeated.max_items: 5\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "List of Domain",
                     "maxItems": 5,
                     "items": {
@@ -6045,7 +6047,7 @@ var ApiepCustomAPISwaggerJSON string = `{
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.repeated.items.string.max_len": "256",
                         "ves.io.schema.rules.repeated.items.string.min_len": "1",
-                        "ves.io.schema.rules.repeated.items.string.vh_domain": "true",
+                        "ves.io.schema.rules.repeated.items.string.vh_domain_or_ip": "true",
                         "ves.io.schema.rules.repeated.max_items": "5",
                         "ves.io.schema.rules.repeated.unique": "true"
                     }
@@ -6526,7 +6528,7 @@ var ApiepCustomAPISwaggerJSON string = `{
                 },
                 "domains": {
                     "type": "array",
-                    "description": " List of domains for which top api endpoints summary should be returned.\n Optional filter by domains. If absent, endpoints for all domains are considered.\n\nExample: - \"www.example.com\"-\n\nValidation Rules:\n  ves.io.schema.rules.repeated.items.string.max_len: 256\n  ves.io.schema.rules.repeated.items.string.min_len: 1\n  ves.io.schema.rules.repeated.items.string.vh_domain: true\n  ves.io.schema.rules.repeated.max_items: 5\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "description": " List of domains for which top api endpoints summary should be returned.\n Optional filter by domains. If absent, endpoints for all domains are considered.\n\nExample: - \"www.example.com\"-\n\nValidation Rules:\n  ves.io.schema.rules.repeated.items.string.max_len: 256\n  ves.io.schema.rules.repeated.items.string.min_len: 1\n  ves.io.schema.rules.repeated.items.string.vh_domain_or_ip: true\n  ves.io.schema.rules.repeated.max_items: 5\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "List of Domain",
                     "maxItems": 5,
                     "items": {
@@ -6539,7 +6541,7 @@ var ApiepCustomAPISwaggerJSON string = `{
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.repeated.items.string.max_len": "256",
                         "ves.io.schema.rules.repeated.items.string.min_len": "1",
-                        "ves.io.schema.rules.repeated.items.string.vh_domain": "true",
+                        "ves.io.schema.rules.repeated.items.string.vh_domain_or_ip": "true",
                         "ves.io.schema.rules.repeated.max_items": "5",
                         "ves.io.schema.rules.repeated.unique": "true"
                     }
@@ -6606,7 +6608,7 @@ var ApiepCustomAPISwaggerJSON string = `{
                 },
                 "domains": {
                     "type": "array",
-                    "description": " List of domains for which vulnerabilities should be returned.\n Optional filter by domains. If absent, vulnerabilities for all domains are considered.\n\nExample: - \"www.example.com\"-\n\nValidation Rules:\n  ves.io.schema.rules.repeated.items.string.max_len: 256\n  ves.io.schema.rules.repeated.items.string.min_len: 1\n  ves.io.schema.rules.repeated.items.string.vh_domain: true\n  ves.io.schema.rules.repeated.max_items: 5\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "description": " List of domains for which vulnerabilities should be returned.\n Optional filter by domains. If absent, vulnerabilities for all domains are considered.\n\nExample: - \"www.example.com\"-\n\nValidation Rules:\n  ves.io.schema.rules.repeated.items.string.max_len: 256\n  ves.io.schema.rules.repeated.items.string.min_len: 1\n  ves.io.schema.rules.repeated.items.string.vh_domain_or_ip: true\n  ves.io.schema.rules.repeated.max_items: 5\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "List of Domain",
                     "maxItems": 5,
                     "items": {
@@ -6619,7 +6621,7 @@ var ApiepCustomAPISwaggerJSON string = `{
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.repeated.items.string.max_len": "256",
                         "ves.io.schema.rules.repeated.items.string.min_len": "1",
-                        "ves.io.schema.rules.repeated.items.string.vh_domain": "true",
+                        "ves.io.schema.rules.repeated.items.string.vh_domain_or_ip": "true",
                         "ves.io.schema.rules.repeated.max_items": "5",
                         "ves.io.schema.rules.repeated.unique": "true"
                     }
@@ -7160,6 +7162,22 @@ var ApiepCustomAPISwaggerJSON string = `{
                     "title": "last_observed_time",
                     "format": "date-time",
                     "x-displayname": "Last Observed Time"
+                },
+                "object_type": {
+                    "type": "string",
+                    "description": " Type of the objects which the vulnerability refers to\n\nExample: - \"Cookie\"-",
+                    "title": "object_type",
+                    "x-displayname": "Object Type",
+                    "x-ves-example": "Cookie"
+                },
+                "objects": {
+                    "type": "array",
+                    "description": " Objects which the vulnerability refers to\n\nExample: - [\"/documents/group/{dyn}\"]-",
+                    "title": "objects",
+                    "items": {
+                        "type": "string"
+                    },
+                    "x-displayname": "Objects"
                 },
                 "owasp_categories": {
                     "type": "array",

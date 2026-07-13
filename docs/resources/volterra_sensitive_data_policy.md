@@ -51,7 +51,7 @@ Argument Reference
 
 Select your custom data types to be monitored in the API discovery.
 
-`custom_data_type_ref` - (Optional) List of custom data types to monitor. See [ref](#ref) below for details.
+`custom_data_type_ref` - (Required) List of custom data types to monitor. See [ref](#ref) below for details.
 
 ### Ref
 

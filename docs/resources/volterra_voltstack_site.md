@@ -251,6 +251,10 @@ F5XC Software Details.
 
 `volterra_software_version` - (Optional) Specify a F5XC Software Version to be used e.g. crt-20210329-1002. (`String`).
 
+### Address Choice Default Gateway
+
+Use the default gateway address..
+
 ### Address Choice Dhcp Client
 
 Interface gets it's IP address from external DHCP server.
@@ -272,6 +276,18 @@ DHCP Server is configured for this interface. IP for this Interface will be deri
 `automatic_from_start` - (Optional) Assign automatically from start of the first network in the DHCP Network list (`Bool`).
 
 `interface_ip_map` - (Optional) Statically configure a IPv4 address for every node. See [Interfaces Addressing Choice Interface Ip Map ](#interfaces-addressing-choice-interface-ip-map) below for details.
+
+### Address Choice Disable
+
+No Peer Ipv4 Address..
+
+### Address Choice External Connector
+
+Pick Peer Address from External connector interface remote address..
+
+### Address Choice From Site
+
+Use the address specified in the site object..
 
 ### Address Choice Stateful
 
@@ -300,6 +316,30 @@ Interface IP is configured statically.
 `fleet_static_ip` - (Optional) Static IP configuration for the fleet. See [Network Prefix Choice Fleet Static Ip ](#network-prefix-choice-fleet-static-ip) below for details.(Deprecated)
 
 `node_static_ip` - (Optional) Static IP configuration for the Node. See [Network Prefix Choice Node Static Ip ](#network-prefix-choice-node-static-ip) below for details.
+
+### Address Choice V6 Default Gateway V6
+
+Use the default gateway address..
+
+### Address Choice V6 Disable V6
+
+No Peer IPv6 Address..
+
+### Address Choice V6 From Site V6
+
+Use the address specified in the site object..
+
+### Aggregation Options
+
+x-displayName: "Aggregation Options".
+
+###### One of the arguments from this list "summary_only" must be set
+
+`summary_only` - (Optional) Advertise only the aggregated prefix and suppress all contributing more-specifics to neighbors. (`Bool`).
+
+### Aggregation Choice Summary Only
+
+Advertise only the aggregated prefix and suppress all contributing more-specifics to neighbors..
 
 ### Api Token Blindfold Secret Info Internal
 
@@ -338,6 +378,10 @@ Specify what storage flash blades should be managed the plugin.
 `export_rules` - (Optional) NFS Export rules (`String`).
 
 `flash_blades` - (Required) For FlashBlades you must set the "mgmt_endpoint", "api_token" and nfs_endpoint. See [Flash Blade Flash Blades ](#flash-blade-flash-blades) below for details.
+
+### Auth Choice No Authentication
+
+No Authentication of BGP session.
 
 ### Autoconfig Choice Host
 
@@ -459,9 +503,53 @@ Backend configuration for ONTAP SAN.
 
 `volume_defaults` - (Optional) List of QoS volume defaults types. See [Netapp Backend Ontap San Volume Defaults ](#netapp-backend-ontap-san-volume-defaults) below for details.
 
+### Bfd Choice Bfd Disabled
+
+x-displayName: "Disabled".
+
+### Bfd Choice Bfd Enabled
+
+x-displayName: "Enabled".
+
+`multiplier` - (Required) Specify Number of missed packets to bring session down" (`Int`).
+
+`receive_interval_milliseconds` - (Required) BFD receive interval timer, in milliseconds (`Int`).
+
+`transmit_interval_milliseconds` - (Required) BFD transmit interval timer, in milliseconds (`Int`).
+
 ### Bgp Config Peers
 
 BGP parameters for peer.
+
+###### One of the arguments from this list "bfd_disabled, bfd_enabled" must be set
+
+`bfd_disabled` - (Optional) x-displayName: "Disabled" (`Bool`).
+
+`bfd_enabled` - (Optional) x-displayName: "Enabled". See [Bfd Choice Bfd Enabled ](#bfd-choice-bfd-enabled) below for details.
+
+###### One of the arguments from this list "disable, routing_policies" must be set
+
+`disable` - (Optional) Disables the BGP routing policy (`Bool`).
+
+`routing_policies` - (Optional) policy applies to. See [Enable Choice Routing Policies ](#enable-choice-routing-policies) below for details.
+
+`label` - (Optional) Specify whether this peer should be (`String`).
+
+`metadata` - (Required) Common attributes for the peer including name and description.. See [Peers Metadata ](#peers-metadata) below for details.
+
+###### One of the arguments from this list "passive_mode_disabled, passive_mode_enabled" must be set
+
+`passive_mode_disabled` - (Optional) x-displayName: "Disabled" (`Bool`).
+
+`passive_mode_enabled` - (Optional) x-displayName: "Enabled" (`Bool`).
+
+`target_service` - (Optional) Specify whether this peer should be configured in "phobos" or "frr". (`String`).(Deprecated)
+
+###### One of the arguments from this list "external, internal" must be set
+
+`external` - (Optional) External BGP peer.. See [Type Choice External ](#type-choice-external) below for details.
+
+`internal` - (Optional) Internal BGP peer.. See [Type Choice Internal ](#type-choice-internal) below for details.(Deprecated)
 
 ### Blocked Services Blocked Sevice
 
@@ -773,6 +861,14 @@ List of networks from which DHCP Server can allocate IPv4 Addresses.
 
 `pools` - (Optional) List of non overlapping ip address ranges.. See [Dhcp Networks Pools ](#dhcp-networks-pools) below for details.
 
+### Direction Inbound
+
+Apply policy on routes being imported.
+
+### Direction Outbound
+
+Apply policy on routes being exported.
+
 ### Dns Choice Configured List
 
 Configured address outside network range - external dns server.
@@ -795,6 +891,58 @@ Choose the address from the network prefix range as dns server.
 
 DNS server address is same as default gateway address.
 
+### Enable Aggregation
+
+BGP aggregation prefixes are shared among all peers, aggregation configured under any peer will take effect on all peers. Aggregation in BGP occurs only when more specific routes exist in the routing table and applies to outbound advertisements..
+
+`ip_prefix` - (Optional) Specify IPV4 subnet for aggregation. (`String`).
+
+`options` - (Optional) x-displayName: "Aggregation Options". See [Aggregation Options ](#aggregation-options) below for details.
+
+### Enable Aggregation
+
+BGP aggregation prefixes are shared among all peers, aggregation configured under any peer will take effect on all peers. Aggregation in BGP occurs only when more specific routes exist in the routing table and applies to outbound advertisements..
+
+`ip_prefix` - (Optional) Specify IPV6 subnet for aggregation. (`String`).
+
+`options` - (Optional) x-displayName: "Aggregation Options". See [Aggregation Options ](#aggregation-options) below for details.
+
+### Enable Choice Disable
+
+Disables the BGP routing policy.
+
+### Enable Choice Enable
+
+Enable the IPv6 Unicast family..
+
+### Enable Choice Enable
+
+Enable the IPv4 Unicast family..
+
+###### One of the arguments from this list "disable, enable" must be set
+
+`disable` - (Optional) Disable the IPv4 Unicast family. (`Bool`).(Deprecated)
+
+`enable` - (Optional) Enable the IPv4 Unicast family. (`Bool`).
+
+### Enable Choice Enable
+
+Enable IPv4 family Route Exchange..
+
+`aggregation` - (Optional) BGP aggregation prefixes are shared among all peers, aggregation configured under any peer will take effect on all peers. Aggregation in BGP occurs only when more specific routes exist in the routing table and applies to outbound advertisements.. See [Enable Aggregation ](#enable-aggregation) below for details.
+
+### Enable Choice Enable
+
+Enable IPv6 family Route Exchange..
+
+`aggregation` - (Optional) BGP aggregation prefixes are shared among all peers, aggregation configured under any peer will take effect on all peers. Aggregation in BGP occurs only when more specific routes exist in the routing table and applies to outbound advertisements.. See [Enable Aggregation ](#enable-aggregation) below for details.
+
+### Enable Choice Routing Policies
+
+policy applies to.
+
+`route_policy` - (Optional) Route policy to be applied. See [Routing Policies Route Policy ](#routing-policies-route-policy) below for details.
+
 ### Enable Disable Choice Disable Interception
 
 Disable Interception.
@@ -802,6 +950,26 @@ Disable Interception.
 ### Enable Disable Choice Enable Interception
 
 Enable Interception.
+
+### External Family Inet
+
+Enable/Disable Ipv4 family of routes exchange with peer.
+
+###### One of the arguments from this list "disable, enable" must be set
+
+`disable` - (Optional) Disable IPv4 family Route Exchange. (`Bool`).
+
+`enable` - (Optional) Enable IPv4 family Route Exchange.. See [Enable Choice Enable ](#enable-choice-enable) below for details.
+
+### External Family Inet V6
+
+Enable/Disable IPv6 family of routes exchange with peer.
+
+###### One of the arguments from this list "disable, enable" must be set
+
+`disable` - (Optional) Disable IPv6 family Route Exchange. (`Bool`).
+
+`enable` - (Optional) Enable IPv6 family Route Exchange.. See [Enable Choice Enable ](#enable-choice-enable) below for details.
 
 ### Flash Array Flash Arrays
 
@@ -1123,6 +1291,16 @@ Ethernet interface configuration..
 
 `vlan_id` - (Optional) Configure a VLAN tagged ethernet interface (`Int`).
 
+### Interface Choice Inside Interfaces
+
+All interfaces in the site local inside network..
+
+### Interface Choice Interface List
+
+List of network interfaces..
+
+`interfaces` - (Required) List of network interfaces.. See [ref](#ref) below for details.
+
 ### Interface Choice Interface List
 
 Add all interfaces belonging to this site.
@@ -1164,6 +1342,10 @@ Loopback device..
 `cluster` - (Optional) Configuration will apply to given device on all nodes of the site. (`Bool`).
 
 `node` - (Optional) Configuration will apply to a device on the given node. (`String`).
+
+### Interface Choice Outside Interfaces
+
+All interfaces in the site local outside network..
 
 ### Interface Choice Tunnel Interface
 
@@ -1238,6 +1420,46 @@ Statically configure a IPv4 address for every node.
 Configured address for every node.
 
 `interface_ip_map` - (Optional) Map of Site:Node to IPV6 address. (`String`).
+
+### Internal Family Inet6vpn
+
+Parameters for IPv6 VPN Unicast family..
+
+###### One of the arguments from this list "disable, enable" must be set
+
+`disable` - (Optional) Disable the IPv6 Unicast family. (`Bool`).(Deprecated)
+
+`enable` - (Optional) Enable the IPv6 Unicast family. (`Bool`).
+
+### Internal Family Inetvpn
+
+Parameters for IPv4 VPN Unicast family..
+
+###### One of the arguments from this list "disable, enable" must be set
+
+`disable` - (Optional) Disable the IPv4 Unicast family. (`Bool`).(Deprecated)
+
+`enable` - (Optional) Enable the IPv4 Unicast family.. See [Enable Choice Enable ](#enable-choice-enable) below for details.
+
+### Internal Family Rtarget
+
+Parameters for Route Target family..
+
+###### One of the arguments from this list "disable, enable" must be set
+
+`disable` - (Optional) Disable the Route Target family. (`Bool`).
+
+`enable` - (Optional) Enable the Route Target family. (`Bool`).
+
+### Internal Family Uuidvpn
+
+Parameters for UUID VPN Unicast family..
+
+###### One of the arguments from this list "disable, enable" must be set
+
+`disable` - (Optional) Disable the UUID Unicast family. (`Bool`).(Deprecated)
+
+`enable` - (Optional) Enable the UUID Unicast family. (`Bool`).
 
 ### Ipv6 Address Choice Ipv6 Auto Config
 
@@ -1342,6 +1564,14 @@ Link Quality Monitoring parameters. Choosing the option will enable link quality
 ### Monitoring Choice Monitor Disabled
 
 Link quality monitoring disabled on the interface..
+
+### Mtls Choice Disable Mtls
+
+Disable mTLS.
+
+### Mtls Choice Enable Mtls
+
+Enable mTLS.
 
 ### Netapp Backend Ontap Nas Auto Export Cidrs
 
@@ -1653,9 +1883,19 @@ Traffic matching the ip prefixes is sent to this interface.
 
 `list` - (Optional) On a multinode site, this list holds the nodes and corresponding networking_interface. See [Node Interface List ](#node-interface-list) below for details.
 
+### Node Choice All Nodes
+
+Apply filter on all nodes where Peer is valid.
+
 ### Node Choice Cluster
 
 Configuration will apply to given device on all nodes of the site..
+
+### Node Choice Node Name
+
+Select nodes where BGP routing policy has to be applied.
+
+`node` - (Optional) Select BGP Session on which policy will be applied. (`String`).
 
 ### Node Interface List
 
@@ -1691,6 +1931,14 @@ x-displayName: "Disabled".
 
 Will assign latest available OS version.
 
+### Passive Choice Passive Mode Disabled
+
+x-displayName: "Disabled".
+
+### Passive Choice Passive Mode Enabled
+
+x-displayName: "Enabled".
+
 ### Password Blindfold Secret Info Internal
 
 Blindfold Secret Internal is used for the putting re-encrypted blindfold secret.
@@ -1700,6 +1948,16 @@ Blindfold Secret Internal is used for the putting re-encrypted blindfold secret.
 `location` - (Required) Or it could be a path if the store provider is an http/https location (`String`).
 
 `store_provider` - (Optional) This field needs to be provided only if the url scheme is not string:/// (`String`).
+
+### Peers Metadata
+
+Common attributes for the peer including name and description..
+
+`description` - (Optional) Human readable description. (`String`).
+
+`disable` - (Optional) A value of true will administratively disable the object that corresponds to the containing message. (`Bool`).(Deprecated)
+
+`name` - (Required) The value of name has to follow DNS-1035 format. (`String`).
 
 ### Policy Interception Rules
 
@@ -1762,6 +2020,24 @@ Dns information that needs to added in the RouterAdvetisement.
 `configured_list` - (Optional) Configured address outside network range - external dns server. See [Dns Choice Configured List ](#dns-choice-configured-list) below for details.
 
 `local_dns` - (Optional) Choose the address from the network prefix range as dns server. See [Dns Choice Local Dns ](#dns-choice-local-dns) below for details.
+
+### Routing Policies Route Policy
+
+Route policy to be applied.
+
+###### One of the arguments from this list "inbound, outbound" can be set
+
+`inbound` - (Optional) Apply policy on routes being imported (`Bool`).
+
+`outbound` - (Optional) Apply policy on routes being exported (`Bool`).
+
+###### One of the arguments from this list "all_nodes, node_name" can be set
+
+`all_nodes` - (Optional) Apply filter on all nodes where Peer is valid (`Bool`).
+
+`node_name` - (Optional) Select nodes where BGP routing policy has to be applied. See [Node Choice Node Name ](#node-choice-node-name) below for details.
+
+`object_refs` - (Required) Select route policy to apply.. See [ref](#ref) below for details.
 
 ### Secret Info Oneof Blindfold Secret Info
 
@@ -1880,6 +2156,14 @@ Configuration for site local network.
 `no_static_v6_routes` - (Optional) Static IPv6 Routes disabled for site local network. (`Bool`).
 
 `static_v6_routes` - (Optional) Manage static IPv6 routes for site local network.. See [Static V6 Route Choice Static V6 Routes ](#static-v6-route-choice-static-v6-routes) below for details.
+
+### Sr Choice Disable
+
+Disable the IPv4 Unicast family..
+
+### Sr Choice Enable
+
+Enable the IPv4 Unicast family..
 
 ### Sriov Interface Choice Sriov Interfaces
 
@@ -2224,6 +2508,92 @@ Interface IP is configured statically.
 `fleet_static_ip` - (Optional) Static IP configuration for the fleet. See [Network Prefix Choice Fleet Static Ip ](#network-prefix-choice-fleet-static-ip) below for details.(Deprecated)
 
 `node_static_ip` - (Optional) Static IP configuration for the Node. See [Network Prefix Choice Node Static Ip ](#network-prefix-choice-node-static-ip) below for details.
+
+### Type Choice External
+
+External BGP peer..
+
+###### One of the arguments from this list "address, default_gateway, disable, external_connector, from_site, subnet_begin_offset, subnet_end_offset" must be set
+
+`address` - (Optional) Specify IPV4 peer address. (`String`).
+
+`default_gateway` - (Optional) Use the default gateway address. (`Bool`).
+
+`disable` - (Optional) No Peer Ipv4 Address. (`Bool`).
+
+`external_connector` - (Optional) Pick Peer Address from External connector interface remote address. (`Bool`).
+
+`from_site` - (Optional) Use the address specified in the site object. (`Bool`).
+
+`subnet_begin_offset` - (Optional) Calculate peer address using offset from the beginning of the subnet. (`Int`).
+
+`subnet_end_offset` - (Optional) Calculate peer address using offset from the end of the subnet. (`Int`).
+
+###### One of the arguments from this list "address_ipv6, default_gateway_v6, disable_v6, from_site_v6, subnet_begin_offset_v6, subnet_end_offset_v6" must be set
+
+`address_ipv6` - (Optional) Specify peer IPv6 address. (`String`).
+
+`default_gateway_v6` - (Optional) Use the default gateway address. (`Bool`).
+
+`disable_v6` - (Optional) No Peer IPv6 Address. (`Bool`).
+
+`from_site_v6` - (Optional) Use the address specified in the site object. (`Bool`).
+
+`subnet_begin_offset_v6` - (Optional) Calculate peer address using offset from the beginning of the subnet. (`Int`).
+
+`subnet_end_offset_v6` - (Optional) Calculate peer address using offset from the end of the subnet. (`Int`).
+
+`asn` - (Required) Autonomous System Number for BGP peer (`Int`).
+
+###### One of the arguments from this list "md5_auth_key, no_authentication" can be set
+
+`md5_auth_key` - (Optional) MD5 key for protecting BGP Sessions (RFC 2385) (`String`).
+
+`no_authentication` - (Optional) No Authentication of BGP session (`Bool`).
+
+`family_inet` - (Optional) Enable/Disable Ipv4 family of routes exchange with peer. See [External Family Inet ](#external-family-inet) below for details.
+
+`family_inet_v6` - (Optional) Enable/Disable IPv6 family of routes exchange with peer. See [External Family Inet V6 ](#external-family-inet-v6) below for details.
+
+###### One of the arguments from this list "inside_interfaces, interface, interface_list, outside_interfaces" must be set
+
+`inside_interfaces` - (Optional) All interfaces in the site local inside network. (`Bool`).(Deprecated)
+
+`interface` - (Optional) Specify interface.. See [ref](#ref) below for details.
+
+`interface_list` - (Optional) List of network interfaces.. See [Interface Choice Interface List ](#interface-choice-interface-list) below for details.
+
+`outside_interfaces` - (Optional) All interfaces in the site local outside network. (`Bool`).(Deprecated)
+
+`port` - (Optional) Peer TCP port number. (`Int`).
+
+### Type Choice Internal
+
+Internal BGP peer..
+
+###### One of the arguments from this list "address, dns_name, from_site" must be set
+
+`address` - (Optional) Specify peer address. (`String`).
+
+`dns_name` - (Optional) Use the addresse by resolving the given DNS name. (`String`).(Deprecated)
+
+`from_site` - (Optional) Use the address specified in the site object. (`Bool`).
+
+`family_inet6vpn` - (Optional) Parameters for IPv6 VPN Unicast family.. See [Internal Family Inet6vpn ](#internal-family-inet6vpn) below for details.
+
+`family_inetvpn` - (Optional) Parameters for IPv4 VPN Unicast family.. See [Internal Family Inetvpn ](#internal-family-inetvpn) below for details.
+
+`family_rtarget` - (Optional) Parameters for Route Target family.. See [Internal Family Rtarget ](#internal-family-rtarget) below for details.
+
+`family_uuidvpn` - (Optional) Parameters for UUID VPN Unicast family.. See [Internal Family Uuidvpn ](#internal-family-uuidvpn) below for details.
+
+###### One of the arguments from this list "disable_mtls, enable_mtls" can be set
+
+`disable_mtls` - (Optional) Disable mTLS (`Bool`).(Deprecated)
+
+`enable_mtls` - (Optional) Enable mTLS (`Bool`).(Deprecated)
+
+`port` - (Optional) Local Peer TCP Port Number. (`Int`).
 
 ### Use Chap Chap Initiator Secret
 

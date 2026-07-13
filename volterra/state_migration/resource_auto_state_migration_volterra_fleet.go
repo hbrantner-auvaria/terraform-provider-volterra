@@ -454,6 +454,20 @@ func ResourceFleetInstanceResourceV1() *schema.Resource {
 				},
 			},
 
+			"disable_log_anonymization": {
+
+				Type:       schema.TypeBool,
+				Optional:   true,
+				Deprecated: "This field is deprecated and will be removed in future release.",
+			},
+
+			"enable_log_anonymization": {
+
+				Type:       schema.TypeBool,
+				Optional:   true,
+				Deprecated: "This field is deprecated and will be removed in future release.",
+			},
+
 			"log_receiver": {
 
 				Type:     schema.TypeList,

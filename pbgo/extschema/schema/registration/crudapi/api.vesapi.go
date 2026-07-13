@@ -1782,7 +1782,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2006,7 +2006,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2260,7 +2260,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2839,6 +2839,74 @@ var APISwaggerJSON string = `{
                 }
             }
         },
+        "registrationBondConfiguration": {
+            "type": "object",
+            "description": "Bond device configuration for VPM registration",
+            "title": "Bond Configuration",
+            "x-displayname": "Bond Configuration",
+            "x-ves-proto-message": "ves.io.schema.registration.BondConfiguration",
+            "properties": {
+                "interfaces": {
+                    "type": "array",
+                    "description": "\nExample: - \"eth0\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.items.string.max_len: 64\n  ves.io.schema.rules.repeated.max_items: 8\n  ves.io.schema.rules.repeated.min_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "title": "Member Interfaces",
+                    "minItems": 1,
+                    "maxItems": 8,
+                    "items": {
+                        "type": "string",
+                        "maxLength": 64
+                    },
+                    "x-displayname": "Member Interfaces",
+                    "x-ves-example": "eth0",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.repeated.items.string.max_len": "64",
+                        "ves.io.schema.rules.repeated.max_items": "8",
+                        "ves.io.schema.rules.repeated.min_items": "1",
+                        "ves.io.schema.rules.repeated.unique": "true"
+                    }
+                },
+                "mode": {
+                    "description": " Bonding mode (Active-Backup or 802.3ad LACP)\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.enum.defined_only: true\n  ves.io.schema.rules.enum.not_in: 0\n  ves.io.schema.rules.message.required: true\n",
+                    "title": "Bond Mode",
+                    "$ref": "#/definitions/registrationBondMode",
+                    "x-displayname": "Bond Mode",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.enum.defined_only": "true",
+                        "ves.io.schema.rules.enum.not_in": "0",
+                        "ves.io.schema.rules.message.required": "true"
+                    }
+                },
+                "name": {
+                    "type": "string",
+                    "description": "\nExample: - \"bond0\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.max_len: 64\n",
+                    "title": "Bond Name",
+                    "maxLength": 64,
+                    "x-displayname": "Bond Name",
+                    "x-ves-example": "bond0",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.string.max_len": "64"
+                    }
+                }
+            }
+        },
+        "registrationBondMode": {
+            "type": "string",
+            "description": "Bonding mode for bond device configuration\n\nBond mode is not specified\nActive-backup bond mode (one interface active, others as backup)\nIEEE 802.3ad Dynamic link aggregation (LACP)",
+            "title": "Bond Mode",
+            "enum": [
+                "BOND_MODE_UNSPECIFIED",
+                "ACTIVE_BACKUP",
+                "LACP_802_3AD"
+            ],
+            "default": "BOND_MODE_UNSPECIFIED",
+            "x-displayname": "Bond Mode",
+            "x-ves-proto-enum": "ves.io.schema.registration.BondMode"
+        },
         "registrationInfra": {
             "type": "object",
             "description": "InfraMetadata stores information about instance infrastructure",
@@ -2852,6 +2920,12 @@ var APISwaggerJSON string = `{
                     "title": "availability_zone",
                     "x-displayname": "Availability Zone",
                     "x-ves-example": "value"
+                },
+                "bond_config": {
+                    "description": " Bond device configuration",
+                    "title": "Bond Configuration",
+                    "$ref": "#/definitions/registrationBondConfiguration",
+                    "x-displayname": "Bond Configuration"
                 },
                 "certified_hw": {
                     "type": "string",
@@ -2958,6 +3032,11 @@ var APISwaggerJSON string = `{
                     "type": "string",
                     "description": "x-displayName: \"IP Address\"\nx-example: \"192.168.100.1\"",
                     "title": "IP Address"
+                },
+                "gw": {
+                    "type": "string",
+                    "description": "x-displayName: \"Gateway\"\nx-example: \"192.168.100.254\"",
+                    "title": "Gateway"
                 },
                 "name": {
                     "type": "string",

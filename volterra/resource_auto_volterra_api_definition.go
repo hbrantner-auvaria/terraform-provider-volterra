@@ -347,6 +347,7 @@ func resourceVolterraApiDefinitionRead(d *schema.ResourceData, meta interface{})
 		}
 		return fmt.Errorf("Error finding Volterra ApiDefinition %q: %s", d.Id(), err)
 	}
+
 	return setApiDefinitionFields(client, d, resp)
 }
 
@@ -566,5 +567,11 @@ func resourceVolterraApiDefinitionDelete(d *schema.ResourceData, meta interface{
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_views_api_definition.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_views_api_definition.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting ApiDefinition: %w", err)
+	}
+	return nil
+
 }

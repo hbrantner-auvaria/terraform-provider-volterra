@@ -1791,7 +1791,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2015,7 +2015,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2269,7 +2269,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2582,6 +2582,7 @@ var APISwaggerJSON string = `{
             "title": "Certificate specification",
             "x-displayname": "Specification",
             "x-ves-oneof-field-ocsp_stapling_choice": "[\"custom_hash_algorithms\",\"disable_ocsp_stapling\",\"use_system_defaults\"]",
+            "x-ves-oneof-field-provider": "[\"manual\",\"virtual_host_auto_cert\"]",
             "x-ves-proto-message": "ves.io.schema.certificate.GlobalSpecType",
             "properties": {
                 "certificate_chain": {
@@ -2636,6 +2637,12 @@ var APISwaggerJSON string = `{
                     },
                     "x-displayname": "Certificate Information"
                 },
+                "manual": {
+                    "description": "Exclusive with [virtual_host_auto_cert]\n",
+                    "title": "Manual",
+                    "$ref": "#/definitions/schemaEmpty",
+                    "x-displayname": "Manual"
+                },
                 "private_key": {
                     "description": " Private Key data in unencrypted PEM format including the PEM headers. The data may be optionally secured using BlindFold. Key has to match the accompanying certificate.\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
                     "title": "private_key",
@@ -2660,6 +2667,12 @@ var APISwaggerJSON string = `{
                     "title": "Fetch with F5XC default settings",
                     "$ref": "#/definitions/schemaEmpty",
                     "x-displayname": "Enable"
+                },
+                "virtual_host_auto_cert": {
+                    "description": "Exclusive with [manual]\n",
+                    "title": "Virtual Host Auto Cert",
+                    "$ref": "#/definitions/certificateVirtualHostAutoCert",
+                    "x-displayname": "Virtual Host Auto Cert"
                 }
             }
         },
@@ -2707,6 +2720,28 @@ var APISwaggerJSON string = `{
                         "$ref": "#/definitions/ioschemaObjectRefType"
                     },
                     "x-displayname": "Config Object"
+                }
+            }
+        },
+        "certificateVirtualHostAutoCert": {
+            "type": "object",
+            "description": "AutoCert provider information",
+            "title": "Virtual Host Auto Cert",
+            "x-displayname": "Virtual Host Auto Cert",
+            "x-ves-proto-message": "ves.io.schema.certificate.VirtualHostAutoCert",
+            "properties": {
+                "owner_virtual_host": {
+                    "type": "array",
+                    "description": " The virtual_host object that owns this certificate\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 1\n",
+                    "title": "Owner Virtual Host",
+                    "maxItems": 1,
+                    "items": {
+                        "$ref": "#/definitions/ioschemaObjectRefType"
+                    },
+                    "x-displayname": "Owner Virtual Host",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.repeated.max_items": "1"
+                    }
                 }
             }
         },

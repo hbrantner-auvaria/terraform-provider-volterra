@@ -768,6 +768,7 @@ func resourceVolterraAppApiGroupRead(d *schema.ResourceData, meta interface{}) e
 		}
 		return fmt.Errorf("Error finding Volterra AppApiGroup %q: %s", d.Id(), err)
 	}
+
 	return setAppApiGroupFields(client, d, resp)
 }
 
@@ -1202,5 +1203,11 @@ func resourceVolterraAppApiGroupDelete(d *schema.ResourceData, meta interface{})
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_views_app_api_group.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_views_app_api_group.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting AppApiGroup: %w", err)
+	}
+	return nil
+
 }

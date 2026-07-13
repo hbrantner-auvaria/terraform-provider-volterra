@@ -195,6 +195,7 @@ func resourceVolterraInfraprotectAsnRead(d *schema.ResourceData, meta interface{
 		}
 		return fmt.Errorf("Error finding Volterra InfraprotectAsn %q: %s", d.Id(), err)
 	}
+
 	return setInfraprotectAsnFields(client, d, resp)
 }
 
@@ -298,5 +299,11 @@ func resourceVolterraInfraprotectAsnDelete(d *schema.ResourceData, meta interfac
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_infraprotect_asn.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_infraprotect_asn.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting InfraprotectAsn: %w", err)
+	}
+	return nil
+
 }

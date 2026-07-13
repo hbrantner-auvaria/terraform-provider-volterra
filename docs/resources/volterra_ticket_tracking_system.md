@@ -31,24 +31,12 @@ resource "volterra_ticket_tracking_system" "example" {
       api_token = "api_token"
 
       encrypted_api_token {
-        blindfold_secret_info_internal {
-          decryption_provider = "value"
-
-          location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
-
-          store_provider = "value"
-        }
-
-        secret_encoding_type = "secret_encoding_type"
-
         // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
 
-        blindfold_secret_info {
-          decryption_provider = "value"
+        clear_secret_info {
+          provider = "box-provider"
 
-          location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
-
-          store_provider = "value"
+          url = "string:///U2VjcmV0SW5mb3JtYXRpb24="
         }
       }
 
@@ -84,10 +72,6 @@ Argument Reference
 ### Adhoc Rest Api Encrypted Api Token
 
 Encrypted / blindfolded value of api_token to be persisted in the database using Eywa's policy.
-
-`blindfold_secret_info_internal` - (Optional) Blindfold Secret Internal is used for the putting re-encrypted blindfold secret. See [Encrypted Api Token Blindfold Secret Info Internal ](#encrypted-api-token-blindfold-secret-info-internal) below for details.(Deprecated)
-
-`secret_encoding_type` - (Optional) e.g. if a secret is base64 encoded and then put into vault. (`String`).(Deprecated)
 
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 

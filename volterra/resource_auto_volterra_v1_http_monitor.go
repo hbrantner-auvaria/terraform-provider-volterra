@@ -1065,6 +1065,7 @@ func resourceVolterraV1HttpMonitorRead(d *schema.ResourceData, meta interface{})
 		}
 		return fmt.Errorf("Error finding Volterra V1HttpMonitor %q: %s", d.Id(), err)
 	}
+
 	return setV1HttpMonitorFields(client, d, resp)
 }
 
@@ -1726,5 +1727,11 @@ func resourceVolterraV1HttpMonitorDelete(d *schema.ResourceData, meta interface{
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_observability_synthetic_monitor_v1_http_monitor.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_observability_synthetic_monitor_v1_http_monitor.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting V1HttpMonitor: %w", err)
+	}
+	return nil
+
 }

@@ -13,6 +13,9 @@ import (
 )
 
 func initializeValidatorRegistry(vr map[string]db.Validator) {
+	vr["ves.io.schema.namespace.FinalizersInfo"] = FinalizersInfoValidator()
+	vr["ves.io.schema.namespace.InitializerInfo"] = InitializerInfoValidator()
+	vr["ves.io.schema.namespace.LastProgrammingUpdate"] = LastProgrammingUpdateValidator()
 	vr["ves.io.schema.namespace.SpecType"] = SpecTypeValidator()
 	vr["ves.io.schema.namespace.Object"] = ObjectValidator()
 	vr["ves.io.schema.namespace.StatusObject"] = StatusObjectValidator()
@@ -87,6 +90,7 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.namespace.ValidationResult"] = ValidationResultValidator()
 	vr["ves.io.schema.namespace.VirtualServerInventoryResultType"] = VirtualServerInventoryResultTypeValidator()
 	vr["ves.io.schema.namespace.VirtualServerResultType"] = VirtualServerResultTypeValidator()
+	vr["ves.io.schema.namespace.VirtualServerSpecsInventoryType"] = VirtualServerSpecsInventoryTypeValidator()
 	vr["ves.io.schema.namespace.VirtualServiceInventoryFilterType"] = VirtualServiceInventoryFilterTypeValidator()
 	vr["ves.io.schema.namespace.ApiEndpointsStatsAllNSReq"] = ApiEndpointsStatsAllNSReqValidator()
 	vr["ves.io.schema.namespace.ApiEndpointsStatsNSReq"] = ApiEndpointsStatsNSReqValidator()
@@ -99,6 +103,15 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.namespace.DynamicDataResp"] = DynamicDataRespValidator()
 	vr["ves.io.schema.namespace.GetSpecType"] = GetSpecTypeValidator()
 	vr["ves.io.schema.namespace.GlobalSpecType"] = GlobalSpecTypeValidator()
+	vr["ves.io.schema.namespace.NamespaceStatusRequest"] = NamespaceStatusRequestValidator()
+	vr["ves.io.schema.namespace.NamespaceStatusResponse"] = NamespaceStatusResponseValidator()
+	vr["ves.io.schema.namespace.PendingFinalizerInfo"] = PendingFinalizerInfoValidator()
+	vr["ves.io.schema.namespace.PendingFinalizers"] = PendingFinalizersValidator()
+	vr["ves.io.schema.namespace.PendingInitializerInfo"] = PendingInitializerInfoValidator()
+	vr["ves.io.schema.namespace.PendingInitializers"] = PendingInitializersValidator()
+	vr["ves.io.schema.namespace.RemoveNamespaceFinalizerReq"] = RemoveNamespaceFinalizerReqValidator()
+	vr["ves.io.schema.namespace.RemoveNamespaceFinalizerResp"] = RemoveNamespaceFinalizerRespValidator()
+	vr["ves.io.schema.namespace.RemoveNamespaceFinalizerRestrictedReq"] = RemoveNamespaceFinalizerRestrictedReqValidator()
 	vr["ves.io.schema.namespace.ReplaceSpecType"] = ReplaceSpecTypeValidator()
 	vr["ves.io.schema.namespace.SubCA"] = SubCAValidator()
 	vr["ves.io.schema.namespace.SuggestValuesReq"] = SuggestValuesReqValidator()
@@ -165,6 +178,21 @@ func initializeCRUDServiceRegistry(mdr *svcfw.MDRegistry, isExternal bool) {
 		customCSR *svcfw.CustomServiceRegistry
 	)
 	_, _ = csr, customCSR
+	customCSR = mdr.PvtCustomServiceRegistry
+	func() {
+		// set swagger jsons for our and external schemas
+		customCSR.SwaggerRegistry["ves.io.schema.namespace.Object"] = CustomPrivateAPISwaggerJSON
+		customCSR.GrpcClientRegistry["ves.io.schema.namespace.CustomPrivateAPI"] = NewCustomPrivateAPIGrpcClient
+		customCSR.RestClientRegistry["ves.io.schema.namespace.CustomPrivateAPI"] = NewCustomPrivateAPIRestClient
+		if isExternal {
+			return
+		}
+		mdr.SvcRegisterHandlers["ves.io.schema.namespace.CustomPrivateAPI"] = RegisterCustomPrivateAPIServer
+		mdr.SvcGwRegisterHandlers["ves.io.schema.namespace.CustomPrivateAPI"] = RegisterGwCustomPrivateAPIHandler
+		customCSR.ServerRegistry["ves.io.schema.namespace.CustomPrivateAPI"] = func(svc svcfw.Service) server.APIHandler {
+			return NewCustomPrivateAPIServer(svc)
+		}
+	}()
 	csr = mdr.PubCRUDServiceRegistry
 	func() {
 		// set swagger jsons for our and external schemas

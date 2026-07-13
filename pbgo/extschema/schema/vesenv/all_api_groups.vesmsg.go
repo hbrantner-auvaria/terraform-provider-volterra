@@ -2399,6 +2399,17 @@ func (v *ValidateAPIGroupChoice) Validate(ctx context.Context, pm interface{}, o
 				return err
 			}
 		}
+	case *APIGroupChoice_F5XcSupportDeveloperStandardMonitor:
+		if fv, exists := v.FldValidators["choice.f5xc_support_developer_standard_monitor"]; exists {
+			val := m.GetChoice().(*APIGroupChoice_F5XcSupportDeveloperStandardMonitor).F5XcSupportDeveloperStandardMonitor
+			vOpts := append(opts,
+				db.WithValidateField("choice"),
+				db.WithValidateField("f5xc_support_developer_standard_monitor"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 	return nil
 }

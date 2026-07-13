@@ -676,6 +676,12 @@ func (v *ValidateCbipCluster) Validate(ctx context.Context, pm interface{}, opts
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["ha_sync"]; exists {
+		vOpts := append(opts, db.WithValidateField("ha_sync"))
+		if err := fv(ctx, m.GetHaSync(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["metadata"]; exists {
 		vOpts := append(opts, db.WithValidateField("metadata"))
 		if err := fv(ctx, m.GetMetadata(), vOpts...); err != nil {
@@ -3695,6 +3701,110 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 
 func GlobalSpecTypeValidator() db.Validator {
 	return DefaultGlobalSpecTypeValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *HASync) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *HASync) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *HASync) DeepCopy() *HASync {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &HASync{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *HASync) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *HASync) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return HASyncValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateHASync struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateHASync) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*HASync)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *HASync got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+
+	switch m.GetSyncType().(type) {
+	case *HASync_NotApplicable:
+		if fv, exists := v.FldValidators["sync_type.not_applicable"]; exists {
+			val := m.GetSyncType().(*HASync_NotApplicable).NotApplicable
+			vOpts := append(opts,
+				db.WithValidateField("sync_type"),
+				db.WithValidateField("not_applicable"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *HASync_ManualSync:
+		if fv, exists := v.FldValidators["sync_type.manual_sync"]; exists {
+			val := m.GetSyncType().(*HASync_ManualSync).ManualSync
+			vOpts := append(opts,
+				db.WithValidateField("sync_type"),
+				db.WithValidateField("manual_sync"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *HASync_XcManagedSync:
+		if fv, exists := v.FldValidators["sync_type.xc_managed_sync"]; exists {
+			val := m.GetSyncType().(*HASync_XcManagedSync).XcManagedSync
+			vOpts := append(opts,
+				db.WithValidateField("sync_type"),
+				db.WithValidateField("xc_managed_sync"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultHASyncValidator = func() *ValidateHASync {
+	v := &ValidateHASync{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func HASyncValidator() db.Validator {
+	return DefaultHASyncValidator
 }
 
 // augmented methods on protoc/std generated struct

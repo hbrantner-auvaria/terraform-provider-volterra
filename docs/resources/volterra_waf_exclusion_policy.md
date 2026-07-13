@@ -23,7 +23,7 @@ resource "volterra_waf_exclusion_policy" "example" {
   waf_exclusion_rules {
     // One of the arguments from this list "any_domain exact_value suffix_value" must be set
 
-    exact_value = "abc.zyz.com"
+    any_domain = true
 
     expiration_timestamp = "0001-01-01T00:00:00Z"
 
@@ -43,7 +43,35 @@ resource "volterra_waf_exclusion_policy" "example" {
 
     // One of the arguments from this list "app_firewall_detection_control waf_skip_processing" can be set
 
-    waf_skip_processing = true
+    app_firewall_detection_control {
+      exclude_attack_type_contexts {
+        context = "context"
+
+        context_name = "example: user-agent for Header"
+
+        exclude_attack_type = "ATTACK_TYPE_SQL_INJECTION"
+      }
+
+      exclude_bot_name_contexts {
+        bot_name = "Hydra"
+      }
+
+      exclude_signature_contexts {
+        context = "context"
+
+        context_name = "example: user-agent for Header"
+
+        signature_id = "10000001"
+      }
+
+      exclude_violation_contexts {
+        context = "context"
+
+        context_name = "example: user-agent for Header"
+
+        exclude_violation = "VIOL_MANDATORY_HEADER"
+      }
+    }
   }
 }
 ```

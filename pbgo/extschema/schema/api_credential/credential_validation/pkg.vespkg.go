@@ -7,11 +7,14 @@ import (
 	"reflect"
 
 	"gopkg.volterra.us/stdlib/db"
+	"gopkg.volterra.us/stdlib/server"
 	"gopkg.volterra.us/stdlib/store"
 	"gopkg.volterra.us/stdlib/svcfw"
 )
 
 func initializeValidatorRegistry(vr map[string]db.Validator) {
+	vr["ves.io.schema.api_credential.credential_validation.ValidateTokenRequest"] = ValidateTokenRequestValidator()
+	vr["ves.io.schema.api_credential.credential_validation.ValidateTokenResponse"] = ValidateTokenResponseValidator()
 	vr["ves.io.schema.api_credential.credential_validation.SpecType"] = SpecTypeValidator()
 	vr["ves.io.schema.api_credential.credential_validation.Object"] = ObjectValidator()
 	vr["ves.io.schema.api_credential.credential_validation.GlobalSpecType"] = GlobalSpecTypeValidator()
@@ -40,6 +43,21 @@ func initializeCRUDServiceRegistry(mdr *svcfw.MDRegistry, isExternal bool) {
 		customCSR *svcfw.CustomServiceRegistry
 	)
 	_, _ = csr, customCSR
+	customCSR = mdr.PvtCustomServiceRegistry
+	func() {
+		// set swagger jsons for our and external schemas
+		customCSR.SwaggerRegistry["ves.io.schema.api_credential.credential_validation.Object"] = CustomAPISwaggerJSON
+		customCSR.GrpcClientRegistry["ves.io.schema.api_credential.credential_validation.CustomAPI"] = NewCustomAPIGrpcClient
+		customCSR.RestClientRegistry["ves.io.schema.api_credential.credential_validation.CustomAPI"] = NewCustomAPIRestClient
+		if isExternal {
+			return
+		}
+		mdr.SvcRegisterHandlers["ves.io.schema.api_credential.credential_validation.CustomAPI"] = RegisterCustomAPIServer
+		mdr.SvcGwRegisterHandlers["ves.io.schema.api_credential.credential_validation.CustomAPI"] = RegisterGwCustomAPIHandler
+		customCSR.ServerRegistry["ves.io.schema.api_credential.credential_validation.CustomAPI"] = func(svc svcfw.Service) server.APIHandler {
+			return NewCustomAPIServer(svc)
+		}
+	}()
 }
 
 func InitializeMDRegistry(mdr *svcfw.MDRegistry, isExternal bool) {

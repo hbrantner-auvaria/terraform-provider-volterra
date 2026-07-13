@@ -1747,6 +1747,31 @@ func (v *ValidateCreateSpecType) Validate(ctx context.Context, pm interface{}, o
 		}
 	}
 
+	switch m.GetLogAnonymizationMode().(type) {
+	case *CreateSpecType_DisableLogAnonymization:
+		if fv, exists := v.FldValidators["log_anonymization_mode.disable_log_anonymization"]; exists {
+			val := m.GetLogAnonymizationMode().(*CreateSpecType_DisableLogAnonymization).DisableLogAnonymization
+			vOpts := append(opts,
+				db.WithValidateField("log_anonymization_mode"),
+				db.WithValidateField("disable_log_anonymization"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *CreateSpecType_EnableLogAnonymization:
+		if fv, exists := v.FldValidators["log_anonymization_mode.enable_log_anonymization"]; exists {
+			val := m.GetLogAnonymizationMode().(*CreateSpecType_EnableLogAnonymization).EnableLogAnonymization
+			vOpts := append(opts,
+				db.WithValidateField("log_anonymization_mode"),
+				db.WithValidateField("enable_log_anonymization"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+
 	if fv, exists := v.FldValidators["logs_receiver_choice"]; exists {
 		val := m.GetLogsReceiverChoice()
 		vOpts := append(opts,
@@ -7094,6 +7119,31 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 		}
 	}
 
+	switch m.GetLogAnonymizationMode().(type) {
+	case *GetSpecType_DisableLogAnonymization:
+		if fv, exists := v.FldValidators["log_anonymization_mode.disable_log_anonymization"]; exists {
+			val := m.GetLogAnonymizationMode().(*GetSpecType_DisableLogAnonymization).DisableLogAnonymization
+			vOpts := append(opts,
+				db.WithValidateField("log_anonymization_mode"),
+				db.WithValidateField("disable_log_anonymization"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *GetSpecType_EnableLogAnonymization:
+		if fv, exists := v.FldValidators["log_anonymization_mode.enable_log_anonymization"]; exists {
+			val := m.GetLogAnonymizationMode().(*GetSpecType_EnableLogAnonymization).EnableLogAnonymization
+			vOpts := append(opts,
+				db.WithValidateField("log_anonymization_mode"),
+				db.WithValidateField("enable_log_anonymization"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+
 	if fv, exists := v.FldValidators["logs_receiver_choice"]; exists {
 		val := m.GetLogsReceiverChoice()
 		vOpts := append(opts,
@@ -9258,6 +9308,31 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 		vOpts := append(opts, db.WithValidateField("local_control_plane"))
 		if err := fv(ctx, m.GetLocalControlPlane(), vOpts...); err != nil {
 			return err
+		}
+	}
+
+	switch m.GetLogAnonymizationMode().(type) {
+	case *GlobalSpecType_DisableLogAnonymization:
+		if fv, exists := v.FldValidators["log_anonymization_mode.disable_log_anonymization"]; exists {
+			val := m.GetLogAnonymizationMode().(*GlobalSpecType_DisableLogAnonymization).DisableLogAnonymization
+			vOpts := append(opts,
+				db.WithValidateField("log_anonymization_mode"),
+				db.WithValidateField("disable_log_anonymization"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *GlobalSpecType_EnableLogAnonymization:
+		if fv, exists := v.FldValidators["log_anonymization_mode.enable_log_anonymization"]; exists {
+			val := m.GetLogAnonymizationMode().(*GlobalSpecType_EnableLogAnonymization).EnableLogAnonymization
+			vOpts := append(opts,
+				db.WithValidateField("log_anonymization_mode"),
+				db.WithValidateField("enable_log_anonymization"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -11892,6 +11967,31 @@ func (v *ValidateReplaceSpecType) Validate(ctx context.Context, pm interface{}, 
 		vOpts := append(opts, db.WithValidateField("kubernetes_upgrade_drain"))
 		if err := fv(ctx, m.GetKubernetesUpgradeDrain(), vOpts...); err != nil {
 			return err
+		}
+	}
+
+	switch m.GetLogAnonymizationMode().(type) {
+	case *ReplaceSpecType_DisableLogAnonymization:
+		if fv, exists := v.FldValidators["log_anonymization_mode.disable_log_anonymization"]; exists {
+			val := m.GetLogAnonymizationMode().(*ReplaceSpecType_DisableLogAnonymization).DisableLogAnonymization
+			vOpts := append(opts,
+				db.WithValidateField("log_anonymization_mode"),
+				db.WithValidateField("disable_log_anonymization"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *ReplaceSpecType_EnableLogAnonymization:
+		if fv, exists := v.FldValidators["log_anonymization_mode.enable_log_anonymization"]; exists {
+			val := m.GetLogAnonymizationMode().(*ReplaceSpecType_EnableLogAnonymization).EnableLogAnonymization
+			vOpts := append(opts,
+				db.WithValidateField("log_anonymization_mode"),
+				db.WithValidateField("enable_log_anonymization"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -16634,6 +16734,41 @@ func (r *CreateSpecType) GetGpuChoiceFromGlobalSpecType(o *GlobalSpecType) error
 }
 
 // create setters in CreateSpecType from GlobalSpecType for oneof fields
+func (r *CreateSpecType) SetLogAnonymizationModeToGlobalSpecType(o *GlobalSpecType) error {
+	switch of := r.LogAnonymizationMode.(type) {
+	case nil:
+		o.LogAnonymizationMode = nil
+
+	case *CreateSpecType_DisableLogAnonymization:
+		o.LogAnonymizationMode = &GlobalSpecType_DisableLogAnonymization{DisableLogAnonymization: of.DisableLogAnonymization}
+
+	case *CreateSpecType_EnableLogAnonymization:
+		o.LogAnonymizationMode = &GlobalSpecType_EnableLogAnonymization{EnableLogAnonymization: of.EnableLogAnonymization}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+func (r *CreateSpecType) GetLogAnonymizationModeFromGlobalSpecType(o *GlobalSpecType) error {
+	switch of := o.LogAnonymizationMode.(type) {
+	case nil:
+		r.LogAnonymizationMode = nil
+
+	case *GlobalSpecType_DisableLogAnonymization:
+		r.LogAnonymizationMode = &CreateSpecType_DisableLogAnonymization{DisableLogAnonymization: of.DisableLogAnonymization}
+
+	case *GlobalSpecType_EnableLogAnonymization:
+		r.LogAnonymizationMode = &CreateSpecType_EnableLogAnonymization{EnableLogAnonymization: of.EnableLogAnonymization}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+// create setters in CreateSpecType from GlobalSpecType for oneof fields
 func (r *CreateSpecType) SetLogsReceiverChoiceToGlobalSpecType(o *GlobalSpecType) error {
 	switch of := r.LogsReceiverChoice.(type) {
 	case nil:
@@ -16932,6 +17067,7 @@ func (m *CreateSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool
 	m.InsideVirtualNetwork = f.GetInsideVirtualNetwork()
 
 	m.KubernetesUpgradeDrain = f.GetKubernetesUpgradeDrain()
+	m.GetLogAnonymizationModeFromGlobalSpecType(f)
 	m.GetLogsReceiverChoiceFromGlobalSpecType(f)
 	m.NetworkConnectors = f.GetNetworkConnectors()
 	m.NetworkFirewall = f.GetNetworkFirewall()
@@ -16972,6 +17108,7 @@ func (m *CreateSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) 
 	f.InsideVirtualNetwork = m1.InsideVirtualNetwork
 
 	f.KubernetesUpgradeDrain = m1.KubernetesUpgradeDrain
+	m1.SetLogAnonymizationModeToGlobalSpecType(f)
 	m1.SetLogsReceiverChoiceToGlobalSpecType(f)
 	f.NetworkConnectors = m1.NetworkConnectors
 	f.NetworkFirewall = m1.NetworkFirewall
@@ -17106,6 +17243,41 @@ func (r *GetSpecType) GetGpuChoiceFromGlobalSpecType(o *GlobalSpecType) error {
 
 	case *GlobalSpecType_EnableVgpu:
 		r.GpuChoice = &GetSpecType_EnableVgpu{EnableVgpu: of.EnableVgpu}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+// create setters in GetSpecType from GlobalSpecType for oneof fields
+func (r *GetSpecType) SetLogAnonymizationModeToGlobalSpecType(o *GlobalSpecType) error {
+	switch of := r.LogAnonymizationMode.(type) {
+	case nil:
+		o.LogAnonymizationMode = nil
+
+	case *GetSpecType_DisableLogAnonymization:
+		o.LogAnonymizationMode = &GlobalSpecType_DisableLogAnonymization{DisableLogAnonymization: of.DisableLogAnonymization}
+
+	case *GetSpecType_EnableLogAnonymization:
+		o.LogAnonymizationMode = &GlobalSpecType_EnableLogAnonymization{EnableLogAnonymization: of.EnableLogAnonymization}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+func (r *GetSpecType) GetLogAnonymizationModeFromGlobalSpecType(o *GlobalSpecType) error {
+	switch of := o.LogAnonymizationMode.(type) {
+	case nil:
+		r.LogAnonymizationMode = nil
+
+	case *GlobalSpecType_DisableLogAnonymization:
+		r.LogAnonymizationMode = &GetSpecType_DisableLogAnonymization{DisableLogAnonymization: of.DisableLogAnonymization}
+
+	case *GlobalSpecType_EnableLogAnonymization:
+		r.LogAnonymizationMode = &GetSpecType_EnableLogAnonymization{EnableLogAnonymization: of.EnableLogAnonymization}
 
 	default:
 		return fmt.Errorf("Unknown oneof field %T", of)
@@ -17412,6 +17584,7 @@ func (m *GetSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	m.InsideVirtualNetwork = f.GetInsideVirtualNetwork()
 
 	m.KubernetesUpgradeDrain = f.GetKubernetesUpgradeDrain()
+	m.GetLogAnonymizationModeFromGlobalSpecType(f)
 	m.GetLogsReceiverChoiceFromGlobalSpecType(f)
 	m.NetworkConnectors = f.GetNetworkConnectors()
 	m.NetworkFirewall = f.GetNetworkFirewall()
@@ -17452,6 +17625,7 @@ func (m *GetSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	f.InsideVirtualNetwork = m1.InsideVirtualNetwork
 
 	f.KubernetesUpgradeDrain = m1.KubernetesUpgradeDrain
+	m1.SetLogAnonymizationModeToGlobalSpecType(f)
 	m1.SetLogsReceiverChoiceToGlobalSpecType(f)
 	f.NetworkConnectors = m1.NetworkConnectors
 	f.NetworkFirewall = m1.NetworkFirewall
@@ -17586,6 +17760,41 @@ func (r *ReplaceSpecType) GetGpuChoiceFromGlobalSpecType(o *GlobalSpecType) erro
 
 	case *GlobalSpecType_EnableVgpu:
 		r.GpuChoice = &ReplaceSpecType_EnableVgpu{EnableVgpu: of.EnableVgpu}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+// create setters in ReplaceSpecType from GlobalSpecType for oneof fields
+func (r *ReplaceSpecType) SetLogAnonymizationModeToGlobalSpecType(o *GlobalSpecType) error {
+	switch of := r.LogAnonymizationMode.(type) {
+	case nil:
+		o.LogAnonymizationMode = nil
+
+	case *ReplaceSpecType_DisableLogAnonymization:
+		o.LogAnonymizationMode = &GlobalSpecType_DisableLogAnonymization{DisableLogAnonymization: of.DisableLogAnonymization}
+
+	case *ReplaceSpecType_EnableLogAnonymization:
+		o.LogAnonymizationMode = &GlobalSpecType_EnableLogAnonymization{EnableLogAnonymization: of.EnableLogAnonymization}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+func (r *ReplaceSpecType) GetLogAnonymizationModeFromGlobalSpecType(o *GlobalSpecType) error {
+	switch of := o.LogAnonymizationMode.(type) {
+	case nil:
+		r.LogAnonymizationMode = nil
+
+	case *GlobalSpecType_DisableLogAnonymization:
+		r.LogAnonymizationMode = &ReplaceSpecType_DisableLogAnonymization{DisableLogAnonymization: of.DisableLogAnonymization}
+
+	case *GlobalSpecType_EnableLogAnonymization:
+		r.LogAnonymizationMode = &ReplaceSpecType_EnableLogAnonymization{EnableLogAnonymization: of.EnableLogAnonymization}
 
 	default:
 		return fmt.Errorf("Unknown oneof field %T", of)
@@ -17891,6 +18100,7 @@ func (m *ReplaceSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy boo
 	m.InsideVirtualNetwork = f.GetInsideVirtualNetwork()
 
 	m.KubernetesUpgradeDrain = f.GetKubernetesUpgradeDrain()
+	m.GetLogAnonymizationModeFromGlobalSpecType(f)
 	m.GetLogsReceiverChoiceFromGlobalSpecType(f)
 	m.NetworkConnectors = f.GetNetworkConnectors()
 	m.NetworkFirewall = f.GetNetworkFirewall()
@@ -17930,6 +18140,7 @@ func (m *ReplaceSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool)
 	f.InsideVirtualNetwork = m1.InsideVirtualNetwork
 
 	f.KubernetesUpgradeDrain = m1.KubernetesUpgradeDrain
+	m1.SetLogAnonymizationModeToGlobalSpecType(f)
 	m1.SetLogsReceiverChoiceToGlobalSpecType(f)
 	f.NetworkConnectors = m1.NetworkConnectors
 	f.NetworkFirewall = m1.NetworkFirewall

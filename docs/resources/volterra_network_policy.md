@@ -23,11 +23,7 @@ resource "volterra_network_policy" "example" {
   endpoint {
     // One of the arguments from this list "any inside_endpoints interface label_selector namespace outside_endpoints prefix_list" must be set
 
-    prefix_list {
-      ipv6_prefixes = ["fd48:fa09:d9d4::/48"]
-
-      prefixes = ["192.168.20.0/24"]
-    }
+    inside_endpoints = true
   }
 }
 ```

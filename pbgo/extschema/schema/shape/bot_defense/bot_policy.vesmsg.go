@@ -302,7 +302,8 @@ var DefaultCookieValidator = func() *ValidateCookie {
 
 	vrhName := v.NameValidationRuleHandler
 	rulesName := map[string]string{
-		"ves.io.schema.rules.message.required": "true",
+		"ves.io.schema.rules.message.required":   "true",
+		"ves.io.schema.rules.string.cookie_name": "true",
 	}
 	vFn, err = vrhName(rulesName)
 	if err != nil {
@@ -362,6 +363,15 @@ type ValidateCookieDefinition struct {
 	FldValidators map[string]db.ValidatorFunc
 }
 
+func (v *ValidateCookieDefinition) NameValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for name")
+	}
+
+	return validatorFn, nil
+}
+
 func (v *ValidateCookieDefinition) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
 	m, ok := pm.(*CookieDefinition)
 	if !ok {
@@ -393,6 +403,24 @@ func (v *ValidateCookieDefinition) Validate(ctx context.Context, pm interface{},
 // Well-known symbol for default validator implementation
 var DefaultCookieDefinitionValidator = func() *ValidateCookieDefinition {
 	v := &ValidateCookieDefinition{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhName := v.NameValidationRuleHandler
+	rulesName := map[string]string{
+		"ves.io.schema.rules.string.cookie_name": "true",
+	}
+	vFn, err = vrhName(rulesName)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for CookieDefinition.name: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["name"] = vFn
 
 	return v
 }()
@@ -488,6 +516,52 @@ func (v *ValidateCookieMatcher) CookieMatchValidationRuleHandler(rules map[strin
 
 	return validatorFn, nil
 }
+func (v *ValidateCookieMatcher) CookieMatchV2ValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepMessageItemRules(rules)
+	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Message ValidationRuleHandler for cookie_match_v2")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []*CookieMatcherTypeV2, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+			if err := CookieMatcherTypeV2Validator().Validate(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for cookie_match_v2")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]*CookieMatcherTypeV2)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []*CookieMatcherTypeV2, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
+			if err != nil {
+				return errors.Wrapf(err, "Converting %v to JSON", elem)
+			}
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated cookie_match_v2")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items cookie_match_v2")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
 
 func (v *ValidateCookieMatcher) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
 	m, ok := pm.(*CookieMatcher)
@@ -505,6 +579,12 @@ func (v *ValidateCookieMatcher) Validate(ctx context.Context, pm interface{}, op
 	if fv, exists := v.FldValidators["cookie_match"]; exists {
 		vOpts := append(opts, db.WithValidateField("cookie_match"))
 		if err := fv(ctx, m.GetCookieMatch(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["cookie_match_v2"]; exists {
+		vOpts := append(opts, db.WithValidateField("cookie_match_v2"))
+		if err := fv(ctx, m.GetCookieMatchV2(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -533,6 +613,18 @@ var DefaultCookieMatcherValidator = func() *ValidateCookieMatcher {
 		panic(errMsg)
 	}
 	v.FldValidators["cookie_match"] = vFn
+
+	vrhCookieMatchV2 := v.CookieMatchV2ValidationRuleHandler
+	rulesCookieMatchV2 := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+		"ves.io.schema.rules.repeated.unique":  "true",
+	}
+	vFn, err = vrhCookieMatchV2(rulesCookieMatchV2)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for CookieMatcher.cookie_match_v2: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["cookie_match_v2"] = vFn
 
 	return v
 }()
@@ -697,6 +789,152 @@ func CookieMatcherTypeValidator() db.Validator {
 
 // augmented methods on protoc/std generated struct
 
+func (m *CookieMatcherTypeV2) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *CookieMatcherTypeV2) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *CookieMatcherTypeV2) DeepCopy() *CookieMatcherTypeV2 {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &CookieMatcherTypeV2{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *CookieMatcherTypeV2) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *CookieMatcherTypeV2) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return CookieMatcherTypeV2Validator().Validate(ctx, m, opts...)
+}
+
+type ValidateCookieMatcherTypeV2 struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateCookieMatcherTypeV2) OperatorValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	var conv db.EnumConvFn
+	conv = func(v interface{}) int32 {
+		i := v.(ResponseOperator)
+		return int32(i)
+	}
+	// ResponseOperator_name is generated in .pb.go
+	validatorFn, err := db.NewEnumValidationRuleHandler(rules, ResponseOperator_name, conv)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for operator")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateCookieMatcherTypeV2) ValueValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for value")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateCookieMatcherTypeV2) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*CookieMatcherTypeV2)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *CookieMatcherTypeV2 got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["case_sensitive"]; exists {
+		vOpts := append(opts, db.WithValidateField("case_sensitive"))
+		if err := fv(ctx, m.GetCaseSensitive(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["not"]; exists {
+		vOpts := append(opts, db.WithValidateField("not"))
+		if err := fv(ctx, m.GetNot(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["operator"]; exists {
+		vOpts := append(opts, db.WithValidateField("operator"))
+		if err := fv(ctx, m.GetOperator(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["value"]; exists {
+		vOpts := append(opts, db.WithValidateField("value"))
+		if err := fv(ctx, m.GetValue(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultCookieMatcherTypeV2Validator = func() *ValidateCookieMatcherTypeV2 {
+	v := &ValidateCookieMatcherTypeV2{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhOperator := v.OperatorValidationRuleHandler
+	rulesOperator := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhOperator(rulesOperator)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for CookieMatcherTypeV2.operator: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["operator"] = vFn
+
+	vrhValue := v.ValueValidationRuleHandler
+	rulesValue := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+		"ves.io.schema.rules.string.max_len":   "256",
+		"ves.io.schema.rules.string.min_len":   "1",
+	}
+	vFn, err = vrhValue(rulesValue)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for CookieMatcherTypeV2.value: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["value"] = vFn
+
+	return v
+}()
+
+func CookieMatcherTypeV2Validator() db.Validator {
+	return DefaultCookieMatcherTypeV2Validator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *CookieMatcherValue) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
@@ -808,6 +1046,536 @@ var DefaultCookieMatcherValueValidator = func() *ValidateCookieMatcherValue {
 
 func CookieMatcherValueValidator() db.Validator {
 	return DefaultCookieMatcherValueValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *CookieOperator) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *CookieOperator) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *CookieOperator) DeepCopy() *CookieOperator {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &CookieOperator{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *CookieOperator) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *CookieOperator) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return CookieOperatorValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateCookieOperator struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateCookieOperator) CookieOperatorValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepMessageItemRules(rules)
+	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Message ValidationRuleHandler for cookie_operator")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []*CookieV2, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+			if err := CookieV2Validator().Validate(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for cookie_operator")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]*CookieV2)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []*CookieV2, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
+			if err != nil {
+				return errors.Wrapf(err, "Converting %v to JSON", elem)
+			}
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated cookie_operator")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items cookie_operator")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateCookieOperator) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*CookieOperator)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *CookieOperator got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["cookie_operator"]; exists {
+		vOpts := append(opts, db.WithValidateField("cookie_operator"))
+		if err := fv(ctx, m.GetCookieOperator(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultCookieOperatorValidator = func() *ValidateCookieOperator {
+	v := &ValidateCookieOperator{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhCookieOperator := v.CookieOperatorValidationRuleHandler
+	rulesCookieOperator := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhCookieOperator(rulesCookieOperator)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for CookieOperator.cookie_operator: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["cookie_operator"] = vFn
+
+	return v
+}()
+
+func CookieOperatorValidator() db.Validator {
+	return DefaultCookieOperatorValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *CookieOperatorChoice) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *CookieOperatorChoice) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *CookieOperatorChoice) DeepCopy() *CookieOperatorChoice {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &CookieOperatorChoice{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *CookieOperatorChoice) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *CookieOperatorChoice) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return CookieOperatorChoiceValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateCookieOperatorChoice struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateCookieOperatorChoice) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*CookieOperatorChoice)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *CookieOperatorChoice got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+
+	switch m.GetCookieChoice().(type) {
+	case *CookieOperatorChoice_CookieAnd:
+		if fv, exists := v.FldValidators["CookieChoice.cookie_and"]; exists {
+			val := m.GetCookieChoice().(*CookieOperatorChoice_CookieAnd).CookieAnd
+			vOpts := append(opts,
+				db.WithValidateField("CookieChoice"),
+				db.WithValidateField("cookie_and"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *CookieOperatorChoice_CookieOr:
+		if fv, exists := v.FldValidators["CookieChoice.cookie_or"]; exists {
+			val := m.GetCookieChoice().(*CookieOperatorChoice_CookieOr).CookieOr
+			vOpts := append(opts,
+				db.WithValidateField("CookieChoice"),
+				db.WithValidateField("cookie_or"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *CookieOperatorChoice_CookieNone:
+		if fv, exists := v.FldValidators["CookieChoice.cookie_none"]; exists {
+			val := m.GetCookieChoice().(*CookieOperatorChoice_CookieNone).CookieNone
+			vOpts := append(opts,
+				db.WithValidateField("CookieChoice"),
+				db.WithValidateField("cookie_none"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *CookieOperatorChoice_CookieNotPresent:
+		if fv, exists := v.FldValidators["CookieChoice.cookie_not_present"]; exists {
+			val := m.GetCookieChoice().(*CookieOperatorChoice_CookieNotPresent).CookieNotPresent
+			vOpts := append(opts,
+				db.WithValidateField("CookieChoice"),
+				db.WithValidateField("cookie_not_present"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *CookieOperatorChoice_CookieAnything:
+		if fv, exists := v.FldValidators["CookieChoice.cookie_anything"]; exists {
+			val := m.GetCookieChoice().(*CookieOperatorChoice_CookieAnything).CookieAnything
+			vOpts := append(opts,
+				db.WithValidateField("CookieChoice"),
+				db.WithValidateField("cookie_anything"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultCookieOperatorChoiceValidator = func() *ValidateCookieOperatorChoice {
+	v := &ValidateCookieOperatorChoice{FldValidators: map[string]db.ValidatorFunc{}}
+	v.FldValidators["CookieChoice.cookie_and"] = CookieMatcherValidator().Validate
+	v.FldValidators["CookieChoice.cookie_or"] = CookieMatcherValidator().Validate
+	v.FldValidators["CookieChoice.cookie_none"] = CookieMatcherValidator().Validate
+
+	return v
+}()
+
+func CookieOperatorChoiceValidator() db.Validator {
+	return DefaultCookieOperatorChoiceValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *CookieV2) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *CookieV2) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *CookieV2) DeepCopy() *CookieV2 {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &CookieV2{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *CookieV2) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *CookieV2) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return CookieV2Validator().Validate(ctx, m, opts...)
+}
+
+type ValidateCookieV2 struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateCookieV2) NameValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for name")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateCookieV2) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*CookieV2)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *CookieV2 got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["cookie"]; exists {
+		vOpts := append(opts, db.WithValidateField("cookie"))
+		if err := fv(ctx, m.GetCookie(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["name"]; exists {
+		vOpts := append(opts, db.WithValidateField("name"))
+		if err := fv(ctx, m.GetName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultCookieV2Validator = func() *ValidateCookieV2 {
+	v := &ValidateCookieV2{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhName := v.NameValidationRuleHandler
+	rulesName := map[string]string{
+		"ves.io.schema.rules.message.required":   "true",
+		"ves.io.schema.rules.string.cookie_name": "true",
+	}
+	vFn, err = vrhName(rulesName)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for CookieV2.name: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["name"] = vFn
+	v.FldValidators["cookie"] = CookieOperatorChoiceValidator().Validate
+
+	return v
+}()
+
+func CookieV2Validator() db.Validator {
+	return DefaultCookieV2Validator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *Cookies) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *Cookies) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *Cookies) DeepCopy() *Cookies {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &Cookies{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *Cookies) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *Cookies) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return CookiesValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateCookies struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateCookies) CookiesChoiceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for CookiesChoice")
+	}
+	return validatorFn, nil
+}
+
+func (v *ValidateCookies) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*Cookies)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *Cookies got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+
+	if fv, exists := v.FldValidators["CookiesChoice"]; exists {
+		val := m.GetCookiesChoice()
+		vOpts := append(opts,
+			db.WithValidateField("CookiesChoice"),
+		)
+		if err := fv(ctx, val, vOpts...); err != nil {
+			return err
+		}
+	}
+
+	switch m.GetCookiesChoice().(type) {
+	case *Cookies_CookiesAll:
+		if fv, exists := v.FldValidators["CookiesChoice.cookies_all"]; exists {
+			val := m.GetCookiesChoice().(*Cookies_CookiesAll).CookiesAll
+			vOpts := append(opts,
+				db.WithValidateField("CookiesChoice"),
+				db.WithValidateField("cookies_all"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *Cookies_CookiesAnd:
+		if fv, exists := v.FldValidators["CookiesChoice.cookies_and"]; exists {
+			val := m.GetCookiesChoice().(*Cookies_CookiesAnd).CookiesAnd
+			vOpts := append(opts,
+				db.WithValidateField("CookiesChoice"),
+				db.WithValidateField("cookies_and"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *Cookies_CookiesOr:
+		if fv, exists := v.FldValidators["CookiesChoice.cookies_or"]; exists {
+			val := m.GetCookiesChoice().(*Cookies_CookiesOr).CookiesOr
+			vOpts := append(opts,
+				db.WithValidateField("CookiesChoice"),
+				db.WithValidateField("cookies_or"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *Cookies_CookiesNone:
+		if fv, exists := v.FldValidators["CookiesChoice.cookies_none"]; exists {
+			val := m.GetCookiesChoice().(*Cookies_CookiesNone).CookiesNone
+			vOpts := append(opts,
+				db.WithValidateField("CookiesChoice"),
+				db.WithValidateField("cookies_none"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultCookiesValidator = func() *ValidateCookies {
+	v := &ValidateCookies{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+	vrhCookiesChoice := v.CookiesChoiceValidationRuleHandler
+	rulesCookiesChoice := map[string]string{
+		"ves.io.schema.rules.message.required_oneof": "true",
+	}
+	vFn, err = vrhCookiesChoice(rulesCookiesChoice)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for Cookies.CookiesChoice: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["CookiesChoice"] = vFn
+	v.FldValidators["CookiesChoice.cookies_and"] = CookieOperatorValidator().Validate
+	v.FldValidators["CookiesChoice.cookies_or"] = CookieOperatorValidator().Validate
+	v.FldValidators["CookiesChoice.cookies_none"] = CookieOperatorValidator().Validate
+
+	return v
+}()
+
+func CookiesValidator() db.Validator {
+	return DefaultCookiesValidator
 }
 
 // augmented methods on protoc/std generated struct
@@ -1786,7 +2554,8 @@ var DefaultHeaderNameValuePairValidator = func() *ValidateHeaderNameValuePair {
 
 	vrhHeaderName := v.HeaderNameValidationRuleHandler
 	rulesHeaderName := map[string]string{
-		"ves.io.schema.rules.message.required": "true",
+		"ves.io.schema.rules.message.required":         "true",
+		"ves.io.schema.rules.string.http_header_field": "true",
 	}
 	vFn, err = vrhHeaderName(rulesHeaderName)
 	if err != nil {
@@ -1983,7 +2752,8 @@ var DefaultHeaderOperatorValidator = func() *ValidateHeaderOperator {
 
 	vrhName := v.NameValidationRuleHandler
 	rulesName := map[string]string{
-		"ves.io.schema.rules.message.required": "true",
+		"ves.io.schema.rules.message.required":         "true",
+		"ves.io.schema.rules.string.http_header_field": "true",
 	}
 	vFn, err = vrhName(rulesName)
 	if err != nil {
@@ -2000,6 +2770,135 @@ var DefaultHeaderOperatorValidator = func() *ValidateHeaderOperator {
 
 func HeaderOperatorValidator() db.Validator {
 	return DefaultHeaderOperatorValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *HeaderOperatorChoice) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *HeaderOperatorChoice) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *HeaderOperatorChoice) DeepCopy() *HeaderOperatorChoice {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &HeaderOperatorChoice{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *HeaderOperatorChoice) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *HeaderOperatorChoice) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return HeaderOperatorChoiceValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateHeaderOperatorChoice struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateHeaderOperatorChoice) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*HeaderOperatorChoice)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *HeaderOperatorChoice got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+
+	switch m.GetHeaderOperatorChoice().(type) {
+	case *HeaderOperatorChoice_HeaderAnd:
+		if fv, exists := v.FldValidators["header_operator_choice.header_and"]; exists {
+			val := m.GetHeaderOperatorChoice().(*HeaderOperatorChoice_HeaderAnd).HeaderAnd
+			vOpts := append(opts,
+				db.WithValidateField("header_operator_choice"),
+				db.WithValidateField("header_and"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *HeaderOperatorChoice_HeaderOr:
+		if fv, exists := v.FldValidators["header_operator_choice.header_or"]; exists {
+			val := m.GetHeaderOperatorChoice().(*HeaderOperatorChoice_HeaderOr).HeaderOr
+			vOpts := append(opts,
+				db.WithValidateField("header_operator_choice"),
+				db.WithValidateField("header_or"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *HeaderOperatorChoice_HeaderNone:
+		if fv, exists := v.FldValidators["header_operator_choice.header_none"]; exists {
+			val := m.GetHeaderOperatorChoice().(*HeaderOperatorChoice_HeaderNone).HeaderNone
+			vOpts := append(opts,
+				db.WithValidateField("header_operator_choice"),
+				db.WithValidateField("header_none"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *HeaderOperatorChoice_HeaderNotPresent:
+		if fv, exists := v.FldValidators["header_operator_choice.header_not_present"]; exists {
+			val := m.GetHeaderOperatorChoice().(*HeaderOperatorChoice_HeaderNotPresent).HeaderNotPresent
+			vOpts := append(opts,
+				db.WithValidateField("header_operator_choice"),
+				db.WithValidateField("header_not_present"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *HeaderOperatorChoice_HeaderAnything:
+		if fv, exists := v.FldValidators["header_operator_choice.header_anything"]; exists {
+			val := m.GetHeaderOperatorChoice().(*HeaderOperatorChoice_HeaderAnything).HeaderAnything
+			vOpts := append(opts,
+				db.WithValidateField("header_operator_choice"),
+				db.WithValidateField("header_anything"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultHeaderOperatorChoiceValidator = func() *ValidateHeaderOperatorChoice {
+	v := &ValidateHeaderOperatorChoice{FldValidators: map[string]db.ValidatorFunc{}}
+	v.FldValidators["header_operator_choice.header_and"] = ResponseHeaderMatcherValidator().Validate
+	v.FldValidators["header_operator_choice.header_or"] = ResponseHeaderMatcherValidator().Validate
+	v.FldValidators["header_operator_choice.header_none"] = ResponseHeaderMatcherValidator().Validate
+
+	return v
+}()
+
+func HeaderOperatorChoiceValidator() db.Validator {
+	return DefaultHeaderOperatorChoiceValidator
 }
 
 // augmented methods on protoc/std generated struct
@@ -6317,6 +7216,52 @@ func (v *ValidateResponseBodyMatcher) ResponseBodyMatchValidationRuleHandler(rul
 
 	return validatorFn, nil
 }
+func (v *ValidateResponseBodyMatcher) ResponseBodyMatchV2ValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepMessageItemRules(rules)
+	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Message ValidationRuleHandler for response_body_match_v2")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []*ResponseBodyMatcherTypeV2, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+			if err := ResponseBodyMatcherTypeV2Validator().Validate(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for response_body_match_v2")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]*ResponseBodyMatcherTypeV2)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []*ResponseBodyMatcherTypeV2, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
+			if err != nil {
+				return errors.Wrapf(err, "Converting %v to JSON", elem)
+			}
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated response_body_match_v2")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items response_body_match_v2")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
 
 func (v *ValidateResponseBodyMatcher) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
 	m, ok := pm.(*ResponseBodyMatcher)
@@ -6334,6 +7279,12 @@ func (v *ValidateResponseBodyMatcher) Validate(ctx context.Context, pm interface
 	if fv, exists := v.FldValidators["responseBody_match"]; exists {
 		vOpts := append(opts, db.WithValidateField("responseBody_match"))
 		if err := fv(ctx, m.GetResponseBodyMatch(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["response_body_match_v2"]; exists {
+		vOpts := append(opts, db.WithValidateField("response_body_match_v2"))
+		if err := fv(ctx, m.GetResponseBodyMatchV2(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -6362,6 +7313,18 @@ var DefaultResponseBodyMatcherValidator = func() *ValidateResponseBodyMatcher {
 		panic(errMsg)
 	}
 	v.FldValidators["responseBody_match"] = vFn
+
+	vrhResponseBodyMatchV2 := v.ResponseBodyMatchV2ValidationRuleHandler
+	rulesResponseBodyMatchV2 := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+		"ves.io.schema.rules.repeated.unique":  "true",
+	}
+	vFn, err = vrhResponseBodyMatchV2(rulesResponseBodyMatchV2)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for ResponseBodyMatcher.response_body_match_v2: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["response_body_match_v2"] = vFn
 
 	return v
 }()
@@ -6522,6 +7485,152 @@ var DefaultResponseBodyMatcherTypeValidator = func() *ValidateResponseBodyMatche
 
 func ResponseBodyMatcherTypeValidator() db.Validator {
 	return DefaultResponseBodyMatcherTypeValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *ResponseBodyMatcherTypeV2) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *ResponseBodyMatcherTypeV2) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *ResponseBodyMatcherTypeV2) DeepCopy() *ResponseBodyMatcherTypeV2 {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &ResponseBodyMatcherTypeV2{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *ResponseBodyMatcherTypeV2) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *ResponseBodyMatcherTypeV2) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return ResponseBodyMatcherTypeV2Validator().Validate(ctx, m, opts...)
+}
+
+type ValidateResponseBodyMatcherTypeV2 struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateResponseBodyMatcherTypeV2) OperatorValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	var conv db.EnumConvFn
+	conv = func(v interface{}) int32 {
+		i := v.(ResponseOperator)
+		return int32(i)
+	}
+	// ResponseOperator_name is generated in .pb.go
+	validatorFn, err := db.NewEnumValidationRuleHandler(rules, ResponseOperator_name, conv)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for operator")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateResponseBodyMatcherTypeV2) ValueValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for value")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateResponseBodyMatcherTypeV2) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*ResponseBodyMatcherTypeV2)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *ResponseBodyMatcherTypeV2 got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["case_sensitive"]; exists {
+		vOpts := append(opts, db.WithValidateField("case_sensitive"))
+		if err := fv(ctx, m.GetCaseSensitive(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["not"]; exists {
+		vOpts := append(opts, db.WithValidateField("not"))
+		if err := fv(ctx, m.GetNot(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["operator"]; exists {
+		vOpts := append(opts, db.WithValidateField("operator"))
+		if err := fv(ctx, m.GetOperator(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["value"]; exists {
+		vOpts := append(opts, db.WithValidateField("value"))
+		if err := fv(ctx, m.GetValue(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultResponseBodyMatcherTypeV2Validator = func() *ValidateResponseBodyMatcherTypeV2 {
+	v := &ValidateResponseBodyMatcherTypeV2{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhOperator := v.OperatorValidationRuleHandler
+	rulesOperator := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhOperator(rulesOperator)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for ResponseBodyMatcherTypeV2.operator: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["operator"] = vFn
+
+	vrhValue := v.ValueValidationRuleHandler
+	rulesValue := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+		"ves.io.schema.rules.string.max_len":   "256",
+		"ves.io.schema.rules.string.min_len":   "1",
+	}
+	vFn, err = vrhValue(rulesValue)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for ResponseBodyMatcherTypeV2.value: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["value"] = vFn
+
+	return v
+}()
+
+func ResponseBodyMatcherTypeV2Validator() db.Validator {
+	return DefaultResponseBodyMatcherTypeV2Validator
 }
 
 // augmented methods on protoc/std generated struct
@@ -7200,7 +8309,8 @@ var DefaultResponseHeaderValidator = func() *ValidateResponseHeader {
 
 	vrhName := v.NameValidationRuleHandler
 	rulesName := map[string]string{
-		"ves.io.schema.rules.message.required": "true",
+		"ves.io.schema.rules.message.required":         "true",
+		"ves.io.schema.rules.string.http_header_field": "true",
 	}
 	vFn, err = vrhName(rulesName)
 	if err != nil {
@@ -7306,6 +8416,52 @@ func (v *ValidateResponseHeaderMatcher) ResponseHeaderMatchValidationRuleHandler
 
 	return validatorFn, nil
 }
+func (v *ValidateResponseHeaderMatcher) ResponseHeaderMatchV2ValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepMessageItemRules(rules)
+	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Message ValidationRuleHandler for response_header_match_v2")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []*ResponseHeaderMatcherTypeV2, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+			if err := ResponseHeaderMatcherTypeV2Validator().Validate(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for response_header_match_v2")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]*ResponseHeaderMatcherTypeV2)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []*ResponseHeaderMatcherTypeV2, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
+			if err != nil {
+				return errors.Wrapf(err, "Converting %v to JSON", elem)
+			}
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated response_header_match_v2")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items response_header_match_v2")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
 
 func (v *ValidateResponseHeaderMatcher) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
 	m, ok := pm.(*ResponseHeaderMatcher)
@@ -7323,6 +8479,12 @@ func (v *ValidateResponseHeaderMatcher) Validate(ctx context.Context, pm interfa
 	if fv, exists := v.FldValidators["responseHeader_match"]; exists {
 		vOpts := append(opts, db.WithValidateField("responseHeader_match"))
 		if err := fv(ctx, m.GetResponseHeaderMatch(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["response_header_match_v2"]; exists {
+		vOpts := append(opts, db.WithValidateField("response_header_match_v2"))
+		if err := fv(ctx, m.GetResponseHeaderMatchV2(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -7351,6 +8513,18 @@ var DefaultResponseHeaderMatcherValidator = func() *ValidateResponseHeaderMatche
 		panic(errMsg)
 	}
 	v.FldValidators["responseHeader_match"] = vFn
+
+	vrhResponseHeaderMatchV2 := v.ResponseHeaderMatchV2ValidationRuleHandler
+	rulesResponseHeaderMatchV2 := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+		"ves.io.schema.rules.repeated.unique":  "true",
+	}
+	vFn, err = vrhResponseHeaderMatchV2(rulesResponseHeaderMatchV2)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for ResponseHeaderMatcher.response_header_match_v2: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["response_header_match_v2"] = vFn
 
 	return v
 }()
@@ -7515,6 +8689,152 @@ func ResponseHeaderMatcherTypeValidator() db.Validator {
 
 // augmented methods on protoc/std generated struct
 
+func (m *ResponseHeaderMatcherTypeV2) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *ResponseHeaderMatcherTypeV2) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *ResponseHeaderMatcherTypeV2) DeepCopy() *ResponseHeaderMatcherTypeV2 {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &ResponseHeaderMatcherTypeV2{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *ResponseHeaderMatcherTypeV2) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *ResponseHeaderMatcherTypeV2) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return ResponseHeaderMatcherTypeV2Validator().Validate(ctx, m, opts...)
+}
+
+type ValidateResponseHeaderMatcherTypeV2 struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateResponseHeaderMatcherTypeV2) OperatorValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	var conv db.EnumConvFn
+	conv = func(v interface{}) int32 {
+		i := v.(ResponseOperator)
+		return int32(i)
+	}
+	// ResponseOperator_name is generated in .pb.go
+	validatorFn, err := db.NewEnumValidationRuleHandler(rules, ResponseOperator_name, conv)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for operator")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateResponseHeaderMatcherTypeV2) ValueValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for value")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateResponseHeaderMatcherTypeV2) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*ResponseHeaderMatcherTypeV2)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *ResponseHeaderMatcherTypeV2 got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["case_sensitive"]; exists {
+		vOpts := append(opts, db.WithValidateField("case_sensitive"))
+		if err := fv(ctx, m.GetCaseSensitive(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["not"]; exists {
+		vOpts := append(opts, db.WithValidateField("not"))
+		if err := fv(ctx, m.GetNot(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["operator"]; exists {
+		vOpts := append(opts, db.WithValidateField("operator"))
+		if err := fv(ctx, m.GetOperator(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["value"]; exists {
+		vOpts := append(opts, db.WithValidateField("value"))
+		if err := fv(ctx, m.GetValue(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultResponseHeaderMatcherTypeV2Validator = func() *ValidateResponseHeaderMatcherTypeV2 {
+	v := &ValidateResponseHeaderMatcherTypeV2{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhOperator := v.OperatorValidationRuleHandler
+	rulesOperator := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhOperator(rulesOperator)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for ResponseHeaderMatcherTypeV2.operator: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["operator"] = vFn
+
+	vrhValue := v.ValueValidationRuleHandler
+	rulesValue := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+		"ves.io.schema.rules.string.max_len":   "256",
+		"ves.io.schema.rules.string.min_len":   "1",
+	}
+	vFn, err = vrhValue(rulesValue)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for ResponseHeaderMatcherTypeV2.value: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["value"] = vFn
+
+	return v
+}()
+
+func ResponseHeaderMatcherTypeV2Validator() db.Validator {
+	return DefaultResponseHeaderMatcherTypeV2Validator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *ResponseHeaderMatcherValue) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
@@ -7626,6 +8946,407 @@ var DefaultResponseHeaderMatcherValueValidator = func() *ValidateResponseHeaderM
 
 func ResponseHeaderMatcherValueValidator() db.Validator {
 	return DefaultResponseHeaderMatcherValueValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *ResponseHeaderOperator) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *ResponseHeaderOperator) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *ResponseHeaderOperator) DeepCopy() *ResponseHeaderOperator {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &ResponseHeaderOperator{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *ResponseHeaderOperator) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *ResponseHeaderOperator) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return ResponseHeaderOperatorValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateResponseHeaderOperator struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateResponseHeaderOperator) ResponseHeaderOperatorValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepMessageItemRules(rules)
+	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Message ValidationRuleHandler for response_header_operator")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []*ResponseHeaderV2, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+			if err := ResponseHeaderV2Validator().Validate(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for response_header_operator")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]*ResponseHeaderV2)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []*ResponseHeaderV2, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
+			if err != nil {
+				return errors.Wrapf(err, "Converting %v to JSON", elem)
+			}
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated response_header_operator")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items response_header_operator")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateResponseHeaderOperator) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*ResponseHeaderOperator)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *ResponseHeaderOperator got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["response_header_operator"]; exists {
+		vOpts := append(opts, db.WithValidateField("response_header_operator"))
+		if err := fv(ctx, m.GetResponseHeaderOperator(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultResponseHeaderOperatorValidator = func() *ValidateResponseHeaderOperator {
+	v := &ValidateResponseHeaderOperator{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhResponseHeaderOperator := v.ResponseHeaderOperatorValidationRuleHandler
+	rulesResponseHeaderOperator := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhResponseHeaderOperator(rulesResponseHeaderOperator)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for ResponseHeaderOperator.response_header_operator: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["response_header_operator"] = vFn
+
+	return v
+}()
+
+func ResponseHeaderOperatorValidator() db.Validator {
+	return DefaultResponseHeaderOperatorValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *ResponseHeaderV2) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *ResponseHeaderV2) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *ResponseHeaderV2) DeepCopy() *ResponseHeaderV2 {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &ResponseHeaderV2{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *ResponseHeaderV2) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *ResponseHeaderV2) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return ResponseHeaderV2Validator().Validate(ctx, m, opts...)
+}
+
+type ValidateResponseHeaderV2 struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateResponseHeaderV2) NameValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for name")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateResponseHeaderV2) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*ResponseHeaderV2)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *ResponseHeaderV2 got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["header"]; exists {
+		vOpts := append(opts, db.WithValidateField("header"))
+		if err := fv(ctx, m.GetHeader(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["name"]; exists {
+		vOpts := append(opts, db.WithValidateField("name"))
+		if err := fv(ctx, m.GetName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultResponseHeaderV2Validator = func() *ValidateResponseHeaderV2 {
+	v := &ValidateResponseHeaderV2{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhName := v.NameValidationRuleHandler
+	rulesName := map[string]string{
+		"ves.io.schema.rules.message.required":         "true",
+		"ves.io.schema.rules.string.http_header_field": "true",
+	}
+	vFn, err = vrhName(rulesName)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for ResponseHeaderV2.name: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["name"] = vFn
+	v.FldValidators["header"] = HeaderOperatorChoiceValidator().Validate
+
+	return v
+}()
+
+func ResponseHeaderV2Validator() db.Validator {
+	return DefaultResponseHeaderV2Validator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *ResponseHeaders) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *ResponseHeaders) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *ResponseHeaders) DeepCopy() *ResponseHeaders {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &ResponseHeaders{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *ResponseHeaders) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *ResponseHeaders) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return ResponseHeadersValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateResponseHeaders struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateResponseHeaders) ResponseHeaderChoiceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for ResponseHeaderChoice")
+	}
+	return validatorFn, nil
+}
+
+func (v *ValidateResponseHeaders) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*ResponseHeaders)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *ResponseHeaders got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+
+	if fv, exists := v.FldValidators["ResponseHeaderChoice"]; exists {
+		val := m.GetResponseHeaderChoice()
+		vOpts := append(opts,
+			db.WithValidateField("ResponseHeaderChoice"),
+		)
+		if err := fv(ctx, val, vOpts...); err != nil {
+			return err
+		}
+	}
+
+	switch m.GetResponseHeaderChoice().(type) {
+	case *ResponseHeaders_ResponseHeaderAll:
+		if fv, exists := v.FldValidators["ResponseHeaderChoice.response_header_all"]; exists {
+			val := m.GetResponseHeaderChoice().(*ResponseHeaders_ResponseHeaderAll).ResponseHeaderAll
+			vOpts := append(opts,
+				db.WithValidateField("ResponseHeaderChoice"),
+				db.WithValidateField("response_header_all"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *ResponseHeaders_ResponseHeaderAnd:
+		if fv, exists := v.FldValidators["ResponseHeaderChoice.response_header_and"]; exists {
+			val := m.GetResponseHeaderChoice().(*ResponseHeaders_ResponseHeaderAnd).ResponseHeaderAnd
+			vOpts := append(opts,
+				db.WithValidateField("ResponseHeaderChoice"),
+				db.WithValidateField("response_header_and"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *ResponseHeaders_ResponseHeaderOr:
+		if fv, exists := v.FldValidators["ResponseHeaderChoice.response_header_or"]; exists {
+			val := m.GetResponseHeaderChoice().(*ResponseHeaders_ResponseHeaderOr).ResponseHeaderOr
+			vOpts := append(opts,
+				db.WithValidateField("ResponseHeaderChoice"),
+				db.WithValidateField("response_header_or"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *ResponseHeaders_ResponseHeaderNone:
+		if fv, exists := v.FldValidators["ResponseHeaderChoice.response_header_none"]; exists {
+			val := m.GetResponseHeaderChoice().(*ResponseHeaders_ResponseHeaderNone).ResponseHeaderNone
+			vOpts := append(opts,
+				db.WithValidateField("ResponseHeaderChoice"),
+				db.WithValidateField("response_header_none"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultResponseHeadersValidator = func() *ValidateResponseHeaders {
+	v := &ValidateResponseHeaders{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+	vrhResponseHeaderChoice := v.ResponseHeaderChoiceValidationRuleHandler
+	rulesResponseHeaderChoice := map[string]string{
+		"ves.io.schema.rules.message.required_oneof": "true",
+	}
+	vFn, err = vrhResponseHeaderChoice(rulesResponseHeaderChoice)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for ResponseHeaders.ResponseHeaderChoice: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["ResponseHeaderChoice"] = vFn
+	v.FldValidators["ResponseHeaderChoice.response_header_and"] = ResponseHeaderOperatorValidator().Validate
+	v.FldValidators["ResponseHeaderChoice.response_header_or"] = ResponseHeaderOperatorValidator().Validate
+	v.FldValidators["ResponseHeaderChoice.response_header_none"] = ResponseHeaderOperatorValidator().Validate
+
+	return v
+}()
+
+func ResponseHeadersValidator() db.Validator {
+	return DefaultResponseHeadersValidator
 }
 
 // augmented methods on protoc/std generated struct
@@ -7773,6 +9494,12 @@ func (v *ValidateTransactionResultType) Validate(ctx context.Context, pm interfa
 			}
 		}
 	}
+	if fv, exists := v.FldValidators["cookie_v2"]; exists {
+		vOpts := append(opts, db.WithValidateField("cookie_v2"))
+		if err := fv(ctx, m.GetCookieV2(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["responseBody"]; exists {
 		vOpts := append(opts, db.WithValidateField("responseBody"))
 		if err := fv(ctx, m.GetResponseBody(), vOpts...); err != nil {
@@ -7794,6 +9521,12 @@ func (v *ValidateTransactionResultType) Validate(ctx context.Context, pm interfa
 			}
 		}
 	}
+	if fv, exists := v.FldValidators["response_header_v2"]; exists {
+		vOpts := append(opts, db.WithValidateField("response_header_v2"))
+		if err := fv(ctx, m.GetResponseHeaderV2(), vOpts...); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -7804,6 +9537,8 @@ var DefaultTransactionResultTypeValidator = func() *ValidateTransactionResultTyp
 	v.FldValidators["responseBody"] = ResponseBodyValidator().Validate
 	v.FldValidators["responseHeader"] = ResponseHeaderValidator().Validate
 	v.FldValidators["cookie"] = CookieValidator().Validate
+	v.FldValidators["response_header_v2"] = ResponseHeadersValidator().Validate
+	v.FldValidators["cookie_v2"] = CookiesValidator().Validate
 
 	return v
 }()
@@ -8103,6 +9838,20 @@ func (v *ValidateUserNameType) UsernameReportingValidationRuleHandler(rules map[
 
 	return validatorFn, nil
 }
+func (v *ValidateUserNameType) EncryptionTypeValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	var conv db.EnumConvFn
+	conv = func(v interface{}) int32 {
+		i := v.(UsernameEncryptionType)
+		return int32(i)
+	}
+	// UsernameEncryptionType_name is generated in .pb.go
+	validatorFn, err := db.NewEnumValidationRuleHandler(rules, UsernameEncryptionType_name, conv)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for encryption_type")
+	}
+
+	return validatorFn, nil
+}
 
 func (v *ValidateUserNameType) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
 	m, ok := pm.(*UserNameType)
@@ -8116,6 +9865,12 @@ func (v *ValidateUserNameType) Validate(ctx context.Context, pm interface{}, opt
 	}
 	if m == nil {
 		return nil
+	}
+	if fv, exists := v.FldValidators["encryption_type"]; exists {
+		vOpts := append(opts, db.WithValidateField("encryption_type"))
+		if err := fv(ctx, m.GetEncryptionType(), vOpts...); err != nil {
+			return err
+		}
 	}
 	if fv, exists := v.FldValidators["username_reporting"]; exists {
 		vOpts := append(opts, db.WithValidateField("username_reporting"))
@@ -8149,6 +9904,17 @@ var DefaultUserNameTypeValidator = func() *ValidateUserNameType {
 		panic(errMsg)
 	}
 	v.FldValidators["username_reporting"] = vFn
+
+	vrhEncryptionType := v.EncryptionTypeValidationRuleHandler
+	rulesEncryptionType := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhEncryptionType(rulesEncryptionType)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for UserNameType.encryption_type: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["encryption_type"] = vFn
 
 	return v
 }()

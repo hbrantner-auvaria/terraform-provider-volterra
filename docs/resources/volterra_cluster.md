@@ -19,10 +19,6 @@ Example Usage
 resource "volterra_cluster" "example" {
   name      = "acmecorp-web"
   namespace = "staging"
-
-  // One of the arguments from this list "max_requests_per_connection no_request_limit_per_connection" must be set
-
-  no_request_limit_per_connection = true
 }
 ```
 
@@ -75,7 +71,7 @@ Argument Reference
 
 `loadbalancer_algorithm` - (Optional) loadbalancer_algorithm to determine which host is selected. (`String`).
 
-###### One of the arguments from this list "max_requests_per_connection, no_request_limit_per_connection" must be set
+###### One of the arguments from this list "max_requests_per_connection, no_request_limit_per_connection" can be set
 
 `max_requests_per_connection` - (Optional) Enter a value >=1 to define the request limit per connection. (`Int`).
 

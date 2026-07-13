@@ -22,7 +22,45 @@ resource "volterra_k8s_cluster" "example" {
 
   // One of the arguments from this list "cluster_wide_app_list no_cluster_wide_apps" must be set
 
-  no_cluster_wide_apps = true
+  cluster_wide_app_list {
+    cluster_wide_apps {
+      // One of the arguments from this list "argo_cd dashboard metrics_server prometheus" must be set
+
+      argo_cd {
+        generated_yaml = "value"
+
+        local_domain {
+          local_domain = "example.com"
+
+          password {
+            blindfold_secret_info_internal {
+              decryption_provider = "value"
+
+              location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
+
+              store_provider = "value"
+            }
+
+            secret_encoding_type = "secret_encoding_type"
+
+            // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
+
+            blindfold_secret_info {
+              decryption_provider = "value"
+
+              location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
+
+              store_provider = "value"
+            }
+          }
+
+          // One of the arguments from this list "default_port port" must be set
+
+          port = "443"
+        }
+      }
+    }
+  }
 
   // One of the arguments from this list "use_custom_cluster_role_bindings use_default_cluster_role_bindings" must be set
 

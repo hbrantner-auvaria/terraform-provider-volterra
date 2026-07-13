@@ -1201,6 +1201,7 @@ func resourceVolterraAppSettingRead(d *schema.ResourceData, meta interface{}) er
 		}
 		return fmt.Errorf("Error finding Volterra AppSetting %q: %s", d.Id(), err)
 	}
+
 	return setAppSettingFields(client, d, resp)
 }
 
@@ -1958,5 +1959,11 @@ func resourceVolterraAppSettingDelete(d *schema.ResourceData, meta interface{}) 
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_app_setting.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_app_setting.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting AppSetting: %w", err)
+	}
+	return nil
+
 }

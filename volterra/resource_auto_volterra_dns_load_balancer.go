@@ -905,6 +905,7 @@ func resourceVolterraDnsLoadBalancerRead(d *schema.ResourceData, meta interface{
 		}
 		return fmt.Errorf("Error finding Volterra DnsLoadBalancer %q: %s", d.Id(), err)
 	}
+
 	return setDnsLoadBalancerFields(client, d, resp)
 }
 
@@ -1452,5 +1453,11 @@ func resourceVolterraDnsLoadBalancerDelete(d *schema.ResourceData, meta interfac
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_dns_load_balancer.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_dns_load_balancer.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting DnsLoadBalancer: %w", err)
+	}
+	return nil
+
 }

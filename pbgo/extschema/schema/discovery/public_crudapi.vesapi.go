@@ -2216,25 +2216,25 @@ var APISwaggerJSON string = `{
     "definitions": {
         "discoveryCBIPClusterStatus": {
             "type": "object",
-            "title": "Status for each cbip cluster",
+            "title": "Status for each BIG-IP cluster",
             "x-ves-proto-message": "ves.io.schema.discovery.CBIPClusterStatus",
             "properties": {
                 "cluster_name": {
                     "type": "string",
-                    "description": " Name of the cBIP cluster",
-                    "title": "Cluster name\nx-displayName: \"Cluster Name\"\nName of the cBIP cluster",
+                    "description": " Name of the BIG-IP cluster",
+                    "title": "Cluster name\nx-displayName: \"Cluster Name\"\nName of the BIG-IP cluster",
                     "x-displayname": "Cluster Name"
                 },
                 "condition": {
-                    "description": " Status condition of the cBIP cluster",
+                    "description": " Status condition of the BIG-IP cluster",
                     "title": "Status condition",
                     "$ref": "#/definitions/schemaConditionType",
                     "x-displayname": "Condition"
                 },
                 "devices_status": {
                     "type": "array",
-                    "description": " Device status of the cBIP cluster\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 8\n  ves.io.schema.rules.repeated.min_items: 1\n",
-                    "title": "Devices status\nx-displayName: \"Devices Status\"\nx-required\nDevice status of the cBIP cluster",
+                    "description": " Device status of the BIG-IP cluster\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 8\n  ves.io.schema.rules.repeated.min_items: 1\n",
+                    "title": "Devices status\nx-displayName: \"Devices Status\"\nx-required\nDevice status of the BIG-IP cluster",
                     "minItems": 1,
                     "maxItems": 8,
                     "items": {
@@ -2257,7 +2257,7 @@ var APISwaggerJSON string = `{
             "properties": {
                 "cbip_mgmt_ip": {
                     "type": "string",
-                    "description": " IP Address of the Classic BIG-IP device\n\nExample: - \"10.1.1.1\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.ipv4: true\n",
+                    "description": " IP Address of the BIG-IP device\n\nExample: - \"10.1.1.1\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.ipv4: true\n",
                     "title": "Management IP",
                     "x-displayname": "Management IP",
                     "x-ves-example": "10.1.1.1",
@@ -2293,7 +2293,7 @@ var APISwaggerJSON string = `{
             "properties": {
                 "device_status": {
                     "type": "array",
-                    "description": "x-displayName: \"Device Discovery Status\"\nStatus of the discovery task for each cbip device",
+                    "description": "x-displayName: \"Device Discovery Status\"\nStatus of the discovery task for each BIG-IP device",
                     "title": "BIG-IP Device Discovery Status",
                     "items": {
                         "$ref": "#/definitions/discoveryCBIPDeviceStatus"
@@ -2308,13 +2308,13 @@ var APISwaggerJSON string = `{
         },
         "discoveryCbipAdminCredentials": {
             "type": "object",
-            "title": "Classic BIG-IP Admin Credentials",
+            "title": "BIG-IP Admin Credentials",
             "x-displayname": "Admin Credentials",
             "x-ves-proto-message": "ves.io.schema.discovery.CbipAdminCredentials",
             "properties": {
                 "password": {
                     "description": " Password used to log into an admin account on the BIG-IP device\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
-                    "title": "Classic BIG-IP Admin Password",
+                    "title": "BIG-IP Admin Password",
                     "$ref": "#/definitions/schemaSecretType",
                     "x-displayname": "Admin Password",
                     "x-ves-required": "true",
@@ -2325,7 +2325,7 @@ var APISwaggerJSON string = `{
                 "username": {
                     "type": "string",
                     "description": " Username used to log into an admin account on the BIG-IP device\n\nExample: - \"admin\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.max_len: 256\n  ves.io.schema.rules.string.min_len: 1\n",
-                    "title": "Classic BIG-IP Admin Username",
+                    "title": "BIG-IP Admin Username",
                     "minLength": 1,
                     "maxLength": 256,
                     "x-displayname": "Admin Username",
@@ -2364,14 +2364,14 @@ var APISwaggerJSON string = `{
         "discoveryCbipCluster": {
             "type": "object",
             "description": "A BIG-IP cluster is a set of BIG-IP devices which are in an\nActive-Active or Active-Standby setup or even a standalone BIG-IP device.",
-            "title": "Classic BIG-IP Cluster",
-            "x-displayname": "Classic BIG-IP Cluster",
+            "title": "BIG-IP Cluster",
+            "x-displayname": "BIG-IP Cluster",
             "x-ves-oneof-field-namespace_mapping_choice": "[\"default_all\",\"namespace_mapping\"]",
             "x-ves-proto-message": "ves.io.schema.discovery.CbipCluster",
             "properties": {
                 "admin_credentials": {
                     "description": "\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
-                    "title": "Classic BIG-IP Admin Credentials",
+                    "title": "BIG-IP Admin Credentials",
                     "$ref": "#/definitions/discoveryCbipAdminCredentials",
                     "x-displayname": "Admin Credentials",
                     "x-ves-required": "true",
@@ -2381,7 +2381,7 @@ var APISwaggerJSON string = `{
                 },
                 "cbip_certificate_authority": {
                     "description": "\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
-                    "title": "Classic BIG-IP Root CA Certificate",
+                    "title": "BIG-IP Root CA Certificate",
                     "$ref": "#/definitions/discoveryCbipCertificateAuthority",
                     "x-displayname": "Root CA Certificate",
                     "x-ves-required": "true",
@@ -2391,8 +2391,8 @@ var APISwaggerJSON string = `{
                 },
                 "cbip_mgmt_ips": {
                     "type": "array",
-                    "description": " IP Addresses of Classic BIG-IP devices. Hostname is not supported.\n\nExample: - \"['10.1.1.1', '10.2.2.2']\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.items.string.ipv4: true\n  ves.io.schema.rules.repeated.max_items: 8\n  ves.io.schema.rules.repeated.min_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
-                    "title": "Classic BIG-IP Devices",
+                    "description": " IP Addresses of BIG-IP devices. Hostname is not supported.\n\nExample: - \"['10.1.1.1', '10.2.2.2']\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.items.string.ipv4: true\n  ves.io.schema.rules.repeated.max_items: 8\n  ves.io.schema.rules.repeated.min_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "title": "BIG-IP Devices",
                     "minItems": 1,
                     "maxItems": 8,
                     "items": {
@@ -2415,6 +2415,12 @@ var APISwaggerJSON string = `{
                     "$ref": "#/definitions/ioschemaEmpty",
                     "x-displayname": "Automatic"
                 },
+                "ha_sync": {
+                    "description": " Not applicable for Standalone or Auto-Sync HA. Devices using Auto-Sync HA synchronization are not affected.",
+                    "title": "High Availability Sync",
+                    "$ref": "#/definitions/discoveryHASync",
+                    "x-displayname": "High Availability Sync"
+                },
                 "metadata": {
                     "description": " Common attributes for the device configuration including name and description.\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
                     "title": "metadata",
@@ -2427,7 +2433,7 @@ var APISwaggerJSON string = `{
                 },
                 "mgmt_port": {
                     "description": "\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
-                    "title": "Classic BIG-IP Management Port",
+                    "title": "BIG-IP Management Port",
                     "$ref": "#/definitions/discoveryManagementPort",
                     "x-displayname": "Management Port",
                     "x-ves-required": "true",
@@ -2488,21 +2494,21 @@ var APISwaggerJSON string = `{
         },
         "discoveryCbipDiscoveryType": {
             "type": "object",
-            "description": "Discovery configuration for Classic BIG-IP",
-            "title": "Classic BIG-IP Discovery Type",
-            "x-displayname": "Classic BIG-IP Discovery Configuration",
+            "description": "Discovery configuration for BIG-IP",
+            "title": "BIG-IP Discovery Type",
+            "x-displayname": "BIG-IP Discovery Configuration",
             "x-ves-proto-message": "ves.io.schema.discovery.CbipDiscoveryType",
             "properties": {
                 "cbip_clusters": {
                     "type": "array",
-                    "description": " List of Classic BIG-IP clusters. A BIG-IP cluster is a set of BIG-IP devices which\n are in an Active-Active or Active-Standby setup or even a standalone BIG-IP device.\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.min_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
-                    "title": "Classic BIG-IP Clusters",
+                    "description": " List of BIG-IP clusters. A BIG-IP cluster is a set of BIG-IP devices which\n are in an Active-Active or Active-Standby setup or even a standalone BIG-IP device.\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.min_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "title": "BIG-IP Clusters",
                     "minItems": 1,
                     "maxItems": 32,
                     "items": {
                         "$ref": "#/definitions/discoveryCbipCluster"
                     },
-                    "x-displayname": "Classic BIG-IP Clusters",
+                    "x-displayname": "BIG-IP Clusters",
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true",
@@ -2708,9 +2714,9 @@ var APISwaggerJSON string = `{
                     }
                 },
                 "discovery_cbip": {
-                    "description": " Discovery configuration for Classic BIG-IP",
+                    "description": " Discovery configuration for BIG-IP",
                     "$ref": "#/definitions/discoveryCbipDiscoveryType",
-                    "x-displayname": "Classic BIG-IP Discovery Configuration"
+                    "x-displayname": "BIG-IP Discovery Configuration"
                 },
                 "discovery_consul": {
                     "description": "Exclusive with [discovery_k8s]\n Discovery configuration for Hashicorp Consul",
@@ -2972,9 +2978,9 @@ var APISwaggerJSON string = `{
                     }
                 },
                 "discovery_cbip": {
-                    "description": " Discovery configuration for Classic BIG-IP",
+                    "description": " Discovery configuration for BIG-IP",
                     "$ref": "#/definitions/discoveryCbipDiscoveryType",
-                    "x-displayname": "Classic BIG-IP Discovery Configuration"
+                    "x-displayname": "BIG-IP Discovery Configuration"
                 },
                 "discovery_consul": {
                     "description": "Exclusive with [discovery_k8s]\n Discovery configuration for Hashicorp Consul",
@@ -3004,6 +3010,34 @@ var APISwaggerJSON string = `{
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true"
                     }
+                }
+            }
+        },
+        "discoveryHASync": {
+            "type": "object",
+            "description": "Not applicable for Standalone or Auto-Sync HA. Devices using Auto-Sync HA synchronization are not affected.",
+            "title": "High Availability Sync",
+            "x-displayname": "High Availability Sync",
+            "x-ves-oneof-field-sync_type": "[\"manual_sync\",\"not_applicable\",\"xc_managed_sync\"]",
+            "x-ves-proto-message": "ves.io.schema.discovery.HASync",
+            "properties": {
+                "manual_sync": {
+                    "description": "Exclusive with [not_applicable xc_managed_sync]\n Configuration changes must be synced manually.",
+                    "title": "Manual Sync",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Manual Sync"
+                },
+                "not_applicable": {
+                    "description": "Exclusive with [manual_sync xc_managed_sync]\n Not applicable for Standalone or Auto-Sync HA.",
+                    "title": "Default (Not Applicable)",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Not Applicable"
+                },
+                "xc_managed_sync": {
+                    "description": "Exclusive with [manual_sync not_applicable]\n Distributed Cloud updates the active BIG-IP and initiates a sync automatically.",
+                    "title": "Distributed Cloud Managed Auto Sync",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Distributed Cloud-Managed Auto Sync"
                 }
             }
         },
@@ -3423,7 +3457,7 @@ var APISwaggerJSON string = `{
                 "partition_regex": {
                     "type": "string",
                     "description": " The regex here will be used to match BIG-IP partition(s).\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.max_len: 256\n  ves.io.schema.rules.string.regex: true\n",
-                    "title": "Classic BIG-IP Partition Regex",
+                    "title": "BIG-IP Partition Regex",
                     "maxLength": 256,
                     "x-displayname": "Regex To Match BIG-IP device partition(s)",
                     "x-ves-required": "true",
@@ -3550,9 +3584,9 @@ var APISwaggerJSON string = `{
                     }
                 },
                 "discovery_cbip": {
-                    "description": " Discovery configuration for Classic BIG-IP",
+                    "description": " Discovery configuration for BIG-IP",
                     "$ref": "#/definitions/discoveryCbipDiscoveryType",
-                    "x-displayname": "Classic BIG-IP Discovery Configuration"
+                    "x-displayname": "BIG-IP Discovery Configuration"
                 },
                 "discovery_consul": {
                     "description": "Exclusive with [discovery_k8s]\n Discovery configuration for Hashicorp Consul",
@@ -3633,14 +3667,14 @@ var APISwaggerJSON string = `{
             "properties": {
                 "cbip_clusters_status": {
                     "type": "array",
-                    "description": " CBIPClusterStatus captures the status\n of the cBIP cluster discovery workflow, especially the device status\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.min_items: 1\n",
-                    "title": "cbip_clusters_status\nx-displayName: \"cBIP Clusters Status\"\nx-required\nCBIPClusterStatus captures the status\nof the cBIP cluster discovery workflow, especially the device status",
+                    "description": " CBIPClusterStatus captures the status\n of the BIG-IP cluster discovery workflow, especially the device status\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.min_items: 1\n",
+                    "title": "cbip_clusters_status\nx-displayName: \"BIG-IP Clusters Status\"\nx-required\nCBIPClusterStatus captures the status\nof the BIG-IP cluster discovery workflow, especially the device status",
                     "minItems": 1,
                     "maxItems": 32,
                     "items": {
                         "$ref": "#/definitions/discoveryCBIPClusterStatus"
                     },
-                    "x-displayname": "cBIP Clusters Status",
+                    "x-displayname": "BIG-IP Clusters Status",
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true",
@@ -3758,7 +3792,7 @@ var APISwaggerJSON string = `{
                 },
                 "source_cidr": {
                     "type": "array",
-                    "description": " Source IP of the packet to match\n\nExample: - \"1.1.1.0/24 or 2001:10/64\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 5\n  ves.io.schema.rules.repeated.min_items: 1\n  ves.io.schema.rules.repeated.unique: true\n  ves.io.schema.rules.string.ip_prefix: true\n",
+                    "description": " Defines IP ranges allowed to send logs using CIDR notation (e.g., 192.168.1.0/24).\n\nExample: - \"1.1.1.0/24 or 2001:10/64\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 5\n  ves.io.schema.rules.repeated.min_items: 1\n  ves.io.schema.rules.repeated.unique: true\n  ves.io.schema.rules.string.ip_prefix: true\n",
                     "title": "source IP",
                     "minItems": 1,
                     "maxItems": 5,

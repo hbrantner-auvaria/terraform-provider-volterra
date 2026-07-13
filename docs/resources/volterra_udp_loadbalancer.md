@@ -22,11 +22,11 @@ resource "volterra_udp_loadbalancer" "example" {
 
   // One of the arguments from this list "advertise_custom advertise_on_public advertise_on_public_default_vip do_not_advertise" must be set
 
-  do_not_advertise = true
+  advertise_on_public_default_vip = true
 
   // One of the arguments from this list "hash_policy_choice_least_active hash_policy_choice_random hash_policy_choice_round_robin hash_policy_choice_source_ip_stickiness" must be set
 
-  hash_policy_choice_round_robin = true
+  hash_policy_choice_source_ip_stickiness = true
 
   // One of the arguments from this list "udp" must be set
 
@@ -38,7 +38,7 @@ resource "volterra_udp_loadbalancer" "example" {
 
   // One of the arguments from this list "active_service_policies no_service_policies service_policies_from_namespace" must be set
 
-  no_service_policies = true
+  service_policies_from_namespace = true
 }
 ```
 

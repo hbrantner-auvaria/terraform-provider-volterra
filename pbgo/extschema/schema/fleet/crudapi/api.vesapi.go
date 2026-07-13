@@ -1791,7 +1791,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2015,7 +2015,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2269,7 +2269,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -6520,6 +6520,7 @@ var APISwaggerJSON string = `{
             "x-ves-oneof-field-flow_exporter_choice": "[\"disable_flow_export\"]",
             "x-ves-oneof-field-gpu_choice": "[\"disable_gpu\",\"enable_gpu\",\"enable_vgpu\"]",
             "x-ves-oneof-field-interface_choice": "[\"default_interfaces\",\"interface_list\",\"legacy_devices\"]",
+            "x-ves-oneof-field-log_anonymization_mode": "[\"disable_log_anonymization\",\"enable_log_anonymization\"]",
             "x-ves-oneof-field-logs_receiver_choice": "[\"log_receiver\",\"logs_streaming_disabled\"]",
             "x-ves-oneof-field-sriov_interface_choice": "[\"default_sriov_interface\",\"sriov_interfaces\"]",
             "x-ves-oneof-field-storage_class_choice": "[\"default_storage_class\",\"storage_class_list\"]",
@@ -6616,6 +6617,12 @@ var APISwaggerJSON string = `{
                     "$ref": "#/definitions/schemaEmpty",
                     "x-displayname": "GPU Disabled"
                 },
+                "disable_log_anonymization": {
+                    "description": "Exclusive with [enable_log_anonymization]\n Disable Log Anonymization for this site.",
+                    "title": "Disable Log Anonymization",
+                    "$ref": "#/definitions/schemaEmpty",
+                    "x-displayname": "Disable"
+                },
                 "disable_vm": {
                     "description": "Exclusive with [enable_vm]\n VMs support is not enabled for this fleet",
                     "title": "VMs support Disabled",
@@ -6634,6 +6641,12 @@ var APISwaggerJSON string = `{
                     "title": "Member of DC cluster Group",
                     "$ref": "#/definitions/schemaEmpty",
                     "x-displayname": "GPU Enabled"
+                },
+                "enable_log_anonymization": {
+                    "description": "Exclusive with [disable_log_anonymization]\n Enable Log Anonymization for this site. Traffic will be processed in the order that Log Anonymize.",
+                    "title": "Enable Log Anonymization",
+                    "$ref": "#/definitions/schemaEmpty",
+                    "x-displayname": "Enable"
                 },
                 "enable_vgpu": {
                     "description": "Exclusive with [disable_gpu enable_gpu]\n Enable NVIDIA vGPU hosted on VMware",

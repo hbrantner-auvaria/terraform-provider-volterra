@@ -22,19 +22,7 @@ resource "volterra_dns_lb_health_check" "example" {
 
   // One of the arguments from this list "http_health_check https_health_check icmp_health_check tcp_health_check tcp_hex_health_check udp_health_check" must be set
 
-  http_health_check {
-    health_check_port = "80"
-
-    health_check_secondary_port = "443"
-
-    receive = "HTTP/1"
-
-    send = "HEAD / HTTP/1.0"
-
-    // One of the arguments from this list "disable_virtual_host virtual_host" must be set
-
-    disable_virtual_host = true
-  }
+  icmp_health_check = true
 }
 ```
 
@@ -83,9 +71,11 @@ HTTP Health Check.
 
 `send` - (Optional) HTTP payload to send to the target (`String`).
 
-###### One of the arguments from this list "disable_virtual_host, virtual_host" must be set
+###### One of the arguments from this list "disable_virtual_host, inherit_load_balancer_fqdn, virtual_host" must be set
 
 `disable_virtual_host` - (Optional) x-displayName: "Disable Virtual Host" (`Bool`).
+
+`inherit_load_balancer_fqdn` - (Optional) Inherit load balancer FQDN as the virtual host to use for SNI. (`Bool`).
 
 `virtual_host` - (Optional) x-example: "example.com" (`String`).
 
@@ -101,9 +91,11 @@ HTTPS Health Check.
 
 `send` - (Optional) HTTP payload to send to the target (`String`).
 
-###### One of the arguments from this list "disable_virtual_host, virtual_host" must be set
+###### One of the arguments from this list "disable_virtual_host, inherit_load_balancer_fqdn, virtual_host" must be set
 
 `disable_virtual_host` - (Optional) x-displayName: "Disable Virtual Host" (`Bool`).
+
+`inherit_load_balancer_fqdn` - (Optional) Inherit load balancer FQDN as the virtual host to use for SNI. (`Bool`).
 
 `virtual_host` - (Optional) x-example: "example.com" (`String`).
 
@@ -146,6 +138,10 @@ UDP Health Check.
 ### Virtual Host Choice Disable Virtual Host
 
 x-displayName: "Disable Virtual Host".
+
+### Virtual Host Choice Inherit Load Balancer Fqdn
+
+Inherit load balancer FQDN as the virtual host to use for SNI..
 
 Attribute Reference
 -------------------

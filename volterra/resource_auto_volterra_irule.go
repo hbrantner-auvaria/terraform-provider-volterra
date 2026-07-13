@@ -168,6 +168,7 @@ func resourceVolterraIruleRead(d *schema.ResourceData, meta interface{}) error {
 		}
 		return fmt.Errorf("Error finding Volterra Irule %q: %s", d.Id(), err)
 	}
+
 	return setIruleFields(client, d, resp)
 }
 
@@ -285,5 +286,11 @@ func resourceVolterraIruleDelete(d *schema.ResourceData, meta interface{}) error
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_bigcne_irule.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_bigcne_irule.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting Irule: %w", err)
+	}
+	return nil
+
 }

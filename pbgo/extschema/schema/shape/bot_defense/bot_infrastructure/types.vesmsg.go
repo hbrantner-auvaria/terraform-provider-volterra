@@ -990,10 +990,27 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 				return err
 			}
 		}
+	case *GetSpecType_Kubernetes:
+		if fv, exists := v.FldValidators["bot_infra_choice.kubernetes"]; exists {
+			val := m.GetBotInfraChoice().(*GetSpecType_Kubernetes).Kubernetes
+			vOpts := append(opts,
+				db.WithValidateField("bot_infra_choice"),
+				db.WithValidateField("kubernetes"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 	if fv, exists := v.FldValidators["bot_network_policy_metadata"]; exists {
 		vOpts := append(opts, db.WithValidateField("bot_network_policy_metadata"))
 		if err := fv(ctx, m.GetBotNetworkPolicyMetadata(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["bot_ti_package_information"]; exists {
+		vOpts := append(opts, db.WithValidateField("bot_ti_package_information"))
+		if err := fv(ctx, m.GetBotTiPackageInformation(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -1147,9 +1164,11 @@ var DefaultGetSpecTypeValidator = func() *ValidateGetSpecType {
 	v.FldValidators["bot_infra_choice.cloud_hosted"] = InfraCloudHostedValidator().Validate
 	v.FldValidators["bot_infra_choice.physical_hosted"] = InfraF5HostedOnPremValidator().Validate
 	v.FldValidators["bot_infra_choice.on_prem"] = InfraF5HostedOnPremValidator().Validate
+	v.FldValidators["bot_infra_choice.kubernetes"] = InfraContainerizedHostedValidator().Validate
 	v.FldValidators["bot_endpoint_policy_metadata"] = EndpointPolicyMetadataValidator().Validate
 	v.FldValidators["bot_allowlist_policy_metadata"] = PolicyMetadataValidator().Validate
 	v.FldValidators["bot_network_policy_metadata"] = PolicyMetadataValidator().Validate
+	v.FldValidators["bot_ti_package_information"] = TIPackageInformationValidator().Validate
 
 	return v
 }()
@@ -1628,6 +1647,17 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 				return err
 			}
 		}
+	case *GlobalSpecType_Kubernetes:
+		if fv, exists := v.FldValidators["bot_infra_choice.kubernetes"]; exists {
+			val := m.GetBotInfraChoice().(*GlobalSpecType_Kubernetes).Kubernetes
+			vOpts := append(opts,
+				db.WithValidateField("bot_infra_choice"),
+				db.WithValidateField("kubernetes"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 	if fv, exists := v.FldValidators["bot_network_policy"]; exists {
 		vOpts := append(opts, db.WithValidateField("bot_network_policy"))
@@ -1647,9 +1677,21 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["bot_ti_package_information"]; exists {
+		vOpts := append(opts, db.WithValidateField("bot_ti_package_information"))
+		if err := fv(ctx, m.GetBotTiPackageInformation(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["cluster_state"]; exists {
 		vOpts := append(opts, db.WithValidateField("cluster_state"))
 		if err := fv(ctx, m.GetClusterState(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["cluster_tag"]; exists {
+		vOpts := append(opts, db.WithValidateField("cluster_tag"))
+		if err := fv(ctx, m.GetClusterTag(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -1823,6 +1865,7 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 	v.FldValidators["bot_infra_choice.cloud_hosted"] = InfraCloudHostedValidator().Validate
 	v.FldValidators["bot_infra_choice.physical_hosted"] = InfraF5HostedOnPremValidator().Validate
 	v.FldValidators["bot_infra_choice.on_prem"] = InfraF5HostedOnPremValidator().Validate
+	v.FldValidators["bot_infra_choice.kubernetes"] = InfraContainerizedHostedValidator().Validate
 	v.FldValidators["create_bot_infra_choice.create_cloud_hosted"] = CreateSpecInfraCloudHostedValidator().Validate
 	v.FldValidators["bot_endpoint_policy"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["bot_endpoint_policy_metadata"] = EndpointPolicyMetadataValidator().Validate
@@ -1831,6 +1874,7 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 	v.FldValidators["bot_network_policy"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["bot_network_policy_metadata"] = PolicyMetadataValidator().Validate
 	v.FldValidators["bot_threat_intelligence_policy_metadata"] = PolicyMetadataValidator().Validate
+	v.FldValidators["bot_ti_package_information"] = TIPackageInformationValidator().Validate
 
 	return v
 }()
@@ -2402,6 +2446,169 @@ func InfraCloudHostedValidator() db.Validator {
 
 // augmented methods on protoc/std generated struct
 
+func (m *InfraContainerizedHosted) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *InfraContainerizedHosted) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *InfraContainerizedHosted) DeepCopy() *InfraContainerizedHosted {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &InfraContainerizedHosted{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *InfraContainerizedHosted) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *InfraContainerizedHosted) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return InfraContainerizedHostedValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateInfraContainerizedHosted struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateInfraContainerizedHosted) KubernetesClusterValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepMessageItemRules(rules)
+	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Message ValidationRuleHandler for kubernetes_cluster")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []*KubernetesCluster, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+			if err := KubernetesClusterValidator().Validate(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for kubernetes_cluster")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]*KubernetesCluster)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []*KubernetesCluster, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
+			if err != nil {
+				return errors.Wrapf(err, "Converting %v to JSON", elem)
+			}
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated kubernetes_cluster")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items kubernetes_cluster")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateInfraContainerizedHosted) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*InfraContainerizedHosted)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *InfraContainerizedHosted got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["infra_host_name"]; exists {
+		vOpts := append(opts, db.WithValidateField("infra_host_name"))
+		if err := fv(ctx, m.GetInfraHostName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["infra_sync_status"]; exists {
+		vOpts := append(opts, db.WithValidateField("infra_sync_status"))
+		if err := fv(ctx, m.GetInfraSyncStatus(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["kubernetes_cluster"]; exists {
+		vOpts := append(opts, db.WithValidateField("kubernetes_cluster"))
+		if err := fv(ctx, m.GetKubernetesCluster(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["last_updated_by"]; exists {
+		vOpts := append(opts, db.WithValidateField("last_updated_by"))
+		if err := fv(ctx, m.GetLastUpdatedBy(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["target_firmware_version"]; exists {
+		vOpts := append(opts, db.WithValidateField("target_firmware_version"))
+		if err := fv(ctx, m.GetTargetFirmwareVersion(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultInfraContainerizedHostedValidator = func() *ValidateInfraContainerizedHosted {
+	v := &ValidateInfraContainerizedHosted{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhKubernetesCluster := v.KubernetesClusterValidationRuleHandler
+	rulesKubernetesCluster := map[string]string{
+		"ves.io.schema.rules.repeated.unique": "true",
+	}
+	vFn, err = vrhKubernetesCluster(rulesKubernetesCluster)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for InfraContainerizedHosted.kubernetes_cluster: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["kubernetes_cluster"] = vFn
+
+	return v
+}()
+
+func InfraContainerizedHostedValidator() db.Validator {
+	return DefaultInfraContainerizedHostedValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *InfraF5HostedOnPrem) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
@@ -2568,6 +2775,20 @@ func (v *ValidateIngress) RegionValidationRuleHandler(rules map[string]string) (
 
 	return validatorFn, nil
 }
+func (v *ValidateIngress) CertStatusValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	var conv db.EnumConvFn
+	conv = func(v interface{}) int32 {
+		i := v.(CertificateStatus)
+		return int32(i)
+	}
+	// CertificateStatus_name is generated in .pb.go
+	validatorFn, err := db.NewEnumValidationRuleHandler(rules, CertificateStatus_name, conv)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for cert_status")
+	}
+
+	return validatorFn, nil
+}
 
 func (v *ValidateIngress) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
 	m, ok := pm.(*Ingress)
@@ -2581,6 +2802,18 @@ func (v *ValidateIngress) Validate(ctx context.Context, pm interface{}, opts ...
 	}
 	if m == nil {
 		return nil
+	}
+	if fv, exists := v.FldValidators["cert_id"]; exists {
+		vOpts := append(opts, db.WithValidateField("cert_id"))
+		if err := fv(ctx, m.GetCertId(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["cert_status"]; exists {
+		vOpts := append(opts, db.WithValidateField("cert_status"))
+		if err := fv(ctx, m.GetCertStatus(), vOpts...); err != nil {
+			return err
+		}
 	}
 	if fv, exists := v.FldValidators["region"]; exists {
 		vOpts := append(opts, db.WithValidateField("region"))
@@ -2678,11 +2911,135 @@ var DefaultIngressValidator = func() *ValidateIngress {
 	}
 	v.FldValidators["region"] = vFn
 
+	vrhCertStatus := v.CertStatusValidationRuleHandler
+	rulesCertStatus := map[string]string{
+		"ves.io.schema.rules.enum.defined_only": "true",
+	}
+	vFn, err = vrhCertStatus(rulesCertStatus)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for Ingress.cert_status: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["cert_status"] = vFn
+
 	return v
 }()
 
 func IngressValidator() db.Validator {
 	return DefaultIngressValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *KubernetesCluster) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *KubernetesCluster) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *KubernetesCluster) DeepCopy() *KubernetesCluster {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &KubernetesCluster{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *KubernetesCluster) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *KubernetesCluster) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return KubernetesClusterValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateKubernetesCluster struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateKubernetesCluster) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*KubernetesCluster)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *KubernetesCluster got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["cluster_tag"]; exists {
+		vOpts := append(opts, db.WithValidateField("cluster_tag"))
+		if err := fv(ctx, m.GetClusterTag(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["deployed_allowlist_policy_metadata"]; exists {
+		vOpts := append(opts, db.WithValidateField("deployed_allowlist_policy_metadata"))
+		if err := fv(ctx, m.GetDeployedAllowlistPolicyMetadata(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["deployed_bot_threat_intelligence_package_name"]; exists {
+		vOpts := append(opts, db.WithValidateField("deployed_bot_threat_intelligence_package_name"))
+		if err := fv(ctx, m.GetDeployedBotThreatIntelligencePackageName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["deployed_endpoint_policy_metadata"]; exists {
+		vOpts := append(opts, db.WithValidateField("deployed_endpoint_policy_metadata"))
+		if err := fv(ctx, m.GetDeployedEndpointPolicyMetadata(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["deployed_network_policy_metadata"]; exists {
+		vOpts := append(opts, db.WithValidateField("deployed_network_policy_metadata"))
+		if err := fv(ctx, m.GetDeployedNetworkPolicyMetadata(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["firmware_version"]; exists {
+		vOpts := append(opts, db.WithValidateField("firmware_version"))
+		if err := fv(ctx, m.GetFirmwareVersion(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["sync_status"]; exists {
+		vOpts := append(opts, db.WithValidateField("sync_status"))
+		if err := fv(ctx, m.GetSyncStatus(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultKubernetesClusterValidator = func() *ValidateKubernetesCluster {
+	v := &ValidateKubernetesCluster{FldValidators: map[string]db.ValidatorFunc{}}
+	v.FldValidators["deployed_endpoint_policy_metadata"] = PolicyMetadataValidator().Validate
+	v.FldValidators["deployed_network_policy_metadata"] = PolicyMetadataValidator().Validate
+	v.FldValidators["deployed_allowlist_policy_metadata"] = PolicyMetadataValidator().Validate
+
+	return v
+}()
+
+func KubernetesClusterValidator() db.Validator {
+	return DefaultKubernetesClusterValidator
 }
 
 // augmented methods on protoc/std generated struct
@@ -3044,6 +3401,17 @@ func (v *ValidateReplaceSpecType) Validate(ctx context.Context, pm interface{}, 
 				return err
 			}
 		}
+	case *ReplaceSpecType_Kubernetes:
+		if fv, exists := v.FldValidators["bot_infra_choice.kubernetes"]; exists {
+			val := m.GetBotInfraChoice().(*ReplaceSpecType_Kubernetes).Kubernetes
+			vOpts := append(opts,
+				db.WithValidateField("bot_infra_choice"),
+				db.WithValidateField("kubernetes"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 	if fv, exists := v.FldValidators["environment_type"]; exists {
 		vOpts := append(opts, db.WithValidateField("environment_type"))
@@ -3083,12 +3451,114 @@ var DefaultReplaceSpecTypeValidator = func() *ValidateReplaceSpecType {
 	v.FldValidators["bot_infra_choice.cloud_hosted"] = InfraCloudHostedValidator().Validate
 	v.FldValidators["bot_infra_choice.physical_hosted"] = InfraF5HostedOnPremValidator().Validate
 	v.FldValidators["bot_infra_choice.on_prem"] = InfraF5HostedOnPremValidator().Validate
+	v.FldValidators["bot_infra_choice.kubernetes"] = InfraContainerizedHostedValidator().Validate
 
 	return v
 }()
 
 func ReplaceSpecTypeValidator() db.Validator {
 	return DefaultReplaceSpecTypeValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *TIPackageInformation) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *TIPackageInformation) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *TIPackageInformation) DeepCopy() *TIPackageInformation {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &TIPackageInformation{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *TIPackageInformation) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *TIPackageInformation) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return TIPackageInformationValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateTIPackageInformation struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateTIPackageInformation) NameValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for name")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateTIPackageInformation) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*TIPackageInformation)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *TIPackageInformation got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["name"]; exists {
+		vOpts := append(opts, db.WithValidateField("name"))
+		if err := fv(ctx, m.GetName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultTIPackageInformationValidator = func() *ValidateTIPackageInformation {
+	v := &ValidateTIPackageInformation{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhName := v.NameValidationRuleHandler
+	rulesName := map[string]string{
+		"ves.io.schema.rules.string.not_empty": "true",
+	}
+	vFn, err = vrhName(rulesName)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for TIPackageInformation.name: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["name"] = vFn
+
+	return v
+}()
+
+func TIPackageInformationValidator() db.Validator {
+	return DefaultTIPackageInformationValidator
 }
 
 // augmented methods on protoc/std generated struct
@@ -3267,6 +3737,9 @@ func (r *GetSpecType) SetBotInfraChoiceToGlobalSpecType(o *GlobalSpecType) error
 	case *GetSpecType_CloudHosted:
 		o.BotInfraChoice = &GlobalSpecType_CloudHosted{CloudHosted: of.CloudHosted}
 
+	case *GetSpecType_Kubernetes:
+		o.BotInfraChoice = &GlobalSpecType_Kubernetes{Kubernetes: of.Kubernetes}
+
 	case *GetSpecType_OnPrem:
 		o.BotInfraChoice = &GlobalSpecType_OnPrem{OnPrem: of.OnPrem}
 
@@ -3286,6 +3759,9 @@ func (r *GetSpecType) GetBotInfraChoiceFromGlobalSpecType(o *GlobalSpecType) err
 
 	case *GlobalSpecType_CloudHosted:
 		r.BotInfraChoice = &GetSpecType_CloudHosted{CloudHosted: of.CloudHosted}
+
+	case *GlobalSpecType_Kubernetes:
+		r.BotInfraChoice = &GetSpecType_Kubernetes{Kubernetes: of.Kubernetes}
 
 	case *GlobalSpecType_OnPrem:
 		r.BotInfraChoice = &GetSpecType_OnPrem{OnPrem: of.OnPrem}
@@ -3307,6 +3783,7 @@ func (m *GetSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	m.BotEndpointPolicyMetadata = f.GetBotEndpointPolicyMetadata()
 	m.GetBotInfraChoiceFromGlobalSpecType(f)
 	m.BotNetworkPolicyMetadata = f.GetBotNetworkPolicyMetadata()
+	m.BotTiPackageInformation = f.GetBotTiPackageInformation()
 	m.ClusterState = f.GetClusterState()
 	m.DeploymentMode = f.GetDeploymentMode()
 	m.Egress = f.GetEgress()
@@ -3339,6 +3816,7 @@ func (m *GetSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	f.BotEndpointPolicyMetadata = m1.BotEndpointPolicyMetadata
 	m1.SetBotInfraChoiceToGlobalSpecType(f)
 	f.BotNetworkPolicyMetadata = m1.BotNetworkPolicyMetadata
+	f.BotTiPackageInformation = m1.BotTiPackageInformation
 	f.ClusterState = m1.ClusterState
 	f.DeploymentMode = m1.DeploymentMode
 	f.Egress = m1.Egress
@@ -3369,6 +3847,9 @@ func (r *ReplaceSpecType) SetBotInfraChoiceToGlobalSpecType(o *GlobalSpecType) e
 	case *ReplaceSpecType_CloudHosted:
 		o.BotInfraChoice = &GlobalSpecType_CloudHosted{CloudHosted: of.CloudHosted}
 
+	case *ReplaceSpecType_Kubernetes:
+		o.BotInfraChoice = &GlobalSpecType_Kubernetes{Kubernetes: of.Kubernetes}
+
 	case *ReplaceSpecType_OnPrem:
 		o.BotInfraChoice = &GlobalSpecType_OnPrem{OnPrem: of.OnPrem}
 
@@ -3388,6 +3869,9 @@ func (r *ReplaceSpecType) GetBotInfraChoiceFromGlobalSpecType(o *GlobalSpecType)
 
 	case *GlobalSpecType_CloudHosted:
 		r.BotInfraChoice = &ReplaceSpecType_CloudHosted{CloudHosted: of.CloudHosted}
+
+	case *GlobalSpecType_Kubernetes:
+		r.BotInfraChoice = &ReplaceSpecType_Kubernetes{Kubernetes: of.Kubernetes}
 
 	case *GlobalSpecType_OnPrem:
 		r.BotInfraChoice = &ReplaceSpecType_OnPrem{OnPrem: of.OnPrem}

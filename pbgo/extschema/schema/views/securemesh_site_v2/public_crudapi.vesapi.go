@@ -3972,6 +3972,12 @@ var APISwaggerJSON string = `{
             "x-displayname": "AWS IGW choice",
             "x-ves-proto-message": "ves.io.schema.views.securemesh_site_v2.AWSIGWGatewayType",
             "properties": {
+                "force_update_routing": {
+                    "description": " Enable or disable forced update of routing.\n Default is disabled.\n If enabled already configured routes will be updated.",
+                    "title": "Force Update Routing Choice",
+                    "$ref": "#/definitions/securemesh_site_v2ForceUpdateRoutingType",
+                    "x-displayname": "Force Update Routing Choice"
+                },
                 "igw_gw_id": {
                     "type": "string",
                     "description": " Choose your Internet Gateway\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.max_len: 21\n  ves.io.schema.rules.string.pattern: ^(igw-)([a-z0-9]{8}|[a-z0-9]{17})$\n",
@@ -3997,6 +4003,7 @@ var APISwaggerJSON string = `{
             "x-ves-oneof-field-egress_gateway_choice": "[\"egress_igw_gw\",\"egress_nat_gw\",\"no_egress\",\"private_adn\"]",
             "x-ves-oneof-field-private_connectivity_choice": "[\"cloud_link_config\",\"private_connectivity_disabled\"]",
             "x-ves-oneof-field-private_workload_routing_choice": "[\"disable_private_workload_routing_to_ce\",\"enable_private_workload_routing_list\"]",
+            "x-ves-oneof-field-vip_automation_choice": "[\"disable_vip_automation\",\"enable_vip_automation\"]",
             "x-ves-proto-message": "ves.io.schema.views.securemesh_site_v2.AWSManagedMode",
             "properties": {
                 "aws_cloud_user_account": {
@@ -4021,16 +4028,35 @@ var APISwaggerJSON string = `{
                     }
                 },
                 "aws_resource_mapping_list": {
-                    "description": " You can use this section to provide resource mapping for Site Local Outside (SLO), Site Local Inside (SLI) and Segment networks across\n availablity zones according to your deployment topology. When resource mapping is provided here, then these resources will be implictly used for\n interface configuration. You do not need to provide explicit inputs for interfaces within a CE node.",
+                    "description": " You can use this section to provide resource mapping for Site Local Outside (SLO), Site Local Inside (SLI) and Segment networks across\n availablity zones according to your deployment topology. When resource mapping is provided here, then these resources will be implictly used for\n interface configuration. You do not need to provide explicit inputs for interfaces within a CE node.\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
                     "title": "Resource Mapping",
                     "$ref": "#/definitions/securemesh_site_v2AWSResourceMappingListType",
-                    "x-displayname": "Resource Mapping"
+                    "x-displayname": "Resource Mapping",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true"
+                    }
                 },
                 "cloud_link_config": {
                     "description": "Exclusive with [private_connectivity_disabled]\n Enable CloudLink to Site",
                     "title": "Enable CloudLink to Site",
                     "$ref": "#/definitions/securemesh_site_v2AWSCloudLinkConfigType",
                     "x-displayname": "Enable"
+                },
+                "cloud_resource_prefix": {
+                    "type": "string",
+                    "description": " Resources created on cloud will be prefixed with f5-\u003cprefix\u003e.\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.max_len: 8\n  ves.io.schema.rules.string.min_len: 4\n  ves.io.schema.rules.string.pattern: ^[a-zA-Z]+[a-zA-Z0-9]*$\n",
+                    "title": "Cloud Resource Prefix",
+                    "minLength": 4,
+                    "maxLength": 8,
+                    "x-displayname": "Cloud Resource Prefix",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.string.max_len": "8",
+                        "ves.io.schema.rules.string.min_len": "4",
+                        "ves.io.schema.rules.string.pattern": "^[a-zA-Z]+[a-zA-Z0-9]*$"
+                    }
                 },
                 "disable_cloud_connect": {
                     "description": "Exclusive with [enable_cloud_connect]\n Disable cloud connect for this site",
@@ -4047,6 +4073,12 @@ var APISwaggerJSON string = `{
                 "disable_private_workload_routing_to_ce": {
                     "description": "Exclusive with [enable_private_workload_routing_list]\n Disable Private Workload Routing to CE",
                     "title": "Disable Private Workload Routing to CE",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Disable"
+                },
+                "disable_vip_automation": {
+                    "description": "Exclusive with [enable_vip_automation]\n This will disable Network Load Balancer creation.",
+                    "title": "Disable VIP Automation",
                     "$ref": "#/definitions/ioschemaEmpty",
                     "x-displayname": "Disable"
                 },
@@ -4079,7 +4111,7 @@ var APISwaggerJSON string = `{
                 "egress_nat_gw": {
                     "description": "Exclusive with [egress_igw_gw no_egress private_adn]\n With this option, egress site traffic will be routed through an Network Address Translation(NAT) Gateway.",
                     "title": "Egress Traffic to Internet on Site Via Nat Gateway",
-                    "$ref": "#/definitions/securemesh_site_v2AWSNATGatewayType",
+                    "$ref": "#/definitions/securemesh_site_v2AWSNATGatewayListType",
                     "x-displayname": "NAT Gateway"
                 },
                 "enable_cloud_connect": {
@@ -4092,6 +4124,12 @@ var APISwaggerJSON string = `{
                     "description": "Exclusive with [disable_private_workload_routing_to_ce]\n Enable Private Workload Routing to CE",
                     "title": "Enable Private Workload Routing to CE",
                     "$ref": "#/definitions/securemesh_site_v2EnablePrivateWorkloadRoutingListType",
+                    "x-displayname": "Enable"
+                },
+                "enable_vip_automation": {
+                    "description": "Exclusive with [disable_vip_automation]\n This will enable Network Load Balancer automation.",
+                    "title": "Enable VIP Automation",
+                    "$ref": "#/definitions/securemesh_site_v2EnableVIPAutomationType",
                     "x-displayname": "Enable"
                 },
                 "instance_type": {
@@ -4252,27 +4290,26 @@ var APISwaggerJSON string = `{
                 }
             }
         },
-        "securemesh_site_v2AWSNATGatewayType": {
+        "securemesh_site_v2AWSNATGatewayListType": {
             "type": "object",
             "description": "With this option, egress site traffic will be routed through an Network Address Translation(NAT) Gateway.",
             "title": "AWS NAT Gateway choice",
             "x-displayname": "AWS NAT Gateway choice",
-            "x-ves-proto-message": "ves.io.schema.views.securemesh_site_v2.AWSNATGatewayType",
+            "x-ves-proto-message": "ves.io.schema.views.securemesh_site_v2.AWSNATGatewayListType",
             "properties": {
-                "nat_gw_id": {
+                "nat_gw": {
                     "type": "array",
-                    "description": " Choose your NAT Gateway\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.items.string.pattern: ^(nat-)([a-z0-9]{8}|[a-z0-9]{17})$\n  ves.io.schema.rules.repeated.max_items: 3\n  ves.io.schema.rules.repeated.min_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "description": " Choose your NAT Gateway\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 3\n  ves.io.schema.rules.repeated.min_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "NAT Gateway",
                     "minItems": 1,
                     "maxItems": 3,
                     "items": {
-                        "type": "string"
+                        "$ref": "#/definitions/securemesh_site_v2AWSNATGatewayType"
                     },
                     "x-displayname": "NAT Gateway",
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true",
-                        "ves.io.schema.rules.repeated.items.string.pattern": "^(nat-)([a-z0-9]{8}|[a-z0-9]{17})$",
                         "ves.io.schema.rules.repeated.max_items": "3",
                         "ves.io.schema.rules.repeated.min_items": "1",
                         "ves.io.schema.rules.repeated.unique": "true"
@@ -4280,25 +4317,29 @@ var APISwaggerJSON string = `{
                 }
             }
         },
-        "securemesh_site_v2AWSNodeInterfaceConfigurationType": {
+        "securemesh_site_v2AWSNATGatewayType": {
             "type": "object",
-            "description": "Select the interface configuration style you want to adopt. Inherit option will inherit the configuration\nfrom the mapping user did. Override option allows you to choose subnet and security group settings that override\nthe mappings",
-            "title": "AWSNodeInterfaceConfigurationType",
-            "x-displayname": "AWSNodeInterfaceConfigurationType",
-            "x-ves-oneof-field-aws_node_interface_configuration_choice": "[\"inherit_aws_node_interface_configuration\",\"override_aws_node_interface_configuration\"]",
-            "x-ves-proto-message": "ves.io.schema.views.securemesh_site_v2.AWSNodeInterfaceConfigurationType",
+            "description": "Choose your NAT Gateway",
+            "title": "NAT Gateway",
+            "x-displayname": "NAT Gateway",
+            "x-ves-proto-message": "ves.io.schema.views.securemesh_site_v2.AWSNATGatewayType",
             "properties": {
-                "inherit_aws_node_interface_configuration": {
-                    "description": "Exclusive with [override_aws_node_interface_configuration]\n Inherit AWS Node Interface Configuration",
-                    "title": "Inherit AWS Node Interface Configuration",
-                    "$ref": "#/definitions/ioschemaEmpty",
-                    "x-displayname": "Inherit"
+                "force_update_routing": {
+                    "description": " Enable or disable forced update of routing.\n Default is disabled.\n If enabled already configured routes will be updated.",
+                    "title": "Force Update Routing Choice",
+                    "$ref": "#/definitions/securemesh_site_v2ForceUpdateRoutingType",
+                    "x-displayname": "Force Update Routing Choice"
                 },
-                "override_aws_node_interface_configuration": {
-                    "description": "Exclusive with [inherit_aws_node_interface_configuration]\n Override AWS Node Interface Configuration",
-                    "title": "Override AWS Node Interface Configuration",
-                    "$ref": "#/definitions/securemesh_site_v2AWSOverrideNodeInterfaceConfigurationType",
-                    "x-displayname": "Override"
+                "nat_gw_id": {
+                    "type": "string",
+                    "description": " Choose your NAT Gateway\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.pattern: ^(nat-)([a-z0-9]{8}|[a-z0-9]{17})$\n",
+                    "title": "NAT Gateway",
+                    "x-displayname": "NAT Gateway",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.string.pattern": "^(nat-)([a-z0-9]{8}|[a-z0-9]{17})$"
+                    }
                 }
             }
         },
@@ -4310,15 +4351,11 @@ var APISwaggerJSON string = `{
             "x-ves-oneof-field-site_to_site_connectivity_interface_choice": "[\"site_to_site_connectivity_interface_disabled\",\"site_to_site_connectivity_interface_enabled\"]",
             "x-ves-proto-message": "ves.io.schema.views.securemesh_site_v2.AWSOrchestratedInterface",
             "properties": {
-                "aws_node_interface_configuration": {
-                    "description": " Select the interface configuration style you want to adopt. Inherit option will inherit the configuration\n from the mapping user did. Override option allows you to choose subnet and security group settings that override\n the mappings\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
-                    "title": "AWS Node Interface Configuration Type",
-                    "$ref": "#/definitions/securemesh_site_v2AWSNodeInterfaceConfigurationType",
-                    "x-displayname": "Configuration",
-                    "x-ves-required": "true",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.message.required": "true"
-                    }
+                "interface_name": {
+                    "type": "string",
+                    "description": " The interface is not configurable and is autogenerated, it is used to identify the interface",
+                    "title": "Interface Name",
+                    "x-displayname": "Interface Name"
                 },
                 "mtu": {
                     "type": "integer",
@@ -4352,43 +4389,6 @@ var APISwaggerJSON string = `{
                     "title": "Enabled",
                     "$ref": "#/definitions/ioschemaEmpty",
                     "x-displayname": "Enabled"
-                }
-            }
-        },
-        "securemesh_site_v2AWSOverrideNodeInterfaceConfigurationType": {
-            "type": "object",
-            "description": "Override AWS Node Interface Configuration",
-            "title": "Override AWS Node Interface Configuration",
-            "x-displayname": "Override AWS Node Interface Configuration",
-            "x-ves-proto-message": "ves.io.schema.views.securemesh_site_v2.AWSOverrideNodeInterfaceConfigurationType",
-            "properties": {
-                "security_group": {
-                    "type": "string",
-                    "description": " Select the security group associated with this interface\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.max_len: 20\n  ves.io.schema.rules.string.pattern: ^(sg-)([a-z0-9]{8}|[a-z0-9]{17})$|^$\n",
-                    "title": "Security Group",
-                    "maxLength": 20,
-                    "x-displayname": "Security Group",
-                    "x-ves-required": "true",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.message.required": "true",
-                        "ves.io.schema.rules.string.max_len": "20",
-                        "ves.io.schema.rules.string.pattern": "^(sg-)([a-z0-9]{8}|[a-z0-9]{17})$|^$"
-                    }
-                },
-                "subnet_id": {
-                    "type": "string",
-                    "description": " Choose the subnet associated with this interface\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.max_len: 64\n  ves.io.schema.rules.string.min_len: 1\n  ves.io.schema.rules.string.pattern: ^(subnet-)([a-z0-9]{8}|[a-z0-9]{17})$\n",
-                    "title": "Subnet",
-                    "minLength": 1,
-                    "maxLength": 64,
-                    "x-displayname": "Subnet",
-                    "x-ves-required": "true",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.message.required": "true",
-                        "ves.io.schema.rules.string.max_len": "64",
-                        "ves.io.schema.rules.string.min_len": "1",
-                        "ves.io.schema.rules.string.pattern": "^(subnet-)([a-z0-9]{8}|[a-z0-9]{17})$"
-                    }
                 }
             }
         },
@@ -4446,15 +4446,15 @@ var APISwaggerJSON string = `{
             "x-displayname": "Resource Mapping",
             "x-ves-proto-message": "ves.io.schema.views.securemesh_site_v2.AWSResourceMappingType",
             "properties": {
-                "aws_resources": {
+                "availability_zones": {
                     "type": "array",
-                    "description": " Choose your existing AWS resources\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.min_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "description": " Choose your Availability Zone and Subnet\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.min_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "AWS Resource Mapping Type",
                     "minItems": 1,
                     "items": {
-                        "$ref": "#/definitions/securemesh_site_v2AWSResources"
+                        "$ref": "#/definitions/securemesh_site_v2AvailabilityZonesType"
                     },
-                    "x-displayname": "Resources",
+                    "x-displayname": "Availability Zone",
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true",
@@ -4471,28 +4471,6 @@ var APISwaggerJSON string = `{
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true"
                     }
-                }
-            }
-        },
-        "securemesh_site_v2AWSResources": {
-            "type": "object",
-            "description": "Resources",
-            "title": "AWS Resource Mapping Type",
-            "x-displayname": "Resources",
-            "x-ves-proto-message": "ves.io.schema.views.securemesh_site_v2.AWSResources",
-            "properties": {
-                "availability_zone": {
-                    "type": "string",
-                    "description": " Choose the availablity zone\n\nExample: - \"us-east-1\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.max_len: 64\n",
-                    "title": "Availablity Zone",
-                    "maxLength": 64,
-                    "x-displayname": "Availablity Zone",
-                    "x-ves-example": "us-east-1",
-                    "x-ves-required": "true",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.message.required": "true",
-                        "ves.io.schema.rules.string.max_len": "64"
-                    }
                 },
                 "security_group": {
                     "type": "string",
@@ -4505,20 +4483,6 @@ var APISwaggerJSON string = `{
                         "ves.io.schema.rules.message.required": "true",
                         "ves.io.schema.rules.string.max_len": "20",
                         "ves.io.schema.rules.string.pattern": "^(sg-)([a-z0-9]{8}|[a-z0-9]{17})$|^$"
-                    }
-                },
-                "subnet_id": {
-                    "type": "string",
-                    "description": " Choose a existing subnet\n\nExample: - \"subnet-12345678901234567\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.max_len: 64\n  ves.io.schema.rules.string.pattern: ^(subnet-)([a-z0-9]{8}|[a-z0-9]{17})$\n",
-                    "title": "Subnet",
-                    "maxLength": 64,
-                    "x-displayname": "Subnet",
-                    "x-ves-example": "subnet-12345678901234567",
-                    "x-ves-required": "true",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.message.required": "true",
-                        "ves.io.schema.rules.string.max_len": "64",
-                        "ves.io.schema.rules.string.pattern": "^(subnet-)([a-z0-9]{8}|[a-z0-9]{17})$"
                     }
                 }
             }
@@ -4543,19 +4507,41 @@ var APISwaggerJSON string = `{
                         "ves.io.schema.rules.string.max_len": "64",
                         "ves.io.schema.rules.string.pattern": "^(tgw-)([a-z0-9]{8}|[a-z0-9]{17})$"
                     }
-                },
-                "volterra_site_asn": {
-                    "type": "integer",
-                    "description": " F5XC Site ASN.\n\nExample: - \"64501\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.uint32.gt: 0\n  ves.io.schema.rules.uint32.lte: 65535\n",
-                    "title": "F5XC Site ASN",
-                    "format": "int64",
-                    "x-displayname": "Customer Edge side Autonomous System Number (ASN)",
-                    "x-ves-example": "64501",
+                }
+            }
+        },
+        "securemesh_site_v2AvailabilityZonesType": {
+            "type": "object",
+            "description": "Availability Zones",
+            "title": "Availability Zones Type",
+            "x-displayname": "Availability Zones",
+            "x-ves-proto-message": "ves.io.schema.views.securemesh_site_v2.AvailabilityZonesType",
+            "properties": {
+                "availability_zone": {
+                    "type": "string",
+                    "description": " Choose the availablity zone\n\nExample: - \"us-east-1\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.max_len: 64\n",
+                    "title": "Availablity Zone",
+                    "maxLength": 64,
+                    "x-displayname": "Availablity Zone",
+                    "x-ves-example": "us-east-1",
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true",
-                        "ves.io.schema.rules.uint32.gt": "0",
-                        "ves.io.schema.rules.uint32.lte": "65535"
+                        "ves.io.schema.rules.string.max_len": "64"
+                    }
+                },
+                "subnet_id": {
+                    "type": "string",
+                    "description": " Choose a existing subnet\n\nExample: - \"subnet-12345678901234567\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.max_len: 64\n  ves.io.schema.rules.string.pattern: ^(subnet-)([a-z0-9]{8}|[a-z0-9]{17})$\n",
+                    "title": "Subnet",
+                    "maxLength": 64,
+                    "x-displayname": "Subnet",
+                    "x-ves-example": "subnet-12345678901234567",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.string.max_len": "64",
+                        "ves.io.schema.rules.string.pattern": "^(subnet-)([a-z0-9]{8}|[a-z0-9]{17})$"
                     }
                 }
             }
@@ -4955,6 +4941,28 @@ var APISwaggerJSON string = `{
                 }
             }
         },
+        "securemesh_site_v2CustomIpPrefixType": {
+            "type": "object",
+            "description": "Enter the custom IP Prefix",
+            "title": "Custom IP Prefix",
+            "x-displayname": "Custom IP Prefix",
+            "x-ves-proto-message": "ves.io.schema.views.securemesh_site_v2.CustomIpPrefixType",
+            "properties": {
+                "ip_prefix": {
+                    "type": "string",
+                    "description": " Enter the custom IP Prefix\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.ipv4_prefix: true\n  ves.io.schema.rules.string.max_ip_prefix_length: 28\n  ves.io.schema.rules.string.min_ip_prefix_length: 16\n",
+                    "title": "IP Prefix",
+                    "x-displayname": "IP Prefix",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.string.ipv4_prefix": "true",
+                        "ves.io.schema.rules.string.max_ip_prefix_length": "28",
+                        "ves.io.schema.rules.string.min_ip_prefix_length": "16"
+                    }
+                }
+            }
+        },
         "securemesh_site_v2CustomNTPSettings": {
             "type": "object",
             "description": "NTP Servers",
@@ -5144,7 +5152,7 @@ var APISwaggerJSON string = `{
                     "items": {
                         "$ref": "#/definitions/securemesh_site_v2EnablePrivateWorkloadRoutingType"
                     },
-                    "x-displayname": "Subnets",
+                    "x-displayname": "Workloads",
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true",
@@ -5160,8 +5168,27 @@ var APISwaggerJSON string = `{
             "description": "Enable Private Workload Routing to CE Type",
             "title": "Enable Private Workload RoutingType",
             "x-displayname": "Enable Private Workload RoutingType",
+            "x-ves-oneof-field-ip_prefix_choice": "[\"custom_ip_prefix\",\"default_ip_prefix\"]",
             "x-ves-proto-message": "ves.io.schema.views.securemesh_site_v2.EnablePrivateWorkloadRoutingType",
             "properties": {
+                "custom_ip_prefix": {
+                    "description": "Exclusive with [default_ip_prefix]\n Enter the custom IP Prefix",
+                    "title": "Custom IP Prefix",
+                    "$ref": "#/definitions/securemesh_site_v2CustomIpPrefixType",
+                    "x-displayname": "Custom IP Prefix"
+                },
+                "default_ip_prefix": {
+                    "description": "Exclusive with [custom_ip_prefix]\n Uses 0.0.0.0/0 as the IP Prefix",
+                    "title": "Default IP Prefix",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Default IP Prefix"
+                },
+                "force_update_routing": {
+                    "description": " Enable or disable forced update of routing.\n Default is disabled.\n If enabled already configured routes will be updated.",
+                    "title": "Force Update Routing Choice",
+                    "$ref": "#/definitions/securemesh_site_v2ForceUpdateRoutingType",
+                    "x-displayname": "Force Update Routing Choice"
+                },
                 "network_option": {
                     "description": " Select virtual network (VRF) for this interface.\n There are 2 kinds of VRFs, local VRFs which are local to the site and global VRFs which\n extend into multiple sites. A site can have 2 Local VRFs, Site Local Outside (SLO), which is\n required for every site and Site Local Inside (SLI) which is optional. Global VRFs are\n configured via Networking \u003e Segments. A site can have multiple Network Segments (global\n VRFs).\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
                     "title": "Select VRF",
@@ -5172,19 +5199,38 @@ var APISwaggerJSON string = `{
                         "ves.io.schema.rules.message.required": "true"
                     }
                 },
-                "subnet_id": {
+                "route_table_id": {
                     "type": "string",
-                    "description": " Select the Subnet\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.max_len: 64\n  ves.io.schema.rules.string.min_len: 1\n  ves.io.schema.rules.string.pattern: ^(subnet-)([a-z0-9]{8}|[a-z0-9]{17})$\n",
-                    "title": "Subnet",
+                    "description": " Select the Route Table\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.max_len: 64\n  ves.io.schema.rules.string.min_len: 1\n  ves.io.schema.rules.string.pattern: ^(rtb-)([a-z0-9]{8}|[a-z0-9]{17})$\n",
+                    "title": "Route Table",
                     "minLength": 1,
                     "maxLength": 64,
-                    "x-displayname": "Subnet",
+                    "x-displayname": "Route Table",
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true",
                         "ves.io.schema.rules.string.max_len": "64",
                         "ves.io.schema.rules.string.min_len": "1",
-                        "ves.io.schema.rules.string.pattern": "^(subnet-)([a-z0-9]{8}|[a-z0-9]{17})$"
+                        "ves.io.schema.rules.string.pattern": "^(rtb-)([a-z0-9]{8}|[a-z0-9]{17})$"
+                    }
+                }
+            }
+        },
+        "securemesh_site_v2EnableVIPAutomationType": {
+            "type": "object",
+            "description": "This will enable Network Load Balancer automation.",
+            "title": "Enable VIP Automation",
+            "x-displayname": "DNS Connector",
+            "x-ves-proto-message": "ves.io.schema.views.securemesh_site_v2.EnableVIPAutomationType",
+            "properties": {
+                "dns_connector_ref": {
+                    "description": " Choose the DNS Connector object.\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "title": "DNS Connector",
+                    "$ref": "#/definitions/schemaviewsObjectRefType",
+                    "x-displayname": "DNS Connector",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true"
                     }
                 }
             }
@@ -5202,6 +5248,28 @@ var APISwaggerJSON string = `{
                     "title": "Not Managed By F5XC",
                     "$ref": "#/definitions/securemesh_site_v2NodeList",
                     "x-displayname": "Not Managed By F5XC"
+                }
+            }
+        },
+        "securemesh_site_v2ForceUpdateRoutingType": {
+            "type": "object",
+            "description": "Enable or disable forced update of routing.\nDefault is disabled.\nIf enabled already configured routes will be updated.",
+            "title": "Force Update Routing Choice",
+            "x-displayname": "Force Update Routing Choice",
+            "x-ves-oneof-field-force_update_routing_choice": "[\"force_route_update_disabled\",\"force_route_update_enabled\"]",
+            "x-ves-proto-message": "ves.io.schema.views.securemesh_site_v2.ForceUpdateRoutingType",
+            "properties": {
+                "force_route_update_disabled": {
+                    "description": "Exclusive with [force_route_update_enabled]\n Do not force update routing.",
+                    "title": "Force Update Routing Disabled",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Disabled"
+                },
+                "force_route_update_enabled": {
+                    "description": "Exclusive with [force_route_update_disabled]\n Force update routing.",
+                    "title": "Force Update Routing Enabled",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Enabled"
                 }
             }
         },
@@ -7086,6 +7154,13 @@ var APISwaggerJSON string = `{
                     "x-displayname": "Error Description",
                     "x-ves-example": "invalid VPC ID"
                 },
+                "error_details": {
+                    "type": "string",
+                    "description": " Error details contains error message from cloud provider\n\nExample: - \"VPC vpc-1233548 NotExistent\"-",
+                    "title": "Error Details",
+                    "x-displayname": "Error Details",
+                    "x-ves-example": "VPC vpc-1233548 NotExistent"
+                },
                 "suggested_action": {
                     "type": "string",
                     "description": " Suggested Action\n\nExample: - \"update VPC ID\"-",
@@ -7256,9 +7331,11 @@ var APISwaggerJSON string = `{
             "description": "Shape of the Secure Mesh site specification",
             "title": "CreateSpecType",
             "x-displayname": "Create Secure Mesh site",
+            "x-ves-oneof-field-advanced_delivery_choice": "[\"disable_advanced_delivery\",\"enable_advanced_delivery\"]",
             "x-ves-oneof-field-blocked_services_choice": "[\"block_all_services\",\"blocked_services\"]",
             "x-ves-oneof-field-enterprise_proxy_choice": "[\"custom_proxy\",\"f5_proxy\"]",
             "x-ves-oneof-field-forward_proxy_choice": "[\"active_forward_proxy_policies\",\"no_forward_proxy\"]",
+            "x-ves-oneof-field-log_anonymization_choice": "[\"disable_log_anonymization\",\"enable_log_anonymization\"]",
             "x-ves-oneof-field-logs_receiver_choice": "[\"log_receiver_with_net\",\"logs_streaming_disabled\"]",
             "x-ves-oneof-field-management_network_choice": "[\"disable_management_network\",\"enable_management_network\"]",
             "x-ves-oneof-field-network_policy_choice": "[\"active_enhanced_firewall_policies\",\"no_network_policy\"]",
@@ -7330,8 +7407,18 @@ var APISwaggerJSON string = `{
                     "$ref": "#/definitions/schemaviewsObjectRefType",
                     "x-displayname": "Member of DC Cluster Group"
                 },
+                "disable_advanced_delivery": {
+                    "description": "Exclusive with [enable_advanced_delivery]\n",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Disable"
+                },
                 "disable_ha": {
                     "description": "Exclusive with [enable_ha]\n",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Disable"
+                },
+                "disable_log_anonymization": {
+                    "description": "Exclusive with [enable_log_anonymization]\n Disable Log Anonymization for this site.",
                     "$ref": "#/definitions/ioschemaEmpty",
                     "x-displayname": "Disable"
                 },
@@ -7350,8 +7437,18 @@ var APISwaggerJSON string = `{
                     "$ref": "#/definitions/securemesh_site_v2DNSNTPServerConfig",
                     "x-displayname": "DNS \u0026 NTP Servers Settings"
                 },
+                "enable_advanced_delivery": {
+                    "description": "Exclusive with [disable_advanced_delivery]\n",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Enable"
+                },
                 "enable_ha": {
                     "description": "Exclusive with [disable_ha]\n",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Enable"
+                },
+                "enable_log_anonymization": {
+                    "description": "Exclusive with [disable_log_anonymization]\n Enable Log Anonymization for this site. Traffic will be processed in the order that Log Anonymize.",
                     "$ref": "#/definitions/ioschemaEmpty",
                     "x-displayname": "Enable"
                 },
@@ -7562,9 +7659,11 @@ var APISwaggerJSON string = `{
             "description": "Shape of the Secure Mesh site specification",
             "title": "GetSpecType",
             "x-displayname": "Get Secure Mesh site",
+            "x-ves-oneof-field-advanced_delivery_choice": "[\"disable_advanced_delivery\",\"enable_advanced_delivery\"]",
             "x-ves-oneof-field-blocked_services_choice": "[\"block_all_services\",\"blocked_services\"]",
             "x-ves-oneof-field-enterprise_proxy_choice": "[\"custom_proxy\",\"f5_proxy\"]",
             "x-ves-oneof-field-forward_proxy_choice": "[\"active_forward_proxy_policies\",\"no_forward_proxy\"]",
+            "x-ves-oneof-field-log_anonymization_choice": "[\"disable_log_anonymization\",\"enable_log_anonymization\"]",
             "x-ves-oneof-field-logs_receiver_choice": "[\"log_receiver_with_net\",\"logs_streaming_disabled\"]",
             "x-ves-oneof-field-management_network_choice": "[\"disable_management_network\",\"enable_management_network\"]",
             "x-ves-oneof-field-network_policy_choice": "[\"active_enhanced_firewall_policies\",\"no_network_policy\"]",
@@ -7636,8 +7735,18 @@ var APISwaggerJSON string = `{
                     "$ref": "#/definitions/schemaviewsObjectRefType",
                     "x-displayname": "Member of DC Cluster Group"
                 },
+                "disable_advanced_delivery": {
+                    "description": "Exclusive with [enable_advanced_delivery]\n",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Disable"
+                },
                 "disable_ha": {
                     "description": "Exclusive with [enable_ha]\n",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Disable"
+                },
+                "disable_log_anonymization": {
+                    "description": "Exclusive with [enable_log_anonymization]\n Disable Log Anonymization for this site.",
                     "$ref": "#/definitions/ioschemaEmpty",
                     "x-displayname": "Disable"
                 },
@@ -7656,8 +7765,18 @@ var APISwaggerJSON string = `{
                     "$ref": "#/definitions/securemesh_site_v2DNSNTPServerConfig",
                     "x-displayname": "DNS \u0026 NTP Servers Settings"
                 },
+                "enable_advanced_delivery": {
+                    "description": "Exclusive with [disable_advanced_delivery]\n",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Enable"
+                },
                 "enable_ha": {
                     "description": "Exclusive with [disable_ha]\n",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Enable"
+                },
+                "enable_log_anonymization": {
+                    "description": "Exclusive with [disable_log_anonymization]\n Enable Log Anonymization for this site. Traffic will be processed in the order that Log Anonymize.",
                     "$ref": "#/definitions/ioschemaEmpty",
                     "x-displayname": "Enable"
                 },
@@ -7924,9 +8043,11 @@ var APISwaggerJSON string = `{
             "description": "Shape of the Secure Mesh site specification",
             "title": "ReplaceSpecType",
             "x-displayname": "Replace Secure Mesh site",
+            "x-ves-oneof-field-advanced_delivery_choice": "[\"disable_advanced_delivery\",\"enable_advanced_delivery\"]",
             "x-ves-oneof-field-blocked_services_choice": "[\"block_all_services\",\"blocked_services\"]",
             "x-ves-oneof-field-enterprise_proxy_choice": "[\"custom_proxy\",\"f5_proxy\"]",
             "x-ves-oneof-field-forward_proxy_choice": "[\"active_forward_proxy_policies\",\"no_forward_proxy\"]",
+            "x-ves-oneof-field-log_anonymization_choice": "[\"disable_log_anonymization\",\"enable_log_anonymization\"]",
             "x-ves-oneof-field-logs_receiver_choice": "[\"log_receiver_with_net\",\"logs_streaming_disabled\"]",
             "x-ves-oneof-field-network_policy_choice": "[\"active_enhanced_firewall_policies\",\"no_network_policy\"]",
             "x-ves-oneof-field-node_ha_choice": "[\"disable_ha\",\"enable_ha\"]",
@@ -7997,8 +8118,18 @@ var APISwaggerJSON string = `{
                     "$ref": "#/definitions/schemaviewsObjectRefType",
                     "x-displayname": "Member of DC Cluster Group"
                 },
+                "disable_advanced_delivery": {
+                    "description": "Exclusive with [enable_advanced_delivery]\n",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Disable"
+                },
                 "disable_ha": {
                     "description": "Exclusive with [enable_ha]\n",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Disable"
+                },
+                "disable_log_anonymization": {
+                    "description": "Exclusive with [enable_log_anonymization]\n Disable Log Anonymization for this site.",
                     "$ref": "#/definitions/ioschemaEmpty",
                     "x-displayname": "Disable"
                 },
@@ -8012,8 +8143,18 @@ var APISwaggerJSON string = `{
                     "$ref": "#/definitions/securemesh_site_v2DNSNTPServerConfig",
                     "x-displayname": "DNS \u0026 NTP Servers Settings"
                 },
+                "enable_advanced_delivery": {
+                    "description": "Exclusive with [disable_advanced_delivery]\n",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Enable"
+                },
                 "enable_ha": {
                     "description": "Exclusive with [disable_ha]\n",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Enable"
+                },
+                "enable_log_anonymization": {
+                    "description": "Exclusive with [disable_log_anonymization]\n Enable Log Anonymization for this site. Traffic will be processed in the order that Log Anonymize.",
                     "$ref": "#/definitions/ioschemaEmpty",
                     "x-displayname": "Enable"
                 },

@@ -15,13 +15,14 @@ import (
 
 	"gopkg.volterra.us/stdlib/client/vesapi"
 
+statemigration "github.com/volterraedge/terraform-provider-volterra/volterra/state_migration"
+
 	ves_io_schema "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema"
 	ves_io_schema_fleet "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/fleet"
 	ves_io_schema_network_firewall "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/network_firewall"
 	ves_io_schema_site "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/site"
 	ves_io_schema_views "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/views"
 	ves_io_schema_views_azure_vnet_site "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/views/azure_vnet_site"
-	statemigration "github.com/volterraedge/terraform-provider-volterra/volterra/state_migration"
 )
 
 // resourceVolterraAzureVnetSite is implementation of Volterra's AzureVnetSite resources
@@ -853,11 +854,6 @@ func resourceVolterraAzureVnetSite() *schema.Resource {
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
 
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
-
 																		"name": {
 																			Type:     schema.TypeString,
 																			Optional: true,
@@ -891,11 +887,6 @@ func resourceVolterraAzureVnetSite() *schema.Resource {
 																Required: true,
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
-
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
 
 																		"name": {
 																			Type:     schema.TypeString,
@@ -2531,11 +2522,6 @@ func resourceVolterraAzureVnetSite() *schema.Resource {
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
 
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
-
 																		"name": {
 																			Type:     schema.TypeString,
 																			Optional: true,
@@ -2569,11 +2555,6 @@ func resourceVolterraAzureVnetSite() *schema.Resource {
 																Required: true,
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
-
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
 
 																		"name": {
 																			Type:     schema.TypeString,
@@ -4771,11 +4752,6 @@ func resourceVolterraAzureVnetSite() *schema.Resource {
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
 
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
-
 																		"name": {
 																			Type:     schema.TypeString,
 																			Optional: true,
@@ -4809,11 +4785,6 @@ func resourceVolterraAzureVnetSite() *schema.Resource {
 																Required: true,
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
-
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
 
 																		"name": {
 																			Type:     schema.TypeString,
@@ -5735,11 +5706,6 @@ func resourceVolterraAzureVnetSite() *schema.Resource {
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
 
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
-
 																		"name": {
 																			Type:     schema.TypeString,
 																			Optional: true,
@@ -5773,11 +5739,6 @@ func resourceVolterraAzureVnetSite() *schema.Resource {
 																Required: true,
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
-
-																		"kind": {
-																			Type:     schema.TypeString,
-																			Computed: true,
-																		},
 
 																		"name": {
 																			Type:     schema.TypeString,
@@ -8015,24 +7976,22 @@ func resourceVolterraAzureVnetSiteCreate(d *schema.ResourceData, meta interface{
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -8058,24 +8017,22 @@ func resourceVolterraAzureVnetSiteCreate(d *schema.ResourceData, meta interface{
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -10453,24 +10410,22 @@ func resourceVolterraAzureVnetSiteCreate(d *schema.ResourceData, meta interface{
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -10496,24 +10451,22 @@ func resourceVolterraAzureVnetSiteCreate(d *schema.ResourceData, meta interface{
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -13749,24 +13702,22 @@ func resourceVolterraAzureVnetSiteCreate(d *schema.ResourceData, meta interface{
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -13792,24 +13743,22 @@ func resourceVolterraAzureVnetSiteCreate(d *schema.ResourceData, meta interface{
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -15107,24 +15056,22 @@ func resourceVolterraAzureVnetSiteCreate(d *schema.ResourceData, meta interface{
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -15150,24 +15097,22 @@ func resourceVolterraAzureVnetSiteCreate(d *schema.ResourceData, meta interface{
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -16606,6 +16551,7 @@ func resourceVolterraAzureVnetSiteRead(d *schema.ResourceData, meta interface{})
 		}
 		return fmt.Errorf("Error finding Volterra AzureVnetSite %q: %s", d.Id(), err)
 	}
+
 	return setAzureVnetSiteFields(client, d, resp)
 }
 
@@ -17532,24 +17478,22 @@ func resourceVolterraAzureVnetSiteUpdate(d *schema.ResourceData, meta interface{
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -17575,24 +17519,22 @@ func resourceVolterraAzureVnetSiteUpdate(d *schema.ResourceData, meta interface{
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -19924,24 +19866,22 @@ func resourceVolterraAzureVnetSiteUpdate(d *schema.ResourceData, meta interface{
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -19967,24 +19907,22 @@ func resourceVolterraAzureVnetSiteUpdate(d *schema.ResourceData, meta interface{
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -22878,24 +22816,22 @@ func resourceVolterraAzureVnetSiteUpdate(d *schema.ResourceData, meta interface{
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -22921,24 +22857,22 @@ func resourceVolterraAzureVnetSiteUpdate(d *schema.ResourceData, meta interface{
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -24136,24 +24070,22 @@ func resourceVolterraAzureVnetSiteUpdate(d *schema.ResourceData, meta interface{
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SliToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -24179,24 +24111,22 @@ func resourceVolterraAzureVnetSiteUpdate(d *schema.ResourceData, meta interface{
 													if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 														sl := v.([]interface{})
-														globalVn := &ves_io_schema_views.ObjectRefType{}
-														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVn
+														globalVnInt := &ves_io_schema_views.ObjectRefType{}
+														connectionChoiceInt.SloToGlobalDr.GlobalVn = globalVnInt
+
 														for _, set := range sl {
 															if set != nil {
-																globalVnMapStrToI := set.(map[string]interface{})
-
-																if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-																	globalVn.Name = w.(string)
+																gvMapToStrVal := set.(map[string]interface{})
+																if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	globalVnInt.Name = val.(string)
+																}
+																if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	globalVnInt.Namespace = val.(string)
 																}
 
-																if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																	globalVn.Namespace = w.(string)
+																if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	globalVnInt.Tenant = val.(string)
 																}
-
-																if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																	globalVn.Tenant = w.(string)
-																}
-
 															}
 														}
 
@@ -25531,5 +25461,11 @@ func resourceVolterraAzureVnetSiteDelete(d *schema.ResourceData, meta interface{
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_views_azure_vnet_site.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_views_azure_vnet_site.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting AzureVnetSite: %w", err)
+	}
+	return nil
+
 }

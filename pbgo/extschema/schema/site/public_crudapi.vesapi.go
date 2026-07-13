@@ -2627,7 +2627,7 @@ var APISwaggerJSON string = `{
                     }
                 },
                 "ce_site_mode": {
-                    "description": " Customer Eddge Mode. Defines how the CE is being deployed. Invalid for RE Site",
+                    "description": " Customer Edge Mode. Defines how the CE is being deployed. Invalid for RE Site",
                     "$ref": "#/definitions/siteCeSiteMode",
                     "x-displayname": "CE Site Mode"
                 },
@@ -2816,7 +2816,7 @@ var APISwaggerJSON string = `{
                     "x-ves-example": "east-us-2"
                 },
                 "site_state": {
-                    "description": " Site state defines its state machine and in which operational phase it is. It is for both Regional Edge\n as well as Customer Edge. Example flow is site is in PROVISIONING then goest to STANDBY and ONLINE. In case of\n switching to different Connected RE it goes back to PROVISIONING and ONLINE. If any of phase failes then it\n goest to FAILED.",
+                    "description": " Site state defines its state machine and in which operational phase it is. It is for both Regional Edge\n as well as Customer Edge. Example flow is site is in PROVISIONING then goes to STANDBY and ONLINE. In case of\n switching to different Connected RE it goes back to PROVISIONING and ONLINE. If any of phase failes then it\n goes to FAILED.",
                     "$ref": "#/definitions/siteSiteState",
                     "x-displayname": "Site State"
                 },
@@ -3152,305 +3152,399 @@ var APISwaggerJSON string = `{
         },
         "siteAWSElasticIPAllocationStatusType": {
             "type": "object",
-            "description": "x-displayName: \"AWS Elastic IP Allocation\"\nAWS Elastic IP Allocation",
+            "description": "AWS Elastic IP Allocation",
             "title": "AWS Elastic IP",
+            "x-displayname": "AWS Elastic IP Allocation",
+            "x-ves-proto-message": "ves.io.schema.site.AWSElasticIPAllocationStatusType",
             "properties": {
                 "allocation_id": {
                     "type": "string",
-                    "description": "x-displayName: \"Allocation ID\"\nAllocation ID",
-                    "title": "Allocation ID"
+                    "description": " Allocation ID",
+                    "title": "Allocation ID",
+                    "x-displayname": "Allocation ID"
                 },
                 "association_id": {
                     "type": "string",
-                    "description": "x-displayName: \"Association ID\"\nAssociation ID",
-                    "title": "Association ID"
+                    "description": " Association ID",
+                    "title": "Association ID",
+                    "x-displayname": "Association ID"
                 },
                 "private_address": {
                     "type": "string",
-                    "description": "x-displayName: \"Private IP address\"\nPrivate IP address",
-                    "title": "Private IP address"
+                    "description": " Private IP address",
+                    "title": "Private IP address",
+                    "x-displayname": "Private IP address"
                 },
                 "public_address": {
                     "type": "string",
-                    "description": "x-displayName: \"Allocated IPv4 address\"\nAllocated IPv4 address",
-                    "title": "Allocated IPv4 address"
+                    "description": " Allocated IPv4 address",
+                    "title": "Allocated IPv4 address",
+                    "x-displayname": "Allocated IPv4 address"
                 },
                 "state": {
-                    "description": "x-displayName: \"Elastic IP State\"\nElastic IP State",
+                    "description": " Elastic IP State",
                     "title": "State",
-                    "$ref": "#/definitions/siteCloudResourceState"
+                    "$ref": "#/definitions/siteCloudResourceState",
+                    "x-displayname": "Elastic IP State"
                 },
                 "tags": {
                     "type": "object",
-                    "description": "x-displayName: \"Tags\"\nTags",
-                    "title": "Tags"
+                    "description": " Tags\n\nValidation Rules:\n  ves.io.schema.rules.map.keys.string.max_len: 127\n  ves.io.schema.rules.map.max_pairs: 20\n  ves.io.schema.rules.map.values.string.max_len: 255\n",
+                    "title": "Tags",
+                    "x-displayname": "Tags",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.map.keys.string.max_len": "127",
+                        "ves.io.schema.rules.map.max_pairs": "20",
+                        "ves.io.schema.rules.map.values.string.max_len": "255"
+                    }
                 }
             }
         },
         "siteAWSInstanceStatusType": {
             "type": "object",
-            "description": "x-displayName: \"AWS Instance Status Type\"\nAWS Instance Status Type",
+            "description": "AWS Instance Status Type",
             "title": "AWS Instance Status Type",
+            "x-displayname": "AWS Instance Status Type",
+            "x-ves-proto-message": "ves.io.schema.site.AWSInstanceStatusType",
             "properties": {
                 "ami_id": {
                     "type": "string",
-                    "description": "x-displayName: \"AMI ID\"\nAMI ID",
-                    "title": "AMI ID"
+                    "description": " AMI ID",
+                    "title": "AMI ID",
+                    "x-displayname": "AMI ID"
                 },
                 "host_name": {
                     "type": "string",
-                    "description": "x-displayName: \"HostName\"\nHostname",
-                    "title": "HostName"
+                    "description": " Hostname",
+                    "title": "HostName",
+                    "x-displayname": "HostName"
                 },
                 "instance_id": {
                     "type": "string",
-                    "description": "x-displayName: \"Instance ID\"\nInstance ID",
-                    "title": "Instance ID"
+                    "description": " Instance ID",
+                    "title": "Instance ID",
+                    "x-displayname": "Instance ID"
                 },
                 "instance_type": {
                     "type": "string",
-                    "description": "x-displayName: \"Instance Type\"\nInstance Type",
-                    "title": "Instance Type"
+                    "description": " Instance Type",
+                    "title": "Instance Type",
+                    "x-displayname": "Instance Type"
                 },
                 "interface_status": {
                     "type": "array",
-                    "description": "x-displayName: \"Network Interface Status\"\nNetwork Interface Status",
+                    "description": " Network Interface Status",
                     "title": "Network Interface Status",
                     "items": {
                         "$ref": "#/definitions/siteAWSNetworkInterfaceStatusType"
-                    }
+                    },
+                    "x-displayname": "Network Interface Status"
                 },
                 "state": {
-                    "description": "x-displayName: \"EC2 Instance State\"\nEC2 Instance State",
+                    "description": " EC2 Instance State",
                     "title": "State",
-                    "$ref": "#/definitions/siteCloudResourceState"
+                    "$ref": "#/definitions/siteCloudResourceState",
+                    "x-displayname": "EC2 Instance State"
                 },
                 "tags": {
                     "type": "object",
-                    "description": "x-displayName: \"Tags\"\nTags",
-                    "title": "Tags"
+                    "description": " Tags\n\nValidation Rules:\n  ves.io.schema.rules.map.keys.string.max_len: 127\n  ves.io.schema.rules.map.max_pairs: 20\n  ves.io.schema.rules.map.values.string.max_len: 255\n",
+                    "title": "Tags",
+                    "x-displayname": "Tags",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.map.keys.string.max_len": "127",
+                        "ves.io.schema.rules.map.max_pairs": "20",
+                        "ves.io.schema.rules.map.values.string.max_len": "255"
+                    }
                 },
                 "volume_status": {
-                    "description": "x-displayName: \"Instance Volume\"\nInstance Volume",
+                    "description": " Instance Volume",
                     "title": "Instance Volume",
-                    "$ref": "#/definitions/siteAWSVolumeStatusType"
+                    "$ref": "#/definitions/siteAWSVolumeStatusType",
+                    "x-displayname": "Instance Volume"
                 },
                 "vpc_id": {
                     "type": "string",
-                    "description": "x-displayName: \"VPC ID\"\nVPC ID",
-                    "title": "VPC ID"
+                    "description": " VPC ID",
+                    "title": "VPC ID",
+                    "x-displayname": "VPC ID"
                 }
             }
         },
         "siteAWSNetworkInterfaceStatusType": {
             "type": "object",
-            "description": "x-displayName: \"AWS Network Interface Status\"\nAWS Network Interface Status Type",
+            "description": "AWS Network Interface Status Type",
             "title": "AWS Network Interface Status Type",
+            "x-displayname": "AWS Network Interface Status",
+            "x-ves-proto-message": "ves.io.schema.site.AWSNetworkInterfaceStatusType",
             "properties": {
                 "attachment_id": {
                     "type": "string",
-                    "description": "x-displayName: \"Attachment ID\"\nAttachment ID",
-                    "title": "Attachment ID"
+                    "description": " Attachment ID",
+                    "title": "Attachment ID",
+                    "x-displayname": "Attachment ID"
                 },
                 "availablity_zone": {
                     "type": "string",
-                    "description": "x-displayName: \"Availablity Zone\"\nAvailablity Zone",
-                    "title": "Availablity Zone"
+                    "description": " Availablity Zone",
+                    "title": "Availablity Zone",
+                    "x-displayname": "Availablity Zone"
                 },
                 "elastic_ip_status": {
-                    "description": "Elastic IP Status",
+                    "description": "\n Elastic IP Status",
                     "title": "Elastic IP Status\nx-displayName: \"Elastic IP Status\"",
-                    "$ref": "#/definitions/siteAWSElasticIPAllocationStatusType"
+                    "$ref": "#/definitions/siteAWSElasticIPAllocationStatusType",
+                    "x-displayname": "Elastic IP Status"
                 },
                 "interface_type": {
                     "type": "string",
-                    "description": "x-displayName: \"Interface type\"",
-                    "title": "Interface type"
+                    "title": "Interface type",
+                    "x-displayname": "Interface type"
                 },
                 "network_interface_id": {
                     "type": "string",
-                    "description": "x-displayName: \"Network Interface ID\"\nNetwork Interface ID",
-                    "title": "Network Interface ID"
+                    "description": " Network Interface ID",
+                    "title": "Network Interface ID",
+                    "x-displayname": "Network Interface ID"
                 },
                 "network_type": {
-                    "description": "x-displayName: \"NetworkType\"\nNetwork Type",
+                    "description": " Network Type",
                     "title": "Network Type",
-                    "$ref": "#/definitions/siteNetworkType"
+                    "$ref": "#/definitions/siteNetworkType",
+                    "x-displayname": "NetworkType"
                 },
                 "private_ip": {
                     "type": "string",
-                    "description": "x-displayName: \"Private IP\"\nPrivate IP",
-                    "title": "Private IP"
+                    "description": " Private IP",
+                    "title": "Private IP",
+                    "x-displayname": "Private IP"
                 },
                 "security_group": {
                     "type": "string",
-                    "description": "x-displayName: \"Security Group\"\nSecurity Group",
-                    "title": "Security Group"
+                    "description": " Security Group",
+                    "title": "Security Group",
+                    "x-displayname": "Security Group"
                 },
                 "state": {
-                    "description": "x-displayName: \"Network Interface State\"\nNetwork Interface State",
+                    "description": " Network Interface State",
                     "title": "State",
-                    "$ref": "#/definitions/siteCloudResourceState"
+                    "$ref": "#/definitions/siteCloudResourceState",
+                    "x-displayname": "Network Interface State"
                 },
                 "subnet_id": {
                     "type": "string",
-                    "description": "x-displayName: \"Subnet ID\"\nSubnet ID",
-                    "title": "Subnet ID"
+                    "description": " Subnet ID",
+                    "title": "Subnet ID",
+                    "x-displayname": "Subnet ID"
                 },
                 "tags": {
                     "type": "object",
-                    "description": "x-displayName: \"Tags\"\nTags",
-                    "title": "Tags"
+                    "description": " Tags\n\nValidation Rules:\n  ves.io.schema.rules.map.keys.string.max_len: 127\n  ves.io.schema.rules.map.max_pairs: 20\n  ves.io.schema.rules.map.values.string.max_len: 255\n",
+                    "title": "Tags",
+                    "x-displayname": "Tags",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.map.keys.string.max_len": "127",
+                        "ves.io.schema.rules.map.max_pairs": "20",
+                        "ves.io.schema.rules.map.values.string.max_len": "255"
+                    }
                 },
                 "vpc_id": {
                     "type": "string",
-                    "description": "x-displayName: \"VPC ID\"\nVPC ID",
-                    "title": "VPC ID"
+                    "description": " VPC ID",
+                    "title": "VPC ID",
+                    "x-displayname": "VPC ID"
                 }
             }
         },
         "siteAWSOrchestrationStatusType": {
             "type": "object",
-            "description": "x-displayName: \"AWS Site Orchestration Status Type\"\nAWS Managed Sites Orchestration Status",
+            "description": "AWS Managed Sites Orchestration Status",
             "title": "AWS Site Orchestration Status Type",
+            "x-displayname": "AWS Site Orchestration Status Type",
+            "x-ves-proto-message": "ves.io.schema.site.AWSOrchestrationStatusType",
             "properties": {
                 "instance_status": {
                     "type": "array",
-                    "description": "x-displayName: \"AWS Instance Status\"\nAWS Instance Status",
+                    "description": " AWS Instance Status",
                     "title": "Instance Status",
                     "items": {
                         "$ref": "#/definitions/siteAWSInstanceStatusType"
-                    }
+                    },
+                    "x-displayname": "AWS Instance Status"
+                },
+                "replace_validation": {
+                    "description": " When replace validation is set then replace validation will be performed",
+                    "title": "Replace Validation",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Replace Validation"
                 },
                 "site_vpc_status": {
-                    "description": "x-displayName: \"Site VPC Status\"\nAWS Site VPC Status",
+                    "description": " AWS Site VPC Status",
                     "title": "AWS Site VPC Status",
-                    "$ref": "#/definitions/siteAWSSiteVPCStatusType"
+                    "$ref": "#/definitions/siteAWSSiteVPCStatusType",
+                    "x-displayname": "Site VPC Status"
                 },
                 "subnet_status": {
                     "type": "array",
-                    "description": "x-displayName: \"Subnet Status\"\nAWS Subnet Status",
+                    "description": " AWS Subnet Status",
                     "title": "Subnet Status",
                     "items": {
                         "$ref": "#/definitions/siteAWSSubnetStatusType"
-                    }
+                    },
+                    "x-displayname": "Subnet Status"
                 },
                 "transit_gateway_status": {
-                    "description": "x-displayName: \"Transit Gateway Status\"\nTransit Gateway Status",
+                    "description": " Transit Gateway Status",
                     "title": "Transit Gateway Status",
-                    "$ref": "#/definitions/siteAWSTransitGatewayStatus"
+                    "$ref": "#/definitions/siteAWSTransitGatewayStatus",
+                    "x-displayname": "Transit Gateway Status"
                 }
             }
         },
         "siteAWSRouteTableStatusType": {
             "type": "object",
-            "description": "x-displayName: \"AWS Route Table ID\"\nAWS route table ID",
+            "description": "AWS route table ID",
             "title": "AWS Route Table ID",
+            "x-displayname": "AWS Route Table ID",
+            "x-ves-proto-message": "ves.io.schema.site.AWSRouteTableStatusType",
             "properties": {
                 "route_table_id": {
                     "type": "string",
-                    "description": "x-displayName: \"Route Table ID\"\nRoute Table ID",
-                    "title": "Route Table ID"
+                    "description": " Route Table ID",
+                    "title": "Route Table ID",
+                    "x-displayname": "Route Table ID"
                 },
                 "state": {
-                    "description": "x-displayName: \"Route Table State\"",
                     "title": "State",
-                    "$ref": "#/definitions/siteCloudResourceState"
+                    "$ref": "#/definitions/siteCloudResourceState",
+                    "x-displayname": "Route Table State"
                 },
                 "subnet_id": {
                     "type": "string",
-                    "description": "x-displayName: \"Subnet ID\"\nSubnet ID",
-                    "title": "Subnet ID"
+                    "description": " Subnet ID",
+                    "title": "Subnet ID",
+                    "x-displayname": "Subnet ID"
                 },
                 "tags": {
                     "type": "object",
-                    "description": "x-displayName: \"Tags\"\nTags",
-                    "title": "Tags"
+                    "description": " Tags\n\nValidation Rules:\n  ves.io.schema.rules.map.keys.string.max_len: 127\n  ves.io.schema.rules.map.max_pairs: 20\n  ves.io.schema.rules.map.values.string.max_len: 255\n",
+                    "title": "Tags",
+                    "x-displayname": "Tags",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.map.keys.string.max_len": "127",
+                        "ves.io.schema.rules.map.max_pairs": "20",
+                        "ves.io.schema.rules.map.values.string.max_len": "255"
+                    }
                 },
                 "vpc_id": {
                     "type": "string",
-                    "description": "x-displayName: \"VPC ID\"\nVPC ID",
-                    "title": "VPC ID"
+                    "description": " VPC ID",
+                    "title": "VPC ID",
+                    "x-displayname": "VPC ID"
                 }
             }
         },
         "siteAWSSiteVPCStatusType": {
             "type": "object",
-            "description": "x-displayName: \"Site VPC Status\"\nAWS Site VPC Status",
+            "description": "AWS Site VPC Status",
             "title": "AWS Site VPC Status",
+            "x-displayname": "Site VPC Status",
+            "x-ves-proto-message": "ves.io.schema.site.AWSSiteVPCStatusType",
             "properties": {
                 "state": {
-                    "description": "x-displayName: \"Site VPC Deployment State\"",
                     "title": "State",
-                    "$ref": "#/definitions/siteCloudResourceState"
+                    "$ref": "#/definitions/siteCloudResourceState",
+                    "x-displayname": "Site VPC Deployment State"
                 },
                 "tags": {
                     "type": "object",
-                    "description": "x-displayName: \"Tags\"\nTags",
-                    "title": "Tags"
+                    "description": " Tags\n\nValidation Rules:\n  ves.io.schema.rules.map.keys.string.max_len: 127\n  ves.io.schema.rules.map.max_pairs: 20\n  ves.io.schema.rules.map.values.string.max_len: 255\n",
+                    "title": "Tags",
+                    "x-displayname": "Tags",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.map.keys.string.max_len": "127",
+                        "ves.io.schema.rules.map.max_pairs": "20",
+                        "ves.io.schema.rules.map.values.string.max_len": "255"
+                    }
                 },
                 "vpc_cidr": {
                     "type": "string",
-                    "description": "x-displayName: \"VPC CIDR\"\nVPC CIDR",
-                    "title": "VPC CIDR"
+                    "description": " VPC CIDR",
+                    "title": "VPC CIDR",
+                    "x-displayname": "VPC CIDR"
                 },
                 "vpc_id": {
                     "type": "string",
-                    "description": "x-displayName: \"VPC ID\"\nVPC ID",
-                    "title": "VPC ID"
+                    "description": " VPC ID",
+                    "title": "VPC ID",
+                    "x-displayname": "VPC ID"
                 },
                 "vpc_owner_id": {
                     "type": "string",
-                    "description": "x-displayName: \"VPC Owner ID\"\nVPC Owner ID",
-                    "title": "VPC Owner ID"
+                    "description": " VPC Owner ID",
+                    "title": "VPC Owner ID",
+                    "x-displayname": "VPC Owner ID"
                 }
             }
         },
         "siteAWSSubnetStatusType": {
             "type": "object",
-            "description": "x-displayName: \"AWS Subnet Status Type\"\nAWS Subnet Status Type",
+            "description": "AWS Subnet Status Type",
             "title": "AWS Subnet Status Type",
+            "x-displayname": "AWS Subnet Status Type",
+            "x-ves-proto-message": "ves.io.schema.site.AWSSubnetStatusType",
             "properties": {
                 "availablity_zone": {
                     "type": "string",
-                    "description": "x-displayName: \"Availablity Zone\"\nAvailablity Zone",
-                    "title": "Availablity Zone"
+                    "description": " Availablity Zone",
+                    "title": "Availablity Zone",
+                    "x-displayname": "Availablity Zone"
                 },
                 "cidr": {
                     "type": "string",
-                    "description": "x-displayName: \"Subnet CIDR\"\nSubnet CIDR",
-                    "title": "CIDR"
+                    "description": " Subnet CIDR",
+                    "title": "CIDR",
+                    "x-displayname": "Subnet CIDR"
                 },
                 "route_table": {
-                    "description": "x-displayName: \"Route Table\"\nRoute Table",
+                    "description": " Route Table",
                     "title": "Route Table",
-                    "$ref": "#/definitions/siteAWSRouteTableStatusType"
+                    "$ref": "#/definitions/siteAWSRouteTableStatusType",
+                    "x-displayname": "Route Table"
                 },
                 "state": {
-                    "description": "x-displayName: \"Subnet State\"",
                     "title": "State",
-                    "$ref": "#/definitions/siteCloudResourceState"
+                    "$ref": "#/definitions/siteCloudResourceState",
+                    "x-displayname": "Subnet State"
                 },
                 "subnet_id": {
                     "type": "string",
-                    "description": "x-displayName: \"Subnet ID\"\nSubnet ID",
-                    "title": "Subnet ID"
+                    "description": " Subnet ID",
+                    "title": "Subnet ID",
+                    "x-displayname": "Subnet ID"
                 },
                 "tags": {
                     "type": "object",
-                    "description": "x-displayName: \"Tags\"\nTags",
-                    "title": "Tags"
+                    "description": " Tags\n\nValidation Rules:\n  ves.io.schema.rules.map.keys.string.max_len: 127\n  ves.io.schema.rules.map.max_pairs: 20\n  ves.io.schema.rules.map.values.string.max_len: 255\n",
+                    "title": "Tags",
+                    "x-displayname": "Tags",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.map.keys.string.max_len": "127",
+                        "ves.io.schema.rules.map.max_pairs": "20",
+                        "ves.io.schema.rules.map.values.string.max_len": "255"
+                    }
                 },
                 "vpc_id": {
                     "type": "string",
-                    "description": "x-displayName: \"VPC ID\"\nVPC ID",
-                    "title": "VPC ID"
+                    "description": " VPC ID",
+                    "title": "VPC ID",
+                    "x-displayname": "VPC ID"
                 }
             }
         },
         "siteAWSTransitGatewayAttachmentResourceType": {
             "type": "string",
-            "description": "x-displayName: \"AWS Transit Gateway Attachment Resource Type\"\nAWS Transit Gateway Attachment Resource Type\n\n - VPC: VPC Resource Type\n - VPN: VPN Resource Type\n - DIRECT_CONNECT_GATEWAY: Direct Connect Gateway Resource Type\n - CONNECT: Connect Resource Type\n - PEERING: Peering Resource Type\n - TGW_PEERING: TGW Peering Resource Type\n - NETWORK_FUNCTION: Network Function Resource Type",
+            "description": "AWS Transit Gateway Attachment Resource Type\n\n - VPC: VPC Resource Type\n - VPN: VPN Resource Type\n - DIRECT_CONNECT_GATEWAY: Direct Connect Gateway Resource Type\n - CONNECT: Connect Resource Type\n - PEERING: Peering Resource Type\n - TGW_PEERING: TGW Peering Resource Type\n - NETWORK_FUNCTION: Network Function Resource Type",
             "title": "AWS Transit Gateway Attachment Resource Type",
             "enum": [
                 "VPC",
@@ -3461,153 +3555,205 @@ var APISwaggerJSON string = `{
                 "TGW_PEERING",
                 "NETWORK_FUNCTION"
             ],
-            "default": "VPC"
+            "default": "VPC",
+            "x-displayname": "AWS Transit Gateway Attachment Resource Type",
+            "x-ves-proto-enum": "ves.io.schema.site.AWSTransitGatewayAttachmentResourceType"
         },
         "siteAWSTransitGatewayAttachmentStatusType": {
             "type": "object",
-            "description": "x-displayName: \"AWS Transit Gateway Attachment Status Type\"\nAWS Transit Gateway Attachment Status Type",
+            "description": "AWS Transit Gateway Attachment Status Type",
             "title": "AWS Transit Gateway Attachment Status Type",
+            "x-displayname": "AWS Transit Gateway Attachment Status Type",
+            "x-ves-proto-message": "ves.io.schema.site.AWSTransitGatewayAttachmentStatusType",
             "properties": {
                 "resource_id": {
                     "type": "string",
-                    "description": "x-displayName: \"Attachment Resource ID\"",
-                    "title": "Attachment Resource ID"
+                    "title": "Attachment Resource ID",
+                    "x-displayname": "Attachment Resource ID"
                 },
                 "resource_owner_id": {
                     "type": "string",
-                    "description": "x-displayName: \"Resource Owner ID\"\nResource Owner ID",
-                    "title": "Resource Owner ID"
+                    "description": " Resource Owner ID",
+                    "title": "Resource Owner ID",
+                    "x-displayname": "Resource Owner ID"
                 },
                 "resource_type": {
-                    "description": "x-displayName: \"Resource Type\"\nResource Type",
+                    "description": " Resource Type",
                     "title": "Resource Type",
-                    "$ref": "#/definitions/siteAWSTransitGatewayAttachmentResourceType"
+                    "$ref": "#/definitions/siteAWSTransitGatewayAttachmentResourceType",
+                    "x-displayname": "Resource Type"
                 },
                 "state": {
-                    "description": "x-displayName: \"Attachment State\"\nAttachment State",
+                    "description": " Attachment State",
                     "title": "State",
-                    "$ref": "#/definitions/siteCloudResourceState"
+                    "$ref": "#/definitions/siteCloudResourceState",
+                    "x-displayname": "Attachment State"
                 },
                 "tags": {
                     "type": "object",
-                    "description": "x-displayName: \"Tags\"\nTags",
-                    "title": "Tags"
+                    "description": " Tags\n\nValidation Rules:\n  ves.io.schema.rules.map.keys.string.max_len: 127\n  ves.io.schema.rules.map.max_pairs: 20\n  ves.io.schema.rules.map.values.string.max_len: 255\n",
+                    "title": "Tags",
+                    "x-displayname": "Tags",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.map.keys.string.max_len": "127",
+                        "ves.io.schema.rules.map.max_pairs": "20",
+                        "ves.io.schema.rules.map.values.string.max_len": "255"
+                    }
                 },
                 "tgw_attachment_id": {
                     "type": "string",
-                    "description": "x-displayName: \"TGW Attachment ID\"\nTGW Attachment ID",
-                    "title": "TGW Attachment ID"
+                    "description": " TGW Attachment ID",
+                    "title": "TGW Attachment ID",
+                    "x-displayname": "TGW Attachment ID"
                 }
             }
         },
         "siteAWSTransitGatewayStatus": {
             "type": "object",
-            "description": "x-displayName: \"AWS Transit Gateway Status\"\nAWS Transit Gateway Status",
+            "description": "AWS Transit Gateway Status",
             "title": "AWS Transit Gateway Status",
+            "x-displayname": "AWS Transit Gateway Status",
+            "x-ves-proto-message": "ves.io.schema.site.AWSTransitGatewayStatus",
             "properties": {
                 "amazon_asn": {
                     "type": "string",
-                    "description": "x-displayName: \"Amazon ASN\"\nAmazon ASN",
+                    "description": " Amazon ASN",
                     "title": "Amazon ASN",
-                    "format": "uint64"
+                    "format": "uint64",
+                    "x-displayname": "Amazon ASN"
                 },
                 "cidr_blocks": {
                     "type": "array",
-                    "description": "x-displayName: \"Transit gateway CIDR blocks\"\nTransit gateway CIDR blocks",
+                    "description": " Transit gateway CIDR blocks",
                     "title": "Transit gateway CIDR blocks",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "x-displayname": "Transit gateway CIDR blocks"
                 },
                 "owner_id": {
                     "type": "string",
-                    "description": "x-displayName: \"Owner ID\"\nOwner ID",
-                    "title": "Owner ID"
+                    "description": " Owner ID",
+                    "title": "Owner ID",
+                    "x-displayname": "Owner ID"
                 },
                 "site_vpc_attachment_state": {
-                    "description": "x-displayName: \"Site VPC Attachment State\"\nSite VPC Attachment State",
+                    "description": " Site VPC Attachment State",
                     "title": "Site VPC Attachment State",
-                    "$ref": "#/definitions/siteAWSTransitGatewayAttachmentStatusType"
+                    "$ref": "#/definitions/siteAWSTransitGatewayAttachmentStatusType",
+                    "x-displayname": "Site VPC Attachment State"
                 },
                 "state": {
-                    "description": "x-displayName: \"Transit Gateway State\"\nNetwork Interface State",
+                    "description": " Network Interface State",
                     "title": "State",
-                    "$ref": "#/definitions/siteCloudResourceState"
+                    "$ref": "#/definitions/siteCloudResourceState",
+                    "x-displayname": "Transit Gateway State"
                 },
                 "tags": {
                     "type": "object",
-                    "description": "x-displayName: \"Tags\"\nTags",
-                    "title": "Tags"
+                    "description": " Tags\n\nValidation Rules:\n  ves.io.schema.rules.map.keys.string.max_len: 127\n  ves.io.schema.rules.map.max_pairs: 20\n  ves.io.schema.rules.map.values.string.max_len: 255\n",
+                    "title": "Tags",
+                    "x-displayname": "Tags",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.map.keys.string.max_len": "127",
+                        "ves.io.schema.rules.map.max_pairs": "20",
+                        "ves.io.schema.rules.map.values.string.max_len": "255"
+                    }
                 },
                 "transit_gateway_id": {
                     "type": "string",
-                    "description": "x-displayName: \"Transit Gateway ID\"\nTransit Gateway ID",
-                    "title": "Transit Gateway ID"
+                    "description": " Transit Gateway ID",
+                    "title": "Transit Gateway ID",
+                    "x-displayname": "Transit Gateway ID"
                 }
             }
         },
         "siteAWSVolumeEncryptionStatusType": {
             "type": "object",
-            "description": "x-displayName: \"AWS Volume Encryption Status Type\"\nAWS Volume Encryption Status Type",
+            "description": "AWS Volume Encryption Status Type",
             "title": "AWS Volume Encryption Status Type",
+            "x-displayname": "AWS Volume Encryption Status Type",
+            "x-ves-proto-message": "ves.io.schema.site.AWSVolumeEncryptionStatusType",
             "properties": {
                 "encrypted_enabled": {
                     "type": "boolean",
-                    "description": "x-displayName: \"Volume Encryption Status\"\nVolume Encryption Status",
+                    "description": " Volume Encryption Status",
                     "title": "Volume Encryption Status",
-                    "format": "boolean"
+                    "format": "boolean",
+                    "x-displayname": "Volume Encryption Status"
                 },
                 "kms_key_arn": {
                     "type": "string",
-                    "description": "x-displayName: \"KMS Key ARN\"\nKMS Key Arn",
-                    "title": "KMS Key arn"
+                    "description": " KMS Key Arn",
+                    "title": "KMS Key arn",
+                    "x-displayname": "KMS Key ARN"
                 },
                 "tags": {
                     "type": "object",
-                    "description": "x-displayName: \"Tags\"\nTags",
-                    "title": "Tags"
+                    "description": " Tags\n\nValidation Rules:\n  ves.io.schema.rules.map.keys.string.max_len: 127\n  ves.io.schema.rules.map.max_pairs: 20\n  ves.io.schema.rules.map.values.string.max_len: 255\n",
+                    "title": "Tags",
+                    "x-displayname": "Tags",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.map.keys.string.max_len": "127",
+                        "ves.io.schema.rules.map.max_pairs": "20",
+                        "ves.io.schema.rules.map.values.string.max_len": "255"
+                    }
                 }
             }
         },
         "siteAWSVolumeStatusType": {
             "type": "object",
-            "description": "x-displayName: \"AWS Elastic Block Storage\"\nAWS Elastic Block Storage",
+            "description": "AWS Elastic Block Storage",
             "title": "AWS Elastic Block Storage",
+            "x-displayname": "AWS Elastic Block Storage",
+            "x-ves-proto-message": "ves.io.schema.site.AWSVolumeStatusType",
             "properties": {
                 "availability_zone": {
                     "type": "string",
-                    "description": "x-displayName: \"Availablity Zone\"\nAvailablity Zone",
-                    "title": "Availablity Zone"
+                    "description": " Availablity Zone",
+                    "title": "Availablity Zone",
+                    "x-displayname": "Availablity Zone"
                 },
                 "disk_size": {
                     "type": "string",
-                    "description": "x-displayName: \"Disk Size\"\nDisk Size",
-                    "title": "Disk Size"
+                    "description": " Disk Size",
+                    "title": "Disk Size",
+                    "x-displayname": "Disk Size"
                 },
                 "encryption": {
-                    "description": "x-displayName: \"Volume Encryption\"\nVolume Encryption",
+                    "description": " Volume Encryption",
                     "title": "Volume Encyption",
-                    "$ref": "#/definitions/siteAWSVolumeEncryptionStatusType"
+                    "$ref": "#/definitions/siteAWSVolumeEncryptionStatusType",
+                    "x-displayname": "Volume Encryption"
                 },
                 "state": {
-                    "description": "x-displayName: \"Volume State\"\nVolume State",
+                    "description": " Volume State",
                     "title": "State",
-                    "$ref": "#/definitions/siteCloudResourceState"
+                    "$ref": "#/definitions/siteCloudResourceState",
+                    "x-displayname": "Volume State"
                 },
                 "tags": {
                     "type": "object",
-                    "description": "x-displayName: \"Tags\"\nTags",
-                    "title": "Tags"
+                    "description": " Tags\n\nValidation Rules:\n  ves.io.schema.rules.map.keys.string.max_len: 127\n  ves.io.schema.rules.map.max_pairs: 20\n  ves.io.schema.rules.map.values.string.max_len: 255\n",
+                    "title": "Tags",
+                    "x-displayname": "Tags",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.map.keys.string.max_len": "127",
+                        "ves.io.schema.rules.map.max_pairs": "20",
+                        "ves.io.schema.rules.map.values.string.max_len": "255"
+                    }
                 },
                 "type": {
                     "type": "string",
-                    "description": "x-displayName: \"Volume Type\"\nVolume Type",
-                    "title": "Volume Type"
+                    "description": " Volume Type",
+                    "title": "Volume Type",
+                    "x-displayname": "Volume Type"
                 },
                 "volumeID": {
                     "type": "string",
-                    "description": "x-displayName: \"Volume ID\"\nVolume ID",
-                    "title": "Volume ID"
+                    "description": " Volume ID",
+                    "title": "Volume ID",
+                    "x-displayname": "Volume ID"
                 }
             }
         },
@@ -3969,7 +4115,7 @@ var APISwaggerJSON string = `{
         },
         "siteCloudResourceState": {
             "type": "string",
-            "description": "x-displayName: \"Cloud Resource Deployment State\"\nCloud Resource Deployment State\n\n - RESOURCE_STATE_NONE: None\n\nx-displayName: \"None\"\nNone\n - RESOURCE_DEPLOYMENT_IN_PROGRESS: In Progress\n\nx-displayName: \"In Progress\"\nResource deployment is in flight.\n - RESOURCE_IS_AVAILABLE: Available\n\nx-displayName: \"Available\"\nResource is deployed and is in available state.\n - RESOURCE_DEPLOYMENT_HAS_FAILED: Failed\n\nx-displayName: \"Failed\"\nResource deployment has failed.\n - RESOURCE_IS_DELETING: Deleting\n\nx-displayName: \"Deleting\"\nResource being deleted\n - RESOURCE_IS_DELETED: Deleted\n\nx-displayName: \"Deleted\"\nResource is deleted\n - RESOURCE_DELETION_FAILED: Resource Failed to Delete\n\nx-displayName: \"Failed to Delete\"\nFailed to Delete\n - INVALID_RESOURCE: INVALID\n\nx-displayName: \"INVALID\"\nResource is invalid and does not exists on the cloud\n - VALID_RESOURCE: VALID\n\nx-displayName: \"VALID\"\nResource is valid and found on the cloud",
+            "description": "Cloud Resource Deployment State\n\n - RESOURCE_STATE_NONE: None\n\nNone\n - RESOURCE_DEPLOYMENT_IN_PROGRESS: In Progress\n\nResource deployment is in flight.\n - RESOURCE_IS_AVAILABLE: Available\n\nResource is deployed and is in available state.\n - RESOURCE_DEPLOYMENT_HAS_FAILED: Failed\n\nResource deployment has failed.\n - RESOURCE_IS_DELETING: Deleting\n\nResource being deleted\n - RESOURCE_IS_DELETED: Deleted\n\nResource is deleted\n - RESOURCE_DELETION_FAILED: Resource Failed to Delete\n\nFailed to Delete\n - INVALID_RESOURCE: INVALID\n\nResource is invalid and does not exists on the cloud\n - VALID_RESOURCE: VALID\n\nResource is valid and found on the cloud",
             "title": "Cloud Resource Deployment State",
             "enum": [
                 "RESOURCE_STATE_NONE",
@@ -3982,7 +4128,9 @@ var APISwaggerJSON string = `{
                 "INVALID_RESOURCE",
                 "VALID_RESOURCE"
             ],
-            "default": "RESOURCE_STATE_NONE"
+            "default": "RESOURCE_STATE_NONE",
+            "x-displayname": "Cloud Resource Deployment State",
+            "x-ves-proto-enum": "ves.io.schema.site.CloudResourceState"
         },
         "siteCoordinates": {
             "type": "object",
@@ -4923,7 +5071,9 @@ var APISwaggerJSON string = `{
                 "SLI",
                 "SEGMENT"
             ],
-            "default": "SLO"
+            "default": "SLO",
+            "x-displayname": "",
+            "x-ves-proto-enum": "ves.io.schema.site.NetworkType"
         },
         "siteNodeInfo": {
             "type": "object",
@@ -5057,13 +5207,17 @@ var APISwaggerJSON string = `{
         },
         "siteOrchestrationStatusType": {
             "type": "object",
-            "description": "x-displayName: \"Site Orchestration Status Type\"\nManaged Sites Orchestration Status",
+            "description": "Managed Sites Orchestration Status",
             "title": "Site Orchestration Status Type",
+            "x-displayname": "Site Orchestration Status Type",
+            "x-ves-oneof-field-cloud_choice": "[\"aws_orchestration_status\"]",
+            "x-ves-proto-message": "ves.io.schema.site.OrchestrationStatusType",
             "properties": {
                 "aws_orchestration_status": {
-                    "description": "x-displayName: \"AWS Site orchestration status\"\nAWS Site orchestration status",
+                    "description": "Exclusive with []\n AWS Site orchestration status",
                     "title": "AWS Site orchestration status",
-                    "$ref": "#/definitions/siteAWSOrchestrationStatusType"
+                    "$ref": "#/definitions/siteAWSOrchestrationStatusType",
+                    "x-displayname": "AWS Site orchestration status"
                 }
             }
         },
@@ -5595,7 +5749,7 @@ var APISwaggerJSON string = `{
             "description": "Most recently observed status of site object",
             "title": "Site Status Object",
             "x-displayname": "Status",
-            "x-ves-displayorder": "1,3,5,13,6,7,8,12,9,10,11,14,15,16,17,18,19,20,21,22,24",
+            "x-ves-displayorder": "1,3,5,13,6,7,8,12,9,10,11,14,15,16,17,18,19,20,21,22,24,26,27",
             "x-ves-proto-message": "ves.io.schema.site.StatusObject",
             "properties": {
                 "certified_hardware": {
@@ -5663,6 +5817,12 @@ var APISwaggerJSON string = `{
                     "$ref": "#/definitions/viewsInternetVIPStatus",
                     "x-displayname": "Internet VIP Status"
                 },
+                "managed_site_orchestration_status": {
+                    "description": " Managed Site Orchestration Status",
+                    "title": "Site Orchestration Status",
+                    "$ref": "#/definitions/siteOrchestrationStatusType",
+                    "x-displayname": "Site Orchestration Status"
+                },
                 "metadata": {
                     "description": " Standard status's metadata",
                     "title": "metadata",
@@ -5701,6 +5861,15 @@ var APISwaggerJSON string = `{
                     "title": "Scaling Status",
                     "$ref": "#/definitions/siteScalingStatus",
                     "x-displayname": "Scaling Status"
+                },
+                "site_errors": {
+                    "type": "array",
+                    "description": " Site Errors",
+                    "title": "SiteErrors",
+                    "items": {
+                        "$ref": "#/definitions/viewsSiteError"
+                    },
+                    "x-displayname": "Site Errors"
                 },
                 "site_mesh_group_status": {
                     "description": " Site Mesh Group Status",
@@ -6928,18 +7097,31 @@ var APISwaggerJSON string = `{
         },
         "viewsSiteError": {
             "type": "object",
-            "description": "x-displayName: \"Site Error\"\nSite Error",
+            "description": "Site Error",
             "title": "Site Error",
+            "x-displayname": "Site Error",
+            "x-ves-proto-message": "ves.io.schema.views.SiteError",
             "properties": {
                 "error_description": {
                     "type": "string",
-                    "description": "x-example: \"invalid VPC ID\"\nx-displayName: \"Error Description\"\nError Description",
-                    "title": "Error Description"
+                    "description": " Error Description\n\nExample: - \"invalid VPC ID\"-",
+                    "title": "Error Description",
+                    "x-displayname": "Error Description",
+                    "x-ves-example": "invalid VPC ID"
+                },
+                "error_details": {
+                    "type": "string",
+                    "description": " Error details contains error message from cloud provider\n\nExample: - \"VPC vpc-1233548 NotExistent\"-",
+                    "title": "Error Details",
+                    "x-displayname": "Error Details",
+                    "x-ves-example": "VPC vpc-1233548 NotExistent"
                 },
                 "suggested_action": {
                     "type": "string",
-                    "description": "x-example: \"update VPC ID\"\nx-displayName: \"Suggested Action\"\nSuggested Action",
-                    "title": "Suggested Action"
+                    "description": " Suggested Action\n\nExample: - \"update VPC ID\"-",
+                    "title": "Suggested Action",
+                    "x-displayname": "Suggested Action",
+                    "x-ves-example": "update VPC ID"
                 }
             }
         },

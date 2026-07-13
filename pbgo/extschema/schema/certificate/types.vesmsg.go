@@ -339,6 +339,11 @@ func (m *GetSpecType) GetDRefInfo() ([]db.DRefInfo, error) {
 	} else {
 		drInfos = append(drInfos, fdrInfos...)
 	}
+	if fdrInfos, err := m.GetProviderDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetProviderDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
 	if fdrInfos, err := m.GetTcpLoadbalancersDRefInfo(); err != nil {
 		return nil, errors.Wrap(err, "GetTcpLoadbalancersDRefInfo() FAILED")
 	} else {
@@ -443,6 +448,29 @@ func (m *GetSpecType) GetHttpLoadbalancersDBEntries(ctx context.Context, d db.In
 		}
 	}
 	return entries, nil
+}
+
+// GetDRefInfo for the field's type
+func (m *GetSpecType) GetProviderDRefInfo() ([]db.DRefInfo, error) {
+	if m.GetProvider() == nil {
+		return nil, nil
+	}
+	switch m.GetProvider().(type) {
+	case *GetSpecType_Manual:
+		return nil, nil
+	case *GetSpecType_VirtualHostAutoCert:
+		drInfos, err := m.GetVirtualHostAutoCert().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetVirtualHostAutoCert().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "virtual_host_auto_cert." + dri.DRField
+		}
+		return drInfos, err
+	default:
+		return nil, nil
+	}
 }
 
 func (m *GetSpecType) GetTcpLoadbalancersDRefInfo() ([]db.DRefInfo, error) {
@@ -613,6 +641,31 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 			return err
 		}
 	}
+
+	switch m.GetProvider().(type) {
+	case *GetSpecType_Manual:
+		if fv, exists := v.FldValidators["provider.manual"]; exists {
+			val := m.GetProvider().(*GetSpecType_Manual).Manual
+			vOpts := append(opts,
+				db.WithValidateField("provider"),
+				db.WithValidateField("manual"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *GetSpecType_VirtualHostAutoCert:
+		if fv, exists := v.FldValidators["provider.virtual_host_auto_cert"]; exists {
+			val := m.GetProvider().(*GetSpecType_VirtualHostAutoCert).VirtualHostAutoCert
+			vOpts := append(opts,
+				db.WithValidateField("provider"),
+				db.WithValidateField("virtual_host_auto_cert"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
 	if fv, exists := v.FldValidators["tcp_loadbalancers"]; exists {
 		vOpts := append(opts, db.WithValidateField("tcp_loadbalancers"))
 		for idx, item := range m.GetTcpLoadbalancers() {
@@ -661,6 +714,7 @@ var DefaultGetSpecTypeValidator = func() *ValidateGetSpecType {
 	}
 	v.FldValidators["private_key"] = vFn
 	v.FldValidators["ocsp_stapling_choice.custom_hash_algorithms"] = ves_io_schema.HashAlgorithmsValidator().Validate
+	v.FldValidators["provider.virtual_host_auto_cert"] = VirtualHostAutoCertValidator().Validate
 	v.FldValidators["certificate_chain"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["http_loadbalancers"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["tcp_loadbalancers"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
@@ -735,6 +789,11 @@ func (m *GlobalSpecType) GetDRefInfo() ([]db.DRefInfo, error) {
 	}
 	if fdrInfos, err := m.GetHttpLoadbalancersDRefInfo(); err != nil {
 		return nil, errors.Wrap(err, "GetHttpLoadbalancersDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetProviderDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetProviderDRefInfo() FAILED")
 	} else {
 		drInfos = append(drInfos, fdrInfos...)
 	}
@@ -842,6 +901,29 @@ func (m *GlobalSpecType) GetHttpLoadbalancersDBEntries(ctx context.Context, d db
 		}
 	}
 	return entries, nil
+}
+
+// GetDRefInfo for the field's type
+func (m *GlobalSpecType) GetProviderDRefInfo() ([]db.DRefInfo, error) {
+	if m.GetProvider() == nil {
+		return nil, nil
+	}
+	switch m.GetProvider().(type) {
+	case *GlobalSpecType_Manual:
+		return nil, nil
+	case *GlobalSpecType_VirtualHostAutoCert:
+		drInfos, err := m.GetVirtualHostAutoCert().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetVirtualHostAutoCert().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "virtual_host_auto_cert." + dri.DRField
+		}
+		return drInfos, err
+	default:
+		return nil, nil
+	}
 }
 
 func (m *GlobalSpecType) GetTcpLoadbalancersDRefInfo() ([]db.DRefInfo, error) {
@@ -1012,6 +1094,31 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 			return err
 		}
 	}
+
+	switch m.GetProvider().(type) {
+	case *GlobalSpecType_Manual:
+		if fv, exists := v.FldValidators["provider.manual"]; exists {
+			val := m.GetProvider().(*GlobalSpecType_Manual).Manual
+			vOpts := append(opts,
+				db.WithValidateField("provider"),
+				db.WithValidateField("manual"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *GlobalSpecType_VirtualHostAutoCert:
+		if fv, exists := v.FldValidators["provider.virtual_host_auto_cert"]; exists {
+			val := m.GetProvider().(*GlobalSpecType_VirtualHostAutoCert).VirtualHostAutoCert
+			vOpts := append(opts,
+				db.WithValidateField("provider"),
+				db.WithValidateField("virtual_host_auto_cert"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
 	if fv, exists := v.FldValidators["tcp_loadbalancers"]; exists {
 		vOpts := append(opts, db.WithValidateField("tcp_loadbalancers"))
 		for idx, item := range m.GetTcpLoadbalancers() {
@@ -1060,6 +1167,7 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 	}
 	v.FldValidators["private_key"] = vFn
 	v.FldValidators["ocsp_stapling_choice.custom_hash_algorithms"] = ves_io_schema.HashAlgorithmsValidator().Validate
+	v.FldValidators["provider.virtual_host_auto_cert"] = VirtualHostAutoCertValidator().Validate
 	v.FldValidators["certificate_chain"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["http_loadbalancers"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["tcp_loadbalancers"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
@@ -1319,6 +1427,196 @@ func ReplaceSpecTypeValidator() db.Validator {
 	return DefaultReplaceSpecTypeValidator
 }
 
+// augmented methods on protoc/std generated struct
+
+func (m *VirtualHostAutoCert) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *VirtualHostAutoCert) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *VirtualHostAutoCert) DeepCopy() *VirtualHostAutoCert {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &VirtualHostAutoCert{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *VirtualHostAutoCert) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *VirtualHostAutoCert) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return VirtualHostAutoCertValidator().Validate(ctx, m, opts...)
+}
+
+func (m *VirtualHostAutoCert) GetDRefInfo() ([]db.DRefInfo, error) {
+	if m == nil {
+		return nil, nil
+	}
+
+	return m.GetOwnerVirtualHostDRefInfo()
+}
+
+func (m *VirtualHostAutoCert) GetOwnerVirtualHostDRefInfo() ([]db.DRefInfo, error) {
+	refs := m.GetOwnerVirtualHost()
+	if len(refs) == 0 {
+		return nil, nil
+	}
+	drInfos := make([]db.DRefInfo, 0, len(refs))
+	for i, ref := range refs {
+		if ref == nil {
+			return nil, fmt.Errorf("VirtualHostAutoCert.owner_virtual_host[%d] has a nil value", i)
+		}
+		// resolve kind to type if needed at DBObject.GetDRefInfo()
+		drInfos = append(drInfos, db.DRefInfo{
+			RefdType:   "virtual_host.Object",
+			RefdUID:    ref.Uid,
+			RefdTenant: ref.Tenant,
+			RefdNS:     ref.Namespace,
+			RefdName:   ref.Name,
+			DRField:    "owner_virtual_host",
+			Ref:        ref,
+		})
+	}
+	return drInfos, nil
+}
+
+// GetOwnerVirtualHostDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *VirtualHostAutoCert) GetOwnerVirtualHostDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "virtual_host.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: virtual_host")
+	}
+	for _, ref := range m.GetOwnerVirtualHost() {
+		refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+		if err != nil {
+			return nil, errors.Wrap(err, "Getting referred entry")
+		}
+		if refdEnt != nil {
+			entries = append(entries, refdEnt)
+		}
+	}
+	return entries, nil
+}
+
+type ValidateVirtualHostAutoCert struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateVirtualHostAutoCert) OwnerVirtualHostValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepMessageItemRules(rules)
+	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Message ValidationRuleHandler for owner_virtual_host")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []*ves_io_schema.ObjectRefType, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+			if err := ves_io_schema.ObjectRefTypeValidator().Validate(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for owner_virtual_host")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]*ves_io_schema.ObjectRefType)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []*ves_io_schema.ObjectRefType, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
+			if err != nil {
+				return errors.Wrapf(err, "Converting %v to JSON", elem)
+			}
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated owner_virtual_host")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items owner_virtual_host")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateVirtualHostAutoCert) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*VirtualHostAutoCert)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *VirtualHostAutoCert got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["owner_virtual_host"]; exists {
+		vOpts := append(opts, db.WithValidateField("owner_virtual_host"))
+		if err := fv(ctx, m.GetOwnerVirtualHost(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultVirtualHostAutoCertValidator = func() *ValidateVirtualHostAutoCert {
+	v := &ValidateVirtualHostAutoCert{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhOwnerVirtualHost := v.OwnerVirtualHostValidationRuleHandler
+	rulesOwnerVirtualHost := map[string]string{
+		"ves.io.schema.rules.repeated.max_items": "1",
+	}
+	vFn, err = vrhOwnerVirtualHost(rulesOwnerVirtualHost)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for VirtualHostAutoCert.owner_virtual_host: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["owner_virtual_host"] = vFn
+
+	return v
+}()
+
+func VirtualHostAutoCertValidator() db.Validator {
+	return DefaultVirtualHostAutoCertValidator
+}
+
 // create setters in CreateSpecType from GlobalSpecType for oneof fields
 func (r *CreateSpecType) SetOcspStaplingChoiceToGlobalSpecType(o *GlobalSpecType) error {
 	switch of := r.OcspStaplingChoice.(type) {
@@ -1440,6 +1738,41 @@ func (r *GetSpecType) GetOcspStaplingChoiceFromGlobalSpecType(o *GlobalSpecType)
 	return nil
 }
 
+// create setters in GetSpecType from GlobalSpecType for oneof fields
+func (r *GetSpecType) SetProviderToGlobalSpecType(o *GlobalSpecType) error {
+	switch of := r.Provider.(type) {
+	case nil:
+		o.Provider = nil
+
+	case *GetSpecType_Manual:
+		o.Provider = &GlobalSpecType_Manual{Manual: of.Manual}
+
+	case *GetSpecType_VirtualHostAutoCert:
+		o.Provider = &GlobalSpecType_VirtualHostAutoCert{VirtualHostAutoCert: of.VirtualHostAutoCert}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+func (r *GetSpecType) GetProviderFromGlobalSpecType(o *GlobalSpecType) error {
+	switch of := o.Provider.(type) {
+	case nil:
+		r.Provider = nil
+
+	case *GlobalSpecType_Manual:
+		r.Provider = &GetSpecType_Manual{Manual: of.Manual}
+
+	case *GlobalSpecType_VirtualHostAutoCert:
+		r.Provider = &GetSpecType_VirtualHostAutoCert{VirtualHostAutoCert: of.VirtualHostAutoCert}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
 func (m *GetSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	if f == nil {
 		return
@@ -1450,6 +1783,7 @@ func (m *GetSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	m.Infos = f.GetInfos()
 	m.GetOcspStaplingChoiceFromGlobalSpecType(f)
 	m.PrivateKey = f.GetPrivateKey()
+	m.GetProviderFromGlobalSpecType(f)
 	m.TcpLoadbalancers = f.GetTcpLoadbalancers()
 }
 
@@ -1474,6 +1808,7 @@ func (m *GetSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	f.Infos = m1.Infos
 	m1.SetOcspStaplingChoiceToGlobalSpecType(f)
 	f.PrivateKey = m1.PrivateKey
+	m1.SetProviderToGlobalSpecType(f)
 	f.TcpLoadbalancers = m1.TcpLoadbalancers
 }
 

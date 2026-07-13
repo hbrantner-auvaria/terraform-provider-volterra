@@ -28,13 +28,7 @@ resource "volterra_app_api_group" "example" {
 
   // One of the arguments from this list "api_definition bigip_virtual_server cdn_loadbalancer generic http_loadbalancer" must be set
 
-  http_loadbalancer {
-    http_loadbalancer {
-      name      = "test1"
-      namespace = "staging"
-      tenant    = "acmecorp"
-    }
-  }
+  generic = true
 }
 ```
 

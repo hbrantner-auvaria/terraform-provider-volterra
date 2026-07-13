@@ -531,6 +531,11 @@ func (m *ApplicationInventoryResponse) GetDRefInfo() ([]db.DRefInfo, error) {
 	} else {
 		drInfos = append(drInfos, fdrInfos...)
 	}
+	if fdrInfos, err := m.GetVirtualServersDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetVirtualServersDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
 	return drInfos, nil
 }
 
@@ -562,6 +567,22 @@ func (m *ApplicationInventoryResponse) GetHttpLoadbalancersDRefInfo() ([]db.DRef
 	for i := range drInfos {
 		dri := &drInfos[i]
 		dri.DRField = "http_loadbalancers." + dri.DRField
+	}
+	return drInfos, err
+}
+
+// GetDRefInfo for the field's type
+func (m *ApplicationInventoryResponse) GetVirtualServersDRefInfo() ([]db.DRefInfo, error) {
+	if m.GetVirtualServers() == nil {
+		return nil, nil
+	}
+	drInfos, err := m.GetVirtualServers().GetDRefInfo()
+	if err != nil {
+		return nil, errors.Wrap(err, "GetVirtualServers().GetDRefInfo() FAILED")
+	}
+	for i := range drInfos {
+		dri := &drInfos[i]
+		dri.DRField = "virtual_servers." + dri.DRField
 	}
 	return drInfos, err
 }
@@ -658,6 +679,7 @@ var DefaultApplicationInventoryResponseValidator = func() *ValidateApplicationIn
 	v.FldValidators["http_loadbalancers"] = HTTPLoadbalancerInventoryTypeValidator().Validate
 	v.FldValidators["cdn_loadbalancers"] = HTTPLoadbalancerInventoryTypeValidator().Validate
 	v.FldValidators["nginx_one_servers"] = NGINXOneServerInventoryTypeValidator().Validate
+	v.FldValidators["virtual_servers"] = VirtualServerInventoryResultTypeValidator().Validate
 
 	return v
 }()
@@ -5833,6 +5855,30 @@ func (m *VirtualServerInventoryResultType) Validate(ctx context.Context, opts ..
 	return VirtualServerInventoryResultTypeValidator().Validate(ctx, m, opts...)
 }
 
+func (m *VirtualServerInventoryResultType) GetDRefInfo() ([]db.DRefInfo, error) {
+	if m == nil {
+		return nil, nil
+	}
+
+	return m.GetVirtualServerSpecsDRefInfo()
+}
+
+// GetDRefInfo for the field's type
+func (m *VirtualServerInventoryResultType) GetVirtualServerSpecsDRefInfo() ([]db.DRefInfo, error) {
+	if m.GetVirtualServerSpecs() == nil {
+		return nil, nil
+	}
+	drInfos, err := m.GetVirtualServerSpecs().GetDRefInfo()
+	if err != nil {
+		return nil, errors.Wrap(err, "GetVirtualServerSpecs().GetDRefInfo() FAILED")
+	}
+	for i := range drInfos {
+		dri := &drInfos[i]
+		dri.DRField = "virtual_server_specs." + dri.DRField
+	}
+	return drInfos, err
+}
+
 type ValidateVirtualServerInventoryResultType struct {
 	FldValidators map[string]db.ValidatorFunc
 }
@@ -5862,6 +5908,12 @@ func (v *ValidateVirtualServerInventoryResultType) Validate(ctx context.Context,
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["virtual_server_specs"]; exists {
+		vOpts := append(opts, db.WithValidateField("virtual_server_specs"))
+		if err := fv(ctx, m.GetVirtualServerSpecs(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["virtualserver_results"]; exists {
 		vOpts := append(opts, db.WithValidateField("virtualserver_results"))
 		for idx, item := range m.GetVirtualserverResults() {
@@ -5877,6 +5929,7 @@ func (v *ValidateVirtualServerInventoryResultType) Validate(ctx context.Context,
 // Well-known symbol for default validator implementation
 var DefaultVirtualServerInventoryResultTypeValidator = func() *ValidateVirtualServerInventoryResultType {
 	v := &ValidateVirtualServerInventoryResultType{FldValidators: map[string]db.ValidatorFunc{}}
+	v.FldValidators["virtual_server_specs"] = VirtualServerSpecsInventoryTypeValidator().Validate
 
 	return v
 }()
@@ -5978,6 +6031,117 @@ var DefaultVirtualServerResultTypeValidator = func() *ValidateVirtualServerResul
 
 func VirtualServerResultTypeValidator() db.Validator {
 	return DefaultVirtualServerResultTypeValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *VirtualServerSpecsInventoryType) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *VirtualServerSpecsInventoryType) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *VirtualServerSpecsInventoryType) DeepCopy() *VirtualServerSpecsInventoryType {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &VirtualServerSpecsInventoryType{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *VirtualServerSpecsInventoryType) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *VirtualServerSpecsInventoryType) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return VirtualServerSpecsInventoryTypeValidator().Validate(ctx, m, opts...)
+}
+
+func (m *VirtualServerSpecsInventoryType) GetDRefInfo() ([]db.DRefInfo, error) {
+	if m == nil {
+		return nil, nil
+	}
+
+	return m.GetHttpDRefInfo()
+}
+
+// GetDRefInfo for the field's type
+func (m *VirtualServerSpecsInventoryType) GetHttpDRefInfo() ([]db.DRefInfo, error) {
+	if m.GetHttp() == nil {
+		return nil, nil
+	}
+	drInfos, err := m.GetHttp().GetDRefInfo()
+	if err != nil {
+		return nil, errors.Wrap(err, "GetHttp().GetDRefInfo() FAILED")
+	}
+	for i := range drInfos {
+		dri := &drInfos[i]
+		dri.DRField = "http." + dri.DRField
+	}
+	return drInfos, err
+}
+
+type ValidateVirtualServerSpecsInventoryType struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateVirtualServerSpecsInventoryType) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*VirtualServerSpecsInventoryType)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *VirtualServerSpecsInventoryType got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["http"]; exists {
+		vOpts := append(opts, db.WithValidateField("http"))
+		if err := fv(ctx, m.GetHttp(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["tcp"]; exists {
+		vOpts := append(opts, db.WithValidateField("tcp"))
+		if err := fv(ctx, m.GetTcp(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["udp"]; exists {
+		vOpts := append(opts, db.WithValidateField("udp"))
+		if err := fv(ctx, m.GetUdp(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultVirtualServerSpecsInventoryTypeValidator = func() *ValidateVirtualServerSpecsInventoryType {
+	v := &ValidateVirtualServerSpecsInventoryType{FldValidators: map[string]db.ValidatorFunc{}}
+	v.FldValidators["http"] = HTTPLoadbalancerInventoryTypeValidator().Validate
+
+	return v
+}()
+
+func VirtualServerSpecsInventoryTypeValidator() db.Validator {
+	return DefaultVirtualServerSpecsInventoryTypeValidator
 }
 
 // augmented methods on protoc/std generated struct

@@ -34,12 +34,11 @@ resource "volterra_v1_http_monitor" "example" {
 
   // One of the arguments from this list "delete get head options patch post put" must be set
 
-  options          = true
-  on_failure_count = "2"
-  response_codes   = ["2**", "3**"]
-  source_critical_threshold = "1"
-  url                       = "https://www.f5.com"
-  response_timeout = "10"
+  get              = true
+  on_failure_count = ["2"]
+  response_codes   = ["[\"2**\", \"3**\"]"]
+  source_critical_threshold = ["1"]
+  url                       = ["https://www.f5.com"]
 }
 ```
 

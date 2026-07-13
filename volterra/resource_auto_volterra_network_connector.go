@@ -77,11 +77,6 @@ func resourceVolterraNetworkConnector() *schema.Resource {
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 
-									"kind": {
-										Type:     schema.TypeString,
-										Computed: true,
-									},
-
 									"name": {
 										Type:     schema.TypeString,
 										Optional: true,
@@ -294,11 +289,6 @@ func resourceVolterraNetworkConnector() *schema.Resource {
 							Required: true,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
-
-									"kind": {
-										Type:     schema.TypeString,
-										Computed: true,
-									},
 
 									"name": {
 										Type:     schema.TypeString,
@@ -893,24 +883,22 @@ func resourceVolterraNetworkConnectorCreate(d *schema.ResourceData, meta interfa
 				if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 					sl := v.([]interface{})
-					globalVn := &ves_io_schema_views.ObjectRefType{}
-					connectorChoiceInt.SliToGlobalDr.GlobalVn = globalVn
+					globalVnInt := &ves_io_schema_views.ObjectRefType{}
+					connectorChoiceInt.SliToGlobalDr.GlobalVn = globalVnInt
+
 					for _, set := range sl {
 						if set != nil {
-							globalVnMapStrToI := set.(map[string]interface{})
-
-							if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-								globalVn.Name = w.(string)
+							gvMapToStrVal := set.(map[string]interface{})
+							if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+								globalVnInt.Name = val.(string)
+							}
+							if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								globalVnInt.Namespace = val.(string)
 							}
 
-							if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-								globalVn.Namespace = w.(string)
+							if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								globalVnInt.Tenant = val.(string)
 							}
-
-							if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-								globalVn.Tenant = w.(string)
-							}
-
 						}
 					}
 
@@ -1192,24 +1180,22 @@ func resourceVolterraNetworkConnectorCreate(d *schema.ResourceData, meta interfa
 				if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 					sl := v.([]interface{})
-					globalVn := &ves_io_schema_views.ObjectRefType{}
-					connectorChoiceInt.SloToGlobalDr.GlobalVn = globalVn
+					globalVnInt := &ves_io_schema_views.ObjectRefType{}
+					connectorChoiceInt.SloToGlobalDr.GlobalVn = globalVnInt
+
 					for _, set := range sl {
 						if set != nil {
-							globalVnMapStrToI := set.(map[string]interface{})
-
-							if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-								globalVn.Name = w.(string)
+							gvMapToStrVal := set.(map[string]interface{})
+							if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+								globalVnInt.Name = val.(string)
+							}
+							if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								globalVnInt.Namespace = val.(string)
 							}
 
-							if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-								globalVn.Namespace = w.(string)
+							if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								globalVnInt.Tenant = val.(string)
 							}
-
-							if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-								globalVn.Tenant = w.(string)
-							}
-
 						}
 					}
 
@@ -1908,6 +1894,7 @@ func resourceVolterraNetworkConnectorRead(d *schema.ResourceData, meta interface
 		}
 		return fmt.Errorf("Error finding Volterra NetworkConnector %q: %s", d.Id(), err)
 	}
+
 	return setNetworkConnectorFields(client, d, resp)
 }
 
@@ -1999,24 +1986,22 @@ func resourceVolterraNetworkConnectorUpdate(d *schema.ResourceData, meta interfa
 				if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 					sl := v.([]interface{})
-					globalVn := &ves_io_schema_views.ObjectRefType{}
-					connectorChoiceInt.SliToGlobalDr.GlobalVn = globalVn
+					globalVnInt := &ves_io_schema_views.ObjectRefType{}
+					connectorChoiceInt.SliToGlobalDr.GlobalVn = globalVnInt
+
 					for _, set := range sl {
 						if set != nil {
-							globalVnMapStrToI := set.(map[string]interface{})
-
-							if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-								globalVn.Name = w.(string)
+							gvMapToStrVal := set.(map[string]interface{})
+							if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+								globalVnInt.Name = val.(string)
+							}
+							if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								globalVnInt.Namespace = val.(string)
 							}
 
-							if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-								globalVn.Namespace = w.(string)
+							if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								globalVnInt.Tenant = val.(string)
 							}
-
-							if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-								globalVn.Tenant = w.(string)
-							}
-
 						}
 					}
 
@@ -2298,24 +2283,22 @@ func resourceVolterraNetworkConnectorUpdate(d *schema.ResourceData, meta interfa
 				if v, ok := cs["global_vn"]; ok && !isIntfNil(v) {
 
 					sl := v.([]interface{})
-					globalVn := &ves_io_schema_views.ObjectRefType{}
-					connectorChoiceInt.SloToGlobalDr.GlobalVn = globalVn
+					globalVnInt := &ves_io_schema_views.ObjectRefType{}
+					connectorChoiceInt.SloToGlobalDr.GlobalVn = globalVnInt
+
 					for _, set := range sl {
 						if set != nil {
-							globalVnMapStrToI := set.(map[string]interface{})
-
-							if w, ok := globalVnMapStrToI["name"]; ok && !isIntfNil(w) {
-								globalVn.Name = w.(string)
+							gvMapToStrVal := set.(map[string]interface{})
+							if val, ok := gvMapToStrVal["name"]; ok && !isIntfNil(v) {
+								globalVnInt.Name = val.(string)
+							}
+							if val, ok := gvMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								globalVnInt.Namespace = val.(string)
 							}
 
-							if w, ok := globalVnMapStrToI["namespace"]; ok && !isIntfNil(w) {
-								globalVn.Namespace = w.(string)
+							if val, ok := gvMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								globalVnInt.Tenant = val.(string)
 							}
-
-							if w, ok := globalVnMapStrToI["tenant"]; ok && !isIntfNil(w) {
-								globalVn.Tenant = w.(string)
-							}
-
 						}
 					}
 
@@ -3016,5 +2999,11 @@ func resourceVolterraNetworkConnectorDelete(d *schema.ResourceData, meta interfa
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_network_connector.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_network_connector.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting NetworkConnector: %w", err)
+	}
+	return nil
+
 }

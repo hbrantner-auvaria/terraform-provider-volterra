@@ -435,6 +435,7 @@ func resourceVolterraUserIdentificationRead(d *schema.ResourceData, meta interfa
 		}
 		return fmt.Errorf("Error finding Volterra UserIdentification %q: %s", d.Id(), err)
 	}
+
 	return setUserIdentificationFields(client, d, resp)
 }
 
@@ -730,5 +731,11 @@ func resourceVolterraUserIdentificationDelete(d *schema.ResourceData, meta inter
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_user_identification.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_user_identification.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting UserIdentification: %w", err)
+	}
+	return nil
+
 }

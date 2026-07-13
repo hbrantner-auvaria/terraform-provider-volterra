@@ -61,18 +61,24 @@ const (
 	//
 	// x-displayName: "F5 On Prem"
 	ON_PREM DeploymentType = 2
+	// Kubernetes
+	//
+	// x-displayName: "Kubernetes"
+	KUBERNETES DeploymentType = 3
 )
 
 var DeploymentType_name = map[int32]string{
 	0: "CLOUD_HOSTED",
 	1: "HOSTED",
 	2: "ON_PREM",
+	3: "KUBERNETES",
 }
 
 var DeploymentType_value = map[string]int32{
 	"CLOUD_HOSTED": 0,
 	"HOSTED":       1,
 	"ON_PREM":      2,
+	"KUBERNETES":   3,
 }
 
 func (DeploymentType) EnumDescriptor() ([]byte, []int) {
@@ -502,7 +508,7 @@ type DeployPoliciesRequest struct {
 	// namespace
 	//
 	// x-displayName: "Namespace"
-	// x-example: "system"
+	// x-example: "default"
 	// namespace is used to scope the query
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
 	// Bot Infra Name
@@ -516,6 +522,11 @@ type DeployPoliciesRequest struct {
 	// x-displayName: "Deployed Policy"
 	// Deployed Policy Metadata
 	PolicyMetadata []*DeployPolicyMetadata `protobuf:"bytes,3,rep,name=policy_metadata,json=policyMetadata,proto3" json:"policy_metadata,omitempty"`
+	// TI Package Metadata
+	//
+	// x-displayName: "TI Package Metadata"
+	// Optional: TI Package Metadata for this deployment(deliver). Applicable only to the Kubernetes bot infrastructure.
+	TiPackageMetadata *TIPackageMetadata `protobuf:"bytes,5,opt,name=ti_package_metadata,json=tiPackageMetadata,proto3" json:"ti_package_metadata,omitempty"`
 	// Deployed Comments
 	//
 	// x-displayName: "Comments"
@@ -576,9 +587,96 @@ func (m *DeployPoliciesRequest) GetPolicyMetadata() []*DeployPolicyMetadata {
 	return nil
 }
 
+func (m *DeployPoliciesRequest) GetTiPackageMetadata() *TIPackageMetadata {
+	if m != nil {
+		return m.TiPackageMetadata
+	}
+	return nil
+}
+
 func (m *DeployPoliciesRequest) GetComments() string {
 	if m != nil {
 		return m.Comments
+	}
+	return ""
+}
+
+// TI Package Metadata
+//
+// x-displayName: "TI Package Metadata"
+// The metadata for TI package, which will be only support for Kubernetes bot infrastructure
+type TIPackageMetadata struct {
+	// TI Package Name
+	//
+	// x-displayName: "TI Package Name"
+	// x-example: "TI_Package_1"
+	// x-required
+	// TI Package Name
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// TI Package Version
+	//
+	// x-displayName: "TI Package Version"
+	// x-example: "1.0"
+	// TI Package Version
+	Version string `protobuf:"bytes,2,opt,name=version,proto3" json:"version,omitempty"`
+	// TI Package ID
+	//
+	// x-displayName: "TI Package ID"
+	// x-example: "1234567"
+	// x-required
+	// TI Package ID
+	Id string `protobuf:"bytes,3,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (m *TIPackageMetadata) Reset()      { *m = TIPackageMetadata{} }
+func (*TIPackageMetadata) ProtoMessage() {}
+func (*TIPackageMetadata) Descriptor() ([]byte, []int) {
+	return fileDescriptor_14a6612667caec9f, []int{5}
+}
+func (m *TIPackageMetadata) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *TIPackageMetadata) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_TIPackageMetadata.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *TIPackageMetadata) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TIPackageMetadata.Merge(m, src)
+}
+func (m *TIPackageMetadata) XXX_Size() int {
+	return m.Size()
+}
+func (m *TIPackageMetadata) XXX_DiscardUnknown() {
+	xxx_messageInfo_TIPackageMetadata.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_TIPackageMetadata proto.InternalMessageInfo
+
+func (m *TIPackageMetadata) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *TIPackageMetadata) GetVersion() string {
+	if m != nil {
+		return m.Version
+	}
+	return ""
+}
+
+func (m *TIPackageMetadata) GetId() string {
+	if m != nil {
+		return m.Id
 	}
 	return ""
 }
@@ -605,7 +703,7 @@ type DeployPoliciesResponse struct {
 func (m *DeployPoliciesResponse) Reset()      { *m = DeployPoliciesResponse{} }
 func (*DeployPoliciesResponse) ProtoMessage() {}
 func (*DeployPoliciesResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_14a6612667caec9f, []int{5}
+	return fileDescriptor_14a6612667caec9f, []int{6}
 }
 func (m *DeployPoliciesResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -670,7 +768,7 @@ type DeploymentHistoryRequest struct {
 func (m *DeploymentHistoryRequest) Reset()      { *m = DeploymentHistoryRequest{} }
 func (*DeploymentHistoryRequest) ProtoMessage() {}
 func (*DeploymentHistoryRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_14a6612667caec9f, []int{6}
+	return fileDescriptor_14a6612667caec9f, []int{7}
 }
 func (m *DeploymentHistoryRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -728,7 +826,7 @@ type DeploymentHistoryResponse struct {
 func (m *DeploymentHistoryResponse) Reset()      { *m = DeploymentHistoryResponse{} }
 func (*DeploymentHistoryResponse) ProtoMessage() {}
 func (*DeploymentHistoryResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_14a6612667caec9f, []int{7}
+	return fileDescriptor_14a6612667caec9f, []int{8}
 }
 func (m *DeploymentHistoryResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -797,12 +895,30 @@ type DeploymentHistoryData struct {
 	// x-displayName: "Deployed Policy"
 	// Deployed Policy Metadata
 	PolicyMetadata []*DeployPolicyMetadata `protobuf:"bytes,7,rep,name=policy_metadata,json=policyMetadata,proto3" json:"policy_metadata,omitempty"`
+	//Policy ID
+	//
+	// x-displayName: "Policy ID"
+	// x-example: "Some_Policy-ID-1212"
+	// Policy ID
+	PolicyId string `protobuf:"bytes,8,opt,name=policy_id,json=policyId,proto3" json:"policy_id,omitempty"`
+	//Generated Link
+	//
+	// x-displayName: "Generated Link"
+	// x-example: "Generated Link"
+	// Generated Link
+	GeneratedLink string `protobuf:"bytes,9,opt,name=generated_link,json=generatedLink,proto3" json:"generated_link,omitempty"`
+	// TI Package Name
+	//
+	// x-displayName: "TI Package Name"
+	// x-example: "TI_Package_1"
+	// TI Package Name for this deployment(deliver), which will be only support for Kubernetes bot infrastructure
+	TiPackageName string `protobuf:"bytes,10,opt,name=ti_package_name,json=tiPackageName,proto3" json:"ti_package_name,omitempty"`
 }
 
 func (m *DeploymentHistoryData) Reset()      { *m = DeploymentHistoryData{} }
 func (*DeploymentHistoryData) ProtoMessage() {}
 func (*DeploymentHistoryData) Descriptor() ([]byte, []int) {
-	return fileDescriptor_14a6612667caec9f, []int{8}
+	return fileDescriptor_14a6612667caec9f, []int{9}
 }
 func (m *DeploymentHistoryData) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -897,12 +1013,401 @@ func (m *DeploymentHistoryData) GetPolicyMetadata() []*DeployPolicyMetadata {
 	return nil
 }
 
+func (m *DeploymentHistoryData) GetPolicyId() string {
+	if m != nil {
+		return m.PolicyId
+	}
+	return ""
+}
+
+func (m *DeploymentHistoryData) GetGeneratedLink() string {
+	if m != nil {
+		return m.GeneratedLink
+	}
+	return ""
+}
+
+func (m *DeploymentHistoryData) GetTiPackageName() string {
+	if m != nil {
+		return m.TiPackageName
+	}
+	return ""
+}
+
 // XXX_OneofWrappers is for the internal use of the proto package.
 func (*DeploymentHistoryData) XXX_OneofWrappers() []interface{} {
 	return []interface{}{
 		(*DeploymentHistoryData_User)(nil),
 		(*DeploymentHistoryData_Organization)(nil),
 	}
+}
+
+// ApplyCertificateRequest
+//
+// x-displayName: "Apply Certificate Request"
+// Request for applying certificate
+type ApplyCertificateRegion struct {
+	// Region Name
+	//
+	// x-displayName: "Region Name"
+	// x-example: "US_EAST_1"
+	// x-required
+	// Region Name
+	RegionName Location `protobuf:"varint,1,opt,name=region_name,json=regionName,proto3,enum=ves.io.schema.shape.bot_defense.bot_infrastructure.Location" json:"region_name,omitempty"`
+	// Certificate ID
+	//
+	// x-displayName: "Certificate ID"
+	// x-example: "6990a584f0526500012a1723"
+	// x-required
+	// Certificate ID
+	CertId string `protobuf:"bytes,2,opt,name=cert_id,json=certId,proto3" json:"cert_id,omitempty"`
+}
+
+func (m *ApplyCertificateRegion) Reset()      { *m = ApplyCertificateRegion{} }
+func (*ApplyCertificateRegion) ProtoMessage() {}
+func (*ApplyCertificateRegion) Descriptor() ([]byte, []int) {
+	return fileDescriptor_14a6612667caec9f, []int{10}
+}
+func (m *ApplyCertificateRegion) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ApplyCertificateRegion) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ApplyCertificateRegion.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ApplyCertificateRegion) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ApplyCertificateRegion.Merge(m, src)
+}
+func (m *ApplyCertificateRegion) XXX_Size() int {
+	return m.Size()
+}
+func (m *ApplyCertificateRegion) XXX_DiscardUnknown() {
+	xxx_messageInfo_ApplyCertificateRegion.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ApplyCertificateRegion proto.InternalMessageInfo
+
+func (m *ApplyCertificateRegion) GetRegionName() Location {
+	if m != nil {
+		return m.RegionName
+	}
+	return AP_NORTHEAST_1
+}
+
+func (m *ApplyCertificateRegion) GetCertId() string {
+	if m != nil {
+		return m.CertId
+	}
+	return ""
+}
+
+// RollbackCertificateToDefaultRequest
+//
+// x-displayName: "Rollback Certificate To Default Request"
+// Request for rollback certificate to default
+type RollbackCertificateToDefaultRequest struct {
+	// Namespace
+	//
+	// x-displayName: "Namespace"
+	// x-example: "default"
+	// x-required
+	// Namespace
+	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
+	// Bot Infrastructure Name
+	//
+	// x-displayName: "Bot Infrastructure Name"
+	// x-example: "cluster_1"
+	// x-required
+	// Bot Infrastructure Name
+	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	// Region List
+	//
+	// x-displayName: "Region List"
+	// x-required
+	// x-example: "[US_EAST_1, US_WEST_1]"
+	// List of regions for rollback
+	RegionList []Location `protobuf:"varint,3,rep,packed,name=region_list,json=regionList,proto3,enum=ves.io.schema.shape.bot_defense.bot_infrastructure.Location" json:"region_list,omitempty"`
+}
+
+func (m *RollbackCertificateToDefaultRequest) Reset()      { *m = RollbackCertificateToDefaultRequest{} }
+func (*RollbackCertificateToDefaultRequest) ProtoMessage() {}
+func (*RollbackCertificateToDefaultRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_14a6612667caec9f, []int{11}
+}
+func (m *RollbackCertificateToDefaultRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *RollbackCertificateToDefaultRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_RollbackCertificateToDefaultRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *RollbackCertificateToDefaultRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RollbackCertificateToDefaultRequest.Merge(m, src)
+}
+func (m *RollbackCertificateToDefaultRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *RollbackCertificateToDefaultRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_RollbackCertificateToDefaultRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RollbackCertificateToDefaultRequest proto.InternalMessageInfo
+
+func (m *RollbackCertificateToDefaultRequest) GetNamespace() string {
+	if m != nil {
+		return m.Namespace
+	}
+	return ""
+}
+
+func (m *RollbackCertificateToDefaultRequest) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *RollbackCertificateToDefaultRequest) GetRegionList() []Location {
+	if m != nil {
+		return m.RegionList
+	}
+	return nil
+}
+
+// ApplyCertificateRequest
+//
+// x-displayName: "Apply Certificate Request"
+// Request for applying certificate
+type ApplyCertificateRequest struct {
+	// Namespace
+	//
+	// x-displayName: "Namespace"
+	// x-example: "default"
+	// x-required
+	// Namespace
+	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
+	// Bot Infrastructure Name
+	//
+	// x-displayName: "Bot Infrastructure Name"
+	// x-example: "cluster_1"
+	// x-required
+	// Bot Infrastructure Name
+	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	// Region List
+	//
+	// x-displayName: "Region List"
+	// x-required
+	// List of region and certificate pairs to rollback
+	RegionList []*ApplyCertificateRegion `protobuf:"bytes,3,rep,name=region_list,json=regionList,proto3" json:"region_list,omitempty"`
+}
+
+func (m *ApplyCertificateRequest) Reset()      { *m = ApplyCertificateRequest{} }
+func (*ApplyCertificateRequest) ProtoMessage() {}
+func (*ApplyCertificateRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_14a6612667caec9f, []int{12}
+}
+func (m *ApplyCertificateRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ApplyCertificateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ApplyCertificateRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ApplyCertificateRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ApplyCertificateRequest.Merge(m, src)
+}
+func (m *ApplyCertificateRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *ApplyCertificateRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ApplyCertificateRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ApplyCertificateRequest proto.InternalMessageInfo
+
+func (m *ApplyCertificateRequest) GetNamespace() string {
+	if m != nil {
+		return m.Namespace
+	}
+	return ""
+}
+
+func (m *ApplyCertificateRequest) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *ApplyCertificateRequest) GetRegionList() []*ApplyCertificateRegion {
+	if m != nil {
+		return m.RegionList
+	}
+	return nil
+}
+
+// CertificateOperationResponse
+//
+// x-displayName: "Certificate Operation Response"
+// Response for certificate operations
+type CertificateOperationResponse struct {
+	// Cluster Name
+	//
+	// x-displayName: "Cluster Name"
+	// x-example: "your-bot-infra-name"
+	// Name of the cluster
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// Region List
+	//
+	// x-displayName: "Region List"
+	// List of region status for certificate operation
+	RegionList []*CertificateOperationRegion `protobuf:"bytes,2,rep,name=region_list,json=regionList,proto3" json:"region_list,omitempty"`
+}
+
+func (m *CertificateOperationResponse) Reset()      { *m = CertificateOperationResponse{} }
+func (*CertificateOperationResponse) ProtoMessage() {}
+func (*CertificateOperationResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_14a6612667caec9f, []int{13}
+}
+func (m *CertificateOperationResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CertificateOperationResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CertificateOperationResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CertificateOperationResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CertificateOperationResponse.Merge(m, src)
+}
+func (m *CertificateOperationResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *CertificateOperationResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_CertificateOperationResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CertificateOperationResponse proto.InternalMessageInfo
+
+func (m *CertificateOperationResponse) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *CertificateOperationResponse) GetRegionList() []*CertificateOperationRegion {
+	if m != nil {
+		return m.RegionList
+	}
+	return nil
+}
+
+// CertificateOperationRegion
+//
+// x-displayName: "Certificate Operation Region"
+// Region status for certificate operation
+type CertificateOperationRegion struct {
+	// Region
+	//
+	// x-displayName: "Region"
+	// x-example: "us-west"
+	Region Location `protobuf:"varint,1,opt,name=region,proto3,enum=ves.io.schema.shape.bot_defense.bot_infrastructure.Location" json:"region,omitempty"`
+	// Deploy Status
+	//
+	// x-displayName: "Deploy Status"
+	// x-example: "IN_PROGRESS"
+	DeployStatus DepolyStatus `protobuf:"varint,2,opt,name=deploy_status,json=deployStatus,proto3,enum=ves.io.schema.shape.bot_defense.bot_infrastructure.DepolyStatus" json:"deploy_status,omitempty"`
+	// Certificate Status
+	//
+	// x-displayName: "Certificate Status"
+	// x-example: "CERT_STATUS_APPLIED"
+	// Indicates if a custom certificate is currently applied or not applied.
+	CertStatus CertificateStatus `protobuf:"varint,3,opt,name=cert_status,json=certStatus,proto3,enum=ves.io.schema.shape.bot_defense.bot_infrastructure.CertificateStatus" json:"cert_status,omitempty"`
+}
+
+func (m *CertificateOperationRegion) Reset()      { *m = CertificateOperationRegion{} }
+func (*CertificateOperationRegion) ProtoMessage() {}
+func (*CertificateOperationRegion) Descriptor() ([]byte, []int) {
+	return fileDescriptor_14a6612667caec9f, []int{14}
+}
+func (m *CertificateOperationRegion) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CertificateOperationRegion) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CertificateOperationRegion.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CertificateOperationRegion) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CertificateOperationRegion.Merge(m, src)
+}
+func (m *CertificateOperationRegion) XXX_Size() int {
+	return m.Size()
+}
+func (m *CertificateOperationRegion) XXX_DiscardUnknown() {
+	xxx_messageInfo_CertificateOperationRegion.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CertificateOperationRegion proto.InternalMessageInfo
+
+func (m *CertificateOperationRegion) GetRegion() Location {
+	if m != nil {
+		return m.Region
+	}
+	return AP_NORTHEAST_1
+}
+
+func (m *CertificateOperationRegion) GetDeployStatus() DepolyStatus {
+	if m != nil {
+		return m.DeployStatus
+	}
+	return IN_PROGRESS
+}
+
+func (m *CertificateOperationRegion) GetCertStatus() CertificateStatus {
+	if m != nil {
+		return m.CertStatus
+	}
+	return CERT_STATUS_UNDEFINED
 }
 
 func init() {
@@ -922,6 +1427,8 @@ func init() {
 	golang_proto.RegisterType((*DeployPolicyMetadata)(nil), "ves.io.schema.shape.bot_defense.bot_infrastructure.DeployPolicyMetadata")
 	proto.RegisterType((*DeployPoliciesRequest)(nil), "ves.io.schema.shape.bot_defense.bot_infrastructure.DeployPoliciesRequest")
 	golang_proto.RegisterType((*DeployPoliciesRequest)(nil), "ves.io.schema.shape.bot_defense.bot_infrastructure.DeployPoliciesRequest")
+	proto.RegisterType((*TIPackageMetadata)(nil), "ves.io.schema.shape.bot_defense.bot_infrastructure.TIPackageMetadata")
+	golang_proto.RegisterType((*TIPackageMetadata)(nil), "ves.io.schema.shape.bot_defense.bot_infrastructure.TIPackageMetadata")
 	proto.RegisterType((*DeployPoliciesResponse)(nil), "ves.io.schema.shape.bot_defense.bot_infrastructure.DeployPoliciesResponse")
 	golang_proto.RegisterType((*DeployPoliciesResponse)(nil), "ves.io.schema.shape.bot_defense.bot_infrastructure.DeployPoliciesResponse")
 	proto.RegisterType((*DeploymentHistoryRequest)(nil), "ves.io.schema.shape.bot_defense.bot_infrastructure.DeploymentHistoryRequest")
@@ -930,6 +1437,16 @@ func init() {
 	golang_proto.RegisterType((*DeploymentHistoryResponse)(nil), "ves.io.schema.shape.bot_defense.bot_infrastructure.DeploymentHistoryResponse")
 	proto.RegisterType((*DeploymentHistoryData)(nil), "ves.io.schema.shape.bot_defense.bot_infrastructure.DeploymentHistoryData")
 	golang_proto.RegisterType((*DeploymentHistoryData)(nil), "ves.io.schema.shape.bot_defense.bot_infrastructure.DeploymentHistoryData")
+	proto.RegisterType((*ApplyCertificateRegion)(nil), "ves.io.schema.shape.bot_defense.bot_infrastructure.ApplyCertificateRegion")
+	golang_proto.RegisterType((*ApplyCertificateRegion)(nil), "ves.io.schema.shape.bot_defense.bot_infrastructure.ApplyCertificateRegion")
+	proto.RegisterType((*RollbackCertificateToDefaultRequest)(nil), "ves.io.schema.shape.bot_defense.bot_infrastructure.RollbackCertificateToDefaultRequest")
+	golang_proto.RegisterType((*RollbackCertificateToDefaultRequest)(nil), "ves.io.schema.shape.bot_defense.bot_infrastructure.RollbackCertificateToDefaultRequest")
+	proto.RegisterType((*ApplyCertificateRequest)(nil), "ves.io.schema.shape.bot_defense.bot_infrastructure.ApplyCertificateRequest")
+	golang_proto.RegisterType((*ApplyCertificateRequest)(nil), "ves.io.schema.shape.bot_defense.bot_infrastructure.ApplyCertificateRequest")
+	proto.RegisterType((*CertificateOperationResponse)(nil), "ves.io.schema.shape.bot_defense.bot_infrastructure.CertificateOperationResponse")
+	golang_proto.RegisterType((*CertificateOperationResponse)(nil), "ves.io.schema.shape.bot_defense.bot_infrastructure.CertificateOperationResponse")
+	proto.RegisterType((*CertificateOperationRegion)(nil), "ves.io.schema.shape.bot_defense.bot_infrastructure.CertificateOperationRegion")
+	golang_proto.RegisterType((*CertificateOperationRegion)(nil), "ves.io.schema.shape.bot_defense.bot_infrastructure.CertificateOperationRegion")
 }
 
 func init() {
@@ -940,89 +1457,117 @@ func init() {
 }
 
 var fileDescriptor_14a6612667caec9f = []byte{
-	// 1298 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x57, 0xcf, 0x6f, 0x1b, 0xc5,
-	0x17, 0xf7, 0xac, 0x53, 0x27, 0x99, 0xe4, 0x9b, 0xb8, 0xd3, 0x5f, 0x5b, 0x7f, 0xab, 0xad, 0x65,
-	0x21, 0x1a, 0x05, 0x79, 0x57, 0x04, 0x90, 0xf8, 0x21, 0x55, 0xd4, 0x75, 0xda, 0xb8, 0x71, 0xec,
-	0x68, 0x13, 0x54, 0xc1, 0xc5, 0x1a, 0xef, 0x4e, 0x9c, 0x55, 0xed, 0x9d, 0xed, 0xce, 0xd8, 0xd4,
-	0xa0, 0x8a, 0xd2, 0x0b, 0xe5, 0x86, 0xd4, 0x3f, 0x00, 0xc4, 0xa9, 0x67, 0x4e, 0x88, 0x72, 0xc8,
-	0xad, 0x3d, 0x41, 0x24, 0x2e, 0x3d, 0x52, 0x07, 0x21, 0xb8, 0xf5, 0x4f, 0x40, 0x3b, 0x3b, 0xbb,
-	0x59, 0xdb, 0x11, 0x94, 0x24, 0xdc, 0xe6, 0xed, 0x7b, 0xf3, 0x79, 0xf3, 0xde, 0xfb, 0xbc, 0x37,
-	0xb3, 0xb0, 0xd2, 0x23, 0x4c, 0x77, 0xa8, 0xc1, 0xac, 0x6d, 0xd2, 0xc1, 0x06, 0xdb, 0xc6, 0x1e,
-	0x31, 0x9a, 0x94, 0x37, 0x6c, 0xb2, 0x45, 0x5c, 0x16, 0xae, 0x1d, 0x77, 0xcb, 0xc7, 0x8c, 0xfb,
-	0x5d, 0x8b, 0x77, 0x7d, 0x62, 0x78, 0xdd, 0x66, 0xdb, 0xb1, 0x1a, 0x56, 0x97, 0x71, 0xda, 0xc1,
-	0x9e, 0xa3, 0x7b, 0x3e, 0xe5, 0x14, 0x2d, 0x85, 0x50, 0x7a, 0x08, 0xa5, 0x0b, 0x28, 0x3d, 0x01,
-	0xa5, 0x8f, 0x43, 0xe5, 0x8a, 0x2d, 0x87, 0x6f, 0x77, 0x9b, 0xba, 0x45, 0x3b, 0x46, 0x8b, 0xb6,
-	0xa8, 0x21, 0xa0, 0x9a, 0xdd, 0x2d, 0x21, 0x09, 0x41, 0xac, 0x42, 0x17, 0xb9, 0x0b, 0x2d, 0x4a,
-	0x5b, 0x6d, 0x62, 0x60, 0xcf, 0x31, 0xb0, 0xeb, 0x52, 0x8e, 0xb9, 0x43, 0x5d, 0x26, 0xb5, 0xe7,
-	0xa5, 0x36, 0xc6, 0xc0, 0x6e, 0x5f, 0xaa, 0x2e, 0x8e, 0xaa, 0xb8, 0xd3, 0x21, 0x8c, 0xe3, 0x8e,
-	0x27, 0x0d, 0xfe, 0x3f, 0x9c, 0x07, 0xea, 0x25, 0x81, 0x2f, 0x1f, 0x22, 0x49, 0xbc, 0xef, 0x91,
-	0x68, 0xff, 0x85, 0xe1, 0xfd, 0x3d, 0xdc, 0x76, 0x6c, 0xcc, 0x89, 0xd4, 0x16, 0x46, 0xb4, 0x84,
-	0x11, 0xb7, 0x37, 0x72, 0x82, 0xfc, 0x88, 0x8d, 0x43, 0x3e, 0x6e, 0x0c, 0x5b, 0x5c, 0x1c, 0xb7,
-	0x60, 0xc9, 0x43, 0x14, 0x56, 0xe1, 0xb9, 0x32, 0xf1, 0xda, 0xb4, 0xdf, 0x21, 0x2e, 0xdf, 0xe0,
-	0x98, 0x77, 0x99, 0x49, 0x6e, 0x77, 0x09, 0xe3, 0xe8, 0x02, 0x9c, 0x76, 0x71, 0x87, 0x30, 0x0f,
-	0x5b, 0x44, 0x05, 0x79, 0xb0, 0x30, 0x6d, 0xee, 0x7f, 0x40, 0x08, 0x4e, 0x04, 0x82, 0xaa, 0x08,
-	0x85, 0x58, 0x17, 0xbe, 0x00, 0x50, 0x1d, 0x47, 0x63, 0x1e, 0x75, 0x19, 0x41, 0xb7, 0xe0, 0xbc,
-	0x1d, 0xeb, 0x1a, 0x36, 0xe6, 0x58, 0x05, 0xf9, 0xf4, 0xc2, 0xcc, 0x52, 0x49, 0xff, 0xf7, 0x14,
-	0xd1, 0xf7, 0xdd, 0x94, 0x31, 0xc7, 0xe6, 0x9c, 0x3d, 0x24, 0x17, 0x1e, 0xa6, 0xe1, 0xdc, 0xb0,
-	0x09, 0x7a, 0x0d, 0x9e, 0x4c, 0xf8, 0x67, 0xe2, 0x70, 0x32, 0xac, 0xac, 0x3d, 0x72, 0x68, 0x94,
-	0x83, 0x53, 0x1e, 0x6d, 0x3b, 0x96, 0x43, 0x98, 0xaa, 0xe4, 0xd3, 0x0b, 0xd3, 0x66, 0x2c, 0xa3,
-	0x22, 0xcc, 0xf8, 0xa4, 0xe5, 0x50, 0x57, 0x4d, 0x07, 0xbb, 0x4b, 0x67, 0x06, 0x77, 0x91, 0x49,
-	0xbc, 0x36, 0xb6, 0x88, 0x9d, 0x6f, 0xf6, 0xf3, 0x97, 0x82, 0x5c, 0x5c, 0x32, 0xa5, 0x11, 0x52,
-	0xe1, 0xa4, 0x4d, 0x38, 0x76, 0xda, 0x4c, 0x9d, 0x10, 0xde, 0x22, 0x11, 0x2d, 0xc0, 0x6c, 0x1b,
-	0xb3, 0x20, 0xcc, 0xc0, 0x3b, 0xb1, 0x1b, 0xcd, 0xbe, 0x7a, 0x42, 0x98, 0xcc, 0x05, 0xdf, 0xcb,
-	0xf2, 0x73, 0xa9, 0x8f, 0xca, 0xa3, 0x96, 0xd4, 0x55, 0x33, 0x79, 0xb0, 0x30, 0xb3, 0x94, 0xd3,
-	0x43, 0x0e, 0xeb, 0x11, 0x87, 0xf5, 0xcd, 0x88, 0xc3, 0xc3, 0x28, 0x75, 0x77, 0xa4, 0x02, 0x01,
-	0x0b, 0xd4, 0xc9, 0x3c, 0x58, 0x98, 0x3b, 0x6a, 0x05, 0x36, 0xfb, 0x1e, 0x49, 0x56, 0x20, 0x90,
-	0x63, 0x7e, 0x4c, 0x25, 0xf8, 0xf1, 0x04, 0xc0, 0xd3, 0xe1, 0xb6, 0xf5, 0x20, 0x99, 0xfd, 0x35,
-	0xc2, 0x71, 0x40, 0x04, 0xf4, 0x26, 0x9c, 0x11, 0xe9, 0xed, 0x37, 0xc4, 0x1e, 0x51, 0x95, 0xd2,
-	0xa9, 0x1f, 0xfe, 0xdc, 0x49, 0x4f, 0xf8, 0x4a, 0x16, 0x04, 0x8b, 0x13, 0x7e, 0xfa, 0x1b, 0x05,
-	0x98, 0x30, 0xb4, 0xab, 0xe1, 0x0e, 0x09, 0x32, 0xdb, 0x23, 0x3e, 0x0b, 0x2a, 0x11, 0xb2, 0x30,
-	0x12, 0x51, 0x23, 0xc6, 0x13, 0x51, 0xa6, 0x45, 0x94, 0x97, 0x0f, 0x13, 0x65, 0x78, 0x50, 0x11,
-	0xa1, 0x74, 0x1d, 0xac, 0x0b, 0xf7, 0x15, 0x78, 0x26, 0x11, 0x89, 0x43, 0xe2, 0xae, 0x79, 0x7d,
-	0xac, 0x6b, 0x0e, 0x0e, 0x24, 0xd1, 0x4a, 0x97, 0x92, 0xad, 0x74, 0xb0, 0xb5, 0x30, 0x40, 0xb7,
-	0xe1, 0xbc, 0x0c, 0xab, 0x23, 0x33, 0xa7, 0xa6, 0x45, 0x0b, 0xad, 0x1c, 0xbe, 0x80, 0xc3, 0x95,
-	0x30, 0xe7, 0xbc, 0xe1, 0xca, 0xe4, 0xe0, 0x94, 0x45, 0x3b, 0x41, 0x55, 0x23, 0xfa, 0xc6, 0x72,
-	0xe1, 0x11, 0x80, 0x67, 0x47, 0x93, 0x20, 0x9b, 0x3d, 0x0a, 0x09, 0xfc, 0x53, 0x48, 0x04, 0xfe,
-	0x2f, 0x24, 0x4e, 0xd4, 0x91, 0x8a, 0xa8, 0xd5, 0xfb, 0x87, 0x0c, 0x88, 0xb6, 0xfb, 0x72, 0xec,
-	0xcc, 0x86, 0xb0, 0xa1, 0x54, 0xa8, 0x26, 0x07, 0xd3, 0x8a, 0xc3, 0x38, 0xf5, 0xfb, 0x87, 0x9f,
-	0x73, 0x5f, 0x03, 0x78, 0xfe, 0x00, 0x38, 0x19, 0xfb, 0xe7, 0x00, 0x9e, 0x4b, 0xf4, 0xd9, 0x76,
-	0xa8, 0x4e, 0x4e, 0xbc, 0xca, 0xd1, 0xfa, 0x4d, 0x3a, 0x14, 0x83, 0xef, 0x8c, 0x7d, 0xd0, 0xe7,
-	0xc2, 0xef, 0x31, 0x3f, 0x47, 0x34, 0xe8, 0x34, 0x9c, 0xe8, 0x32, 0xe2, 0x87, 0xf1, 0xac, 0xa4,
-	0x4c, 0x21, 0xa1, 0x57, 0xe0, 0x2c, 0xf5, 0x5b, 0xd8, 0x75, 0x3e, 0x11, 0x77, 0x67, 0x38, 0xd9,
-	0x56, 0x52, 0xe6, 0xd0, 0x57, 0xf4, 0x36, 0x9c, 0x8e, 0x6f, 0x48, 0xc1, 0x86, 0xbf, 0x9f, 0x3f,
-	0xfb, 0xc6, 0xe8, 0x2c, 0xcc, 0xc8, 0xfa, 0x86, 0x03, 0x4e, 0x4a, 0xe8, 0xd5, 0x04, 0xbd, 0x32,
-	0x82, 0x2b, 0x50, 0x52, 0x44, 0xbd, 0x97, 0xdd, 0xa7, 0xda, 0x41, 0xcc, 0x9f, 0xfc, 0x6f, 0x99,
-	0x5f, 0xd2, 0x20, 0x4a, 0x0c, 0xe6, 0x86, 0xb5, 0x4d, 0x1d, 0x8b, 0xa0, 0xa9, 0x9d, 0xc7, 0x20,
-	0xbd, 0xfb, 0x18, 0x80, 0x1b, 0x13, 0x53, 0x20, 0xab, 0x2c, 0xbe, 0x97, 0xbc, 0x67, 0xc4, 0xe0,
-	0xcb, 0xc2, 0xd9, 0xab, 0xd5, 0xfa, 0x07, 0xe5, 0xc6, 0x4a, 0x7d, 0x63, 0x73, 0xb9, 0x9c, 0x4d,
-	0x21, 0x08, 0x33, 0x72, 0x0d, 0xd0, 0x0c, 0x9c, 0xac, 0xd7, 0x1a, 0xeb, 0xe6, 0xf2, 0x5a, 0x56,
-	0x59, 0x5c, 0x85, 0x70, 0x7f, 0xbe, 0xa0, 0x53, 0x70, 0x7e, 0xb9, 0x56, 0x5e, 0xaf, 0x57, 0x6a,
-	0x9b, 0x8d, 0xf5, 0x7a, 0xb5, 0x72, 0xf5, 0xc3, 0x6c, 0x0a, 0x21, 0x38, 0x57, 0x5b, 0xde, 0xbc,
-	0x59, 0x37, 0x57, 0xa3, 0x6f, 0x00, 0x9d, 0x86, 0xd9, 0x2b, 0xd5, 0x6a, 0xfd, 0x66, 0xb5, 0xb2,
-	0x11, 0x5b, 0x2a, 0x8b, 0xef, 0xc0, 0xd9, 0x64, 0x03, 0xa0, 0x79, 0x38, 0x53, 0x09, 0x3c, 0xd5,
-	0xaf, 0x9b, 0xcb, 0x1b, 0x1b, 0xd9, 0x14, 0x9a, 0x85, 0x53, 0xd7, 0x2a, 0xb5, 0xca, 0xc6, 0x8a,
-	0x38, 0x08, 0x84, 0x99, 0x6b, 0x57, 0x2a, 0xd5, 0xe5, 0x72, 0x56, 0x59, 0xfa, 0x79, 0x12, 0x4e,
-	0x5f, 0x15, 0xef, 0xb6, 0x2b, 0xeb, 0x15, 0xb4, 0xa3, 0x8c, 0xdf, 0xe2, 0xf5, 0x1e, 0xf1, 0x83,
-	0xc7, 0x03, 0x5a, 0x3d, 0x1a, 0x75, 0x87, 0x5e, 0x18, 0xb9, 0xea, 0xf1, 0x80, 0x85, 0x7d, 0x57,
-	0x78, 0x00, 0x9e, 0x7e, 0xaf, 0x80, 0xc1, 0x13, 0xb5, 0xb8, 0xf5, 0xd6, 0x1d, 0xab, 0xd8, 0xa4,
-	0xbc, 0x28, 0x61, 0x8a, 0xd8, 0xee, 0x61, 0xd7, 0x22, 0x76, 0x91, 0x91, 0xf6, 0x16, 0x0b, 0x42,
-	0xb1, 0x48, 0xb1, 0x43, 0x5d, 0x87, 0x53, 0xff, 0xfe, 0x2f, 0xbf, 0x3d, 0x54, 0xd6, 0xd0, 0xaa,
-	0x7c, 0xc0, 0x1a, 0x71, 0xeb, 0x33, 0xe3, 0xd3, 0x78, 0x7d, 0xf7, 0x80, 0xc7, 0x9c, 0xd4, 0xdf,
-	0x35, 0xc6, 0x9e, 0x15, 0xe8, 0xbb, 0x38, 0x85, 0xd1, 0x64, 0xdc, 0xa4, 0x25, 0xca, 0x2b, 0xc1,
-	0x7e, 0x54, 0x39, 0x22, 0x65, 0xf7, 0x2f, 0x9b, 0xdc, 0x8d, 0xe3, 0x80, 0x92, 0xe9, 0xfb, 0x4c,
-	0x66, 0x6f, 0xf1, 0xe5, 0xb2, 0x17, 0x8c, 0x0d, 0x91, 0xba, 0xeb, 0x85, 0xd2, 0xe1, 0x53, 0x17,
-	0x3d, 0xaa, 0xde, 0x05, 0x8b, 0xe8, 0x47, 0x05, 0x9e, 0x1c, 0x9b, 0x59, 0xa8, 0x7a, 0x2c, 0xb3,
-	0x32, 0x4a, 0xd8, 0xda, 0x31, 0xa1, 0xc9, 0x9c, 0x7d, 0x79, 0x04, 0xca, 0xd5, 0x50, 0xf5, 0x58,
-	0x28, 0x27, 0xef, 0x97, 0xdc, 0x4c, 0x30, 0x99, 0xee, 0xff, 0xa4, 0xa6, 0x1f, 0x00, 0x50, 0xfa,
-	0x16, 0xec, 0x3e, 0xd7, 0x52, 0xcf, 0x9e, 0x6b, 0xa9, 0x17, 0xcf, 0x35, 0x70, 0x6f, 0xa0, 0x81,
-	0x47, 0x03, 0x0d, 0x3c, 0x1d, 0x68, 0x60, 0x77, 0xa0, 0x81, 0x5f, 0x07, 0x1a, 0xf8, 0x63, 0xa0,
-	0xa5, 0x5e, 0x0c, 0x34, 0xf0, 0xd5, 0x9e, 0x96, 0xda, 0xd9, 0xd3, 0xc0, 0xee, 0x9e, 0x96, 0x7a,
-	0xb6, 0xa7, 0xa5, 0x3e, 0xda, 0x6e, 0x51, 0xef, 0x56, 0x4b, 0xef, 0xd1, 0x36, 0x27, 0xbe, 0x8f,
-	0xf5, 0x2e, 0x33, 0xc4, 0x62, 0x8b, 0xfa, 0x9d, 0xa2, 0xe7, 0xd3, 0x9e, 0x63, 0x13, 0xbf, 0x18,
-	0xa9, 0x0d, 0xaf, 0xd9, 0xa2, 0x06, 0xb9, 0xc3, 0xa3, 0xbf, 0xa0, 0x97, 0xff, 0x19, 0x6a, 0x66,
-	0xc4, 0x9d, 0xf1, 0xc6, 0x5f, 0x01, 0x00, 0x00, 0xff, 0xff, 0xcb, 0x31, 0x8e, 0x84, 0x6e, 0x0e,
-	0x00, 0x00,
+	// 1753 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x58, 0xcd, 0x8f, 0x23, 0x47,
+	0x15, 0x77, 0xb5, 0x67, 0xe7, 0xa3, 0x3c, 0xf1, 0x78, 0x6b, 0xbf, 0x7a, 0xcd, 0xe0, 0x58, 0x06,
+	0x76, 0x47, 0x13, 0xd9, 0x16, 0x03, 0x48, 0x80, 0x50, 0xc4, 0x7a, 0xed, 0x64, 0xbc, 0xe3, 0xb5,
+	0x47, 0x3d, 0x8e, 0x56, 0xe1, 0x80, 0x55, 0xee, 0x2e, 0x7b, 0x4a, 0xd3, 0xee, 0xea, 0x74, 0x97,
+	0x27, 0x31, 0x68, 0x45, 0x58, 0x09, 0x11, 0x24, 0x0e, 0x28, 0xfb, 0x07, 0x80, 0xe0, 0x40, 0xce,
+	0x9c, 0x80, 0x70, 0x58, 0x24, 0xa4, 0xe4, 0x84, 0x56, 0xe2, 0x92, 0x0b, 0x82, 0xf5, 0x22, 0x04,
+	0x07, 0xa4, 0x5c, 0xb9, 0xa1, 0xaa, 0x2e, 0xb7, 0xdb, 0xf6, 0xec, 0x6a, 0xe8, 0x99, 0xcd, 0xad,
+	0x3e, 0x5e, 0xbf, 0x57, 0xbf, 0xdf, 0xfb, 0xa8, 0x7a, 0x0d, 0xeb, 0xc7, 0xc4, 0x2f, 0x51, 0x56,
+	0xf6, 0xcd, 0x43, 0x32, 0xc0, 0x65, 0xff, 0x10, 0xbb, 0xa4, 0xdc, 0x65, 0xbc, 0x63, 0x91, 0x1e,
+	0x71, 0xfc, 0x60, 0x4c, 0x9d, 0x9e, 0x87, 0x7d, 0xee, 0x0d, 0x4d, 0x3e, 0xf4, 0x48, 0xd9, 0x1d,
+	0x76, 0x6d, 0x6a, 0x76, 0xcc, 0xa1, 0xcf, 0xd9, 0x00, 0xbb, 0xb4, 0xe4, 0x7a, 0x8c, 0x33, 0xb4,
+	0x13, 0xa8, 0x2a, 0x05, 0xaa, 0x4a, 0x52, 0x55, 0x29, 0xa2, 0xaa, 0xb4, 0xa8, 0x2a, 0x5b, 0xec,
+	0x53, 0x7e, 0x38, 0xec, 0x96, 0x4c, 0x36, 0x28, 0xf7, 0x59, 0x9f, 0x95, 0xa5, 0xaa, 0xee, 0xb0,
+	0x27, 0x67, 0x72, 0x22, 0x47, 0x81, 0x89, 0xec, 0x66, 0x9f, 0xb1, 0xbe, 0x4d, 0xca, 0xd8, 0xa5,
+	0x65, 0xec, 0x38, 0x8c, 0x63, 0x4e, 0x99, 0xe3, 0xab, 0xdd, 0xeb, 0x6a, 0x37, 0xd4, 0x81, 0x9d,
+	0x91, 0xda, 0x7a, 0x79, 0x7e, 0x8b, 0xd3, 0x01, 0xf1, 0x39, 0x1e, 0xb8, 0x4a, 0xe0, 0x73, 0xb3,
+	0x3c, 0x30, 0x37, 0xaa, 0xf8, 0xd5, 0x18, 0x24, 0xf1, 0x91, 0x4b, 0x26, 0xdf, 0x6f, 0xce, 0x7e,
+	0x7f, 0x8c, 0x6d, 0x6a, 0x61, 0x4e, 0xd4, 0x6e, 0x61, 0x6e, 0x97, 0xf8, 0xc4, 0x39, 0x9e, 0x3b,
+	0x41, 0x7e, 0x4e, 0x86, 0x92, 0xb7, 0x3b, 0xb3, 0x12, 0x2f, 0x2f, 0x4a, 0xf8, 0xd1, 0x43, 0x14,
+	0xf6, 0xe0, 0xb5, 0x2a, 0x71, 0x6d, 0x36, 0x1a, 0x10, 0x87, 0x1f, 0x70, 0xcc, 0x87, 0xbe, 0x41,
+	0xde, 0x1a, 0x12, 0x9f, 0xa3, 0x4d, 0xb8, 0xe6, 0xe0, 0x01, 0xf1, 0x5d, 0x6c, 0x12, 0x1d, 0xe4,
+	0xc1, 0xd6, 0x9a, 0x31, 0x5d, 0x40, 0x08, 0x2e, 0x89, 0x89, 0xae, 0xc9, 0x0d, 0x39, 0x2e, 0xfc,
+	0x18, 0x40, 0x7d, 0x51, 0x9b, 0xef, 0x32, 0xc7, 0x27, 0xe8, 0x08, 0x6e, 0x58, 0xe1, 0x5e, 0xc7,
+	0xc2, 0x1c, 0xeb, 0x20, 0x9f, 0xdc, 0x4a, 0xed, 0x54, 0x4a, 0xff, 0x7f, 0x88, 0x94, 0xa6, 0x66,
+	0xaa, 0x98, 0x63, 0x23, 0x6d, 0xcd, 0xcc, 0x0b, 0x0f, 0x93, 0x30, 0x3d, 0x2b, 0x82, 0x5e, 0x81,
+	0x17, 0x23, 0xf6, 0x7d, 0x79, 0x38, 0x05, 0x2b, 0x63, 0xcd, 0x1d, 0x1a, 0x65, 0xe1, 0xaa, 0xcb,
+	0x6c, 0x6a, 0x52, 0xe2, 0xeb, 0x5a, 0x3e, 0xb9, 0xb5, 0x66, 0x84, 0x73, 0x54, 0x84, 0xcb, 0x1e,
+	0xe9, 0x53, 0xe6, 0xe8, 0x49, 0xf1, 0x75, 0xe5, 0xca, 0xf8, 0x3e, 0x32, 0x88, 0x6b, 0x63, 0x93,
+	0x58, 0xf9, 0xee, 0x28, 0x7f, 0x53, 0x70, 0x71, 0xd3, 0x50, 0x42, 0x48, 0x87, 0x2b, 0x16, 0xe1,
+	0x98, 0xda, 0xbe, 0xbe, 0x24, 0xad, 0x4d, 0xa6, 0x68, 0x0b, 0x66, 0x6c, 0xec, 0x0b, 0x98, 0xc2,
+	0x3a, 0xb1, 0x3a, 0xdd, 0x91, 0x7e, 0x41, 0x8a, 0xa4, 0xc5, 0x7a, 0x55, 0x2d, 0x57, 0x46, 0xa8,
+	0x3a, 0x2f, 0xc9, 0x1c, 0x7d, 0x39, 0x0f, 0xb6, 0x52, 0x3b, 0xd9, 0x52, 0x10, 0xc3, 0xa5, 0x49,
+	0x0c, 0x97, 0xda, 0x93, 0x18, 0x9e, 0xd5, 0xd2, 0x72, 0xe6, 0x3c, 0x20, 0xa2, 0x40, 0x5f, 0xc9,
+	0x83, 0xad, 0xf4, 0x59, 0x3d, 0xd0, 0x1e, 0xb9, 0x24, 0xea, 0x01, 0x31, 0x0f, 0xe3, 0x63, 0x35,
+	0x12, 0x1f, 0x1f, 0x01, 0x78, 0x39, 0xf8, 0x6c, 0x5f, 0x90, 0x39, 0xba, 0x4b, 0x38, 0x16, 0x81,
+	0x80, 0xbe, 0x0a, 0x53, 0x92, 0xde, 0x51, 0x47, 0x7e, 0x23, 0xbd, 0x52, 0xb9, 0xf4, 0xfb, 0x7f,
+	0x3f, 0x4a, 0x2e, 0x79, 0x5a, 0x06, 0x88, 0xc1, 0x05, 0x2f, 0xf9, 0x0b, 0x0d, 0x18, 0x30, 0x90,
+	0x6b, 0xe2, 0x01, 0x11, 0xcc, 0x1e, 0x13, 0xcf, 0x17, 0x9e, 0x08, 0xa2, 0x70, 0x32, 0x45, 0x9d,
+	0x50, 0x9f, 0x44, 0x99, 0x94, 0x28, 0x5f, 0x8d, 0x83, 0x32, 0x38, 0xa8, 0x44, 0xa8, 0x4c, 0x8b,
+	0x71, 0xe1, 0xbf, 0x1a, 0xbc, 0x12, 0x41, 0x42, 0x49, 0x98, 0x35, 0x5f, 0x5e, 0xc8, 0x9a, 0x93,
+	0x81, 0x44, 0x52, 0xe9, 0x66, 0x34, 0x95, 0x4e, 0x96, 0x96, 0x02, 0xe8, 0x2d, 0xb8, 0xa1, 0x60,
+	0x0d, 0x14, 0x73, 0x7a, 0x52, 0xa6, 0xd0, 0x6e, 0x7c, 0x07, 0xce, 0x7a, 0xc2, 0x48, 0xbb, 0xb3,
+	0x9e, 0x19, 0xc2, 0x4b, 0x9c, 0x76, 0x5c, 0x6c, 0x1e, 0xe1, 0x3e, 0x99, 0x9a, 0xbd, 0x20, 0x83,
+	0xaf, 0x16, 0xc7, 0x6c, 0xbb, 0xbe, 0x1f, 0x68, 0x0b, 0x6d, 0x5e, 0xe4, 0x74, 0x6e, 0x49, 0xe4,
+	0x9f, 0xc9, 0x06, 0x22, 0x98, 0x26, 0x59, 0x13, 0xce, 0x0b, 0x7d, 0x78, 0x71, 0x41, 0x07, 0xfa,
+	0xbc, 0xe2, 0x30, 0x60, 0x7c, 0x2d, 0xe4, 0x50, 0x31, 0xf7, 0xec, 0x50, 0xb9, 0x0e, 0x35, 0x6a,
+	0xa9, 0x4c, 0x8e, 0x7c, 0xa6, 0x51, 0xab, 0xf0, 0x01, 0x80, 0x57, 0xe7, 0x9d, 0xac, 0x8a, 0xd9,
+	0xcd, 0x19, 0x73, 0xcf, 0x71, 0x19, 0x81, 0x2f, 0x05, 0x89, 0x31, 0xa9, 0x38, 0x9a, 0x8c, 0xc5,
+	0x6f, 0xc7, 0x74, 0x18, 0xb3, 0x47, 0xaa, 0xac, 0xae, 0x07, 0x6a, 0x83, 0x59, 0xa1, 0x11, 0x2d,
+	0xbc, 0xbb, 0xd4, 0xe7, 0xcc, 0x1b, 0xc5, 0xaf, 0xe3, 0x3f, 0x07, 0xf0, 0xfa, 0x09, 0xea, 0x14,
+	0xf6, 0x1f, 0x02, 0x78, 0x2d, 0x52, 0x47, 0x0e, 0x83, 0xed, 0x68, 0x45, 0xaf, 0x9f, 0xad, 0x9e,
+	0x28, 0x83, 0xb2, 0xb0, 0x5f, 0xb1, 0x4e, 0x5a, 0x2e, 0xfc, 0x35, 0x39, 0xc9, 0xbf, 0xb9, 0x1d,
+	0x74, 0x19, 0x2e, 0x0d, 0x7d, 0xe2, 0x05, 0x78, 0x76, 0x13, 0x86, 0x9c, 0xa1, 0x2f, 0xc2, 0x75,
+	0xe6, 0xf5, 0xb1, 0x43, 0xbf, 0x27, 0xdf, 0x06, 0x81, 0xbf, 0x77, 0x13, 0xc6, 0xcc, 0x2a, 0xfa,
+	0x3a, 0x5c, 0x0b, 0x5f, 0x00, 0x32, 0xec, 0x9e, 0x5f, 0x5f, 0xa7, 0xc2, 0xe8, 0x2a, 0x5c, 0x56,
+	0xfe, 0x0d, 0x0a, 0xb8, 0x9a, 0xa1, 0x1b, 0x91, 0x38, 0x5e, 0x96, 0xb1, 0x02, 0x55, 0x88, 0xe8,
+	0xef, 0x66, 0xa6, 0x31, 0x7d, 0x52, 0x66, 0xaf, 0xbc, 0xe0, 0xcc, 0xbe, 0x01, 0xd7, 0x94, 0x49,
+	0x6a, 0x05, 0x55, 0x3a, 0x1a, 0xff, 0xc1, 0x75, 0x37, 0xaa, 0x5b, 0xe8, 0x4b, 0x30, 0xdd, 0x27,
+	0x0e, 0xf1, 0x30, 0x27, 0x56, 0xc7, 0xa6, 0xce, 0x91, 0xbe, 0x26, 0x21, 0xbe, 0x14, 0xae, 0x36,
+	0xa8, 0x73, 0x84, 0x6e, 0xc0, 0x8d, 0x48, 0xa1, 0x90, 0x21, 0x05, 0x03, 0xb9, 0x30, 0xbb, 0x45,
+	0xd1, 0xae, 0xe4, 0x20, 0x8a, 0xdc, 0x77, 0x1d, 0xf3, 0x90, 0x51, 0x93, 0xa0, 0xd5, 0x47, 0x1f,
+	0x82, 0xe4, 0xe3, 0x0f, 0x01, 0xb8, 0xb3, 0xb4, 0x0a, 0x32, 0x5a, 0xe1, 0xd7, 0x00, 0x5e, 0xbd,
+	0xe5, 0xba, 0xf6, 0xe8, 0x36, 0xf1, 0x38, 0xed, 0x51, 0x13, 0x73, 0x62, 0x04, 0xf7, 0x29, 0x85,
+	0xa9, 0xe0, 0x66, 0x9d, 0xde, 0x15, 0xe9, 0x9d, 0x6f, 0xc5, 0xa1, 0xa9, 0xc1, 0x4c, 0xe9, 0x77,
+	0xe5, 0x93, 0x07, 0x40, 0x00, 0x87, 0x81, 0x72, 0x79, 0xc1, 0x14, 0xe0, 0x8a, 0x49, 0x3c, 0x2e,
+	0x08, 0xd2, 0xe6, 0x09, 0x5a, 0x16, 0x3b, 0x75, 0xab, 0xf0, 0x4f, 0x00, 0xbf, 0x60, 0x30, 0xdb,
+	0xee, 0x62, 0xf3, 0x28, 0x72, 0xd8, 0x36, 0xab, 0x92, 0x1e, 0x1e, 0xda, 0x3c, 0x76, 0x16, 0xa2,
+	0x9f, 0x82, 0x10, 0xa9, 0x4d, 0x7d, 0x2e, 0x4b, 0xfd, 0x59, 0x91, 0x16, 0x05, 0x00, 0xf8, 0x3e,
+	0x58, 0x29, 0x04, 0x70, 0x25, 0xf0, 0xf7, 0x81, 0x96, 0xc9, 0x4f, 0x46, 0xab, 0xe1, 0x9a, 0x1e,
+	0x92, 0xd1, 0xa0, 0x3e, 0x2f, 0xfc, 0x09, 0xc0, 0x6b, 0x8b, 0x2e, 0x89, 0x0b, 0xee, 0xed, 0x45,
+	0x6c, 0xa9, 0x9d, 0x3b, 0x71, 0xb0, 0x9d, 0x1c, 0x26, 0xca, 0xa7, 0x12, 0xd0, 0x0c, 0x8c, 0x5f,
+	0x01, 0xb8, 0x19, 0x91, 0x6e, 0xb9, 0x22, 0x86, 0x29, 0x73, 0xc2, 0xf2, 0x86, 0xa2, 0xa5, 0x5d,
+	0x9d, 0x96, 0xcd, 0x9e, 0x56, 0x93, 0xa7, 0x6d, 0xc6, 0x39, 0xed, 0xc9, 0xa6, 0x85, 0xea, 0x99,
+	0x53, 0xfe, 0x51, 0x83, 0xd9, 0x67, 0x8b, 0xa2, 0x76, 0xf8, 0x04, 0x3d, 0x87, 0xf0, 0x0f, 0x5f,
+	0xaa, 0x9f, 0xcd, 0x5d, 0x85, 0x7a, 0x30, 0x25, 0xb3, 0x4a, 0x19, 0x09, 0x1e, 0x67, 0xb5, 0x33,
+	0x92, 0xa9, 0x2c, 0x41, 0xa1, 0x39, 0x18, 0x6f, 0xef, 0x45, 0x5b, 0x00, 0xf9, 0x26, 0xcd, 0xc0,
+	0xf5, 0xdb, 0x8d, 0xd6, 0x1b, 0xd5, 0xce, 0x6e, 0xeb, 0xa0, 0x5d, 0xab, 0x66, 0x12, 0x08, 0xc2,
+	0x65, 0x35, 0x06, 0x28, 0x05, 0x57, 0x5a, 0xcd, 0xce, 0xbe, 0x51, 0xbb, 0x9b, 0xd1, 0x50, 0x1a,
+	0xc2, 0xbd, 0x37, 0x2a, 0x35, 0xa3, 0x59, 0x6b, 0xd7, 0x0e, 0x32, 0xc9, 0xed, 0x3d, 0x08, 0xa7,
+	0x4f, 0x41, 0x74, 0x09, 0x6e, 0xd4, 0x9a, 0xd5, 0xfd, 0x56, 0xbd, 0xd9, 0xee, 0xec, 0xb7, 0x1a,
+	0xf5, 0xdb, 0x6f, 0x66, 0x12, 0x08, 0xc1, 0x74, 0xb3, 0xd6, 0xbe, 0xd7, 0x32, 0xf6, 0x26, 0x6b,
+	0x00, 0x5d, 0x86, 0x99, 0x5b, 0x8d, 0x46, 0xeb, 0x5e, 0xa3, 0x7e, 0x10, 0x4a, 0x6a, 0xdb, 0xdf,
+	0x80, 0xeb, 0x51, 0x7e, 0xd0, 0x06, 0x4c, 0xd5, 0x85, 0xe5, 0xd6, 0xeb, 0x46, 0xed, 0xe0, 0x20,
+	0x93, 0x40, 0xeb, 0x70, 0xf5, 0xb5, 0x7a, 0xb3, 0x7e, 0xb0, 0x2b, 0x0f, 0x06, 0xe1, 0xf2, 0x6b,
+	0xb7, 0xea, 0x8d, 0x5a, 0x35, 0xa3, 0xed, 0xfc, 0x67, 0x1d, 0xae, 0xdd, 0x96, 0x2d, 0xf6, 0xad,
+	0xfd, 0x3a, 0x7a, 0xa4, 0x2d, 0x36, 0x5c, 0xad, 0x63, 0xe2, 0x89, 0x3e, 0x0f, 0xed, 0x9d, 0xed,
+	0x16, 0x9e, 0x69, 0x06, 0xb3, 0x8d, 0xf3, 0x51, 0x16, 0xe4, 0x58, 0xe1, 0x3d, 0xf0, 0xf1, 0x6f,
+	0x35, 0x30, 0xfe, 0x48, 0x2f, 0xf6, 0xbe, 0xf6, 0x8e, 0x59, 0xec, 0x32, 0x5e, 0x54, 0x6a, 0x8a,
+	0xd8, 0x3a, 0xc6, 0x8e, 0x49, 0xac, 0xa2, 0x4f, 0xec, 0x9e, 0x2f, 0xa0, 0x98, 0xa4, 0x38, 0x60,
+	0x0e, 0xe5, 0xcc, 0x7b, 0xf0, 0x97, 0x7f, 0x3c, 0xd4, 0xee, 0xa2, 0x3d, 0xf5, 0xaf, 0xa1, 0x1c,
+	0x96, 0x18, 0xbf, 0xfc, 0xfd, 0x70, 0x7c, 0xff, 0x84, 0xbe, 0x5b, 0xed, 0xdf, 0x2f, 0x2f, 0x74,
+	0x80, 0xe8, 0x37, 0x21, 0x85, 0x93, 0x47, 0x5e, 0x9b, 0x55, 0x18, 0xaf, 0x8b, 0xef, 0x51, 0xfd,
+	0x8c, 0xb7, 0xef, 0xb4, 0x2f, 0xc8, 0xde, 0x39, 0x0f, 0x55, 0x8a, 0xbe, 0x1f, 0x28, 0xf6, 0xb6,
+	0x4f, 0xc7, 0x9e, 0x78, 0x01, 0x49, 0xea, 0x5e, 0x2f, 0x54, 0xe2, 0x53, 0x37, 0xe9, 0x7f, 0xbf,
+	0x09, 0xb6, 0xd1, 0xdf, 0x34, 0xb8, 0xf9, 0xbc, 0x4b, 0x0f, 0xdd, 0x8b, 0x83, 0xf6, 0x14, 0xd7,
+	0x68, 0x76, 0xff, 0xfc, 0x8a, 0xae, 0x22, 0xf3, 0xa1, 0x60, 0xf2, 0x95, 0xd3, 0x31, 0x89, 0xad,
+	0x01, 0x75, 0x24, 0x95, 0xdf, 0xcd, 0xbe, 0x19, 0x9f, 0x4a, 0x4f, 0x01, 0x2d, 0x9a, 0xd3, 0x83,
+	0x15, 0x39, 0x13, 0xb6, 0x05, 0x56, 0xc1, 0xf0, 0xef, 0x34, 0x98, 0x99, 0xbf, 0xd9, 0xe2, 0x65,
+	0xf4, 0x33, 0xee, 0xec, 0x17, 0xc0, 0xe4, 0x8f, 0x62, 0x31, 0xb9, 0x9f, 0x3d, 0x43, 0x3e, 0x63,
+	0x01, 0x2e, 0x4a, 0xa3, 0xe0, 0xee, 0x0f, 0x1a, 0xbc, 0xb8, 0xd0, 0x1c, 0xa0, 0xc6, 0xb9, 0x34,
+	0x25, 0x13, 0xf6, 0xee, 0x9e, 0x93, 0x36, 0x45, 0xdd, 0x4f, 0xce, 0x50, 0x10, 0x9b, 0xa8, 0x71,
+	0x2e, 0x05, 0x51, 0x35, 0x72, 0xd9, 0x94, 0x78, 0x8b, 0x3f, 0xf8, 0xb3, 0x9e, 0x7c, 0x0f, 0x80,
+	0xca, 0x2f, 0xc1, 0xe3, 0x27, 0xb9, 0xc4, 0x27, 0x4f, 0x72, 0x89, 0x4f, 0x9f, 0xe4, 0xc0, 0xbb,
+	0xe3, 0x1c, 0xf8, 0x60, 0x9c, 0x03, 0x1f, 0x8f, 0x73, 0xe0, 0xf1, 0x38, 0x07, 0xfe, 0x3e, 0xce,
+	0x81, 0x7f, 0x8d, 0x73, 0x89, 0x4f, 0xc7, 0x39, 0xf0, 0xb3, 0xa7, 0xb9, 0xc4, 0xa3, 0xa7, 0x39,
+	0xf0, 0xf8, 0x69, 0x2e, 0xf1, 0xc9, 0xd3, 0x5c, 0xe2, 0x3b, 0x87, 0x7d, 0xe6, 0x1e, 0xf5, 0x4b,
+	0xc7, 0xcc, 0xe6, 0xc4, 0xf3, 0x70, 0x69, 0xe8, 0x97, 0xe5, 0xa0, 0xc7, 0xbc, 0x41, 0xd1, 0xf5,
+	0xd8, 0x31, 0xb5, 0x88, 0x57, 0x9c, 0x6c, 0x97, 0xdd, 0x6e, 0x9f, 0x95, 0xc9, 0x3b, 0x7c, 0xf2,
+	0x3b, 0xf5, 0xf4, 0x7f, 0x55, 0xbb, 0xcb, 0xb2, 0x39, 0xfb, 0xca, 0xff, 0x02, 0x00, 0x00, 0xff,
+	0xff, 0x2b, 0x76, 0x85, 0x21, 0xb7, 0x16, 0x00, 0x00,
 }
 
 func (x DeploymentType) String() string {
@@ -1215,7 +1760,40 @@ func (this *DeployPoliciesRequest) Equal(that interface{}) bool {
 			return false
 		}
 	}
+	if !this.TiPackageMetadata.Equal(that1.TiPackageMetadata) {
+		return false
+	}
 	if this.Comments != that1.Comments {
+		return false
+	}
+	return true
+}
+func (this *TIPackageMetadata) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*TIPackageMetadata)
+	if !ok {
+		that2, ok := that.(TIPackageMetadata)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Name != that1.Name {
+		return false
+	}
+	if this.Version != that1.Version {
+		return false
+	}
+	if this.Id != that1.Id {
 		return false
 	}
 	return true
@@ -1348,6 +1926,15 @@ func (this *DeploymentHistoryData) Equal(that interface{}) bool {
 			return false
 		}
 	}
+	if this.PolicyId != that1.PolicyId {
+		return false
+	}
+	if this.GeneratedLink != that1.GeneratedLink {
+		return false
+	}
+	if this.TiPackageName != that1.TiPackageName {
+		return false
+	}
 	return true
 }
 func (this *DeploymentHistoryData_User) Equal(that interface{}) bool {
@@ -1394,6 +1981,165 @@ func (this *DeploymentHistoryData_Organization) Equal(that interface{}) bool {
 		return false
 	}
 	if this.Organization != that1.Organization {
+		return false
+	}
+	return true
+}
+func (this *ApplyCertificateRegion) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ApplyCertificateRegion)
+	if !ok {
+		that2, ok := that.(ApplyCertificateRegion)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.RegionName != that1.RegionName {
+		return false
+	}
+	if this.CertId != that1.CertId {
+		return false
+	}
+	return true
+}
+func (this *RollbackCertificateToDefaultRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*RollbackCertificateToDefaultRequest)
+	if !ok {
+		that2, ok := that.(RollbackCertificateToDefaultRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Namespace != that1.Namespace {
+		return false
+	}
+	if this.Name != that1.Name {
+		return false
+	}
+	if len(this.RegionList) != len(that1.RegionList) {
+		return false
+	}
+	for i := range this.RegionList {
+		if this.RegionList[i] != that1.RegionList[i] {
+			return false
+		}
+	}
+	return true
+}
+func (this *ApplyCertificateRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ApplyCertificateRequest)
+	if !ok {
+		that2, ok := that.(ApplyCertificateRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Namespace != that1.Namespace {
+		return false
+	}
+	if this.Name != that1.Name {
+		return false
+	}
+	if len(this.RegionList) != len(that1.RegionList) {
+		return false
+	}
+	for i := range this.RegionList {
+		if !this.RegionList[i].Equal(that1.RegionList[i]) {
+			return false
+		}
+	}
+	return true
+}
+func (this *CertificateOperationResponse) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*CertificateOperationResponse)
+	if !ok {
+		that2, ok := that.(CertificateOperationResponse)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Name != that1.Name {
+		return false
+	}
+	if len(this.RegionList) != len(that1.RegionList) {
+		return false
+	}
+	for i := range this.RegionList {
+		if !this.RegionList[i].Equal(that1.RegionList[i]) {
+			return false
+		}
+	}
+	return true
+}
+func (this *CertificateOperationRegion) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*CertificateOperationRegion)
+	if !ok {
+		that2, ok := that.(CertificateOperationRegion)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Region != that1.Region {
+		return false
+	}
+	if this.DeployStatus != that1.DeployStatus {
+		return false
+	}
+	if this.CertStatus != that1.CertStatus {
 		return false
 	}
 	return true
@@ -1456,14 +2202,29 @@ func (this *DeployPoliciesRequest) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 8)
+	s := make([]string, 0, 9)
 	s = append(s, "&bot_infrastructure.DeployPoliciesRequest{")
 	s = append(s, "Namespace: "+fmt.Sprintf("%#v", this.Namespace)+",\n")
 	s = append(s, "Name: "+fmt.Sprintf("%#v", this.Name)+",\n")
 	if this.PolicyMetadata != nil {
 		s = append(s, "PolicyMetadata: "+fmt.Sprintf("%#v", this.PolicyMetadata)+",\n")
 	}
+	if this.TiPackageMetadata != nil {
+		s = append(s, "TiPackageMetadata: "+fmt.Sprintf("%#v", this.TiPackageMetadata)+",\n")
+	}
 	s = append(s, "Comments: "+fmt.Sprintf("%#v", this.Comments)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *TIPackageMetadata) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 7)
+	s = append(s, "&bot_infrastructure.TIPackageMetadata{")
+	s = append(s, "Name: "+fmt.Sprintf("%#v", this.Name)+",\n")
+	s = append(s, "Version: "+fmt.Sprintf("%#v", this.Version)+",\n")
+	s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
@@ -1505,7 +2266,7 @@ func (this *DeploymentHistoryData) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 10)
+	s := make([]string, 0, 13)
 	s = append(s, "&bot_infrastructure.DeploymentHistoryData{")
 	if this.DeployedByChoice != nil {
 		s = append(s, "DeployedByChoice: "+fmt.Sprintf("%#v", this.DeployedByChoice)+",\n")
@@ -1518,6 +2279,9 @@ func (this *DeploymentHistoryData) GoString() string {
 	if this.PolicyMetadata != nil {
 		s = append(s, "PolicyMetadata: "+fmt.Sprintf("%#v", this.PolicyMetadata)+",\n")
 	}
+	s = append(s, "PolicyId: "+fmt.Sprintf("%#v", this.PolicyId)+",\n")
+	s = append(s, "GeneratedLink: "+fmt.Sprintf("%#v", this.GeneratedLink)+",\n")
+	s = append(s, "TiPackageName: "+fmt.Sprintf("%#v", this.TiPackageName)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
@@ -1536,6 +2300,68 @@ func (this *DeploymentHistoryData_Organization) GoString() string {
 	s := strings.Join([]string{`&bot_infrastructure.DeploymentHistoryData_Organization{` +
 		`Organization:` + fmt.Sprintf("%#v", this.Organization) + `}`}, ", ")
 	return s
+}
+func (this *ApplyCertificateRegion) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 6)
+	s = append(s, "&bot_infrastructure.ApplyCertificateRegion{")
+	s = append(s, "RegionName: "+fmt.Sprintf("%#v", this.RegionName)+",\n")
+	s = append(s, "CertId: "+fmt.Sprintf("%#v", this.CertId)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *RollbackCertificateToDefaultRequest) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 7)
+	s = append(s, "&bot_infrastructure.RollbackCertificateToDefaultRequest{")
+	s = append(s, "Namespace: "+fmt.Sprintf("%#v", this.Namespace)+",\n")
+	s = append(s, "Name: "+fmt.Sprintf("%#v", this.Name)+",\n")
+	s = append(s, "RegionList: "+fmt.Sprintf("%#v", this.RegionList)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *ApplyCertificateRequest) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 7)
+	s = append(s, "&bot_infrastructure.ApplyCertificateRequest{")
+	s = append(s, "Namespace: "+fmt.Sprintf("%#v", this.Namespace)+",\n")
+	s = append(s, "Name: "+fmt.Sprintf("%#v", this.Name)+",\n")
+	if this.RegionList != nil {
+		s = append(s, "RegionList: "+fmt.Sprintf("%#v", this.RegionList)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *CertificateOperationResponse) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 6)
+	s = append(s, "&bot_infrastructure.CertificateOperationResponse{")
+	s = append(s, "Name: "+fmt.Sprintf("%#v", this.Name)+",\n")
+	if this.RegionList != nil {
+		s = append(s, "RegionList: "+fmt.Sprintf("%#v", this.RegionList)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *CertificateOperationRegion) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 7)
+	s = append(s, "&bot_infrastructure.CertificateOperationRegion{")
+	s = append(s, "Region: "+fmt.Sprintf("%#v", this.Region)+",\n")
+	s = append(s, "DeployStatus: "+fmt.Sprintf("%#v", this.DeployStatus)+",\n")
+	s = append(s, "CertStatus: "+fmt.Sprintf("%#v", this.CertStatus)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
 }
 func valueToGoStringPublicCustomapi(v interface{}, typ string) string {
 	rv := reflect.ValueOf(v)
@@ -1568,6 +2394,16 @@ type CustomAPIClient interface {
 	// x-displayName: "Deploy Policies to Bot Infra"
 	// Deploy Policies to Bot Infrastructure
 	DeployPoliciesToBotInfra(ctx context.Context, in *DeployPoliciesRequest, opts ...grpc.CallOption) (*DeployPoliciesResponse, error)
+	// RollbackCertificateToDefault
+	//
+	// x-displayName: "Rollback Certificate To Default"
+	// Rollback to default certificate on Bot Infrastructure
+	RollbackCertificateToDefault(ctx context.Context, in *RollbackCertificateToDefaultRequest, opts ...grpc.CallOption) (*CertificateOperationResponse, error)
+	// ApplyCertificate
+	//
+	// x-displayName: "Apply Certificate"
+	// Apply custom certificate on Bot Infrastructure
+	ApplyCertificate(ctx context.Context, in *ApplyCertificateRequest, opts ...grpc.CallOption) (*CertificateOperationResponse, error)
 	// DeploymentHistory
 	//
 	// x-displayName: "Deployment History"
@@ -1601,6 +2437,24 @@ func (c *customAPIClient) DeployPoliciesToBotInfra(ctx context.Context, in *Depl
 	return out, nil
 }
 
+func (c *customAPIClient) RollbackCertificateToDefault(ctx context.Context, in *RollbackCertificateToDefaultRequest, opts ...grpc.CallOption) (*CertificateOperationResponse, error) {
+	out := new(CertificateOperationResponse)
+	err := c.cc.Invoke(ctx, "/ves.io.schema.shape.bot_defense.bot_infrastructure.CustomAPI/RollbackCertificateToDefault", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *customAPIClient) ApplyCertificate(ctx context.Context, in *ApplyCertificateRequest, opts ...grpc.CallOption) (*CertificateOperationResponse, error) {
+	out := new(CertificateOperationResponse)
+	err := c.cc.Invoke(ctx, "/ves.io.schema.shape.bot_defense.bot_infrastructure.CustomAPI/ApplyCertificate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *customAPIClient) DeploymentHistory(ctx context.Context, in *DeploymentHistoryRequest, opts ...grpc.CallOption) (*DeploymentHistoryResponse, error) {
 	out := new(DeploymentHistoryResponse)
 	err := c.cc.Invoke(ctx, "/ves.io.schema.shape.bot_defense.bot_infrastructure.CustomAPI/DeploymentHistory", in, out, opts...)
@@ -1622,6 +2476,16 @@ type CustomAPIServer interface {
 	// x-displayName: "Deploy Policies to Bot Infra"
 	// Deploy Policies to Bot Infrastructure
 	DeployPoliciesToBotInfra(context.Context, *DeployPoliciesRequest) (*DeployPoliciesResponse, error)
+	// RollbackCertificateToDefault
+	//
+	// x-displayName: "Rollback Certificate To Default"
+	// Rollback to default certificate on Bot Infrastructure
+	RollbackCertificateToDefault(context.Context, *RollbackCertificateToDefaultRequest) (*CertificateOperationResponse, error)
+	// ApplyCertificate
+	//
+	// x-displayName: "Apply Certificate"
+	// Apply custom certificate on Bot Infrastructure
+	ApplyCertificate(context.Context, *ApplyCertificateRequest) (*CertificateOperationResponse, error)
 	// DeploymentHistory
 	//
 	// x-displayName: "Deployment History"
@@ -1638,6 +2502,12 @@ func (*UnimplementedCustomAPIServer) DeploymentStatusOverview(ctx context.Contex
 }
 func (*UnimplementedCustomAPIServer) DeployPoliciesToBotInfra(ctx context.Context, req *DeployPoliciesRequest) (*DeployPoliciesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeployPoliciesToBotInfra not implemented")
+}
+func (*UnimplementedCustomAPIServer) RollbackCertificateToDefault(ctx context.Context, req *RollbackCertificateToDefaultRequest) (*CertificateOperationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RollbackCertificateToDefault not implemented")
+}
+func (*UnimplementedCustomAPIServer) ApplyCertificate(ctx context.Context, req *ApplyCertificateRequest) (*CertificateOperationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ApplyCertificate not implemented")
 }
 func (*UnimplementedCustomAPIServer) DeploymentHistory(ctx context.Context, req *DeploymentHistoryRequest) (*DeploymentHistoryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeploymentHistory not implemented")
@@ -1683,6 +2553,42 @@ func _CustomAPI_DeployPoliciesToBotInfra_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CustomAPI_RollbackCertificateToDefault_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RollbackCertificateToDefaultRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CustomAPIServer).RollbackCertificateToDefault(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ves.io.schema.shape.bot_defense.bot_infrastructure.CustomAPI/RollbackCertificateToDefault",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CustomAPIServer).RollbackCertificateToDefault(ctx, req.(*RollbackCertificateToDefaultRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CustomAPI_ApplyCertificate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ApplyCertificateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CustomAPIServer).ApplyCertificate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ves.io.schema.shape.bot_defense.bot_infrastructure.CustomAPI/ApplyCertificate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CustomAPIServer).ApplyCertificate(ctx, req.(*ApplyCertificateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _CustomAPI_DeploymentHistory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeploymentHistoryRequest)
 	if err := dec(in); err != nil {
@@ -1712,6 +2618,14 @@ var _CustomAPI_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeployPoliciesToBotInfra",
 			Handler:    _CustomAPI_DeployPoliciesToBotInfra_Handler,
+		},
+		{
+			MethodName: "RollbackCertificateToDefault",
+			Handler:    _CustomAPI_RollbackCertificateToDefault_Handler,
+		},
+		{
+			MethodName: "ApplyCertificate",
+			Handler:    _CustomAPI_ApplyCertificate_Handler,
 		},
 		{
 			MethodName: "DeploymentHistory",
@@ -1942,6 +2856,18 @@ func (m *DeployPoliciesRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.TiPackageMetadata != nil {
+		{
+			size, err := m.TiPackageMetadata.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintPublicCustomapi(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x2a
+	}
 	if len(m.Comments) > 0 {
 		i -= len(m.Comments)
 		copy(dAtA[i:], m.Comments)
@@ -1974,6 +2900,50 @@ func (m *DeployPoliciesRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i -= len(m.Namespace)
 		copy(dAtA[i:], m.Namespace)
 		i = encodeVarintPublicCustomapi(dAtA, i, uint64(len(m.Namespace)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *TIPackageMetadata) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *TIPackageMetadata) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *TIPackageMetadata) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintPublicCustomapi(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Version) > 0 {
+		i -= len(m.Version)
+		copy(dAtA[i:], m.Version)
+		i = encodeVarintPublicCustomapi(dAtA, i, uint64(len(m.Version)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintPublicCustomapi(dAtA, i, uint64(len(m.Name)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -2109,6 +3079,27 @@ func (m *DeploymentHistoryData) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.TiPackageName) > 0 {
+		i -= len(m.TiPackageName)
+		copy(dAtA[i:], m.TiPackageName)
+		i = encodeVarintPublicCustomapi(dAtA, i, uint64(len(m.TiPackageName)))
+		i--
+		dAtA[i] = 0x52
+	}
+	if len(m.GeneratedLink) > 0 {
+		i -= len(m.GeneratedLink)
+		copy(dAtA[i:], m.GeneratedLink)
+		i = encodeVarintPublicCustomapi(dAtA, i, uint64(len(m.GeneratedLink)))
+		i--
+		dAtA[i] = 0x4a
+	}
+	if len(m.PolicyId) > 0 {
+		i -= len(m.PolicyId)
+		copy(dAtA[i:], m.PolicyId)
+		i = encodeVarintPublicCustomapi(dAtA, i, uint64(len(m.PolicyId)))
+		i--
+		dAtA[i] = 0x42
+	}
 	if len(m.PolicyMetadata) > 0 {
 		for iNdEx := len(m.PolicyMetadata) - 1; iNdEx >= 0; iNdEx-- {
 			{
@@ -2189,6 +3180,229 @@ func (m *DeploymentHistoryData_Organization) MarshalToSizedBuffer(dAtA []byte) (
 	dAtA[i] = 0x1a
 	return len(dAtA) - i, nil
 }
+func (m *ApplyCertificateRegion) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ApplyCertificateRegion) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ApplyCertificateRegion) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.CertId) > 0 {
+		i -= len(m.CertId)
+		copy(dAtA[i:], m.CertId)
+		i = encodeVarintPublicCustomapi(dAtA, i, uint64(len(m.CertId)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.RegionName != 0 {
+		i = encodeVarintPublicCustomapi(dAtA, i, uint64(m.RegionName))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *RollbackCertificateToDefaultRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *RollbackCertificateToDefaultRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *RollbackCertificateToDefaultRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.RegionList) > 0 {
+		dAtA5 := make([]byte, len(m.RegionList)*10)
+		var j4 int
+		for _, num := range m.RegionList {
+			for num >= 1<<7 {
+				dAtA5[j4] = uint8(uint64(num)&0x7f | 0x80)
+				num >>= 7
+				j4++
+			}
+			dAtA5[j4] = uint8(num)
+			j4++
+		}
+		i -= j4
+		copy(dAtA[i:], dAtA5[:j4])
+		i = encodeVarintPublicCustomapi(dAtA, i, uint64(j4))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintPublicCustomapi(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Namespace) > 0 {
+		i -= len(m.Namespace)
+		copy(dAtA[i:], m.Namespace)
+		i = encodeVarintPublicCustomapi(dAtA, i, uint64(len(m.Namespace)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ApplyCertificateRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ApplyCertificateRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ApplyCertificateRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.RegionList) > 0 {
+		for iNdEx := len(m.RegionList) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.RegionList[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintPublicCustomapi(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintPublicCustomapi(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Namespace) > 0 {
+		i -= len(m.Namespace)
+		copy(dAtA[i:], m.Namespace)
+		i = encodeVarintPublicCustomapi(dAtA, i, uint64(len(m.Namespace)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *CertificateOperationResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CertificateOperationResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CertificateOperationResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.RegionList) > 0 {
+		for iNdEx := len(m.RegionList) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.RegionList[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintPublicCustomapi(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintPublicCustomapi(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *CertificateOperationRegion) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CertificateOperationRegion) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CertificateOperationRegion) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.CertStatus != 0 {
+		i = encodeVarintPublicCustomapi(dAtA, i, uint64(m.CertStatus))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.DeployStatus != 0 {
+		i = encodeVarintPublicCustomapi(dAtA, i, uint64(m.DeployStatus))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Region != 0 {
+		i = encodeVarintPublicCustomapi(dAtA, i, uint64(m.Region))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintPublicCustomapi(dAtA []byte, offset int, v uint64) int {
 	offset -= sovPublicCustomapi(v)
 	base := offset
@@ -2318,6 +3532,31 @@ func (m *DeployPoliciesRequest) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovPublicCustomapi(uint64(l))
 	}
+	if m.TiPackageMetadata != nil {
+		l = m.TiPackageMetadata.Size()
+		n += 1 + l + sovPublicCustomapi(uint64(l))
+	}
+	return n
+}
+
+func (m *TIPackageMetadata) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovPublicCustomapi(uint64(l))
+	}
+	l = len(m.Version)
+	if l > 0 {
+		n += 1 + l + sovPublicCustomapi(uint64(l))
+	}
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovPublicCustomapi(uint64(l))
+	}
 	return n
 }
 
@@ -2396,6 +3635,18 @@ func (m *DeploymentHistoryData) Size() (n int) {
 			n += 1 + l + sovPublicCustomapi(uint64(l))
 		}
 	}
+	l = len(m.PolicyId)
+	if l > 0 {
+		n += 1 + l + sovPublicCustomapi(uint64(l))
+	}
+	l = len(m.GeneratedLink)
+	if l > 0 {
+		n += 1 + l + sovPublicCustomapi(uint64(l))
+	}
+	l = len(m.TiPackageName)
+	if l > 0 {
+		n += 1 + l + sovPublicCustomapi(uint64(l))
+	}
 	return n
 }
 
@@ -2417,6 +3668,105 @@ func (m *DeploymentHistoryData_Organization) Size() (n int) {
 	_ = l
 	l = len(m.Organization)
 	n += 1 + l + sovPublicCustomapi(uint64(l))
+	return n
+}
+func (m *ApplyCertificateRegion) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.RegionName != 0 {
+		n += 1 + sovPublicCustomapi(uint64(m.RegionName))
+	}
+	l = len(m.CertId)
+	if l > 0 {
+		n += 1 + l + sovPublicCustomapi(uint64(l))
+	}
+	return n
+}
+
+func (m *RollbackCertificateToDefaultRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Namespace)
+	if l > 0 {
+		n += 1 + l + sovPublicCustomapi(uint64(l))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovPublicCustomapi(uint64(l))
+	}
+	if len(m.RegionList) > 0 {
+		l = 0
+		for _, e := range m.RegionList {
+			l += sovPublicCustomapi(uint64(e))
+		}
+		n += 1 + sovPublicCustomapi(uint64(l)) + l
+	}
+	return n
+}
+
+func (m *ApplyCertificateRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Namespace)
+	if l > 0 {
+		n += 1 + l + sovPublicCustomapi(uint64(l))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovPublicCustomapi(uint64(l))
+	}
+	if len(m.RegionList) > 0 {
+		for _, e := range m.RegionList {
+			l = e.Size()
+			n += 1 + l + sovPublicCustomapi(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *CertificateOperationResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovPublicCustomapi(uint64(l))
+	}
+	if len(m.RegionList) > 0 {
+		for _, e := range m.RegionList {
+			l = e.Size()
+			n += 1 + l + sovPublicCustomapi(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *CertificateOperationRegion) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Region != 0 {
+		n += 1 + sovPublicCustomapi(uint64(m.Region))
+	}
+	if m.DeployStatus != 0 {
+		n += 1 + sovPublicCustomapi(uint64(m.DeployStatus))
+	}
+	if m.CertStatus != 0 {
+		n += 1 + sovPublicCustomapi(uint64(m.CertStatus))
+	}
 	return n
 }
 
@@ -2495,6 +3845,19 @@ func (this *DeployPoliciesRequest) String() string {
 		`Name:` + fmt.Sprintf("%v", this.Name) + `,`,
 		`PolicyMetadata:` + repeatedStringForPolicyMetadata + `,`,
 		`Comments:` + fmt.Sprintf("%v", this.Comments) + `,`,
+		`TiPackageMetadata:` + strings.Replace(this.TiPackageMetadata.String(), "TIPackageMetadata", "TIPackageMetadata", 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *TIPackageMetadata) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&TIPackageMetadata{`,
+		`Name:` + fmt.Sprintf("%v", this.Name) + `,`,
+		`Version:` + fmt.Sprintf("%v", this.Version) + `,`,
+		`Id:` + fmt.Sprintf("%v", this.Id) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -2551,6 +3914,9 @@ func (this *DeploymentHistoryData) String() string {
 		`Status:` + fmt.Sprintf("%v", this.Status) + `,`,
 		`Comments:` + fmt.Sprintf("%v", this.Comments) + `,`,
 		`PolicyMetadata:` + repeatedStringForPolicyMetadata + `,`,
+		`PolicyId:` + fmt.Sprintf("%v", this.PolicyId) + `,`,
+		`GeneratedLink:` + fmt.Sprintf("%v", this.GeneratedLink) + `,`,
+		`TiPackageName:` + fmt.Sprintf("%v", this.TiPackageName) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -2571,6 +3937,74 @@ func (this *DeploymentHistoryData_Organization) String() string {
 	}
 	s := strings.Join([]string{`&DeploymentHistoryData_Organization{`,
 		`Organization:` + fmt.Sprintf("%v", this.Organization) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *ApplyCertificateRegion) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&ApplyCertificateRegion{`,
+		`RegionName:` + fmt.Sprintf("%v", this.RegionName) + `,`,
+		`CertId:` + fmt.Sprintf("%v", this.CertId) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *RollbackCertificateToDefaultRequest) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&RollbackCertificateToDefaultRequest{`,
+		`Namespace:` + fmt.Sprintf("%v", this.Namespace) + `,`,
+		`Name:` + fmt.Sprintf("%v", this.Name) + `,`,
+		`RegionList:` + fmt.Sprintf("%v", this.RegionList) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *ApplyCertificateRequest) String() string {
+	if this == nil {
+		return "nil"
+	}
+	repeatedStringForRegionList := "[]*ApplyCertificateRegion{"
+	for _, f := range this.RegionList {
+		repeatedStringForRegionList += strings.Replace(f.String(), "ApplyCertificateRegion", "ApplyCertificateRegion", 1) + ","
+	}
+	repeatedStringForRegionList += "}"
+	s := strings.Join([]string{`&ApplyCertificateRequest{`,
+		`Namespace:` + fmt.Sprintf("%v", this.Namespace) + `,`,
+		`Name:` + fmt.Sprintf("%v", this.Name) + `,`,
+		`RegionList:` + repeatedStringForRegionList + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *CertificateOperationResponse) String() string {
+	if this == nil {
+		return "nil"
+	}
+	repeatedStringForRegionList := "[]*CertificateOperationRegion{"
+	for _, f := range this.RegionList {
+		repeatedStringForRegionList += strings.Replace(f.String(), "CertificateOperationRegion", "CertificateOperationRegion", 1) + ","
+	}
+	repeatedStringForRegionList += "}"
+	s := strings.Join([]string{`&CertificateOperationResponse{`,
+		`Name:` + fmt.Sprintf("%v", this.Name) + `,`,
+		`RegionList:` + repeatedStringForRegionList + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *CertificateOperationRegion) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&CertificateOperationRegion{`,
+		`Region:` + fmt.Sprintf("%v", this.Region) + `,`,
+		`DeployStatus:` + fmt.Sprintf("%v", this.DeployStatus) + `,`,
+		`CertStatus:` + fmt.Sprintf("%v", this.CertStatus) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -3382,6 +4816,191 @@ func (m *DeployPoliciesRequest) Unmarshal(dAtA []byte) error {
 			}
 			m.Comments = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TiPackageMetadata", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPublicCustomapi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.TiPackageMetadata == nil {
+				m.TiPackageMetadata = &TIPackageMetadata{}
+			}
+			if err := m.TiPackageMetadata.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipPublicCustomapi(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *TIPackageMetadata) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowPublicCustomapi
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: TIPackageMetadata: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: TIPackageMetadata: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPublicCustomapi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Version", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPublicCustomapi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Version = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPublicCustomapi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipPublicCustomapi(dAtA[iNdEx:])
@@ -3941,6 +5560,772 @@ func (m *DeploymentHistoryData) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PolicyId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPublicCustomapi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PolicyId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GeneratedLink", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPublicCustomapi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GeneratedLink = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 10:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TiPackageName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPublicCustomapi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TiPackageName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipPublicCustomapi(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ApplyCertificateRegion) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowPublicCustomapi
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ApplyCertificateRegion: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ApplyCertificateRegion: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RegionName", wireType)
+			}
+			m.RegionName = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPublicCustomapi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.RegionName |= Location(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CertId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPublicCustomapi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CertId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipPublicCustomapi(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *RollbackCertificateToDefaultRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowPublicCustomapi
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: RollbackCertificateToDefaultRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: RollbackCertificateToDefaultRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Namespace", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPublicCustomapi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Namespace = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPublicCustomapi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType == 0 {
+				var v Location
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowPublicCustomapi
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= Location(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				m.RegionList = append(m.RegionList, v)
+			} else if wireType == 2 {
+				var packedLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowPublicCustomapi
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					packedLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if packedLen < 0 {
+					return ErrInvalidLengthPublicCustomapi
+				}
+				postIndex := iNdEx + packedLen
+				if postIndex < 0 {
+					return ErrInvalidLengthPublicCustomapi
+				}
+				if postIndex > l {
+					return io.ErrUnexpectedEOF
+				}
+				var elementCount int
+				if elementCount != 0 && len(m.RegionList) == 0 {
+					m.RegionList = make([]Location, 0, elementCount)
+				}
+				for iNdEx < postIndex {
+					var v Location
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowPublicCustomapi
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						v |= Location(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					m.RegionList = append(m.RegionList, v)
+				}
+			} else {
+				return fmt.Errorf("proto: wrong wireType = %d for field RegionList", wireType)
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipPublicCustomapi(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ApplyCertificateRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowPublicCustomapi
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ApplyCertificateRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ApplyCertificateRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Namespace", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPublicCustomapi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Namespace = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPublicCustomapi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RegionList", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPublicCustomapi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RegionList = append(m.RegionList, &ApplyCertificateRegion{})
+			if err := m.RegionList[len(m.RegionList)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipPublicCustomapi(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CertificateOperationResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowPublicCustomapi
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CertificateOperationResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CertificateOperationResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPublicCustomapi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RegionList", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPublicCustomapi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RegionList = append(m.RegionList, &CertificateOperationRegion{})
+			if err := m.RegionList[len(m.RegionList)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipPublicCustomapi(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthPublicCustomapi
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CertificateOperationRegion) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowPublicCustomapi
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CertificateOperationRegion: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CertificateOperationRegion: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Region", wireType)
+			}
+			m.Region = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPublicCustomapi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Region |= Location(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DeployStatus", wireType)
+			}
+			m.DeployStatus = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPublicCustomapi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.DeployStatus |= DepolyStatus(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CertStatus", wireType)
+			}
+			m.CertStatus = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPublicCustomapi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.CertStatus |= CertificateStatus(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipPublicCustomapi(dAtA[iNdEx:])

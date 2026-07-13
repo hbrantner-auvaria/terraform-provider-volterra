@@ -1327,6 +1327,7 @@ func resourceVolterraCloudLinkRead(d *schema.ResourceData, meta interface{}) err
 		}
 		return fmt.Errorf("Error finding Volterra CloudLink %q: %s", d.Id(), err)
 	}
+
 	return setCloudLinkFields(client, d, resp)
 }
 
@@ -2076,5 +2077,11 @@ func resourceVolterraCloudLinkDelete(d *schema.ResourceData, meta interface{}) e
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_cloud_link.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_cloud_link.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting CloudLink: %w", err)
+	}
+	return nil
+
 }

@@ -315,6 +315,7 @@ func resourceVolterraBotInfrastructureRead(d *schema.ResourceData, meta interfac
 		}
 		return fmt.Errorf("Error finding Volterra BotInfrastructure %q: %s", d.Id(), err)
 	}
+
 	return setBotInfrastructureFields(client, d, resp)
 }
 
@@ -478,6 +479,16 @@ func resourceVolterraBotInfrastructureUpdate(d *schema.ResourceData, meta interf
 							ingress[i] = &ves_io_schema_shape_bot_defense_bot_infrastructure.Ingress{}
 							ingressMapStrToI := set.(map[string]interface{})
 
+							if w, ok := ingressMapStrToI["cert_id"]; ok && !isIntfNil(w) {
+								ingress[i].CertId = w.(string)
+							}
+
+							if v, ok := ingressMapStrToI["cert_status"]; ok && !isIntfNil(v) {
+
+								ingress[i].CertStatus = ves_io_schema_shape_bot_defense_bot_infrastructure.CertificateStatus(ves_io_schema_shape_bot_defense_bot_infrastructure.CertificateStatus_value[v.(string)])
+
+							}
+
 							if v, ok := ingressMapStrToI["region"]; ok && !isIntfNil(v) {
 
 								ingress[i].Region = ves_io_schema_shape_bot_defense_bot_infrastructure.Location(ves_io_schema_shape_bot_defense_bot_infrastructure.Location_value[v.(string)])
@@ -525,6 +536,146 @@ func resourceVolterraBotInfrastructureUpdate(d *schema.ResourceData, meta interf
 						}
 					}
 					botInfraChoiceInt.CloudHosted.IpAddresses = ls
+
+				}
+
+			}
+		}
+
+	}
+
+	if v, ok := d.GetOk("kubernetes"); ok && !isIntfNil(v) && !botInfraChoiceTypeFound {
+
+		botInfraChoiceTypeFound = true
+		botInfraChoiceInt := &ves_io_schema_shape_bot_defense_bot_infrastructure.ReplaceSpecType_Kubernetes{}
+		botInfraChoiceInt.Kubernetes = &ves_io_schema_shape_bot_defense_bot_infrastructure.InfraContainerizedHosted{}
+		updateSpec.BotInfraChoice = botInfraChoiceInt
+
+		sl := v.([]interface{})
+		for _, set := range sl {
+			if set != nil {
+				cs := set.(map[string]interface{})
+
+				if v, ok := cs["infra_host_name"]; ok && !isIntfNil(v) {
+
+					botInfraChoiceInt.Kubernetes.InfraHostName = v.(string)
+
+				}
+
+				if v, ok := cs["infra_sync_status"]; ok && !isIntfNil(v) {
+
+					botInfraChoiceInt.Kubernetes.InfraSyncStatus = ves_io_schema_shape_bot_defense_bot_infrastructure.SyncStatus(ves_io_schema_shape_bot_defense_bot_infrastructure.SyncStatus_value[v.(string)])
+
+				}
+
+				if v, ok := cs["kubernetes_cluster"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					kubernetesCluster := make([]*ves_io_schema_shape_bot_defense_bot_infrastructure.KubernetesCluster, len(sl))
+					botInfraChoiceInt.Kubernetes.KubernetesCluster = kubernetesCluster
+					for i, set := range sl {
+						if set != nil {
+							kubernetesCluster[i] = &ves_io_schema_shape_bot_defense_bot_infrastructure.KubernetesCluster{}
+							kubernetesClusterMapStrToI := set.(map[string]interface{})
+
+							if w, ok := kubernetesClusterMapStrToI["cluster_tag"]; ok && !isIntfNil(w) {
+								kubernetesCluster[i].ClusterTag = w.(string)
+							}
+
+							if v, ok := kubernetesClusterMapStrToI["deployed_allowlist_policy_metadata"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								deployedAllowlistPolicyMetadata := &ves_io_schema_shape_bot_defense_bot_infrastructure.PolicyMetadata{}
+								kubernetesCluster[i].DeployedAllowlistPolicyMetadata = deployedAllowlistPolicyMetadata
+								for _, set := range sl {
+									if set != nil {
+										deployedAllowlistPolicyMetadataMapStrToI := set.(map[string]interface{})
+
+										if w, ok := deployedAllowlistPolicyMetadataMapStrToI["name"]; ok && !isIntfNil(w) {
+											deployedAllowlistPolicyMetadata.Name = w.(string)
+										}
+
+										if w, ok := deployedAllowlistPolicyMetadataMapStrToI["version"]; ok && !isIntfNil(w) {
+											deployedAllowlistPolicyMetadata.Version = w.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if w, ok := kubernetesClusterMapStrToI["deployed_bot_threat_intelligence_package_name"]; ok && !isIntfNil(w) {
+								kubernetesCluster[i].DeployedBotThreatIntelligencePackageName = w.(string)
+							}
+
+							if v, ok := kubernetesClusterMapStrToI["deployed_endpoint_policy_metadata"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								deployedEndpointPolicyMetadata := &ves_io_schema_shape_bot_defense_bot_infrastructure.PolicyMetadata{}
+								kubernetesCluster[i].DeployedEndpointPolicyMetadata = deployedEndpointPolicyMetadata
+								for _, set := range sl {
+									if set != nil {
+										deployedEndpointPolicyMetadataMapStrToI := set.(map[string]interface{})
+
+										if w, ok := deployedEndpointPolicyMetadataMapStrToI["name"]; ok && !isIntfNil(w) {
+											deployedEndpointPolicyMetadata.Name = w.(string)
+										}
+
+										if w, ok := deployedEndpointPolicyMetadataMapStrToI["version"]; ok && !isIntfNil(w) {
+											deployedEndpointPolicyMetadata.Version = w.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := kubernetesClusterMapStrToI["deployed_network_policy_metadata"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								deployedNetworkPolicyMetadata := &ves_io_schema_shape_bot_defense_bot_infrastructure.PolicyMetadata{}
+								kubernetesCluster[i].DeployedNetworkPolicyMetadata = deployedNetworkPolicyMetadata
+								for _, set := range sl {
+									if set != nil {
+										deployedNetworkPolicyMetadataMapStrToI := set.(map[string]interface{})
+
+										if w, ok := deployedNetworkPolicyMetadataMapStrToI["name"]; ok && !isIntfNil(w) {
+											deployedNetworkPolicyMetadata.Name = w.(string)
+										}
+
+										if w, ok := deployedNetworkPolicyMetadataMapStrToI["version"]; ok && !isIntfNil(w) {
+											deployedNetworkPolicyMetadata.Version = w.(string)
+										}
+
+									}
+								}
+
+							}
+
+							if w, ok := kubernetesClusterMapStrToI["firmware_version"]; ok && !isIntfNil(w) {
+								kubernetesCluster[i].FirmwareVersion = w.(string)
+							}
+
+							if v, ok := kubernetesClusterMapStrToI["sync_status"]; ok && !isIntfNil(v) {
+
+								kubernetesCluster[i].SyncStatus = ves_io_schema_shape_bot_defense_bot_infrastructure.SyncStatus(ves_io_schema_shape_bot_defense_bot_infrastructure.SyncStatus_value[v.(string)])
+
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := cs["last_updated_by"]; ok && !isIntfNil(v) {
+
+					botInfraChoiceInt.Kubernetes.LastUpdatedBy = v.(string)
+
+				}
+
+				if v, ok := cs["target_firmware_version"]; ok && !isIntfNil(v) {
+
+					botInfraChoiceInt.Kubernetes.TargetFirmwareVersion = v.(string)
 
 				}
 
@@ -738,5 +889,11 @@ func resourceVolterraBotInfrastructureDelete(d *schema.ResourceData, meta interf
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_shape_bot_defense_bot_infrastructure.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_shape_bot_defense_bot_infrastructure.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting BotInfrastructure: %w", err)
+	}
+	return nil
+
 }

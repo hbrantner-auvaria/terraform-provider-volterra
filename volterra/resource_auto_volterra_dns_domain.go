@@ -281,6 +281,7 @@ func resourceVolterraDnsDomainRead(d *schema.ResourceData, meta interface{}) err
 		}
 		return fmt.Errorf("Error finding Volterra DnsDomain %q: %s", d.Id(), err)
 	}
+
 	return setDnsDomainFields(client, d, resp)
 }
 
@@ -460,5 +461,11 @@ func resourceVolterraDnsDomainDelete(d *schema.ResourceData, meta interface{}) e
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_dns_domain.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_dns_domain.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting DnsDomain: %w", err)
+	}
+	return nil
+
 }

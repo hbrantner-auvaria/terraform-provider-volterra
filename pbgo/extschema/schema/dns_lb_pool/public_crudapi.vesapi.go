@@ -2377,14 +2377,14 @@ var APISwaggerJSON string = `{
             "description": "CNAME Record which can be a member of a CNAME type pool",
             "title": "CNAMEMember",
             "x-displayname": "CNAME member",
-            "x-ves-displayorder": "1,4,2,3",
+            "x-ves-displayorder": "1,2,3,4,5",
             "x-ves-proto-message": "ves.io.schema.dns_lb_pool.CNAMEMember",
             "properties": {
                 "domain": {
                     "type": "string",
-                    "description": "\nExample: - \"app.example.com\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.hostname: true\n",
-                    "title": "Domain",
-                    "x-displayname": "Domain",
+                    "description": " Specifies the fully qualified domain name.\n\nExample: - \"app.example.com\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.hostname: true\n",
+                    "title": "FQDN",
+                    "x-displayname": "FQDN",
                     "x-ves-example": "app.example.com",
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
@@ -2410,9 +2410,21 @@ var APISwaggerJSON string = `{
                         "ves.io.schema.rules.string.max_len": "256"
                     }
                 },
+                "priority": {
+                    "type": "integer",
+                    "description": " Used if the pool’s load balancing mode is set to Priority. Determines the order in which traffic is routed to pool members. The lower the number, the higher the priority, making those members active while higher-numbered members act as backups.\n\nExample: - \"10\"-\n\nValidation Rules:\n  ves.io.schema.rules.uint32.gte: 0\n  ves.io.schema.rules.uint32.lte: 255\n",
+                    "title": "Priority",
+                    "format": "int64",
+                    "x-displayname": "Load Balancing Priority",
+                    "x-ves-example": "10",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.uint32.gte": "0",
+                        "ves.io.schema.rules.uint32.lte": "255"
+                    }
+                },
                 "ratio": {
                     "type": "integer",
-                    "description": " Ratio\n\nExample: - \"10\"-\n\nValidation Rules:\n  ves.io.schema.rules.uint32.gte: 0\n  ves.io.schema.rules.uint32.lte: 100\n",
+                    "description": " Used if the pool’s load balancing mode is set to Ratio-Member\n\nExample: - \"10\"-\n\nValidation Rules:\n  ves.io.schema.rules.uint32.gte: 0\n  ves.io.schema.rules.uint32.lte: 100\n",
                     "title": "Ratio",
                     "format": "int64",
                     "x-displayname": "Load Balancing Ratio",

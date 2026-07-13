@@ -35,17 +35,7 @@ resource "volterra_aws_vpc_site" "example" {
 
   // One of the arguments from this list "direct_connect_disabled direct_connect_enabled private_connectivity" must be set
 
-  private_connectivity {
-    cloud_link {
-      name      = "test1"
-      namespace = "staging"
-      tenant    = "acmecorp"
-    }
-
-    // One of the arguments from this list "inside outside" can be set
-
-    inside = true
-  }
+  direct_connect_disabled = true
 
   // One of the arguments from this list "egress_gateway_default egress_nat_gw egress_virtual_private_gateway" must be set
 
@@ -62,7 +52,7 @@ resource "volterra_aws_vpc_site" "example" {
 
   // One of the arguments from this list "f5_orchestrated_routing manual_routing" must be set
 
-  manual_routing = true
+  f5_orchestrated_routing = true
 
   // One of the arguments from this list "custom_security_group f5xc_security_group" must be set
 
@@ -70,36 +60,21 @@ resource "volterra_aws_vpc_site" "example" {
 
   // One of the arguments from this list "ingress_egress_gw ingress_gw voltstack_cluster" must be set
 
-  ingress_egress_gw {
+  ingress_gw {
     allowed_vip_port {
       // One of the arguments from this list "custom_ports disable_allowed_vip_port use_http_https_port use_http_port use_https_port" can be set
 
-      custom_ports {
-        port_ranges = "80, 8080-8085"
-      }
+      disable_allowed_vip_port = true
     }
 
-    allowed_vip_port_sli {
-      // One of the arguments from this list "custom_ports disable_allowed_vip_port use_http_https_port use_http_port use_https_port" can be set
-
-      use_http_port = true
-    }
-
-    aws_certified_hw = "aws-byol-multi-nic-voltmesh"
+    aws_certified_hw = "aws-byol-voltmesh"
 
     az_nodes {
       aws_az_name = "us-west-2a"
 
-      // One of the arguments from this list "inside_subnet reserved_inside_subnet" must be set
-
-      reserved_inside_subnet = true
       disk_size = "80"
-      outside_subnet {
-        // One of the arguments from this list "existing_subnet_id subnet_param" must be set
 
-        existing_subnet_id = "subnet-12345678901234567"
-      }
-      workload_subnet {
+      local_subnet {
         // One of the arguments from this list "existing_subnet_id subnet_param" must be set
 
         subnet_param {
@@ -110,46 +85,15 @@ resource "volterra_aws_vpc_site" "example" {
       }
     }
 
-    // One of the arguments from this list "dc_cluster_group_inside_vn dc_cluster_group_outside_vn no_dc_cluster_group" must be set
-
-    dc_cluster_group_inside_vn {
-      name      = "test1"
-      namespace = "staging"
-      tenant    = "acmecorp"
-    }
-
-    // One of the arguments from this list "active_forward_proxy_policies forward_proxy_allow_all no_forward_proxy" must be set
-
-    no_forward_proxy = true
-
-    // One of the arguments from this list "global_network_list no_global_network" must be set
-
-    no_global_network = true
-
-    // One of the arguments from this list "inside_static_routes no_inside_static_routes" must be set
-
-    no_inside_static_routes = true
-
-    // One of the arguments from this list "active_enhanced_firewall_policies active_network_policies no_network_policy" must be set
-
-    no_network_policy = true
-
-    // One of the arguments from this list "no_outside_static_routes outside_static_routes" must be set
-
-    no_outside_static_routes = true
     performance_enhancement_mode {
       // One of the arguments from this list "perf_mode_l3_enhanced perf_mode_l7_enhanced" must be set
 
-      perf_mode_l7_enhanced {
-        // One of the arguments from this list "jumbo_disabled jumbo_enabled" must be set
+      perf_mode_l3_enhanced {
+        // One of the arguments from this list "jumbo no_jumbo" must be set
 
-        jumbo_disabled = true
+        no_jumbo = true
       }
     }
-
-    // One of the arguments from this list "sm_connection_public_ip sm_connection_pvt_ip" must be set
-
-    sm_connection_public_ip = true
   }
   ssh_key = ["ssh-rsa AAAAB..."]
 

@@ -42,6 +42,18 @@ Argument Reference
 
 ### Spec Argument Reference
 
+`type` - (Optional) DC Cluster Group Mesh Type configuration. See [Type](#type) below for details.
+
+### Type
+
+DC Cluster Group Mesh Type configuration. Choice of data plane, data plane and control plane dc cluster mesh.
+
+###### One of the arguments from this list "data_plane_mesh, control_and_data_plane_mesh" can be set
+
+`data_plane_mesh` - (Optional) Full Mesh of Data plane connectivity across sites (`Bool`).
+
+`control_and_data_plane_mesh` - (Optional) Full Mesh of data plane connectivity across sites and control plane peering across sites (`Bool`).
+
 Attribute Reference
 -------------------
 

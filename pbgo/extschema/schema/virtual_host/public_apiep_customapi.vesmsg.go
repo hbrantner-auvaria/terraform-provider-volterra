@@ -513,11 +513,11 @@ var DefaultAPIEPSummaryFilterValidator = func() *ValidateAPIEPSummaryFilter {
 
 	vrhDomains := v.DomainsValidationRuleHandler
 	rulesDomains := map[string]string{
-		"ves.io.schema.rules.repeated.items.string.max_len":   "256",
-		"ves.io.schema.rules.repeated.items.string.min_len":   "1",
-		"ves.io.schema.rules.repeated.items.string.vh_domain": "true",
-		"ves.io.schema.rules.repeated.max_items":              "5",
-		"ves.io.schema.rules.repeated.unique":                 "true",
+		"ves.io.schema.rules.repeated.items.string.max_len":         "256",
+		"ves.io.schema.rules.repeated.items.string.min_len":         "1",
+		"ves.io.schema.rules.repeated.items.string.vh_domain_or_ip": "true",
+		"ves.io.schema.rules.repeated.max_items":                    "5",
+		"ves.io.schema.rules.repeated.unique":                       "true",
 	}
 	vFn, err = vrhDomains(rulesDomains)
 	if err != nil {
@@ -853,11 +853,11 @@ var DefaultAPIEndpointLearntSchemaReqValidator = func() *ValidateAPIEndpointLear
 
 	vrhDomains := v.DomainsValidationRuleHandler
 	rulesDomains := map[string]string{
-		"ves.io.schema.rules.repeated.items.string.max_len":   "256",
-		"ves.io.schema.rules.repeated.items.string.min_len":   "1",
-		"ves.io.schema.rules.repeated.items.string.vh_domain": "true",
-		"ves.io.schema.rules.repeated.max_items":              "5",
-		"ves.io.schema.rules.repeated.unique":                 "true",
+		"ves.io.schema.rules.repeated.items.string.max_len":         "256",
+		"ves.io.schema.rules.repeated.items.string.min_len":         "1",
+		"ves.io.schema.rules.repeated.items.string.vh_domain_or_ip": "true",
+		"ves.io.schema.rules.repeated.max_items":                    "5",
+		"ves.io.schema.rules.repeated.unique":                       "true",
 	}
 	vFn, err = vrhDomains(rulesDomains)
 	if err != nil {
@@ -1408,11 +1408,11 @@ var DefaultAPIEndpointReqValidator = func() *ValidateAPIEndpointReq {
 
 	vrhDomains := v.DomainsValidationRuleHandler
 	rulesDomains := map[string]string{
-		"ves.io.schema.rules.repeated.items.string.max_len":   "256",
-		"ves.io.schema.rules.repeated.items.string.min_len":   "1",
-		"ves.io.schema.rules.repeated.items.string.vh_domain": "true",
-		"ves.io.schema.rules.repeated.max_items":              "5",
-		"ves.io.schema.rules.repeated.unique":                 "true",
+		"ves.io.schema.rules.repeated.items.string.max_len":         "256",
+		"ves.io.schema.rules.repeated.items.string.min_len":         "1",
+		"ves.io.schema.rules.repeated.items.string.vh_domain_or_ip": "true",
+		"ves.io.schema.rules.repeated.max_items":                    "5",
+		"ves.io.schema.rules.repeated.unique":                       "true",
 	}
 	vFn, err = vrhDomains(rulesDomains)
 	if err != nil {
@@ -1715,11 +1715,11 @@ var DefaultAPIEndpointsReqValidator = func() *ValidateAPIEndpointsReq {
 
 	vrhDomains := v.DomainsValidationRuleHandler
 	rulesDomains := map[string]string{
-		"ves.io.schema.rules.repeated.items.string.max_len":   "256",
-		"ves.io.schema.rules.repeated.items.string.min_len":   "1",
-		"ves.io.schema.rules.repeated.items.string.vh_domain": "true",
-		"ves.io.schema.rules.repeated.max_items":              "5",
-		"ves.io.schema.rules.repeated.unique":                 "true",
+		"ves.io.schema.rules.repeated.items.string.max_len":         "256",
+		"ves.io.schema.rules.repeated.items.string.min_len":         "1",
+		"ves.io.schema.rules.repeated.items.string.vh_domain_or_ip": "true",
+		"ves.io.schema.rules.repeated.max_items":                    "5",
+		"ves.io.schema.rules.repeated.unique":                       "true",
 	}
 	vFn, err = vrhDomains(rulesDomains)
 	if err != nil {
@@ -3333,11 +3333,11 @@ var DefaultGetTopSensitiveDataReqValidator = func() *ValidateGetTopSensitiveData
 
 	vrhDomains := v.DomainsValidationRuleHandler
 	rulesDomains := map[string]string{
-		"ves.io.schema.rules.repeated.items.string.max_len":   "256",
-		"ves.io.schema.rules.repeated.items.string.min_len":   "1",
-		"ves.io.schema.rules.repeated.items.string.vh_domain": "true",
-		"ves.io.schema.rules.repeated.max_items":              "5",
-		"ves.io.schema.rules.repeated.unique":                 "true",
+		"ves.io.schema.rules.repeated.items.string.max_len":         "256",
+		"ves.io.schema.rules.repeated.items.string.min_len":         "1",
+		"ves.io.schema.rules.repeated.items.string.vh_domain_or_ip": "true",
+		"ves.io.schema.rules.repeated.max_items":                    "5",
+		"ves.io.schema.rules.repeated.unique":                       "true",
 	}
 	vFn, err = vrhDomains(rulesDomains)
 	if err != nil {
@@ -3585,11 +3585,11 @@ var DefaultGetVulnerabilitiesReqValidator = func() *ValidateGetVulnerabilitiesRe
 
 	vrhDomains := v.DomainsValidationRuleHandler
 	rulesDomains := map[string]string{
-		"ves.io.schema.rules.repeated.items.string.max_len":   "256",
-		"ves.io.schema.rules.repeated.items.string.min_len":   "1",
-		"ves.io.schema.rules.repeated.items.string.vh_domain": "true",
-		"ves.io.schema.rules.repeated.max_items":              "5",
-		"ves.io.schema.rules.repeated.unique":                 "true",
+		"ves.io.schema.rules.repeated.items.string.max_len":         "256",
+		"ves.io.schema.rules.repeated.items.string.min_len":         "1",
+		"ves.io.schema.rules.repeated.items.string.vh_domain_or_ip": "true",
+		"ves.io.schema.rules.repeated.max_items":                    "5",
+		"ves.io.schema.rules.repeated.unique":                       "true",
 	}
 	vFn, err = vrhDomains(rulesDomains)
 	if err != nil {
@@ -3978,11 +3978,11 @@ var DefaultSwaggerSpecReqValidator = func() *ValidateSwaggerSpecReq {
 
 	vrhDomains := v.DomainsValidationRuleHandler
 	rulesDomains := map[string]string{
-		"ves.io.schema.rules.repeated.items.string.max_len":   "256",
-		"ves.io.schema.rules.repeated.items.string.min_len":   "1",
-		"ves.io.schema.rules.repeated.items.string.vh_domain": "true",
-		"ves.io.schema.rules.repeated.max_items":              "5",
-		"ves.io.schema.rules.repeated.unique":                 "true",
+		"ves.io.schema.rules.repeated.items.string.max_len":         "256",
+		"ves.io.schema.rules.repeated.items.string.min_len":         "1",
+		"ves.io.schema.rules.repeated.items.string.vh_domain_or_ip": "true",
+		"ves.io.schema.rules.repeated.max_items":                    "5",
+		"ves.io.schema.rules.repeated.unique":                       "true",
 	}
 	vFn, err = vrhDomains(rulesDomains)
 	if err != nil {
@@ -5403,6 +5403,21 @@ func (v *ValidateVulnerability) Validate(ctx context.Context, pm interface{}, op
 		vOpts := append(opts, db.WithValidateField("last_observed_time"))
 		if err := fv(ctx, m.GetLastObservedTime(), vOpts...); err != nil {
 			return err
+		}
+	}
+	if fv, exists := v.FldValidators["object_type"]; exists {
+		vOpts := append(opts, db.WithValidateField("object_type"))
+		if err := fv(ctx, m.GetObjectType(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["objects"]; exists {
+		vOpts := append(opts, db.WithValidateField("objects"))
+		for idx, item := range m.GetObjects() {
+			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
+			if err := fv(ctx, item, vOpts...); err != nil {
+				return err
+			}
 		}
 	}
 	if fv, exists := v.FldValidators["owasp_categories"]; exists {

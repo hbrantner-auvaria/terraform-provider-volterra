@@ -95,6 +95,12 @@ func resourceVolterraDnsLbHealthCheck() *schema.Resource {
 							Optional: true,
 						},
 
+						"inherit_load_balancer_fqdn": {
+
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+
 						"virtual_host": {
 
 							Type:     schema.TypeString,
@@ -133,6 +139,12 @@ func resourceVolterraDnsLbHealthCheck() *schema.Resource {
 						},
 
 						"disable_virtual_host": {
+
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+
+						"inherit_load_balancer_fqdn": {
 
 							Type:     schema.TypeBool,
 							Optional: true,
@@ -356,6 +368,18 @@ func resourceVolterraDnsLbHealthCheckCreate(d *schema.ResourceData, meta interfa
 
 				}
 
+				if v, ok := cs["inherit_load_balancer_fqdn"]; ok && !isIntfNil(v) && !virtualHostChoiceTypeFound {
+
+					virtualHostChoiceTypeFound = true
+
+					if v.(bool) {
+						virtualHostChoiceInt := &ves_io_schema_dns_lb_health_check.HttpHealthCheck_InheritLoadBalancerFqdn{}
+						virtualHostChoiceInt.InheritLoadBalancerFqdn = &ves_io_schema.Empty{}
+						healthCheckInt.HttpHealthCheck.VirtualHostChoice = virtualHostChoiceInt
+					}
+
+				}
+
 				if v, ok := cs["virtual_host"]; ok && !isIntfNil(v) && !virtualHostChoiceTypeFound {
 
 					virtualHostChoiceTypeFound = true
@@ -417,6 +441,18 @@ func resourceVolterraDnsLbHealthCheckCreate(d *schema.ResourceData, meta interfa
 					if v.(bool) {
 						virtualHostChoiceInt := &ves_io_schema_dns_lb_health_check.HttpHealthCheck_DisableVirtualHost{}
 						virtualHostChoiceInt.DisableVirtualHost = &ves_io_schema.Empty{}
+						healthCheckInt.HttpsHealthCheck.VirtualHostChoice = virtualHostChoiceInt
+					}
+
+				}
+
+				if v, ok := cs["inherit_load_balancer_fqdn"]; ok && !isIntfNil(v) && !virtualHostChoiceTypeFound {
+
+					virtualHostChoiceTypeFound = true
+
+					if v.(bool) {
+						virtualHostChoiceInt := &ves_io_schema_dns_lb_health_check.HttpHealthCheck_InheritLoadBalancerFqdn{}
+						virtualHostChoiceInt.InheritLoadBalancerFqdn = &ves_io_schema.Empty{}
 						healthCheckInt.HttpsHealthCheck.VirtualHostChoice = virtualHostChoiceInt
 					}
 
@@ -598,6 +634,7 @@ func resourceVolterraDnsLbHealthCheckRead(d *schema.ResourceData, meta interface
 		}
 		return fmt.Errorf("Error finding Volterra DnsLbHealthCheck %q: %s", d.Id(), err)
 	}
+
 	return setDnsLbHealthCheckFields(client, d, resp)
 }
 
@@ -724,6 +761,18 @@ func resourceVolterraDnsLbHealthCheckUpdate(d *schema.ResourceData, meta interfa
 
 				}
 
+				if v, ok := cs["inherit_load_balancer_fqdn"]; ok && !isIntfNil(v) && !virtualHostChoiceTypeFound {
+
+					virtualHostChoiceTypeFound = true
+
+					if v.(bool) {
+						virtualHostChoiceInt := &ves_io_schema_dns_lb_health_check.HttpHealthCheck_InheritLoadBalancerFqdn{}
+						virtualHostChoiceInt.InheritLoadBalancerFqdn = &ves_io_schema.Empty{}
+						healthCheckInt.HttpHealthCheck.VirtualHostChoice = virtualHostChoiceInt
+					}
+
+				}
+
 				if v, ok := cs["virtual_host"]; ok && !isIntfNil(v) && !virtualHostChoiceTypeFound {
 
 					virtualHostChoiceTypeFound = true
@@ -785,6 +834,18 @@ func resourceVolterraDnsLbHealthCheckUpdate(d *schema.ResourceData, meta interfa
 					if v.(bool) {
 						virtualHostChoiceInt := &ves_io_schema_dns_lb_health_check.HttpHealthCheck_DisableVirtualHost{}
 						virtualHostChoiceInt.DisableVirtualHost = &ves_io_schema.Empty{}
+						healthCheckInt.HttpsHealthCheck.VirtualHostChoice = virtualHostChoiceInt
+					}
+
+				}
+
+				if v, ok := cs["inherit_load_balancer_fqdn"]; ok && !isIntfNil(v) && !virtualHostChoiceTypeFound {
+
+					virtualHostChoiceTypeFound = true
+
+					if v.(bool) {
+						virtualHostChoiceInt := &ves_io_schema_dns_lb_health_check.HttpHealthCheck_InheritLoadBalancerFqdn{}
+						virtualHostChoiceInt.InheritLoadBalancerFqdn = &ves_io_schema.Empty{}
 						healthCheckInt.HttpsHealthCheck.VirtualHostChoice = virtualHostChoiceInt
 					}
 
@@ -970,5 +1031,11 @@ func resourceVolterraDnsLbHealthCheckDelete(d *schema.ResourceData, meta interfa
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_dns_lb_health_check.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_dns_lb_health_check.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting DnsLbHealthCheck: %w", err)
+	}
+	return nil
+
 }

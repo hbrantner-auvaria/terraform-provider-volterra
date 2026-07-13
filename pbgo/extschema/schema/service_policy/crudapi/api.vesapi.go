@@ -1791,7 +1791,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2015,7 +2015,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -2269,7 +2269,7 @@ var APISwaggerJSON string = `{
                     },
                     {
                         "name": "report_fields",
-                        "description": "TODO: currently even if one specified implementation will return all fields.",
+                        "description": "Which fields to report. If none specified, only\nuid, tenant, namespace, name, labels are reported.\nTODO: currently even if one specified implementation will return all fields.",
                         "in": "query",
                         "required": false,
                         "type": "array",
@@ -5982,10 +5982,11 @@ var APISwaggerJSON string = `{
             "properties": {
                 "encoded_path_matcher": {
                     "type": "boolean",
-                    "description": "Match against the encoded, escaped path",
+                    "description": "Match against the encoded, escaped path\n\nExample: - \"match \\\"/path/%20another%20path\\\" instead of default \\\"/path/ another path\\\"\"-",
                     "title": "Encoded_Path",
                     "format": "boolean",
-                    "x-displayname": "Match Encoded Path"
+                    "x-displayname": "Match Encoded Path",
+                    "x-ves-example": "match \\\"/path/%20another%20path\\\" instead of default \\\"/path/ another path\\\""
                 },
                 "exact_values": {
                     "type": "array",

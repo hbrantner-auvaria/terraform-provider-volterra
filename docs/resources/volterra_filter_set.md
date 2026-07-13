@@ -26,8 +26,8 @@ resource "volterra_filter_set" "example" {
 
     // One of the arguments from this list "date_field filter_expression_field label_selector_field string_field" must be set
 
-    filter_expression_field {
-      expression = "region in (us-west1, us-west2),tier in (staging)"
+    label_selector_field {
+      expressions = ["region in (us-west1, us-west2),tier in (staging)"]
     }
   }
 }

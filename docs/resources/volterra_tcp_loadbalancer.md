@@ -22,7 +22,13 @@ resource "volterra_tcp_loadbalancer" "example" {
 
   // One of the arguments from this list "advertise_custom advertise_on_public advertise_on_public_default_vip do_not_advertise" must be set
 
-  do_not_advertise = true
+  advertise_on_public {
+    public_ip {
+      name      = "test1"
+      namespace = "staging"
+      tenant    = "acmecorp"
+    }
+  }
 
   // One of the arguments from this list "do_not_retract_cluster retract_cluster" must be set
 
@@ -30,11 +36,36 @@ resource "volterra_tcp_loadbalancer" "example" {
 
   // One of the arguments from this list "hash_policy_choice_least_active hash_policy_choice_random hash_policy_choice_round_robin hash_policy_choice_source_ip_stickiness" must be set
 
-  hash_policy_choice_round_robin = true
+  hash_policy_choice_random = true
 
   // One of the arguments from this list "tcp tls_tcp tls_tcp_auto_cert" must be set
 
-  tcp = true
+  tls_tcp {
+    // One of the arguments from this list "tls_cert_params tls_parameters" must be set
+
+    tls_cert_params {
+      certificates {
+        name      = "test1"
+        namespace = "staging"
+        tenant    = "acmecorp"
+      }
+
+      // One of the arguments from this list "no_mtls use_mtls" must be set
+
+      no_mtls = true
+      tls_config {
+        // One of the arguments from this list "custom_security default_security low_security medium_security" must be set
+
+        custom_security {
+          cipher_suites = ["TLS_AES_128_GCM_SHA256"]
+
+          max_version = "max_version"
+
+          min_version = "min_version"
+        }
+      }
+    }
+  }
 
   // One of the arguments from this list "listen_port port_ranges" must be set
 
@@ -42,7 +73,7 @@ resource "volterra_tcp_loadbalancer" "example" {
 
   // One of the arguments from this list "active_service_policies no_service_policies service_policies_from_namespace" must be set
 
-  service_policies_from_namespace = true
+  no_service_policies = true
 
   // One of the arguments from this list "default_lb_with_sni no_sni sni" must be set
 
@@ -456,10 +487,6 @@ Configuration of TLS settings such as min/max TLS version and ciphersuites.
 ### Tls Certificates Private Key
 
 TLS Private Key data in unencrypted PEM format including the PEM headers. The data may be optionally secured using BlindFold. TLS key has to match the accompanying certificate..
-
-`blindfold_secret_info_internal` - (Optional) Blindfold Secret Internal is used for the putting re-encrypted blindfold secret. See [Private Key Blindfold Secret Info Internal ](#private-key-blindfold-secret-info-internal) below for details.(Deprecated)
-
-`secret_encoding_type` - (Optional) e.g. if a secret is base64 encoded and then put into vault. (`String`).(Deprecated)
 
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 

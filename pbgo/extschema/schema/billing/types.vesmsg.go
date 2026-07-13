@@ -490,15 +490,15 @@ func BillingUsageIdValidator() db.Validator {
 
 // augmented methods on protoc/std generated struct
 
-func (m *BillingUsageSummaryRequest) ToJSON() (string, error) {
+func (m *LabelFilter) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
 
-func (m *BillingUsageSummaryRequest) ToYAML() (string, error) {
+func (m *LabelFilter) ToYAML() (string, error) {
 	return codec.ToYAML(m)
 }
 
-func (m *BillingUsageSummaryRequest) DeepCopy() *BillingUsageSummaryRequest {
+func (m *LabelFilter) DeepCopy() *LabelFilter {
 	if m == nil {
 		return nil
 	}
@@ -506,7 +506,7 @@ func (m *BillingUsageSummaryRequest) DeepCopy() *BillingUsageSummaryRequest {
 	if err != nil {
 		return nil
 	}
-	c := &BillingUsageSummaryRequest{}
+	c := &LabelFilter{}
 	err = c.Unmarshal(ser)
 	if err != nil {
 		return nil
@@ -514,60 +514,49 @@ func (m *BillingUsageSummaryRequest) DeepCopy() *BillingUsageSummaryRequest {
 	return c
 }
 
-func (m *BillingUsageSummaryRequest) DeepCopyProto() proto.Message {
+func (m *LabelFilter) DeepCopyProto() proto.Message {
 	if m == nil {
 		return nil
 	}
 	return m.DeepCopy()
 }
 
-func (m *BillingUsageSummaryRequest) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
-	return BillingUsageSummaryRequestValidator().Validate(ctx, m, opts...)
+func (m *LabelFilter) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return LabelFilterValidator().Validate(ctx, m, opts...)
 }
 
-type ValidateBillingUsageSummaryRequest struct {
+type ValidateLabelFilter struct {
 	FldValidators map[string]db.ValidatorFunc
 }
 
-func (v *ValidateBillingUsageSummaryRequest) StartTimeValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
-	validatorFn, err := db.NewStringValidationRuleHandler(rules)
-	if err != nil {
-		return nil, errors.Wrap(err, "ValidationRuleHandler for start_time")
-	}
-
-	return validatorFn, nil
-}
-func (v *ValidateBillingUsageSummaryRequest) EndTimeValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
-	validatorFn, err := db.NewStringValidationRuleHandler(rules)
-	if err != nil {
-		return nil, errors.Wrap(err, "ValidationRuleHandler for end_time")
-	}
-
-	return validatorFn, nil
-}
-
-func (v *ValidateBillingUsageSummaryRequest) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
-	m, ok := pm.(*BillingUsageSummaryRequest)
+func (v *ValidateLabelFilter) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*LabelFilter)
 	if !ok {
 		switch t := pm.(type) {
 		case nil:
 			return nil
 		default:
-			return fmt.Errorf("Expected type *BillingUsageSummaryRequest got type %s", t)
+			return fmt.Errorf("Expected type *LabelFilter got type %s", t)
 		}
 	}
 	if m == nil {
 		return nil
 	}
-	if fv, exists := v.FldValidators["end_time"]; exists {
-		vOpts := append(opts, db.WithValidateField("end_time"))
-		if err := fv(ctx, m.GetEndTime(), vOpts...); err != nil {
+	if fv, exists := v.FldValidators["label"]; exists {
+		vOpts := append(opts, db.WithValidateField("label"))
+		if err := fv(ctx, m.GetLabel(), vOpts...); err != nil {
 			return err
 		}
 	}
-	if fv, exists := v.FldValidators["start_time"]; exists {
-		vOpts := append(opts, db.WithValidateField("start_time"))
-		if err := fv(ctx, m.GetStartTime(), vOpts...); err != nil {
+	if fv, exists := v.FldValidators["op"]; exists {
+		vOpts := append(opts, db.WithValidateField("op"))
+		if err := fv(ctx, m.GetOp(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["value"]; exists {
+		vOpts := append(opts, db.WithValidateField("value"))
+		if err := fv(ctx, m.GetValue(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -575,120 +564,14 @@ func (v *ValidateBillingUsageSummaryRequest) Validate(ctx context.Context, pm in
 }
 
 // Well-known symbol for default validator implementation
-var DefaultBillingUsageSummaryRequestValidator = func() *ValidateBillingUsageSummaryRequest {
-	v := &ValidateBillingUsageSummaryRequest{FldValidators: map[string]db.ValidatorFunc{}}
-	var (
-		err error
-		vFn db.ValidatorFunc
-	)
-	_, _ = err, vFn
-	vFnMap := map[string]db.ValidatorFunc{}
-	_ = vFnMap
-
-	vrhStartTime := v.StartTimeValidationRuleHandler
-	rulesStartTime := map[string]string{
-		"ves.io.schema.rules.string.query_time": "true",
-	}
-	vFn, err = vrhStartTime(rulesStartTime)
-	if err != nil {
-		errMsg := fmt.Sprintf("ValidationRuleHandler for BillingUsageSummaryRequest.start_time: %s", err)
-		panic(errMsg)
-	}
-	v.FldValidators["start_time"] = vFn
-
-	vrhEndTime := v.EndTimeValidationRuleHandler
-	rulesEndTime := map[string]string{
-		"ves.io.schema.rules.string.query_time": "true",
-	}
-	vFn, err = vrhEndTime(rulesEndTime)
-	if err != nil {
-		errMsg := fmt.Sprintf("ValidationRuleHandler for BillingUsageSummaryRequest.end_time: %s", err)
-		panic(errMsg)
-	}
-	v.FldValidators["end_time"] = vFn
+var DefaultLabelFilterValidator = func() *ValidateLabelFilter {
+	v := &ValidateLabelFilter{FldValidators: map[string]db.ValidatorFunc{}}
 
 	return v
 }()
 
-func BillingUsageSummaryRequestValidator() db.Validator {
-	return DefaultBillingUsageSummaryRequestValidator
-}
-
-// augmented methods on protoc/std generated struct
-
-func (m *BillingUsageSummaryResponse) ToJSON() (string, error) {
-	return codec.ToJSON(m)
-}
-
-func (m *BillingUsageSummaryResponse) ToYAML() (string, error) {
-	return codec.ToYAML(m)
-}
-
-func (m *BillingUsageSummaryResponse) DeepCopy() *BillingUsageSummaryResponse {
-	if m == nil {
-		return nil
-	}
-	ser, err := m.Marshal()
-	if err != nil {
-		return nil
-	}
-	c := &BillingUsageSummaryResponse{}
-	err = c.Unmarshal(ser)
-	if err != nil {
-		return nil
-	}
-	return c
-}
-
-func (m *BillingUsageSummaryResponse) DeepCopyProto() proto.Message {
-	if m == nil {
-		return nil
-	}
-	return m.DeepCopy()
-}
-
-func (m *BillingUsageSummaryResponse) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
-	return BillingUsageSummaryResponseValidator().Validate(ctx, m, opts...)
-}
-
-type ValidateBillingUsageSummaryResponse struct {
-	FldValidators map[string]db.ValidatorFunc
-}
-
-func (v *ValidateBillingUsageSummaryResponse) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
-	m, ok := pm.(*BillingUsageSummaryResponse)
-	if !ok {
-		switch t := pm.(type) {
-		case nil:
-			return nil
-		default:
-			return fmt.Errorf("Expected type *BillingUsageSummaryResponse got type %s", t)
-		}
-	}
-	if m == nil {
-		return nil
-	}
-	if fv, exists := v.FldValidators["usage_summary_items"]; exists {
-		vOpts := append(opts, db.WithValidateField("usage_summary_items"))
-		for idx, item := range m.GetUsageSummaryItems() {
-			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
-			if err := fv(ctx, item, vOpts...); err != nil {
-				return err
-			}
-		}
-	}
-	return nil
-}
-
-// Well-known symbol for default validator implementation
-var DefaultBillingUsageSummaryResponseValidator = func() *ValidateBillingUsageSummaryResponse {
-	v := &ValidateBillingUsageSummaryResponse{FldValidators: map[string]db.ValidatorFunc{}}
-
-	return v
-}()
-
-func BillingUsageSummaryResponseValidator() db.Validator {
-	return DefaultBillingUsageSummaryResponseValidator
+func LabelFilterValidator() db.Validator {
+	return DefaultLabelFilterValidator
 }
 
 // augmented methods on protoc/std generated struct
@@ -1753,6 +1636,113 @@ func UsageCountDataValidator() db.Validator {
 
 // augmented methods on protoc/std generated struct
 
+func (m *UsageData) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *UsageData) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *UsageData) DeepCopy() *UsageData {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &UsageData{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *UsageData) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *UsageData) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return UsageDataValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateUsageData struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateUsageData) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*UsageData)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *UsageData got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["metric_values"]; exists {
+		vOpts := append(opts, db.WithValidateField("metric_values"))
+		for idx, item := range m.GetMetricValues() {
+			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
+			if err := fv(ctx, item, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	if fv, exists := v.FldValidators["name"]; exists {
+		vOpts := append(opts, db.WithValidateField("name"))
+		if err := fv(ctx, m.GetName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["namespace"]; exists {
+		vOpts := append(opts, db.WithValidateField("namespace"))
+		if err := fv(ctx, m.GetNamespace(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["obj_name"]; exists {
+		vOpts := append(opts, db.WithValidateField("obj_name"))
+		if err := fv(ctx, m.GetObjName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["unit"]; exists {
+		vOpts := append(opts, db.WithValidateField("unit"))
+		if err := fv(ctx, m.GetUnit(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["usage_type"]; exists {
+		vOpts := append(opts, db.WithValidateField("usage_type"))
+		if err := fv(ctx, m.GetUsageType(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultUsageDataValidator = func() *ValidateUsageData {
+	v := &ValidateUsageData{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func UsageDataValidator() db.Validator {
+	return DefaultUsageDataValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *UsageMetricData) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
@@ -1906,6 +1896,12 @@ func (v *ValidateUsageSummaryItem) Validate(ctx context.Context, pm interface{},
 	if fv, exists := v.FldValidators["usage_metric_data"]; exists {
 		vOpts := append(opts, db.WithValidateField("usage_metric_data"))
 		if err := fv(ctx, m.GetUsageMetricData(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["usage_type"]; exists {
+		vOpts := append(opts, db.WithValidateField("usage_type"))
+		if err := fv(ctx, m.GetUsageType(), vOpts...); err != nil {
 			return err
 		}
 	}

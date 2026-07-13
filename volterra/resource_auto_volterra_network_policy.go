@@ -1811,6 +1811,7 @@ func resourceVolterraNetworkPolicyRead(d *schema.ResourceData, meta interface{})
 		}
 		return fmt.Errorf("Error finding Volterra NetworkPolicy %q: %s", d.Id(), err)
 	}
+
 	return setNetworkPolicyFields(client, d, resp)
 }
 
@@ -2995,5 +2996,11 @@ func resourceVolterraNetworkPolicyDelete(d *schema.ResourceData, meta interface{
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_network_policy.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_network_policy.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting NetworkPolicy: %w", err)
+	}
+	return nil
+
 }

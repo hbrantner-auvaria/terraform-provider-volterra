@@ -155,6 +155,7 @@ func resourceVolterraInfraprotectFirewallRuleGroupRead(d *schema.ResourceData, m
 		}
 		return fmt.Errorf("Error finding Volterra InfraprotectFirewallRuleGroup %q: %s", d.Id(), err)
 	}
+
 	return setInfraprotectFirewallRuleGroupFields(client, d, resp)
 }
 
@@ -265,5 +266,11 @@ func resourceVolterraInfraprotectFirewallRuleGroupDelete(d *schema.ResourceData,
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_infraprotect_firewall_rule_group.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_infraprotect_firewall_rule_group.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting InfraprotectFirewallRuleGroup: %w", err)
+	}
+	return nil
+
 }

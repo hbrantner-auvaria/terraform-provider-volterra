@@ -222,6 +222,7 @@ func resourceVolterraUsbPolicyRead(d *schema.ResourceData, meta interface{}) err
 		}
 		return fmt.Errorf("Error finding Volterra UsbPolicy %q: %s", d.Id(), err)
 	}
+
 	return setUsbPolicyFields(client, d, resp)
 }
 
@@ -364,5 +365,11 @@ func resourceVolterraUsbPolicyDelete(d *schema.ResourceData, meta interface{}) e
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_usb_policy.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_usb_policy.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting UsbPolicy: %w", err)
+	}
+	return nil
+
 }

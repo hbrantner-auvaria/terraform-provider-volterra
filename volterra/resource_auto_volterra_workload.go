@@ -963,11 +963,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
 
-																					"kind": {
-																						Type:     schema.TypeString,
-																						Computed: true,
-																					},
-
 																					"name": {
 																						Type:     schema.TypeString,
 																						Optional: true,
@@ -1007,11 +1002,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
 
-																					"kind": {
-																						Type:     schema.TypeString,
-																						Computed: true,
-																					},
-
 																					"name": {
 																						Type:     schema.TypeString,
 																						Optional: true,
@@ -1047,11 +1037,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
 
-																					"kind": {
-																						Type:     schema.TypeString,
-																						Computed: true,
-																					},
-
 																					"name": {
 																						Type:     schema.TypeString,
 																						Optional: true,
@@ -1075,11 +1060,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																			Optional: true,
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
-
-																					"kind": {
-																						Type:     schema.TypeString,
-																						Computed: true,
-																					},
 
 																					"name": {
 																						Type:     schema.TypeString,
@@ -1174,7 +1154,20 @@ func resourceVolterraWorkload() *schema.Resource {
 																						MaxItems: 1,
 																						Optional: true,
 																						Elem: &schema.Resource{
-																							Schema: map[string]*schema.Schema{},
+																							Schema: map[string]*schema.Schema{
+
+																								"default_coalescing": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+
+																								"strict_coalescing": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+																							},
 																						},
 																					},
 
@@ -1241,7 +1234,66 @@ func resourceVolterraWorkload() *schema.Resource {
 																						MaxItems: 1,
 																						Optional: true,
 																						Elem: &schema.Resource{
-																							Schema: map[string]*schema.Schema{},
+																							Schema: map[string]*schema.Schema{
+
+																								"http_protocol_enable_v1_only": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"header_transformation": {
+
+																												Type:     schema.TypeList,
+																												MaxItems: 1,
+																												Optional: true,
+																												Elem: &schema.Resource{
+																													Schema: map[string]*schema.Schema{
+
+																														"default_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"legacy_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"preserve_case_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"proper_case_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+																													},
+																												},
+																											},
+																										},
+																									},
+																								},
+
+																								"http_protocol_enable_v1_v2": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+
+																								"http_protocol_enable_v2_only": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+																							},
 																						},
 																					},
 
@@ -1312,11 +1364,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																									Elem: &schema.Resource{
 																										Schema: map[string]*schema.Schema{
 
-																											"kind": {
-																												Type:     schema.TypeString,
-																												Computed: true,
-																											},
-
 																											"name": {
 																												Type:     schema.TypeString,
 																												Optional: true,
@@ -1360,11 +1407,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																												Elem: &schema.Resource{
 																													Schema: map[string]*schema.Schema{
 
-																														"kind": {
-																															Type:     schema.TypeString,
-																															Computed: true,
-																														},
-
 																														"name": {
 																															Type:     schema.TypeString,
 																															Optional: true,
@@ -1394,11 +1436,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																												Optional: true,
 																												Elem: &schema.Resource{
 																													Schema: map[string]*schema.Schema{
-
-																														"kind": {
-																															Type:     schema.TypeString,
-																															Computed: true,
-																														},
 
 																														"name": {
 																															Type:     schema.TypeString,
@@ -1548,11 +1585,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																												Elem: &schema.Resource{
 																													Schema: map[string]*schema.Schema{
 
-																														"kind": {
-																															Type:     schema.TypeString,
-																															Computed: true,
-																														},
-
 																														"name": {
 																															Type:     schema.TypeString,
 																															Optional: true,
@@ -1582,11 +1614,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																												Optional: true,
 																												Elem: &schema.Resource{
 																													Schema: map[string]*schema.Schema{
-
-																														"kind": {
-																															Type:     schema.TypeString,
-																															Computed: true,
-																														},
 
 																														"name": {
 																															Type:     schema.TypeString,
@@ -1937,7 +1964,20 @@ func resourceVolterraWorkload() *schema.Resource {
 																						MaxItems: 1,
 																						Optional: true,
 																						Elem: &schema.Resource{
-																							Schema: map[string]*schema.Schema{},
+																							Schema: map[string]*schema.Schema{
+
+																								"default_coalescing": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+
+																								"strict_coalescing": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+																							},
 																						},
 																					},
 
@@ -2004,7 +2044,66 @@ func resourceVolterraWorkload() *schema.Resource {
 																						MaxItems: 1,
 																						Optional: true,
 																						Elem: &schema.Resource{
-																							Schema: map[string]*schema.Schema{},
+																							Schema: map[string]*schema.Schema{
+
+																								"http_protocol_enable_v1_only": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"header_transformation": {
+
+																												Type:     schema.TypeList,
+																												MaxItems: 1,
+																												Optional: true,
+																												Elem: &schema.Resource{
+																													Schema: map[string]*schema.Schema{
+
+																														"default_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"legacy_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"preserve_case_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"proper_case_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+																													},
+																												},
+																											},
+																										},
+																									},
+																								},
+
+																								"http_protocol_enable_v1_v2": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+
+																								"http_protocol_enable_v2_only": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+																							},
 																						},
 																					},
 
@@ -2040,11 +2139,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																									Elem: &schema.Resource{
 																										Schema: map[string]*schema.Schema{
 
-																											"kind": {
-																												Type:     schema.TypeString,
-																												Computed: true,
-																											},
-
 																											"name": {
 																												Type:     schema.TypeString,
 																												Optional: true,
@@ -2074,11 +2168,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																									Optional: true,
 																									Elem: &schema.Resource{
 																										Schema: map[string]*schema.Schema{
-
-																											"kind": {
-																												Type:     schema.TypeString,
-																												Computed: true,
-																											},
 
 																											"name": {
 																												Type:     schema.TypeString,
@@ -2446,7 +2535,24 @@ func resourceVolterraWorkload() *schema.Resource {
 																												MaxItems: 1,
 																												Optional: true,
 																												Elem: &schema.Resource{
-																													Schema: map[string]*schema.Schema{},
+																													Schema: map[string]*schema.Schema{
+
+																														"response_body": {
+																															Type:       schema.TypeString,
+																															Optional:   true,
+																															Deprecated: "This field is deprecated and will be removed in future release.",
+																														},
+
+																														"response_body_encoded": {
+																															Type:     schema.TypeString,
+																															Optional: true,
+																														},
+
+																														"response_code": {
+																															Type:     schema.TypeInt,
+																															Optional: true,
+																														},
+																													},
 																												},
 																											},
 																										},
@@ -2568,7 +2674,88 @@ func resourceVolterraWorkload() *schema.Resource {
 																												MaxItems: 1,
 																												Optional: true,
 																												Elem: &schema.Resource{
-																													Schema: map[string]*schema.Schema{},
+																													Schema: map[string]*schema.Schema{
+
+																														"host_redirect": {
+																															Type:     schema.TypeString,
+																															Optional: true,
+																														},
+
+																														"port_redirect": {
+																															Type:       schema.TypeInt,
+																															Optional:   true,
+																															Deprecated: "This field is deprecated and will be removed in future release.",
+																														},
+
+																														"proto_redirect": {
+																															Type:     schema.TypeString,
+																															Optional: true,
+																														},
+
+																														"all_params": {
+
+																															Type:       schema.TypeBool,
+																															Optional:   true,
+																															Deprecated: "This field is deprecated and will be removed in future release.",
+																														},
+
+																														"remove_all_params": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"replace_params": {
+
+																															Type:     schema.TypeString,
+																															Optional: true,
+																														},
+
+																														"retain_all_params": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"strip_query_params": {
+
+																															Type:       schema.TypeList,
+																															MaxItems:   1,
+																															Optional:   true,
+																															Deprecated: "This field is deprecated and will be removed in future release.",
+																															Elem: &schema.Resource{
+																																Schema: map[string]*schema.Schema{
+
+																																	"query_params": {
+																																		Type: schema.TypeList,
+
+																																		Optional:   true,
+																																		Deprecated: "This field is deprecated and will be removed in future release.",
+																																		Elem: &schema.Schema{
+																																			Type: schema.TypeString,
+																																		},
+																																	},
+																																},
+																															},
+																														},
+
+																														"path_redirect": {
+
+																															Type:     schema.TypeString,
+																															Optional: true,
+																														},
+
+																														"prefix_rewrite": {
+
+																															Type:     schema.TypeString,
+																															Optional: true,
+																														},
+
+																														"response_code": {
+																															Type:     schema.TypeInt,
+																															Optional: true,
+																														},
+																													},
 																												},
 																											},
 																										},
@@ -2928,7 +3115,20 @@ func resourceVolterraWorkload() *schema.Resource {
 																									MaxItems: 1,
 																									Optional: true,
 																									Elem: &schema.Resource{
-																										Schema: map[string]*schema.Schema{},
+																										Schema: map[string]*schema.Schema{
+
+																											"default_coalescing": {
+
+																												Type:     schema.TypeBool,
+																												Optional: true,
+																											},
+
+																											"strict_coalescing": {
+
+																												Type:     schema.TypeBool,
+																												Optional: true,
+																											},
+																										},
 																									},
 																								},
 
@@ -2995,7 +3195,66 @@ func resourceVolterraWorkload() *schema.Resource {
 																									MaxItems: 1,
 																									Optional: true,
 																									Elem: &schema.Resource{
-																										Schema: map[string]*schema.Schema{},
+																										Schema: map[string]*schema.Schema{
+
+																											"http_protocol_enable_v1_only": {
+
+																												Type:     schema.TypeList,
+																												MaxItems: 1,
+																												Optional: true,
+																												Elem: &schema.Resource{
+																													Schema: map[string]*schema.Schema{
+
+																														"header_transformation": {
+
+																															Type:     schema.TypeList,
+																															MaxItems: 1,
+																															Optional: true,
+																															Elem: &schema.Resource{
+																																Schema: map[string]*schema.Schema{
+
+																																	"default_header_transformation": {
+
+																																		Type:     schema.TypeBool,
+																																		Optional: true,
+																																	},
+
+																																	"legacy_header_transformation": {
+
+																																		Type:     schema.TypeBool,
+																																		Optional: true,
+																																	},
+
+																																	"preserve_case_header_transformation": {
+
+																																		Type:     schema.TypeBool,
+																																		Optional: true,
+																																	},
+
+																																	"proper_case_header_transformation": {
+
+																																		Type:     schema.TypeBool,
+																																		Optional: true,
+																																	},
+																																},
+																															},
+																														},
+																													},
+																												},
+																											},
+
+																											"http_protocol_enable_v1_v2": {
+
+																												Type:     schema.TypeBool,
+																												Optional: true,
+																											},
+
+																											"http_protocol_enable_v2_only": {
+
+																												Type:     schema.TypeBool,
+																												Optional: true,
+																											},
+																										},
 																									},
 																								},
 
@@ -3066,11 +3325,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																												Elem: &schema.Resource{
 																													Schema: map[string]*schema.Schema{
 
-																														"kind": {
-																															Type:     schema.TypeString,
-																															Computed: true,
-																														},
-
 																														"name": {
 																															Type:     schema.TypeString,
 																															Optional: true,
@@ -3114,11 +3368,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																															Elem: &schema.Resource{
 																																Schema: map[string]*schema.Schema{
 
-																																	"kind": {
-																																		Type:     schema.TypeString,
-																																		Computed: true,
-																																	},
-
 																																	"name": {
 																																		Type:     schema.TypeString,
 																																		Optional: true,
@@ -3148,11 +3397,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																															Optional: true,
 																															Elem: &schema.Resource{
 																																Schema: map[string]*schema.Schema{
-
-																																	"kind": {
-																																		Type:     schema.TypeString,
-																																		Computed: true,
-																																	},
 
 																																	"name": {
 																																		Type:     schema.TypeString,
@@ -3302,11 +3546,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																															Elem: &schema.Resource{
 																																Schema: map[string]*schema.Schema{
 
-																																	"kind": {
-																																		Type:     schema.TypeString,
-																																		Computed: true,
-																																	},
-
 																																	"name": {
 																																		Type:     schema.TypeString,
 																																		Optional: true,
@@ -3336,11 +3575,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																															Optional: true,
 																															Elem: &schema.Resource{
 																																Schema: map[string]*schema.Schema{
-
-																																	"kind": {
-																																		Type:     schema.TypeString,
-																																		Computed: true,
-																																	},
 
 																																	"name": {
 																																		Type:     schema.TypeString,
@@ -3691,7 +3925,20 @@ func resourceVolterraWorkload() *schema.Resource {
 																									MaxItems: 1,
 																									Optional: true,
 																									Elem: &schema.Resource{
-																										Schema: map[string]*schema.Schema{},
+																										Schema: map[string]*schema.Schema{
+
+																											"default_coalescing": {
+
+																												Type:     schema.TypeBool,
+																												Optional: true,
+																											},
+
+																											"strict_coalescing": {
+
+																												Type:     schema.TypeBool,
+																												Optional: true,
+																											},
+																										},
 																									},
 																								},
 
@@ -3758,7 +4005,66 @@ func resourceVolterraWorkload() *schema.Resource {
 																									MaxItems: 1,
 																									Optional: true,
 																									Elem: &schema.Resource{
-																										Schema: map[string]*schema.Schema{},
+																										Schema: map[string]*schema.Schema{
+
+																											"http_protocol_enable_v1_only": {
+
+																												Type:     schema.TypeList,
+																												MaxItems: 1,
+																												Optional: true,
+																												Elem: &schema.Resource{
+																													Schema: map[string]*schema.Schema{
+
+																														"header_transformation": {
+
+																															Type:     schema.TypeList,
+																															MaxItems: 1,
+																															Optional: true,
+																															Elem: &schema.Resource{
+																																Schema: map[string]*schema.Schema{
+
+																																	"default_header_transformation": {
+
+																																		Type:     schema.TypeBool,
+																																		Optional: true,
+																																	},
+
+																																	"legacy_header_transformation": {
+
+																																		Type:     schema.TypeBool,
+																																		Optional: true,
+																																	},
+
+																																	"preserve_case_header_transformation": {
+
+																																		Type:     schema.TypeBool,
+																																		Optional: true,
+																																	},
+
+																																	"proper_case_header_transformation": {
+
+																																		Type:     schema.TypeBool,
+																																		Optional: true,
+																																	},
+																																},
+																															},
+																														},
+																													},
+																												},
+																											},
+
+																											"http_protocol_enable_v1_v2": {
+
+																												Type:     schema.TypeBool,
+																												Optional: true,
+																											},
+
+																											"http_protocol_enable_v2_only": {
+
+																												Type:     schema.TypeBool,
+																												Optional: true,
+																											},
+																										},
 																									},
 																								},
 
@@ -3794,11 +4100,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																												Elem: &schema.Resource{
 																													Schema: map[string]*schema.Schema{
 
-																														"kind": {
-																															Type:     schema.TypeString,
-																															Computed: true,
-																														},
-
 																														"name": {
 																															Type:     schema.TypeString,
 																															Optional: true,
@@ -3828,11 +4129,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																												Optional: true,
 																												Elem: &schema.Resource{
 																													Schema: map[string]*schema.Schema{
-
-																														"kind": {
-																															Type:     schema.TypeString,
-																															Computed: true,
-																														},
 
 																														"name": {
 																															Type:     schema.TypeString,
@@ -4200,7 +4496,24 @@ func resourceVolterraWorkload() *schema.Resource {
 																															MaxItems: 1,
 																															Optional: true,
 																															Elem: &schema.Resource{
-																																Schema: map[string]*schema.Schema{},
+																																Schema: map[string]*schema.Schema{
+
+																																	"response_body": {
+																																		Type:       schema.TypeString,
+																																		Optional:   true,
+																																		Deprecated: "This field is deprecated and will be removed in future release.",
+																																	},
+
+																																	"response_body_encoded": {
+																																		Type:     schema.TypeString,
+																																		Optional: true,
+																																	},
+
+																																	"response_code": {
+																																		Type:     schema.TypeInt,
+																																		Optional: true,
+																																	},
+																																},
 																															},
 																														},
 																													},
@@ -4322,7 +4635,88 @@ func resourceVolterraWorkload() *schema.Resource {
 																															MaxItems: 1,
 																															Optional: true,
 																															Elem: &schema.Resource{
-																																Schema: map[string]*schema.Schema{},
+																																Schema: map[string]*schema.Schema{
+
+																																	"host_redirect": {
+																																		Type:     schema.TypeString,
+																																		Optional: true,
+																																	},
+
+																																	"port_redirect": {
+																																		Type:       schema.TypeInt,
+																																		Optional:   true,
+																																		Deprecated: "This field is deprecated and will be removed in future release.",
+																																	},
+
+																																	"proto_redirect": {
+																																		Type:     schema.TypeString,
+																																		Optional: true,
+																																	},
+
+																																	"all_params": {
+
+																																		Type:       schema.TypeBool,
+																																		Optional:   true,
+																																		Deprecated: "This field is deprecated and will be removed in future release.",
+																																	},
+
+																																	"remove_all_params": {
+
+																																		Type:     schema.TypeBool,
+																																		Optional: true,
+																																	},
+
+																																	"replace_params": {
+
+																																		Type:     schema.TypeString,
+																																		Optional: true,
+																																	},
+
+																																	"retain_all_params": {
+
+																																		Type:     schema.TypeBool,
+																																		Optional: true,
+																																	},
+
+																																	"strip_query_params": {
+
+																																		Type:       schema.TypeList,
+																																		MaxItems:   1,
+																																		Optional:   true,
+																																		Deprecated: "This field is deprecated and will be removed in future release.",
+																																		Elem: &schema.Resource{
+																																			Schema: map[string]*schema.Schema{
+
+																																				"query_params": {
+																																					Type: schema.TypeList,
+
+																																					Optional:   true,
+																																					Deprecated: "This field is deprecated and will be removed in future release.",
+																																					Elem: &schema.Schema{
+																																						Type: schema.TypeString,
+																																					},
+																																				},
+																																			},
+																																		},
+																																	},
+
+																																	"path_redirect": {
+
+																																		Type:     schema.TypeString,
+																																		Optional: true,
+																																	},
+
+																																	"prefix_rewrite": {
+
+																																		Type:     schema.TypeString,
+																																		Optional: true,
+																																	},
+
+																																	"response_code": {
+																																		Type:     schema.TypeInt,
+																																		Optional: true,
+																																	},
+																																},
 																															},
 																														},
 																													},
@@ -4553,7 +4947,20 @@ func resourceVolterraWorkload() *schema.Resource {
 																						MaxItems: 1,
 																						Optional: true,
 																						Elem: &schema.Resource{
-																							Schema: map[string]*schema.Schema{},
+																							Schema: map[string]*schema.Schema{
+
+																								"default_coalescing": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+
+																								"strict_coalescing": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+																							},
 																						},
 																					},
 
@@ -4620,7 +5027,66 @@ func resourceVolterraWorkload() *schema.Resource {
 																						MaxItems: 1,
 																						Optional: true,
 																						Elem: &schema.Resource{
-																							Schema: map[string]*schema.Schema{},
+																							Schema: map[string]*schema.Schema{
+
+																								"http_protocol_enable_v1_only": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"header_transformation": {
+
+																												Type:     schema.TypeList,
+																												MaxItems: 1,
+																												Optional: true,
+																												Elem: &schema.Resource{
+																													Schema: map[string]*schema.Schema{
+
+																														"default_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"legacy_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"preserve_case_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"proper_case_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+																													},
+																												},
+																											},
+																										},
+																									},
+																								},
+
+																								"http_protocol_enable_v1_v2": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+
+																								"http_protocol_enable_v2_only": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+																							},
 																						},
 																					},
 
@@ -4691,11 +5157,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																									Elem: &schema.Resource{
 																										Schema: map[string]*schema.Schema{
 
-																											"kind": {
-																												Type:     schema.TypeString,
-																												Computed: true,
-																											},
-
 																											"name": {
 																												Type:     schema.TypeString,
 																												Optional: true,
@@ -4739,11 +5200,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																												Elem: &schema.Resource{
 																													Schema: map[string]*schema.Schema{
 
-																														"kind": {
-																															Type:     schema.TypeString,
-																															Computed: true,
-																														},
-
 																														"name": {
 																															Type:     schema.TypeString,
 																															Optional: true,
@@ -4773,11 +5229,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																												Optional: true,
 																												Elem: &schema.Resource{
 																													Schema: map[string]*schema.Schema{
-
-																														"kind": {
-																															Type:     schema.TypeString,
-																															Computed: true,
-																														},
 
 																														"name": {
 																															Type:     schema.TypeString,
@@ -4927,11 +5378,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																												Elem: &schema.Resource{
 																													Schema: map[string]*schema.Schema{
 
-																														"kind": {
-																															Type:     schema.TypeString,
-																															Computed: true,
-																														},
-
 																														"name": {
 																															Type:     schema.TypeString,
 																															Optional: true,
@@ -4961,11 +5407,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																												Optional: true,
 																												Elem: &schema.Resource{
 																													Schema: map[string]*schema.Schema{
-
-																														"kind": {
-																															Type:     schema.TypeString,
-																															Computed: true,
-																														},
 
 																														"name": {
 																															Type:     schema.TypeString,
@@ -5316,7 +5757,20 @@ func resourceVolterraWorkload() *schema.Resource {
 																						MaxItems: 1,
 																						Optional: true,
 																						Elem: &schema.Resource{
-																							Schema: map[string]*schema.Schema{},
+																							Schema: map[string]*schema.Schema{
+
+																								"default_coalescing": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+
+																								"strict_coalescing": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+																							},
 																						},
 																					},
 
@@ -5383,7 +5837,66 @@ func resourceVolterraWorkload() *schema.Resource {
 																						MaxItems: 1,
 																						Optional: true,
 																						Elem: &schema.Resource{
-																							Schema: map[string]*schema.Schema{},
+																							Schema: map[string]*schema.Schema{
+
+																								"http_protocol_enable_v1_only": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"header_transformation": {
+
+																												Type:     schema.TypeList,
+																												MaxItems: 1,
+																												Optional: true,
+																												Elem: &schema.Resource{
+																													Schema: map[string]*schema.Schema{
+
+																														"default_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"legacy_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"preserve_case_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"proper_case_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+																													},
+																												},
+																											},
+																										},
+																									},
+																								},
+
+																								"http_protocol_enable_v1_v2": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+
+																								"http_protocol_enable_v2_only": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+																							},
 																						},
 																					},
 
@@ -5419,11 +5932,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																									Elem: &schema.Resource{
 																										Schema: map[string]*schema.Schema{
 
-																											"kind": {
-																												Type:     schema.TypeString,
-																												Computed: true,
-																											},
-
 																											"name": {
 																												Type:     schema.TypeString,
 																												Optional: true,
@@ -5453,11 +5961,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																									Optional: true,
 																									Elem: &schema.Resource{
 																										Schema: map[string]*schema.Schema{
-
-																											"kind": {
-																												Type:     schema.TypeString,
-																												Computed: true,
-																											},
 
 																											"name": {
 																												Type:     schema.TypeString,
@@ -5825,7 +6328,24 @@ func resourceVolterraWorkload() *schema.Resource {
 																												MaxItems: 1,
 																												Optional: true,
 																												Elem: &schema.Resource{
-																													Schema: map[string]*schema.Schema{},
+																													Schema: map[string]*schema.Schema{
+
+																														"response_body": {
+																															Type:       schema.TypeString,
+																															Optional:   true,
+																															Deprecated: "This field is deprecated and will be removed in future release.",
+																														},
+
+																														"response_body_encoded": {
+																															Type:     schema.TypeString,
+																															Optional: true,
+																														},
+
+																														"response_code": {
+																															Type:     schema.TypeInt,
+																															Optional: true,
+																														},
+																													},
 																												},
 																											},
 																										},
@@ -5947,7 +6467,88 @@ func resourceVolterraWorkload() *schema.Resource {
 																												MaxItems: 1,
 																												Optional: true,
 																												Elem: &schema.Resource{
-																													Schema: map[string]*schema.Schema{},
+																													Schema: map[string]*schema.Schema{
+
+																														"host_redirect": {
+																															Type:     schema.TypeString,
+																															Optional: true,
+																														},
+
+																														"port_redirect": {
+																															Type:       schema.TypeInt,
+																															Optional:   true,
+																															Deprecated: "This field is deprecated and will be removed in future release.",
+																														},
+
+																														"proto_redirect": {
+																															Type:     schema.TypeString,
+																															Optional: true,
+																														},
+
+																														"all_params": {
+
+																															Type:       schema.TypeBool,
+																															Optional:   true,
+																															Deprecated: "This field is deprecated and will be removed in future release.",
+																														},
+
+																														"remove_all_params": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"replace_params": {
+
+																															Type:     schema.TypeString,
+																															Optional: true,
+																														},
+
+																														"retain_all_params": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"strip_query_params": {
+
+																															Type:       schema.TypeList,
+																															MaxItems:   1,
+																															Optional:   true,
+																															Deprecated: "This field is deprecated and will be removed in future release.",
+																															Elem: &schema.Resource{
+																																Schema: map[string]*schema.Schema{
+
+																																	"query_params": {
+																																		Type: schema.TypeList,
+
+																																		Optional:   true,
+																																		Deprecated: "This field is deprecated and will be removed in future release.",
+																																		Elem: &schema.Schema{
+																																			Type: schema.TypeString,
+																																		},
+																																	},
+																																},
+																															},
+																														},
+
+																														"path_redirect": {
+
+																															Type:     schema.TypeString,
+																															Optional: true,
+																														},
+
+																														"prefix_rewrite": {
+
+																															Type:     schema.TypeString,
+																															Optional: true,
+																														},
+
+																														"response_code": {
+																															Type:     schema.TypeInt,
+																															Optional: true,
+																														},
+																													},
 																												},
 																											},
 																										},
@@ -7686,11 +8287,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
 
-																					"kind": {
-																						Type:     schema.TypeString,
-																						Computed: true,
-																					},
-
 																					"name": {
 																						Type:     schema.TypeString,
 																						Optional: true,
@@ -7730,11 +8326,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
 
-																					"kind": {
-																						Type:     schema.TypeString,
-																						Computed: true,
-																					},
-
 																					"name": {
 																						Type:     schema.TypeString,
 																						Optional: true,
@@ -7770,11 +8361,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
 
-																					"kind": {
-																						Type:     schema.TypeString,
-																						Computed: true,
-																					},
-
 																					"name": {
 																						Type:     schema.TypeString,
 																						Optional: true,
@@ -7798,11 +8384,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																			Optional: true,
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
-
-																					"kind": {
-																						Type:     schema.TypeString,
-																						Computed: true,
-																					},
 
 																					"name": {
 																						Type:     schema.TypeString,
@@ -7897,7 +8478,20 @@ func resourceVolterraWorkload() *schema.Resource {
 																						MaxItems: 1,
 																						Optional: true,
 																						Elem: &schema.Resource{
-																							Schema: map[string]*schema.Schema{},
+																							Schema: map[string]*schema.Schema{
+
+																								"default_coalescing": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+
+																								"strict_coalescing": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+																							},
 																						},
 																					},
 
@@ -7964,7 +8558,66 @@ func resourceVolterraWorkload() *schema.Resource {
 																						MaxItems: 1,
 																						Optional: true,
 																						Elem: &schema.Resource{
-																							Schema: map[string]*schema.Schema{},
+																							Schema: map[string]*schema.Schema{
+
+																								"http_protocol_enable_v1_only": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"header_transformation": {
+
+																												Type:     schema.TypeList,
+																												MaxItems: 1,
+																												Optional: true,
+																												Elem: &schema.Resource{
+																													Schema: map[string]*schema.Schema{
+
+																														"default_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"legacy_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"preserve_case_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"proper_case_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+																													},
+																												},
+																											},
+																										},
+																									},
+																								},
+
+																								"http_protocol_enable_v1_v2": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+
+																								"http_protocol_enable_v2_only": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+																							},
 																						},
 																					},
 
@@ -8035,11 +8688,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																									Elem: &schema.Resource{
 																										Schema: map[string]*schema.Schema{
 
-																											"kind": {
-																												Type:     schema.TypeString,
-																												Computed: true,
-																											},
-
 																											"name": {
 																												Type:     schema.TypeString,
 																												Optional: true,
@@ -8083,11 +8731,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																												Elem: &schema.Resource{
 																													Schema: map[string]*schema.Schema{
 
-																														"kind": {
-																															Type:     schema.TypeString,
-																															Computed: true,
-																														},
-
 																														"name": {
 																															Type:     schema.TypeString,
 																															Optional: true,
@@ -8117,11 +8760,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																												Optional: true,
 																												Elem: &schema.Resource{
 																													Schema: map[string]*schema.Schema{
-
-																														"kind": {
-																															Type:     schema.TypeString,
-																															Computed: true,
-																														},
 
 																														"name": {
 																															Type:     schema.TypeString,
@@ -8271,11 +8909,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																												Elem: &schema.Resource{
 																													Schema: map[string]*schema.Schema{
 
-																														"kind": {
-																															Type:     schema.TypeString,
-																															Computed: true,
-																														},
-
 																														"name": {
 																															Type:     schema.TypeString,
 																															Optional: true,
@@ -8305,11 +8938,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																												Optional: true,
 																												Elem: &schema.Resource{
 																													Schema: map[string]*schema.Schema{
-
-																														"kind": {
-																															Type:     schema.TypeString,
-																															Computed: true,
-																														},
 
 																														"name": {
 																															Type:     schema.TypeString,
@@ -8660,7 +9288,20 @@ func resourceVolterraWorkload() *schema.Resource {
 																						MaxItems: 1,
 																						Optional: true,
 																						Elem: &schema.Resource{
-																							Schema: map[string]*schema.Schema{},
+																							Schema: map[string]*schema.Schema{
+
+																								"default_coalescing": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+
+																								"strict_coalescing": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+																							},
 																						},
 																					},
 
@@ -8727,7 +9368,66 @@ func resourceVolterraWorkload() *schema.Resource {
 																						MaxItems: 1,
 																						Optional: true,
 																						Elem: &schema.Resource{
-																							Schema: map[string]*schema.Schema{},
+																							Schema: map[string]*schema.Schema{
+
+																								"http_protocol_enable_v1_only": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"header_transformation": {
+
+																												Type:     schema.TypeList,
+																												MaxItems: 1,
+																												Optional: true,
+																												Elem: &schema.Resource{
+																													Schema: map[string]*schema.Schema{
+
+																														"default_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"legacy_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"preserve_case_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"proper_case_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+																													},
+																												},
+																											},
+																										},
+																									},
+																								},
+
+																								"http_protocol_enable_v1_v2": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+
+																								"http_protocol_enable_v2_only": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+																							},
 																						},
 																					},
 
@@ -8763,11 +9463,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																									Elem: &schema.Resource{
 																										Schema: map[string]*schema.Schema{
 
-																											"kind": {
-																												Type:     schema.TypeString,
-																												Computed: true,
-																											},
-
 																											"name": {
 																												Type:     schema.TypeString,
 																												Optional: true,
@@ -8797,11 +9492,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																									Optional: true,
 																									Elem: &schema.Resource{
 																										Schema: map[string]*schema.Schema{
-
-																											"kind": {
-																												Type:     schema.TypeString,
-																												Computed: true,
-																											},
 
 																											"name": {
 																												Type:     schema.TypeString,
@@ -9169,7 +9859,24 @@ func resourceVolterraWorkload() *schema.Resource {
 																												MaxItems: 1,
 																												Optional: true,
 																												Elem: &schema.Resource{
-																													Schema: map[string]*schema.Schema{},
+																													Schema: map[string]*schema.Schema{
+
+																														"response_body": {
+																															Type:       schema.TypeString,
+																															Optional:   true,
+																															Deprecated: "This field is deprecated and will be removed in future release.",
+																														},
+
+																														"response_body_encoded": {
+																															Type:     schema.TypeString,
+																															Optional: true,
+																														},
+
+																														"response_code": {
+																															Type:     schema.TypeInt,
+																															Optional: true,
+																														},
+																													},
 																												},
 																											},
 																										},
@@ -9291,7 +9998,88 @@ func resourceVolterraWorkload() *schema.Resource {
 																												MaxItems: 1,
 																												Optional: true,
 																												Elem: &schema.Resource{
-																													Schema: map[string]*schema.Schema{},
+																													Schema: map[string]*schema.Schema{
+
+																														"host_redirect": {
+																															Type:     schema.TypeString,
+																															Optional: true,
+																														},
+
+																														"port_redirect": {
+																															Type:       schema.TypeInt,
+																															Optional:   true,
+																															Deprecated: "This field is deprecated and will be removed in future release.",
+																														},
+
+																														"proto_redirect": {
+																															Type:     schema.TypeString,
+																															Optional: true,
+																														},
+
+																														"all_params": {
+
+																															Type:       schema.TypeBool,
+																															Optional:   true,
+																															Deprecated: "This field is deprecated and will be removed in future release.",
+																														},
+
+																														"remove_all_params": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"replace_params": {
+
+																															Type:     schema.TypeString,
+																															Optional: true,
+																														},
+
+																														"retain_all_params": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"strip_query_params": {
+
+																															Type:       schema.TypeList,
+																															MaxItems:   1,
+																															Optional:   true,
+																															Deprecated: "This field is deprecated and will be removed in future release.",
+																															Elem: &schema.Resource{
+																																Schema: map[string]*schema.Schema{
+
+																																	"query_params": {
+																																		Type: schema.TypeList,
+
+																																		Optional:   true,
+																																		Deprecated: "This field is deprecated and will be removed in future release.",
+																																		Elem: &schema.Schema{
+																																			Type: schema.TypeString,
+																																		},
+																																	},
+																																},
+																															},
+																														},
+
+																														"path_redirect": {
+
+																															Type:     schema.TypeString,
+																															Optional: true,
+																														},
+
+																														"prefix_rewrite": {
+
+																															Type:     schema.TypeString,
+																															Optional: true,
+																														},
+
+																														"response_code": {
+																															Type:     schema.TypeInt,
+																															Optional: true,
+																														},
+																													},
 																												},
 																											},
 																										},
@@ -9651,7 +10439,20 @@ func resourceVolterraWorkload() *schema.Resource {
 																									MaxItems: 1,
 																									Optional: true,
 																									Elem: &schema.Resource{
-																										Schema: map[string]*schema.Schema{},
+																										Schema: map[string]*schema.Schema{
+
+																											"default_coalescing": {
+
+																												Type:     schema.TypeBool,
+																												Optional: true,
+																											},
+
+																											"strict_coalescing": {
+
+																												Type:     schema.TypeBool,
+																												Optional: true,
+																											},
+																										},
 																									},
 																								},
 
@@ -9718,7 +10519,66 @@ func resourceVolterraWorkload() *schema.Resource {
 																									MaxItems: 1,
 																									Optional: true,
 																									Elem: &schema.Resource{
-																										Schema: map[string]*schema.Schema{},
+																										Schema: map[string]*schema.Schema{
+
+																											"http_protocol_enable_v1_only": {
+
+																												Type:     schema.TypeList,
+																												MaxItems: 1,
+																												Optional: true,
+																												Elem: &schema.Resource{
+																													Schema: map[string]*schema.Schema{
+
+																														"header_transformation": {
+
+																															Type:     schema.TypeList,
+																															MaxItems: 1,
+																															Optional: true,
+																															Elem: &schema.Resource{
+																																Schema: map[string]*schema.Schema{
+
+																																	"default_header_transformation": {
+
+																																		Type:     schema.TypeBool,
+																																		Optional: true,
+																																	},
+
+																																	"legacy_header_transformation": {
+
+																																		Type:     schema.TypeBool,
+																																		Optional: true,
+																																	},
+
+																																	"preserve_case_header_transformation": {
+
+																																		Type:     schema.TypeBool,
+																																		Optional: true,
+																																	},
+
+																																	"proper_case_header_transformation": {
+
+																																		Type:     schema.TypeBool,
+																																		Optional: true,
+																																	},
+																																},
+																															},
+																														},
+																													},
+																												},
+																											},
+
+																											"http_protocol_enable_v1_v2": {
+
+																												Type:     schema.TypeBool,
+																												Optional: true,
+																											},
+
+																											"http_protocol_enable_v2_only": {
+
+																												Type:     schema.TypeBool,
+																												Optional: true,
+																											},
+																										},
 																									},
 																								},
 
@@ -9789,11 +10649,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																												Elem: &schema.Resource{
 																													Schema: map[string]*schema.Schema{
 
-																														"kind": {
-																															Type:     schema.TypeString,
-																															Computed: true,
-																														},
-
 																														"name": {
 																															Type:     schema.TypeString,
 																															Optional: true,
@@ -9837,11 +10692,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																															Elem: &schema.Resource{
 																																Schema: map[string]*schema.Schema{
 
-																																	"kind": {
-																																		Type:     schema.TypeString,
-																																		Computed: true,
-																																	},
-
 																																	"name": {
 																																		Type:     schema.TypeString,
 																																		Optional: true,
@@ -9871,11 +10721,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																															Optional: true,
 																															Elem: &schema.Resource{
 																																Schema: map[string]*schema.Schema{
-
-																																	"kind": {
-																																		Type:     schema.TypeString,
-																																		Computed: true,
-																																	},
 
 																																	"name": {
 																																		Type:     schema.TypeString,
@@ -10025,11 +10870,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																															Elem: &schema.Resource{
 																																Schema: map[string]*schema.Schema{
 
-																																	"kind": {
-																																		Type:     schema.TypeString,
-																																		Computed: true,
-																																	},
-
 																																	"name": {
 																																		Type:     schema.TypeString,
 																																		Optional: true,
@@ -10059,11 +10899,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																															Optional: true,
 																															Elem: &schema.Resource{
 																																Schema: map[string]*schema.Schema{
-
-																																	"kind": {
-																																		Type:     schema.TypeString,
-																																		Computed: true,
-																																	},
 
 																																	"name": {
 																																		Type:     schema.TypeString,
@@ -10414,7 +11249,20 @@ func resourceVolterraWorkload() *schema.Resource {
 																									MaxItems: 1,
 																									Optional: true,
 																									Elem: &schema.Resource{
-																										Schema: map[string]*schema.Schema{},
+																										Schema: map[string]*schema.Schema{
+
+																											"default_coalescing": {
+
+																												Type:     schema.TypeBool,
+																												Optional: true,
+																											},
+
+																											"strict_coalescing": {
+
+																												Type:     schema.TypeBool,
+																												Optional: true,
+																											},
+																										},
 																									},
 																								},
 
@@ -10481,7 +11329,66 @@ func resourceVolterraWorkload() *schema.Resource {
 																									MaxItems: 1,
 																									Optional: true,
 																									Elem: &schema.Resource{
-																										Schema: map[string]*schema.Schema{},
+																										Schema: map[string]*schema.Schema{
+
+																											"http_protocol_enable_v1_only": {
+
+																												Type:     schema.TypeList,
+																												MaxItems: 1,
+																												Optional: true,
+																												Elem: &schema.Resource{
+																													Schema: map[string]*schema.Schema{
+
+																														"header_transformation": {
+
+																															Type:     schema.TypeList,
+																															MaxItems: 1,
+																															Optional: true,
+																															Elem: &schema.Resource{
+																																Schema: map[string]*schema.Schema{
+
+																																	"default_header_transformation": {
+
+																																		Type:     schema.TypeBool,
+																																		Optional: true,
+																																	},
+
+																																	"legacy_header_transformation": {
+
+																																		Type:     schema.TypeBool,
+																																		Optional: true,
+																																	},
+
+																																	"preserve_case_header_transformation": {
+
+																																		Type:     schema.TypeBool,
+																																		Optional: true,
+																																	},
+
+																																	"proper_case_header_transformation": {
+
+																																		Type:     schema.TypeBool,
+																																		Optional: true,
+																																	},
+																																},
+																															},
+																														},
+																													},
+																												},
+																											},
+
+																											"http_protocol_enable_v1_v2": {
+
+																												Type:     schema.TypeBool,
+																												Optional: true,
+																											},
+
+																											"http_protocol_enable_v2_only": {
+
+																												Type:     schema.TypeBool,
+																												Optional: true,
+																											},
+																										},
 																									},
 																								},
 
@@ -10517,11 +11424,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																												Elem: &schema.Resource{
 																													Schema: map[string]*schema.Schema{
 
-																														"kind": {
-																															Type:     schema.TypeString,
-																															Computed: true,
-																														},
-
 																														"name": {
 																															Type:     schema.TypeString,
 																															Optional: true,
@@ -10551,11 +11453,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																												Optional: true,
 																												Elem: &schema.Resource{
 																													Schema: map[string]*schema.Schema{
-
-																														"kind": {
-																															Type:     schema.TypeString,
-																															Computed: true,
-																														},
 
 																														"name": {
 																															Type:     schema.TypeString,
@@ -10923,7 +11820,24 @@ func resourceVolterraWorkload() *schema.Resource {
 																															MaxItems: 1,
 																															Optional: true,
 																															Elem: &schema.Resource{
-																																Schema: map[string]*schema.Schema{},
+																																Schema: map[string]*schema.Schema{
+
+																																	"response_body": {
+																																		Type:       schema.TypeString,
+																																		Optional:   true,
+																																		Deprecated: "This field is deprecated and will be removed in future release.",
+																																	},
+
+																																	"response_body_encoded": {
+																																		Type:     schema.TypeString,
+																																		Optional: true,
+																																	},
+
+																																	"response_code": {
+																																		Type:     schema.TypeInt,
+																																		Optional: true,
+																																	},
+																																},
 																															},
 																														},
 																													},
@@ -11045,7 +11959,88 @@ func resourceVolterraWorkload() *schema.Resource {
 																															MaxItems: 1,
 																															Optional: true,
 																															Elem: &schema.Resource{
-																																Schema: map[string]*schema.Schema{},
+																																Schema: map[string]*schema.Schema{
+
+																																	"host_redirect": {
+																																		Type:     schema.TypeString,
+																																		Optional: true,
+																																	},
+
+																																	"port_redirect": {
+																																		Type:       schema.TypeInt,
+																																		Optional:   true,
+																																		Deprecated: "This field is deprecated and will be removed in future release.",
+																																	},
+
+																																	"proto_redirect": {
+																																		Type:     schema.TypeString,
+																																		Optional: true,
+																																	},
+
+																																	"all_params": {
+
+																																		Type:       schema.TypeBool,
+																																		Optional:   true,
+																																		Deprecated: "This field is deprecated and will be removed in future release.",
+																																	},
+
+																																	"remove_all_params": {
+
+																																		Type:     schema.TypeBool,
+																																		Optional: true,
+																																	},
+
+																																	"replace_params": {
+
+																																		Type:     schema.TypeString,
+																																		Optional: true,
+																																	},
+
+																																	"retain_all_params": {
+
+																																		Type:     schema.TypeBool,
+																																		Optional: true,
+																																	},
+
+																																	"strip_query_params": {
+
+																																		Type:       schema.TypeList,
+																																		MaxItems:   1,
+																																		Optional:   true,
+																																		Deprecated: "This field is deprecated and will be removed in future release.",
+																																		Elem: &schema.Resource{
+																																			Schema: map[string]*schema.Schema{
+
+																																				"query_params": {
+																																					Type: schema.TypeList,
+
+																																					Optional:   true,
+																																					Deprecated: "This field is deprecated and will be removed in future release.",
+																																					Elem: &schema.Schema{
+																																						Type: schema.TypeString,
+																																					},
+																																				},
+																																			},
+																																		},
+																																	},
+
+																																	"path_redirect": {
+
+																																		Type:     schema.TypeString,
+																																		Optional: true,
+																																	},
+
+																																	"prefix_rewrite": {
+
+																																		Type:     schema.TypeString,
+																																		Optional: true,
+																																	},
+
+																																	"response_code": {
+																																		Type:     schema.TypeInt,
+																																		Optional: true,
+																																	},
+																																},
 																															},
 																														},
 																													},
@@ -11276,7 +12271,20 @@ func resourceVolterraWorkload() *schema.Resource {
 																						MaxItems: 1,
 																						Optional: true,
 																						Elem: &schema.Resource{
-																							Schema: map[string]*schema.Schema{},
+																							Schema: map[string]*schema.Schema{
+
+																								"default_coalescing": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+
+																								"strict_coalescing": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+																							},
 																						},
 																					},
 
@@ -11343,7 +12351,66 @@ func resourceVolterraWorkload() *schema.Resource {
 																						MaxItems: 1,
 																						Optional: true,
 																						Elem: &schema.Resource{
-																							Schema: map[string]*schema.Schema{},
+																							Schema: map[string]*schema.Schema{
+
+																								"http_protocol_enable_v1_only": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"header_transformation": {
+
+																												Type:     schema.TypeList,
+																												MaxItems: 1,
+																												Optional: true,
+																												Elem: &schema.Resource{
+																													Schema: map[string]*schema.Schema{
+
+																														"default_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"legacy_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"preserve_case_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"proper_case_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+																													},
+																												},
+																											},
+																										},
+																									},
+																								},
+
+																								"http_protocol_enable_v1_v2": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+
+																								"http_protocol_enable_v2_only": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+																							},
 																						},
 																					},
 
@@ -11414,11 +12481,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																									Elem: &schema.Resource{
 																										Schema: map[string]*schema.Schema{
 
-																											"kind": {
-																												Type:     schema.TypeString,
-																												Computed: true,
-																											},
-
 																											"name": {
 																												Type:     schema.TypeString,
 																												Optional: true,
@@ -11462,11 +12524,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																												Elem: &schema.Resource{
 																													Schema: map[string]*schema.Schema{
 
-																														"kind": {
-																															Type:     schema.TypeString,
-																															Computed: true,
-																														},
-
 																														"name": {
 																															Type:     schema.TypeString,
 																															Optional: true,
@@ -11496,11 +12553,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																												Optional: true,
 																												Elem: &schema.Resource{
 																													Schema: map[string]*schema.Schema{
-
-																														"kind": {
-																															Type:     schema.TypeString,
-																															Computed: true,
-																														},
 
 																														"name": {
 																															Type:     schema.TypeString,
@@ -11650,11 +12702,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																												Elem: &schema.Resource{
 																													Schema: map[string]*schema.Schema{
 
-																														"kind": {
-																															Type:     schema.TypeString,
-																															Computed: true,
-																														},
-
 																														"name": {
 																															Type:     schema.TypeString,
 																															Optional: true,
@@ -11684,11 +12731,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																												Optional: true,
 																												Elem: &schema.Resource{
 																													Schema: map[string]*schema.Schema{
-
-																														"kind": {
-																															Type:     schema.TypeString,
-																															Computed: true,
-																														},
 
 																														"name": {
 																															Type:     schema.TypeString,
@@ -12039,7 +13081,20 @@ func resourceVolterraWorkload() *schema.Resource {
 																						MaxItems: 1,
 																						Optional: true,
 																						Elem: &schema.Resource{
-																							Schema: map[string]*schema.Schema{},
+																							Schema: map[string]*schema.Schema{
+
+																								"default_coalescing": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+
+																								"strict_coalescing": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+																							},
 																						},
 																					},
 
@@ -12106,7 +13161,66 @@ func resourceVolterraWorkload() *schema.Resource {
 																						MaxItems: 1,
 																						Optional: true,
 																						Elem: &schema.Resource{
-																							Schema: map[string]*schema.Schema{},
+																							Schema: map[string]*schema.Schema{
+
+																								"http_protocol_enable_v1_only": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"header_transformation": {
+
+																												Type:     schema.TypeList,
+																												MaxItems: 1,
+																												Optional: true,
+																												Elem: &schema.Resource{
+																													Schema: map[string]*schema.Schema{
+
+																														"default_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"legacy_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"preserve_case_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"proper_case_header_transformation": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+																													},
+																												},
+																											},
+																										},
+																									},
+																								},
+
+																								"http_protocol_enable_v1_v2": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+
+																								"http_protocol_enable_v2_only": {
+
+																									Type:     schema.TypeBool,
+																									Optional: true,
+																								},
+																							},
 																						},
 																					},
 
@@ -12142,11 +13256,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																									Elem: &schema.Resource{
 																										Schema: map[string]*schema.Schema{
 
-																											"kind": {
-																												Type:     schema.TypeString,
-																												Computed: true,
-																											},
-
 																											"name": {
 																												Type:     schema.TypeString,
 																												Optional: true,
@@ -12176,11 +13285,6 @@ func resourceVolterraWorkload() *schema.Resource {
 																									Optional: true,
 																									Elem: &schema.Resource{
 																										Schema: map[string]*schema.Schema{
-
-																											"kind": {
-																												Type:     schema.TypeString,
-																												Computed: true,
-																											},
 
 																											"name": {
 																												Type:     schema.TypeString,
@@ -12548,7 +13652,24 @@ func resourceVolterraWorkload() *schema.Resource {
 																												MaxItems: 1,
 																												Optional: true,
 																												Elem: &schema.Resource{
-																													Schema: map[string]*schema.Schema{},
+																													Schema: map[string]*schema.Schema{
+
+																														"response_body": {
+																															Type:       schema.TypeString,
+																															Optional:   true,
+																															Deprecated: "This field is deprecated and will be removed in future release.",
+																														},
+
+																														"response_body_encoded": {
+																															Type:     schema.TypeString,
+																															Optional: true,
+																														},
+
+																														"response_code": {
+																															Type:     schema.TypeInt,
+																															Optional: true,
+																														},
+																													},
 																												},
 																											},
 																										},
@@ -12670,7 +13791,88 @@ func resourceVolterraWorkload() *schema.Resource {
 																												MaxItems: 1,
 																												Optional: true,
 																												Elem: &schema.Resource{
-																													Schema: map[string]*schema.Schema{},
+																													Schema: map[string]*schema.Schema{
+
+																														"host_redirect": {
+																															Type:     schema.TypeString,
+																															Optional: true,
+																														},
+
+																														"port_redirect": {
+																															Type:       schema.TypeInt,
+																															Optional:   true,
+																															Deprecated: "This field is deprecated and will be removed in future release.",
+																														},
+
+																														"proto_redirect": {
+																															Type:     schema.TypeString,
+																															Optional: true,
+																														},
+
+																														"all_params": {
+
+																															Type:       schema.TypeBool,
+																															Optional:   true,
+																															Deprecated: "This field is deprecated and will be removed in future release.",
+																														},
+
+																														"remove_all_params": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"replace_params": {
+
+																															Type:     schema.TypeString,
+																															Optional: true,
+																														},
+
+																														"retain_all_params": {
+
+																															Type:     schema.TypeBool,
+																															Optional: true,
+																														},
+
+																														"strip_query_params": {
+
+																															Type:       schema.TypeList,
+																															MaxItems:   1,
+																															Optional:   true,
+																															Deprecated: "This field is deprecated and will be removed in future release.",
+																															Elem: &schema.Resource{
+																																Schema: map[string]*schema.Schema{
+
+																																	"query_params": {
+																																		Type: schema.TypeList,
+
+																																		Optional:   true,
+																																		Deprecated: "This field is deprecated and will be removed in future release.",
+																																		Elem: &schema.Schema{
+																																			Type: schema.TypeString,
+																																		},
+																																	},
+																																},
+																															},
+																														},
+
+																														"path_redirect": {
+
+																															Type:     schema.TypeString,
+																															Optional: true,
+																														},
+
+																														"prefix_rewrite": {
+
+																															Type:     schema.TypeString,
+																															Optional: true,
+																														},
+
+																														"response_code": {
+																															Type:     schema.TypeInt,
+																															Optional: true,
+																														},
+																													},
 																												},
 																											},
 																										},
@@ -15022,24 +16224,22 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																if v, ok := cs["site"]; ok && !isIntfNil(v) {
 
 																	sl := v.([]interface{})
-																	site := &ves_io_schema_views.ObjectRefType{}
-																	choiceInt.Site.Site = site
+																	siteInt := &ves_io_schema_views.ObjectRefType{}
+																	choiceInt.Site.Site = siteInt
+
 																	for _, set := range sl {
 																		if set != nil {
-																			siteMapStrToI := set.(map[string]interface{})
-
-																			if w, ok := siteMapStrToI["name"]; ok && !isIntfNil(w) {
-																				site.Name = w.(string)
+																			sMapToStrVal := set.(map[string]interface{})
+																			if val, ok := sMapToStrVal["name"]; ok && !isIntfNil(v) {
+																				siteInt.Name = val.(string)
+																			}
+																			if val, ok := sMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																				siteInt.Namespace = val.(string)
 																			}
 
-																			if w, ok := siteMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																				site.Namespace = w.(string)
+																			if val, ok := sMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																				siteInt.Tenant = val.(string)
 																			}
-
-																			if w, ok := siteMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																				site.Tenant = w.(string)
-																			}
-
 																		}
 																	}
 
@@ -15071,24 +16271,22 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																if v, ok := cs["virtual_site"]; ok && !isIntfNil(v) {
 
 																	sl := v.([]interface{})
-																	virtualSite := &ves_io_schema_views.ObjectRefType{}
-																	choiceInt.VirtualSite.VirtualSite = virtualSite
+																	virtualSiteInt := &ves_io_schema_views.ObjectRefType{}
+																	choiceInt.VirtualSite.VirtualSite = virtualSiteInt
+
 																	for _, set := range sl {
 																		if set != nil {
-																			virtualSiteMapStrToI := set.(map[string]interface{})
-
-																			if w, ok := virtualSiteMapStrToI["name"]; ok && !isIntfNil(w) {
-																				virtualSite.Name = w.(string)
+																			vsMapToStrVal := set.(map[string]interface{})
+																			if val, ok := vsMapToStrVal["name"]; ok && !isIntfNil(v) {
+																				virtualSiteInt.Name = val.(string)
+																			}
+																			if val, ok := vsMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																				virtualSiteInt.Namespace = val.(string)
 																			}
 
-																			if w, ok := virtualSiteMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																				virtualSite.Namespace = w.(string)
+																			if val, ok := vsMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																				virtualSiteInt.Tenant = val.(string)
 																			}
-
-																			if w, ok := virtualSiteMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																				virtualSite.Tenant = w.(string)
-																			}
-
 																		}
 																	}
 
@@ -15306,7 +16504,33 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.Https.CoalescingOptions = coalescingOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						coalescingOptionsMapStrToI := set.(map[string]interface{})
+
+																						coalescingChoiceTypeFound := false
+
+																						if v, ok := coalescingOptionsMapStrToI["default_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_DefaultCoalescing{}
+																								coalescingChoiceInt.DefaultCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := coalescingOptionsMapStrToI["strict_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_StrictCoalescing{}
+																								coalescingChoiceInt.StrictCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -15416,7 +16640,114 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.Https.HttpProtocolOptions = httpProtocolOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						httpProtocolOptionsMapStrToI := set.(map[string]interface{})
+
+																						httpProtocolChoiceTypeFound := false
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+																							httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1Only{}
+																							httpProtocolChoiceInt.HttpProtocolEnableV1Only = &ves_io_schema_virtual_host.Http1ProtocolOptions{}
+																							httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+
+																							sl := v.([]interface{})
+																							for _, set := range sl {
+																								if set != nil {
+																									cs := set.(map[string]interface{})
+
+																									if v, ok := cs["header_transformation"]; ok && !isIntfNil(v) {
+
+																										sl := v.([]interface{})
+																										headerTransformation := &ves_io_schema.HeaderTransformationType{}
+																										httpProtocolChoiceInt.HttpProtocolEnableV1Only.HeaderTransformation = headerTransformation
+																										for _, set := range sl {
+																											if set != nil {
+																												headerTransformationMapStrToI := set.(map[string]interface{})
+
+																												headerTransformationChoiceTypeFound := false
+
+																												if v, ok := headerTransformationMapStrToI["default_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_DefaultHeaderTransformation{}
+																														headerTransformationChoiceInt.DefaultHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["legacy_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_LegacyHeaderTransformation{}
+																														headerTransformationChoiceInt.LegacyHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["preserve_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_PreserveCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.PreserveCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["proper_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_ProperCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.ProperCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																											}
+																										}
+
+																									}
+
+																								}
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_v2"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1V2{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV1V2 = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v2_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV2Only{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV2Only = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -16424,7 +17755,33 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.HttpsAutoCert.CoalescingOptions = coalescingOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						coalescingOptionsMapStrToI := set.(map[string]interface{})
+
+																						coalescingChoiceTypeFound := false
+
+																						if v, ok := coalescingOptionsMapStrToI["default_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_DefaultCoalescing{}
+																								coalescingChoiceInt.DefaultCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := coalescingOptionsMapStrToI["strict_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_StrictCoalescing{}
+																								coalescingChoiceInt.StrictCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -16534,7 +17891,114 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.HttpsAutoCert.HttpProtocolOptions = httpProtocolOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						httpProtocolOptionsMapStrToI := set.(map[string]interface{})
+
+																						httpProtocolChoiceTypeFound := false
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+																							httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1Only{}
+																							httpProtocolChoiceInt.HttpProtocolEnableV1Only = &ves_io_schema_virtual_host.Http1ProtocolOptions{}
+																							httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+
+																							sl := v.([]interface{})
+																							for _, set := range sl {
+																								if set != nil {
+																									cs := set.(map[string]interface{})
+
+																									if v, ok := cs["header_transformation"]; ok && !isIntfNil(v) {
+
+																										sl := v.([]interface{})
+																										headerTransformation := &ves_io_schema.HeaderTransformationType{}
+																										httpProtocolChoiceInt.HttpProtocolEnableV1Only.HeaderTransformation = headerTransformation
+																										for _, set := range sl {
+																											if set != nil {
+																												headerTransformationMapStrToI := set.(map[string]interface{})
+
+																												headerTransformationChoiceTypeFound := false
+
+																												if v, ok := headerTransformationMapStrToI["default_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_DefaultHeaderTransformation{}
+																														headerTransformationChoiceInt.DefaultHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["legacy_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_LegacyHeaderTransformation{}
+																														headerTransformationChoiceInt.LegacyHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["preserve_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_PreserveCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.PreserveCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["proper_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_ProperCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.ProperCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																											}
+																										}
+
+																									}
+
+																								}
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_v2"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1V2{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV1V2 = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v2_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV2Only{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV2Only = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -17253,7 +18717,19 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																										choiceInt.DirectResponseRoute.RouteDirectResponse = routeDirectResponse
 																										for _, set := range sl {
 																											if set != nil {
-																												_ = set.(map[string]interface{})
+																												routeDirectResponseMapStrToI := set.(map[string]interface{})
+
+																												if w, ok := routeDirectResponseMapStrToI["response_body"]; ok && !isIntfNil(w) {
+																													routeDirectResponse.ResponseBody = w.(string)
+																												}
+
+																												if w, ok := routeDirectResponseMapStrToI["response_body_encoded"]; ok && !isIntfNil(w) {
+																													routeDirectResponse.ResponseBodyEncoded = w.(string)
+																												}
+
+																												if w, ok := routeDirectResponseMapStrToI["response_code"]; ok && !isIntfNil(w) {
+																													routeDirectResponse.ResponseCode = uint32(w.(int))
+																												}
 
 																											}
 																										}
@@ -17447,7 +18923,127 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																										choiceInt.RedirectRoute.RouteRedirect = routeRedirect
 																										for _, set := range sl {
 																											if set != nil {
-																												_ = set.(map[string]interface{})
+																												routeRedirectMapStrToI := set.(map[string]interface{})
+
+																												if w, ok := routeRedirectMapStrToI["host_redirect"]; ok && !isIntfNil(w) {
+																													routeRedirect.HostRedirect = w.(string)
+																												}
+
+																												if w, ok := routeRedirectMapStrToI["port_redirect"]; ok && !isIntfNil(w) {
+																													routeRedirect.PortRedirect = uint32(w.(int))
+																												}
+
+																												if w, ok := routeRedirectMapStrToI["proto_redirect"]; ok && !isIntfNil(w) {
+																													routeRedirect.ProtoRedirect = w.(string)
+																												}
+
+																												queryParamsTypeFound := false
+
+																												if v, ok := routeRedirectMapStrToI["all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+																													queryParamsInt := &ves_io_schema_route.RouteRedirect_AllParams{}
+
+																													routeRedirect.QueryParams = queryParamsInt
+
+																													queryParamsInt.AllParams = v.(bool)
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["remove_all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+
+																													if v.(bool) {
+																														queryParamsInt := &ves_io_schema_route.RouteRedirect_RemoveAllParams{}
+																														queryParamsInt.RemoveAllParams = &ves_io_schema.Empty{}
+																														routeRedirect.QueryParams = queryParamsInt
+																													}
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["replace_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+																													queryParamsInt := &ves_io_schema_route.RouteRedirect_ReplaceParams{}
+
+																													routeRedirect.QueryParams = queryParamsInt
+
+																													queryParamsInt.ReplaceParams = v.(string)
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["retain_all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+
+																													if v.(bool) {
+																														queryParamsInt := &ves_io_schema_route.RouteRedirect_RetainAllParams{}
+																														queryParamsInt.RetainAllParams = &ves_io_schema.Empty{}
+																														routeRedirect.QueryParams = queryParamsInt
+																													}
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["strip_query_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+																													queryParamsInt := &ves_io_schema_route.RouteRedirect_StripQueryParams{}
+																													queryParamsInt.StripQueryParams = &ves_io_schema_route.RouteQueryParams{}
+																													routeRedirect.QueryParams = queryParamsInt
+
+																													sl := v.([]interface{})
+																													for _, set := range sl {
+																														if set != nil {
+																															cs := set.(map[string]interface{})
+
+																															if v, ok := cs["query_params"]; ok && !isIntfNil(v) {
+
+																																ls := make([]string, len(v.([]interface{})))
+																																for i, v := range v.([]interface{}) {
+																																	if v == nil {
+																																		return fmt.Errorf("please provide valid non-empty string value of field query_params")
+																																	}
+																																	if str, ok := v.(string); ok {
+																																		ls[i] = str
+																																	}
+																																}
+																																queryParamsInt.StripQueryParams.QueryParams = ls
+
+																															}
+
+																														}
+																													}
+
+																												}
+
+																												redirectPathChoiceTypeFound := false
+
+																												if v, ok := routeRedirectMapStrToI["path_redirect"]; ok && !isIntfNil(v) && !redirectPathChoiceTypeFound {
+
+																													redirectPathChoiceTypeFound = true
+																													redirectPathChoiceInt := &ves_io_schema_route.RouteRedirect_PathRedirect{}
+
+																													routeRedirect.RedirectPathChoice = redirectPathChoiceInt
+
+																													redirectPathChoiceInt.PathRedirect = v.(string)
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["prefix_rewrite"]; ok && !isIntfNil(v) && !redirectPathChoiceTypeFound {
+
+																													redirectPathChoiceTypeFound = true
+																													redirectPathChoiceInt := &ves_io_schema_route.RouteRedirect_PrefixRewrite{}
+
+																													routeRedirect.RedirectPathChoice = redirectPathChoiceInt
+
+																													redirectPathChoiceInt.PrefixRewrite = v.(string)
+
+																												}
+
+																												if w, ok := routeRedirectMapStrToI["response_code"]; ok && !isIntfNil(w) {
+																													routeRedirect.ResponseCode = uint32(w.(int))
+																												}
 
 																											}
 																										}
@@ -18007,7 +19603,33 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																							loadbalancerTypeInt.Https.CoalescingOptions = coalescingOptions
 																							for _, set := range sl {
 																								if set != nil {
-																									_ = set.(map[string]interface{})
+																									coalescingOptionsMapStrToI := set.(map[string]interface{})
+
+																									coalescingChoiceTypeFound := false
+
+																									if v, ok := coalescingOptionsMapStrToI["default_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																										coalescingChoiceTypeFound = true
+
+																										if v.(bool) {
+																											coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_DefaultCoalescing{}
+																											coalescingChoiceInt.DefaultCoalescing = &ves_io_schema.Empty{}
+																											coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																										}
+
+																									}
+
+																									if v, ok := coalescingOptionsMapStrToI["strict_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																										coalescingChoiceTypeFound = true
+
+																										if v.(bool) {
+																											coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_StrictCoalescing{}
+																											coalescingChoiceInt.StrictCoalescing = &ves_io_schema.Empty{}
+																											coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																										}
+
+																									}
 
 																								}
 																							}
@@ -18117,7 +19739,114 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																							loadbalancerTypeInt.Https.HttpProtocolOptions = httpProtocolOptions
 																							for _, set := range sl {
 																								if set != nil {
-																									_ = set.(map[string]interface{})
+																									httpProtocolOptionsMapStrToI := set.(map[string]interface{})
+
+																									httpProtocolChoiceTypeFound := false
+
+																									if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																										httpProtocolChoiceTypeFound = true
+																										httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1Only{}
+																										httpProtocolChoiceInt.HttpProtocolEnableV1Only = &ves_io_schema_virtual_host.Http1ProtocolOptions{}
+																										httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+
+																										sl := v.([]interface{})
+																										for _, set := range sl {
+																											if set != nil {
+																												cs := set.(map[string]interface{})
+
+																												if v, ok := cs["header_transformation"]; ok && !isIntfNil(v) {
+
+																													sl := v.([]interface{})
+																													headerTransformation := &ves_io_schema.HeaderTransformationType{}
+																													httpProtocolChoiceInt.HttpProtocolEnableV1Only.HeaderTransformation = headerTransformation
+																													for _, set := range sl {
+																														if set != nil {
+																															headerTransformationMapStrToI := set.(map[string]interface{})
+
+																															headerTransformationChoiceTypeFound := false
+
+																															if v, ok := headerTransformationMapStrToI["default_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_DefaultHeaderTransformation{}
+																																	headerTransformationChoiceInt.DefaultHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																															if v, ok := headerTransformationMapStrToI["legacy_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_LegacyHeaderTransformation{}
+																																	headerTransformationChoiceInt.LegacyHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																															if v, ok := headerTransformationMapStrToI["preserve_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_PreserveCaseHeaderTransformation{}
+																																	headerTransformationChoiceInt.PreserveCaseHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																															if v, ok := headerTransformationMapStrToI["proper_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_ProperCaseHeaderTransformation{}
+																																	headerTransformationChoiceInt.ProperCaseHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																														}
+																													}
+
+																												}
+
+																											}
+																										}
+
+																									}
+
+																									if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_v2"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																										httpProtocolChoiceTypeFound = true
+
+																										if v.(bool) {
+																											httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1V2{}
+																											httpProtocolChoiceInt.HttpProtocolEnableV1V2 = &ves_io_schema.Empty{}
+																											httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																										}
+
+																									}
+
+																									if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v2_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																										httpProtocolChoiceTypeFound = true
+
+																										if v.(bool) {
+																											httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV2Only{}
+																											httpProtocolChoiceInt.HttpProtocolEnableV2Only = &ves_io_schema.Empty{}
+																											httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																										}
+
+																									}
 
 																								}
 																							}
@@ -19125,7 +20854,33 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																							loadbalancerTypeInt.HttpsAutoCert.CoalescingOptions = coalescingOptions
 																							for _, set := range sl {
 																								if set != nil {
-																									_ = set.(map[string]interface{})
+																									coalescingOptionsMapStrToI := set.(map[string]interface{})
+
+																									coalescingChoiceTypeFound := false
+
+																									if v, ok := coalescingOptionsMapStrToI["default_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																										coalescingChoiceTypeFound = true
+
+																										if v.(bool) {
+																											coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_DefaultCoalescing{}
+																											coalescingChoiceInt.DefaultCoalescing = &ves_io_schema.Empty{}
+																											coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																										}
+
+																									}
+
+																									if v, ok := coalescingOptionsMapStrToI["strict_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																										coalescingChoiceTypeFound = true
+
+																										if v.(bool) {
+																											coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_StrictCoalescing{}
+																											coalescingChoiceInt.StrictCoalescing = &ves_io_schema.Empty{}
+																											coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																										}
+
+																									}
 
 																								}
 																							}
@@ -19235,7 +20990,114 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																							loadbalancerTypeInt.HttpsAutoCert.HttpProtocolOptions = httpProtocolOptions
 																							for _, set := range sl {
 																								if set != nil {
-																									_ = set.(map[string]interface{})
+																									httpProtocolOptionsMapStrToI := set.(map[string]interface{})
+
+																									httpProtocolChoiceTypeFound := false
+
+																									if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																										httpProtocolChoiceTypeFound = true
+																										httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1Only{}
+																										httpProtocolChoiceInt.HttpProtocolEnableV1Only = &ves_io_schema_virtual_host.Http1ProtocolOptions{}
+																										httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+
+																										sl := v.([]interface{})
+																										for _, set := range sl {
+																											if set != nil {
+																												cs := set.(map[string]interface{})
+
+																												if v, ok := cs["header_transformation"]; ok && !isIntfNil(v) {
+
+																													sl := v.([]interface{})
+																													headerTransformation := &ves_io_schema.HeaderTransformationType{}
+																													httpProtocolChoiceInt.HttpProtocolEnableV1Only.HeaderTransformation = headerTransformation
+																													for _, set := range sl {
+																														if set != nil {
+																															headerTransformationMapStrToI := set.(map[string]interface{})
+
+																															headerTransformationChoiceTypeFound := false
+
+																															if v, ok := headerTransformationMapStrToI["default_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_DefaultHeaderTransformation{}
+																																	headerTransformationChoiceInt.DefaultHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																															if v, ok := headerTransformationMapStrToI["legacy_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_LegacyHeaderTransformation{}
+																																	headerTransformationChoiceInt.LegacyHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																															if v, ok := headerTransformationMapStrToI["preserve_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_PreserveCaseHeaderTransformation{}
+																																	headerTransformationChoiceInt.PreserveCaseHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																															if v, ok := headerTransformationMapStrToI["proper_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_ProperCaseHeaderTransformation{}
+																																	headerTransformationChoiceInt.ProperCaseHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																														}
+																													}
+
+																												}
+
+																											}
+																										}
+
+																									}
+
+																									if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_v2"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																										httpProtocolChoiceTypeFound = true
+
+																										if v.(bool) {
+																											httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1V2{}
+																											httpProtocolChoiceInt.HttpProtocolEnableV1V2 = &ves_io_schema.Empty{}
+																											httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																										}
+
+																									}
+
+																									if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v2_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																										httpProtocolChoiceTypeFound = true
+
+																										if v.(bool) {
+																											httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV2Only{}
+																											httpProtocolChoiceInt.HttpProtocolEnableV2Only = &ves_io_schema.Empty{}
+																											httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																										}
+
+																									}
 
 																								}
 																							}
@@ -19954,7 +21816,19 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																													choiceInt.DirectResponseRoute.RouteDirectResponse = routeDirectResponse
 																													for _, set := range sl {
 																														if set != nil {
-																															_ = set.(map[string]interface{})
+																															routeDirectResponseMapStrToI := set.(map[string]interface{})
+
+																															if w, ok := routeDirectResponseMapStrToI["response_body"]; ok && !isIntfNil(w) {
+																																routeDirectResponse.ResponseBody = w.(string)
+																															}
+
+																															if w, ok := routeDirectResponseMapStrToI["response_body_encoded"]; ok && !isIntfNil(w) {
+																																routeDirectResponse.ResponseBodyEncoded = w.(string)
+																															}
+
+																															if w, ok := routeDirectResponseMapStrToI["response_code"]; ok && !isIntfNil(w) {
+																																routeDirectResponse.ResponseCode = uint32(w.(int))
+																															}
 
 																														}
 																													}
@@ -20148,7 +22022,127 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																													choiceInt.RedirectRoute.RouteRedirect = routeRedirect
 																													for _, set := range sl {
 																														if set != nil {
-																															_ = set.(map[string]interface{})
+																															routeRedirectMapStrToI := set.(map[string]interface{})
+
+																															if w, ok := routeRedirectMapStrToI["host_redirect"]; ok && !isIntfNil(w) {
+																																routeRedirect.HostRedirect = w.(string)
+																															}
+
+																															if w, ok := routeRedirectMapStrToI["port_redirect"]; ok && !isIntfNil(w) {
+																																routeRedirect.PortRedirect = uint32(w.(int))
+																															}
+
+																															if w, ok := routeRedirectMapStrToI["proto_redirect"]; ok && !isIntfNil(w) {
+																																routeRedirect.ProtoRedirect = w.(string)
+																															}
+
+																															queryParamsTypeFound := false
+
+																															if v, ok := routeRedirectMapStrToI["all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																																queryParamsTypeFound = true
+																																queryParamsInt := &ves_io_schema_route.RouteRedirect_AllParams{}
+
+																																routeRedirect.QueryParams = queryParamsInt
+
+																																queryParamsInt.AllParams = v.(bool)
+
+																															}
+
+																															if v, ok := routeRedirectMapStrToI["remove_all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																																queryParamsTypeFound = true
+
+																																if v.(bool) {
+																																	queryParamsInt := &ves_io_schema_route.RouteRedirect_RemoveAllParams{}
+																																	queryParamsInt.RemoveAllParams = &ves_io_schema.Empty{}
+																																	routeRedirect.QueryParams = queryParamsInt
+																																}
+
+																															}
+
+																															if v, ok := routeRedirectMapStrToI["replace_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																																queryParamsTypeFound = true
+																																queryParamsInt := &ves_io_schema_route.RouteRedirect_ReplaceParams{}
+
+																																routeRedirect.QueryParams = queryParamsInt
+
+																																queryParamsInt.ReplaceParams = v.(string)
+
+																															}
+
+																															if v, ok := routeRedirectMapStrToI["retain_all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																																queryParamsTypeFound = true
+
+																																if v.(bool) {
+																																	queryParamsInt := &ves_io_schema_route.RouteRedirect_RetainAllParams{}
+																																	queryParamsInt.RetainAllParams = &ves_io_schema.Empty{}
+																																	routeRedirect.QueryParams = queryParamsInt
+																																}
+
+																															}
+
+																															if v, ok := routeRedirectMapStrToI["strip_query_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																																queryParamsTypeFound = true
+																																queryParamsInt := &ves_io_schema_route.RouteRedirect_StripQueryParams{}
+																																queryParamsInt.StripQueryParams = &ves_io_schema_route.RouteQueryParams{}
+																																routeRedirect.QueryParams = queryParamsInt
+
+																																sl := v.([]interface{})
+																																for _, set := range sl {
+																																	if set != nil {
+																																		cs := set.(map[string]interface{})
+
+																																		if v, ok := cs["query_params"]; ok && !isIntfNil(v) {
+
+																																			ls := make([]string, len(v.([]interface{})))
+																																			for i, v := range v.([]interface{}) {
+																																				if v == nil {
+																																					return fmt.Errorf("please provide valid non-empty string value of field query_params")
+																																				}
+																																				if str, ok := v.(string); ok {
+																																					ls[i] = str
+																																				}
+																																			}
+																																			queryParamsInt.StripQueryParams.QueryParams = ls
+
+																																		}
+
+																																	}
+																																}
+
+																															}
+
+																															redirectPathChoiceTypeFound := false
+
+																															if v, ok := routeRedirectMapStrToI["path_redirect"]; ok && !isIntfNil(v) && !redirectPathChoiceTypeFound {
+
+																																redirectPathChoiceTypeFound = true
+																																redirectPathChoiceInt := &ves_io_schema_route.RouteRedirect_PathRedirect{}
+
+																																routeRedirect.RedirectPathChoice = redirectPathChoiceInt
+
+																																redirectPathChoiceInt.PathRedirect = v.(string)
+
+																															}
+
+																															if v, ok := routeRedirectMapStrToI["prefix_rewrite"]; ok && !isIntfNil(v) && !redirectPathChoiceTypeFound {
+
+																																redirectPathChoiceTypeFound = true
+																																redirectPathChoiceInt := &ves_io_schema_route.RouteRedirect_PrefixRewrite{}
+
+																																routeRedirect.RedirectPathChoice = redirectPathChoiceInt
+
+																																redirectPathChoiceInt.PrefixRewrite = v.(string)
+
+																															}
+
+																															if w, ok := routeRedirectMapStrToI["response_code"]; ok && !isIntfNil(w) {
+																																routeRedirect.ResponseCode = uint32(w.(int))
+																															}
 
 																														}
 																													}
@@ -20416,8 +22410,9 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 													if v, ok := cs["http_loadbalancer"]; ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
 
 														advertiseChoiceTypeFound = true
-														advertiseChoiceIntNew := &ves_io_schema_views_workload.AdvertiseSinglePortType_HttpLoadbalancer{}
-														advertiseChoiceIntNew.HttpLoadbalancer = &ves_io_schema_views_workload.HTTPLoadBalancerType{}
+														advertiseChoiceIntNewNew := &ves_io_schema_views_workload.AdvertiseSinglePortType_HttpLoadbalancer{}
+														advertiseChoiceIntNewNew.HttpLoadbalancer = &ves_io_schema_views_workload.HTTPLoadBalancerType{}
+														advertiseChoiceIntNew.Port.AdvertiseChoice = advertiseChoiceIntNewNew
 
 														sl := v.([]interface{})
 														for _, set := range sl {
@@ -20435,7 +22430,7 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																			ls[i] = str
 																		}
 																	}
-																	advertiseChoiceIntNew.HttpLoadbalancer.Domains = ls
+																	advertiseChoiceIntNewNew.HttpLoadbalancer.Domains = ls
 
 																}
 
@@ -20446,7 +22441,7 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																	loadbalancerTypeTypeFound = true
 																	loadbalancerTypeInt := &ves_io_schema_views_workload.HTTPLoadBalancerType_Http{}
 																	loadbalancerTypeInt.Http = &ves_io_schema_views_http_loadbalancer.ProxyTypeHttp{}
-																	advertiseChoiceIntNew.HttpLoadbalancer.LoadbalancerType = loadbalancerTypeInt
+																	advertiseChoiceIntNewNew.HttpLoadbalancer.LoadbalancerType = loadbalancerTypeInt
 
 																	sl := v.([]interface{})
 																	for _, set := range sl {
@@ -20493,7 +22488,7 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																	loadbalancerTypeTypeFound = true
 																	loadbalancerTypeInt := &ves_io_schema_views_workload.HTTPLoadBalancerType_Https{}
 																	loadbalancerTypeInt.Https = &ves_io_schema_views_http_loadbalancer.ProxyTypeHttps{}
-																	advertiseChoiceIntNew.HttpLoadbalancer.LoadbalancerType = loadbalancerTypeInt
+																	advertiseChoiceIntNewNew.HttpLoadbalancer.LoadbalancerType = loadbalancerTypeInt
 
 																	sl := v.([]interface{})
 																	for _, set := range sl {
@@ -20513,7 +22508,33 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.Https.CoalescingOptions = coalescingOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						coalescingOptionsMapStrToI := set.(map[string]interface{})
+
+																						coalescingChoiceTypeFound := false
+
+																						if v, ok := coalescingOptionsMapStrToI["default_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_DefaultCoalescing{}
+																								coalescingChoiceInt.DefaultCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := coalescingOptionsMapStrToI["strict_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_StrictCoalescing{}
+																								coalescingChoiceInt.StrictCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -20623,7 +22644,114 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.Https.HttpProtocolOptions = httpProtocolOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						httpProtocolOptionsMapStrToI := set.(map[string]interface{})
+
+																						httpProtocolChoiceTypeFound := false
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+																							httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1Only{}
+																							httpProtocolChoiceInt.HttpProtocolEnableV1Only = &ves_io_schema_virtual_host.Http1ProtocolOptions{}
+																							httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+
+																							sl := v.([]interface{})
+																							for _, set := range sl {
+																								if set != nil {
+																									cs := set.(map[string]interface{})
+
+																									if v, ok := cs["header_transformation"]; ok && !isIntfNil(v) {
+
+																										sl := v.([]interface{})
+																										headerTransformation := &ves_io_schema.HeaderTransformationType{}
+																										httpProtocolChoiceInt.HttpProtocolEnableV1Only.HeaderTransformation = headerTransformation
+																										for _, set := range sl {
+																											if set != nil {
+																												headerTransformationMapStrToI := set.(map[string]interface{})
+
+																												headerTransformationChoiceTypeFound := false
+
+																												if v, ok := headerTransformationMapStrToI["default_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_DefaultHeaderTransformation{}
+																														headerTransformationChoiceInt.DefaultHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["legacy_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_LegacyHeaderTransformation{}
+																														headerTransformationChoiceInt.LegacyHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["preserve_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_PreserveCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.PreserveCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["proper_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_ProperCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.ProperCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																											}
+																										}
+
+																									}
+
+																								}
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_v2"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1V2{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV1V2 = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v2_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV2Only{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV2Only = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -21611,7 +23739,7 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																	loadbalancerTypeTypeFound = true
 																	loadbalancerTypeInt := &ves_io_schema_views_workload.HTTPLoadBalancerType_HttpsAutoCert{}
 																	loadbalancerTypeInt.HttpsAutoCert = &ves_io_schema_views_http_loadbalancer.ProxyTypeHttpsAutoCerts{}
-																	advertiseChoiceIntNew.HttpLoadbalancer.LoadbalancerType = loadbalancerTypeInt
+																	advertiseChoiceIntNewNew.HttpLoadbalancer.LoadbalancerType = loadbalancerTypeInt
 
 																	sl := v.([]interface{})
 																	for _, set := range sl {
@@ -21631,7 +23759,33 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.HttpsAutoCert.CoalescingOptions = coalescingOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						coalescingOptionsMapStrToI := set.(map[string]interface{})
+
+																						coalescingChoiceTypeFound := false
+
+																						if v, ok := coalescingOptionsMapStrToI["default_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_DefaultCoalescing{}
+																								coalescingChoiceInt.DefaultCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := coalescingOptionsMapStrToI["strict_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_StrictCoalescing{}
+																								coalescingChoiceInt.StrictCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -21741,7 +23895,114 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.HttpsAutoCert.HttpProtocolOptions = httpProtocolOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						httpProtocolOptionsMapStrToI := set.(map[string]interface{})
+
+																						httpProtocolChoiceTypeFound := false
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+																							httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1Only{}
+																							httpProtocolChoiceInt.HttpProtocolEnableV1Only = &ves_io_schema_virtual_host.Http1ProtocolOptions{}
+																							httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+
+																							sl := v.([]interface{})
+																							for _, set := range sl {
+																								if set != nil {
+																									cs := set.(map[string]interface{})
+
+																									if v, ok := cs["header_transformation"]; ok && !isIntfNil(v) {
+
+																										sl := v.([]interface{})
+																										headerTransformation := &ves_io_schema.HeaderTransformationType{}
+																										httpProtocolChoiceInt.HttpProtocolEnableV1Only.HeaderTransformation = headerTransformation
+																										for _, set := range sl {
+																											if set != nil {
+																												headerTransformationMapStrToI := set.(map[string]interface{})
+
+																												headerTransformationChoiceTypeFound := false
+
+																												if v, ok := headerTransformationMapStrToI["default_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_DefaultHeaderTransformation{}
+																														headerTransformationChoiceInt.DefaultHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["legacy_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_LegacyHeaderTransformation{}
+																														headerTransformationChoiceInt.LegacyHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["preserve_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_PreserveCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.PreserveCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["proper_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_ProperCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.ProperCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																											}
+																										}
+
+																									}
+
+																								}
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_v2"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1V2{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV1V2 = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v2_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV2Only{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV2Only = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -22138,7 +24399,7 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																	routeChoiceTypeFound = true
 																	routeChoiceInt := &ves_io_schema_views_workload.HTTPLoadBalancerType_DefaultRoute{}
 																	routeChoiceInt.DefaultRoute = &ves_io_schema_views_workload.MatchAllRouteType{}
-																	advertiseChoiceIntNew.HttpLoadbalancer.RouteChoice = routeChoiceInt
+																	advertiseChoiceIntNewNew.HttpLoadbalancer.RouteChoice = routeChoiceInt
 
 																	sl := v.([]interface{})
 																	for _, set := range sl {
@@ -22192,7 +24453,7 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																	routeChoiceTypeFound = true
 																	routeChoiceInt := &ves_io_schema_views_workload.HTTPLoadBalancerType_SpecificRoutes{}
 																	routeChoiceInt.SpecificRoutes = &ves_io_schema_views_workload.RouteType{}
-																	advertiseChoiceIntNew.HttpLoadbalancer.RouteChoice = routeChoiceInt
+																	advertiseChoiceIntNewNew.HttpLoadbalancer.RouteChoice = routeChoiceInt
 
 																	sl := v.([]interface{})
 																	for _, set := range sl {
@@ -22460,7 +24721,19 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																										choiceInt.DirectResponseRoute.RouteDirectResponse = routeDirectResponse
 																										for _, set := range sl {
 																											if set != nil {
-																												_ = set.(map[string]interface{})
+																												routeDirectResponseMapStrToI := set.(map[string]interface{})
+
+																												if w, ok := routeDirectResponseMapStrToI["response_body"]; ok && !isIntfNil(w) {
+																													routeDirectResponse.ResponseBody = w.(string)
+																												}
+
+																												if w, ok := routeDirectResponseMapStrToI["response_body_encoded"]; ok && !isIntfNil(w) {
+																													routeDirectResponse.ResponseBodyEncoded = w.(string)
+																												}
+
+																												if w, ok := routeDirectResponseMapStrToI["response_code"]; ok && !isIntfNil(w) {
+																													routeDirectResponse.ResponseCode = uint32(w.(int))
+																												}
 
 																											}
 																										}
@@ -22654,7 +24927,127 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																										choiceInt.RedirectRoute.RouteRedirect = routeRedirect
 																										for _, set := range sl {
 																											if set != nil {
-																												_ = set.(map[string]interface{})
+																												routeRedirectMapStrToI := set.(map[string]interface{})
+
+																												if w, ok := routeRedirectMapStrToI["host_redirect"]; ok && !isIntfNil(w) {
+																													routeRedirect.HostRedirect = w.(string)
+																												}
+
+																												if w, ok := routeRedirectMapStrToI["port_redirect"]; ok && !isIntfNil(w) {
+																													routeRedirect.PortRedirect = uint32(w.(int))
+																												}
+
+																												if w, ok := routeRedirectMapStrToI["proto_redirect"]; ok && !isIntfNil(w) {
+																													routeRedirect.ProtoRedirect = w.(string)
+																												}
+
+																												queryParamsTypeFound := false
+
+																												if v, ok := routeRedirectMapStrToI["all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+																													queryParamsInt := &ves_io_schema_route.RouteRedirect_AllParams{}
+
+																													routeRedirect.QueryParams = queryParamsInt
+
+																													queryParamsInt.AllParams = v.(bool)
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["remove_all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+
+																													if v.(bool) {
+																														queryParamsInt := &ves_io_schema_route.RouteRedirect_RemoveAllParams{}
+																														queryParamsInt.RemoveAllParams = &ves_io_schema.Empty{}
+																														routeRedirect.QueryParams = queryParamsInt
+																													}
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["replace_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+																													queryParamsInt := &ves_io_schema_route.RouteRedirect_ReplaceParams{}
+
+																													routeRedirect.QueryParams = queryParamsInt
+
+																													queryParamsInt.ReplaceParams = v.(string)
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["retain_all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+
+																													if v.(bool) {
+																														queryParamsInt := &ves_io_schema_route.RouteRedirect_RetainAllParams{}
+																														queryParamsInt.RetainAllParams = &ves_io_schema.Empty{}
+																														routeRedirect.QueryParams = queryParamsInt
+																													}
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["strip_query_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+																													queryParamsInt := &ves_io_schema_route.RouteRedirect_StripQueryParams{}
+																													queryParamsInt.StripQueryParams = &ves_io_schema_route.RouteQueryParams{}
+																													routeRedirect.QueryParams = queryParamsInt
+
+																													sl := v.([]interface{})
+																													for _, set := range sl {
+																														if set != nil {
+																															cs := set.(map[string]interface{})
+
+																															if v, ok := cs["query_params"]; ok && !isIntfNil(v) {
+
+																																ls := make([]string, len(v.([]interface{})))
+																																for i, v := range v.([]interface{}) {
+																																	if v == nil {
+																																		return fmt.Errorf("please provide valid non-empty string value of field query_params")
+																																	}
+																																	if str, ok := v.(string); ok {
+																																		ls[i] = str
+																																	}
+																																}
+																																queryParamsInt.StripQueryParams.QueryParams = ls
+
+																															}
+
+																														}
+																													}
+
+																												}
+
+																												redirectPathChoiceTypeFound := false
+
+																												if v, ok := routeRedirectMapStrToI["path_redirect"]; ok && !isIntfNil(v) && !redirectPathChoiceTypeFound {
+
+																													redirectPathChoiceTypeFound = true
+																													redirectPathChoiceInt := &ves_io_schema_route.RouteRedirect_PathRedirect{}
+
+																													routeRedirect.RedirectPathChoice = redirectPathChoiceInt
+
+																													redirectPathChoiceInt.PathRedirect = v.(string)
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["prefix_rewrite"]; ok && !isIntfNil(v) && !redirectPathChoiceTypeFound {
+
+																													redirectPathChoiceTypeFound = true
+																													redirectPathChoiceInt := &ves_io_schema_route.RouteRedirect_PrefixRewrite{}
+
+																													routeRedirect.RedirectPathChoice = redirectPathChoiceInt
+
+																													redirectPathChoiceInt.PrefixRewrite = v.(string)
+
+																												}
+
+																												if w, ok := routeRedirectMapStrToI["response_code"]; ok && !isIntfNil(w) {
+																													routeRedirect.ResponseCode = uint32(w.(int))
+																												}
 
 																											}
 																										}
@@ -22793,8 +25186,9 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 													if v, ok := cs["tcp_loadbalancer"]; ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
 
 														advertiseChoiceTypeFound = true
-														advertiseChoiceIntNew := &ves_io_schema_views_workload.AdvertiseSinglePortType_TcpLoadbalancer{}
-														advertiseChoiceIntNew.TcpLoadbalancer = &ves_io_schema_views_workload.TCPLoadBalancerType{}
+														advertiseChoiceIntNewNew := &ves_io_schema_views_workload.AdvertiseSinglePortType_TcpLoadbalancer{}
+														advertiseChoiceIntNewNew.TcpLoadbalancer = &ves_io_schema_views_workload.TCPLoadBalancerType{}
+														advertiseChoiceIntNew.Port.AdvertiseChoice = advertiseChoiceIntNewNew
 
 														sl := v.([]interface{})
 														for _, set := range sl {
@@ -22812,13 +25206,13 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																			ls[i] = str
 																		}
 																	}
-																	advertiseChoiceIntNew.TcpLoadbalancer.Domains = ls
+																	advertiseChoiceIntNewNew.TcpLoadbalancer.Domains = ls
 
 																}
 
 																if v, ok := cs["with_sni"]; ok && !isIntfNil(v) {
 
-																	advertiseChoiceIntNew.TcpLoadbalancer.WithSni = v.(bool)
+																	advertiseChoiceIntNewNew.TcpLoadbalancer.WithSni = v.(bool)
 
 																}
 
@@ -25147,24 +27541,22 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																if v, ok := cs["site"]; ok && !isIntfNil(v) {
 
 																	sl := v.([]interface{})
-																	site := &ves_io_schema_views.ObjectRefType{}
-																	choiceInt.Site.Site = site
+																	siteInt := &ves_io_schema_views.ObjectRefType{}
+																	choiceInt.Site.Site = siteInt
+
 																	for _, set := range sl {
 																		if set != nil {
-																			siteMapStrToI := set.(map[string]interface{})
-
-																			if w, ok := siteMapStrToI["name"]; ok && !isIntfNil(w) {
-																				site.Name = w.(string)
+																			sMapToStrVal := set.(map[string]interface{})
+																			if val, ok := sMapToStrVal["name"]; ok && !isIntfNil(v) {
+																				siteInt.Name = val.(string)
+																			}
+																			if val, ok := sMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																				siteInt.Namespace = val.(string)
 																			}
 
-																			if w, ok := siteMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																				site.Namespace = w.(string)
+																			if val, ok := sMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																				siteInt.Tenant = val.(string)
 																			}
-
-																			if w, ok := siteMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																				site.Tenant = w.(string)
-																			}
-
 																		}
 																	}
 
@@ -25196,24 +27588,22 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																if v, ok := cs["virtual_site"]; ok && !isIntfNil(v) {
 
 																	sl := v.([]interface{})
-																	virtualSite := &ves_io_schema_views.ObjectRefType{}
-																	choiceInt.VirtualSite.VirtualSite = virtualSite
+																	virtualSiteInt := &ves_io_schema_views.ObjectRefType{}
+																	choiceInt.VirtualSite.VirtualSite = virtualSiteInt
+
 																	for _, set := range sl {
 																		if set != nil {
-																			virtualSiteMapStrToI := set.(map[string]interface{})
-
-																			if w, ok := virtualSiteMapStrToI["name"]; ok && !isIntfNil(w) {
-																				virtualSite.Name = w.(string)
+																			vsMapToStrVal := set.(map[string]interface{})
+																			if val, ok := vsMapToStrVal["name"]; ok && !isIntfNil(v) {
+																				virtualSiteInt.Name = val.(string)
+																			}
+																			if val, ok := vsMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																				virtualSiteInt.Namespace = val.(string)
 																			}
 
-																			if w, ok := virtualSiteMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																				virtualSite.Namespace = w.(string)
+																			if val, ok := vsMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																				virtualSiteInt.Tenant = val.(string)
 																			}
-
-																			if w, ok := virtualSiteMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																				virtualSite.Tenant = w.(string)
-																			}
-
 																		}
 																	}
 
@@ -25431,7 +27821,33 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.Https.CoalescingOptions = coalescingOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						coalescingOptionsMapStrToI := set.(map[string]interface{})
+
+																						coalescingChoiceTypeFound := false
+
+																						if v, ok := coalescingOptionsMapStrToI["default_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_DefaultCoalescing{}
+																								coalescingChoiceInt.DefaultCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := coalescingOptionsMapStrToI["strict_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_StrictCoalescing{}
+																								coalescingChoiceInt.StrictCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -25541,7 +27957,114 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.Https.HttpProtocolOptions = httpProtocolOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						httpProtocolOptionsMapStrToI := set.(map[string]interface{})
+
+																						httpProtocolChoiceTypeFound := false
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+																							httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1Only{}
+																							httpProtocolChoiceInt.HttpProtocolEnableV1Only = &ves_io_schema_virtual_host.Http1ProtocolOptions{}
+																							httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+
+																							sl := v.([]interface{})
+																							for _, set := range sl {
+																								if set != nil {
+																									cs := set.(map[string]interface{})
+
+																									if v, ok := cs["header_transformation"]; ok && !isIntfNil(v) {
+
+																										sl := v.([]interface{})
+																										headerTransformation := &ves_io_schema.HeaderTransformationType{}
+																										httpProtocolChoiceInt.HttpProtocolEnableV1Only.HeaderTransformation = headerTransformation
+																										for _, set := range sl {
+																											if set != nil {
+																												headerTransformationMapStrToI := set.(map[string]interface{})
+
+																												headerTransformationChoiceTypeFound := false
+
+																												if v, ok := headerTransformationMapStrToI["default_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_DefaultHeaderTransformation{}
+																														headerTransformationChoiceInt.DefaultHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["legacy_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_LegacyHeaderTransformation{}
+																														headerTransformationChoiceInt.LegacyHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["preserve_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_PreserveCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.PreserveCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["proper_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_ProperCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.ProperCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																											}
+																										}
+
+																									}
+
+																								}
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_v2"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1V2{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV1V2 = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v2_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV2Only{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV2Only = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -26549,7 +29072,33 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.HttpsAutoCert.CoalescingOptions = coalescingOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						coalescingOptionsMapStrToI := set.(map[string]interface{})
+
+																						coalescingChoiceTypeFound := false
+
+																						if v, ok := coalescingOptionsMapStrToI["default_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_DefaultCoalescing{}
+																								coalescingChoiceInt.DefaultCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := coalescingOptionsMapStrToI["strict_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_StrictCoalescing{}
+																								coalescingChoiceInt.StrictCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -26659,7 +29208,114 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.HttpsAutoCert.HttpProtocolOptions = httpProtocolOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						httpProtocolOptionsMapStrToI := set.(map[string]interface{})
+
+																						httpProtocolChoiceTypeFound := false
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+																							httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1Only{}
+																							httpProtocolChoiceInt.HttpProtocolEnableV1Only = &ves_io_schema_virtual_host.Http1ProtocolOptions{}
+																							httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+
+																							sl := v.([]interface{})
+																							for _, set := range sl {
+																								if set != nil {
+																									cs := set.(map[string]interface{})
+
+																									if v, ok := cs["header_transformation"]; ok && !isIntfNil(v) {
+
+																										sl := v.([]interface{})
+																										headerTransformation := &ves_io_schema.HeaderTransformationType{}
+																										httpProtocolChoiceInt.HttpProtocolEnableV1Only.HeaderTransformation = headerTransformation
+																										for _, set := range sl {
+																											if set != nil {
+																												headerTransformationMapStrToI := set.(map[string]interface{})
+
+																												headerTransformationChoiceTypeFound := false
+
+																												if v, ok := headerTransformationMapStrToI["default_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_DefaultHeaderTransformation{}
+																														headerTransformationChoiceInt.DefaultHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["legacy_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_LegacyHeaderTransformation{}
+																														headerTransformationChoiceInt.LegacyHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["preserve_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_PreserveCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.PreserveCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["proper_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_ProperCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.ProperCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																											}
+																										}
+
+																									}
+
+																								}
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_v2"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1V2{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV1V2 = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v2_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV2Only{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV2Only = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -27378,7 +30034,19 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																										choiceInt.DirectResponseRoute.RouteDirectResponse = routeDirectResponse
 																										for _, set := range sl {
 																											if set != nil {
-																												_ = set.(map[string]interface{})
+																												routeDirectResponseMapStrToI := set.(map[string]interface{})
+
+																												if w, ok := routeDirectResponseMapStrToI["response_body"]; ok && !isIntfNil(w) {
+																													routeDirectResponse.ResponseBody = w.(string)
+																												}
+
+																												if w, ok := routeDirectResponseMapStrToI["response_body_encoded"]; ok && !isIntfNil(w) {
+																													routeDirectResponse.ResponseBodyEncoded = w.(string)
+																												}
+
+																												if w, ok := routeDirectResponseMapStrToI["response_code"]; ok && !isIntfNil(w) {
+																													routeDirectResponse.ResponseCode = uint32(w.(int))
+																												}
 
 																											}
 																										}
@@ -27572,7 +30240,127 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																										choiceInt.RedirectRoute.RouteRedirect = routeRedirect
 																										for _, set := range sl {
 																											if set != nil {
-																												_ = set.(map[string]interface{})
+																												routeRedirectMapStrToI := set.(map[string]interface{})
+
+																												if w, ok := routeRedirectMapStrToI["host_redirect"]; ok && !isIntfNil(w) {
+																													routeRedirect.HostRedirect = w.(string)
+																												}
+
+																												if w, ok := routeRedirectMapStrToI["port_redirect"]; ok && !isIntfNil(w) {
+																													routeRedirect.PortRedirect = uint32(w.(int))
+																												}
+
+																												if w, ok := routeRedirectMapStrToI["proto_redirect"]; ok && !isIntfNil(w) {
+																													routeRedirect.ProtoRedirect = w.(string)
+																												}
+
+																												queryParamsTypeFound := false
+
+																												if v, ok := routeRedirectMapStrToI["all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+																													queryParamsInt := &ves_io_schema_route.RouteRedirect_AllParams{}
+
+																													routeRedirect.QueryParams = queryParamsInt
+
+																													queryParamsInt.AllParams = v.(bool)
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["remove_all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+
+																													if v.(bool) {
+																														queryParamsInt := &ves_io_schema_route.RouteRedirect_RemoveAllParams{}
+																														queryParamsInt.RemoveAllParams = &ves_io_schema.Empty{}
+																														routeRedirect.QueryParams = queryParamsInt
+																													}
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["replace_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+																													queryParamsInt := &ves_io_schema_route.RouteRedirect_ReplaceParams{}
+
+																													routeRedirect.QueryParams = queryParamsInt
+
+																													queryParamsInt.ReplaceParams = v.(string)
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["retain_all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+
+																													if v.(bool) {
+																														queryParamsInt := &ves_io_schema_route.RouteRedirect_RetainAllParams{}
+																														queryParamsInt.RetainAllParams = &ves_io_schema.Empty{}
+																														routeRedirect.QueryParams = queryParamsInt
+																													}
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["strip_query_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+																													queryParamsInt := &ves_io_schema_route.RouteRedirect_StripQueryParams{}
+																													queryParamsInt.StripQueryParams = &ves_io_schema_route.RouteQueryParams{}
+																													routeRedirect.QueryParams = queryParamsInt
+
+																													sl := v.([]interface{})
+																													for _, set := range sl {
+																														if set != nil {
+																															cs := set.(map[string]interface{})
+
+																															if v, ok := cs["query_params"]; ok && !isIntfNil(v) {
+
+																																ls := make([]string, len(v.([]interface{})))
+																																for i, v := range v.([]interface{}) {
+																																	if v == nil {
+																																		return fmt.Errorf("please provide valid non-empty string value of field query_params")
+																																	}
+																																	if str, ok := v.(string); ok {
+																																		ls[i] = str
+																																	}
+																																}
+																																queryParamsInt.StripQueryParams.QueryParams = ls
+
+																															}
+
+																														}
+																													}
+
+																												}
+
+																												redirectPathChoiceTypeFound := false
+
+																												if v, ok := routeRedirectMapStrToI["path_redirect"]; ok && !isIntfNil(v) && !redirectPathChoiceTypeFound {
+
+																													redirectPathChoiceTypeFound = true
+																													redirectPathChoiceInt := &ves_io_schema_route.RouteRedirect_PathRedirect{}
+
+																													routeRedirect.RedirectPathChoice = redirectPathChoiceInt
+
+																													redirectPathChoiceInt.PathRedirect = v.(string)
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["prefix_rewrite"]; ok && !isIntfNil(v) && !redirectPathChoiceTypeFound {
+
+																													redirectPathChoiceTypeFound = true
+																													redirectPathChoiceInt := &ves_io_schema_route.RouteRedirect_PrefixRewrite{}
+
+																													routeRedirect.RedirectPathChoice = redirectPathChoiceInt
+
+																													redirectPathChoiceInt.PrefixRewrite = v.(string)
+
+																												}
+
+																												if w, ok := routeRedirectMapStrToI["response_code"]; ok && !isIntfNil(w) {
+																													routeRedirect.ResponseCode = uint32(w.(int))
+																												}
 
 																											}
 																										}
@@ -28132,7 +30920,33 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																							loadbalancerTypeInt.Https.CoalescingOptions = coalescingOptions
 																							for _, set := range sl {
 																								if set != nil {
-																									_ = set.(map[string]interface{})
+																									coalescingOptionsMapStrToI := set.(map[string]interface{})
+
+																									coalescingChoiceTypeFound := false
+
+																									if v, ok := coalescingOptionsMapStrToI["default_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																										coalescingChoiceTypeFound = true
+
+																										if v.(bool) {
+																											coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_DefaultCoalescing{}
+																											coalescingChoiceInt.DefaultCoalescing = &ves_io_schema.Empty{}
+																											coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																										}
+
+																									}
+
+																									if v, ok := coalescingOptionsMapStrToI["strict_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																										coalescingChoiceTypeFound = true
+
+																										if v.(bool) {
+																											coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_StrictCoalescing{}
+																											coalescingChoiceInt.StrictCoalescing = &ves_io_schema.Empty{}
+																											coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																										}
+
+																									}
 
 																								}
 																							}
@@ -28242,7 +31056,114 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																							loadbalancerTypeInt.Https.HttpProtocolOptions = httpProtocolOptions
 																							for _, set := range sl {
 																								if set != nil {
-																									_ = set.(map[string]interface{})
+																									httpProtocolOptionsMapStrToI := set.(map[string]interface{})
+
+																									httpProtocolChoiceTypeFound := false
+
+																									if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																										httpProtocolChoiceTypeFound = true
+																										httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1Only{}
+																										httpProtocolChoiceInt.HttpProtocolEnableV1Only = &ves_io_schema_virtual_host.Http1ProtocolOptions{}
+																										httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+
+																										sl := v.([]interface{})
+																										for _, set := range sl {
+																											if set != nil {
+																												cs := set.(map[string]interface{})
+
+																												if v, ok := cs["header_transformation"]; ok && !isIntfNil(v) {
+
+																													sl := v.([]interface{})
+																													headerTransformation := &ves_io_schema.HeaderTransformationType{}
+																													httpProtocolChoiceInt.HttpProtocolEnableV1Only.HeaderTransformation = headerTransformation
+																													for _, set := range sl {
+																														if set != nil {
+																															headerTransformationMapStrToI := set.(map[string]interface{})
+
+																															headerTransformationChoiceTypeFound := false
+
+																															if v, ok := headerTransformationMapStrToI["default_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_DefaultHeaderTransformation{}
+																																	headerTransformationChoiceInt.DefaultHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																															if v, ok := headerTransformationMapStrToI["legacy_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_LegacyHeaderTransformation{}
+																																	headerTransformationChoiceInt.LegacyHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																															if v, ok := headerTransformationMapStrToI["preserve_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_PreserveCaseHeaderTransformation{}
+																																	headerTransformationChoiceInt.PreserveCaseHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																															if v, ok := headerTransformationMapStrToI["proper_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_ProperCaseHeaderTransformation{}
+																																	headerTransformationChoiceInt.ProperCaseHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																														}
+																													}
+
+																												}
+
+																											}
+																										}
+
+																									}
+
+																									if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_v2"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																										httpProtocolChoiceTypeFound = true
+
+																										if v.(bool) {
+																											httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1V2{}
+																											httpProtocolChoiceInt.HttpProtocolEnableV1V2 = &ves_io_schema.Empty{}
+																											httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																										}
+
+																									}
+
+																									if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v2_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																										httpProtocolChoiceTypeFound = true
+
+																										if v.(bool) {
+																											httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV2Only{}
+																											httpProtocolChoiceInt.HttpProtocolEnableV2Only = &ves_io_schema.Empty{}
+																											httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																										}
+
+																									}
 
 																								}
 																							}
@@ -29250,7 +32171,33 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																							loadbalancerTypeInt.HttpsAutoCert.CoalescingOptions = coalescingOptions
 																							for _, set := range sl {
 																								if set != nil {
-																									_ = set.(map[string]interface{})
+																									coalescingOptionsMapStrToI := set.(map[string]interface{})
+
+																									coalescingChoiceTypeFound := false
+
+																									if v, ok := coalescingOptionsMapStrToI["default_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																										coalescingChoiceTypeFound = true
+
+																										if v.(bool) {
+																											coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_DefaultCoalescing{}
+																											coalescingChoiceInt.DefaultCoalescing = &ves_io_schema.Empty{}
+																											coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																										}
+
+																									}
+
+																									if v, ok := coalescingOptionsMapStrToI["strict_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																										coalescingChoiceTypeFound = true
+
+																										if v.(bool) {
+																											coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_StrictCoalescing{}
+																											coalescingChoiceInt.StrictCoalescing = &ves_io_schema.Empty{}
+																											coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																										}
+
+																									}
 
 																								}
 																							}
@@ -29360,7 +32307,114 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																							loadbalancerTypeInt.HttpsAutoCert.HttpProtocolOptions = httpProtocolOptions
 																							for _, set := range sl {
 																								if set != nil {
-																									_ = set.(map[string]interface{})
+																									httpProtocolOptionsMapStrToI := set.(map[string]interface{})
+
+																									httpProtocolChoiceTypeFound := false
+
+																									if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																										httpProtocolChoiceTypeFound = true
+																										httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1Only{}
+																										httpProtocolChoiceInt.HttpProtocolEnableV1Only = &ves_io_schema_virtual_host.Http1ProtocolOptions{}
+																										httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+
+																										sl := v.([]interface{})
+																										for _, set := range sl {
+																											if set != nil {
+																												cs := set.(map[string]interface{})
+
+																												if v, ok := cs["header_transformation"]; ok && !isIntfNil(v) {
+
+																													sl := v.([]interface{})
+																													headerTransformation := &ves_io_schema.HeaderTransformationType{}
+																													httpProtocolChoiceInt.HttpProtocolEnableV1Only.HeaderTransformation = headerTransformation
+																													for _, set := range sl {
+																														if set != nil {
+																															headerTransformationMapStrToI := set.(map[string]interface{})
+
+																															headerTransformationChoiceTypeFound := false
+
+																															if v, ok := headerTransformationMapStrToI["default_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_DefaultHeaderTransformation{}
+																																	headerTransformationChoiceInt.DefaultHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																															if v, ok := headerTransformationMapStrToI["legacy_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_LegacyHeaderTransformation{}
+																																	headerTransformationChoiceInt.LegacyHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																															if v, ok := headerTransformationMapStrToI["preserve_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_PreserveCaseHeaderTransformation{}
+																																	headerTransformationChoiceInt.PreserveCaseHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																															if v, ok := headerTransformationMapStrToI["proper_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_ProperCaseHeaderTransformation{}
+																																	headerTransformationChoiceInt.ProperCaseHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																														}
+																													}
+
+																												}
+
+																											}
+																										}
+
+																									}
+
+																									if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_v2"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																										httpProtocolChoiceTypeFound = true
+
+																										if v.(bool) {
+																											httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1V2{}
+																											httpProtocolChoiceInt.HttpProtocolEnableV1V2 = &ves_io_schema.Empty{}
+																											httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																										}
+
+																									}
+
+																									if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v2_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																										httpProtocolChoiceTypeFound = true
+
+																										if v.(bool) {
+																											httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV2Only{}
+																											httpProtocolChoiceInt.HttpProtocolEnableV2Only = &ves_io_schema.Empty{}
+																											httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																										}
+
+																									}
 
 																								}
 																							}
@@ -30079,7 +33133,19 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																													choiceInt.DirectResponseRoute.RouteDirectResponse = routeDirectResponse
 																													for _, set := range sl {
 																														if set != nil {
-																															_ = set.(map[string]interface{})
+																															routeDirectResponseMapStrToI := set.(map[string]interface{})
+
+																															if w, ok := routeDirectResponseMapStrToI["response_body"]; ok && !isIntfNil(w) {
+																																routeDirectResponse.ResponseBody = w.(string)
+																															}
+
+																															if w, ok := routeDirectResponseMapStrToI["response_body_encoded"]; ok && !isIntfNil(w) {
+																																routeDirectResponse.ResponseBodyEncoded = w.(string)
+																															}
+
+																															if w, ok := routeDirectResponseMapStrToI["response_code"]; ok && !isIntfNil(w) {
+																																routeDirectResponse.ResponseCode = uint32(w.(int))
+																															}
 
 																														}
 																													}
@@ -30273,7 +33339,127 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																													choiceInt.RedirectRoute.RouteRedirect = routeRedirect
 																													for _, set := range sl {
 																														if set != nil {
-																															_ = set.(map[string]interface{})
+																															routeRedirectMapStrToI := set.(map[string]interface{})
+
+																															if w, ok := routeRedirectMapStrToI["host_redirect"]; ok && !isIntfNil(w) {
+																																routeRedirect.HostRedirect = w.(string)
+																															}
+
+																															if w, ok := routeRedirectMapStrToI["port_redirect"]; ok && !isIntfNil(w) {
+																																routeRedirect.PortRedirect = uint32(w.(int))
+																															}
+
+																															if w, ok := routeRedirectMapStrToI["proto_redirect"]; ok && !isIntfNil(w) {
+																																routeRedirect.ProtoRedirect = w.(string)
+																															}
+
+																															queryParamsTypeFound := false
+
+																															if v, ok := routeRedirectMapStrToI["all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																																queryParamsTypeFound = true
+																																queryParamsInt := &ves_io_schema_route.RouteRedirect_AllParams{}
+
+																																routeRedirect.QueryParams = queryParamsInt
+
+																																queryParamsInt.AllParams = v.(bool)
+
+																															}
+
+																															if v, ok := routeRedirectMapStrToI["remove_all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																																queryParamsTypeFound = true
+
+																																if v.(bool) {
+																																	queryParamsInt := &ves_io_schema_route.RouteRedirect_RemoveAllParams{}
+																																	queryParamsInt.RemoveAllParams = &ves_io_schema.Empty{}
+																																	routeRedirect.QueryParams = queryParamsInt
+																																}
+
+																															}
+
+																															if v, ok := routeRedirectMapStrToI["replace_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																																queryParamsTypeFound = true
+																																queryParamsInt := &ves_io_schema_route.RouteRedirect_ReplaceParams{}
+
+																																routeRedirect.QueryParams = queryParamsInt
+
+																																queryParamsInt.ReplaceParams = v.(string)
+
+																															}
+
+																															if v, ok := routeRedirectMapStrToI["retain_all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																																queryParamsTypeFound = true
+
+																																if v.(bool) {
+																																	queryParamsInt := &ves_io_schema_route.RouteRedirect_RetainAllParams{}
+																																	queryParamsInt.RetainAllParams = &ves_io_schema.Empty{}
+																																	routeRedirect.QueryParams = queryParamsInt
+																																}
+
+																															}
+
+																															if v, ok := routeRedirectMapStrToI["strip_query_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																																queryParamsTypeFound = true
+																																queryParamsInt := &ves_io_schema_route.RouteRedirect_StripQueryParams{}
+																																queryParamsInt.StripQueryParams = &ves_io_schema_route.RouteQueryParams{}
+																																routeRedirect.QueryParams = queryParamsInt
+
+																																sl := v.([]interface{})
+																																for _, set := range sl {
+																																	if set != nil {
+																																		cs := set.(map[string]interface{})
+
+																																		if v, ok := cs["query_params"]; ok && !isIntfNil(v) {
+
+																																			ls := make([]string, len(v.([]interface{})))
+																																			for i, v := range v.([]interface{}) {
+																																				if v == nil {
+																																					return fmt.Errorf("please provide valid non-empty string value of field query_params")
+																																				}
+																																				if str, ok := v.(string); ok {
+																																					ls[i] = str
+																																				}
+																																			}
+																																			queryParamsInt.StripQueryParams.QueryParams = ls
+
+																																		}
+
+																																	}
+																																}
+
+																															}
+
+																															redirectPathChoiceTypeFound := false
+
+																															if v, ok := routeRedirectMapStrToI["path_redirect"]; ok && !isIntfNil(v) && !redirectPathChoiceTypeFound {
+
+																																redirectPathChoiceTypeFound = true
+																																redirectPathChoiceInt := &ves_io_schema_route.RouteRedirect_PathRedirect{}
+
+																																routeRedirect.RedirectPathChoice = redirectPathChoiceInt
+
+																																redirectPathChoiceInt.PathRedirect = v.(string)
+
+																															}
+
+																															if v, ok := routeRedirectMapStrToI["prefix_rewrite"]; ok && !isIntfNil(v) && !redirectPathChoiceTypeFound {
+
+																																redirectPathChoiceTypeFound = true
+																																redirectPathChoiceInt := &ves_io_schema_route.RouteRedirect_PrefixRewrite{}
+
+																																routeRedirect.RedirectPathChoice = redirectPathChoiceInt
+
+																																redirectPathChoiceInt.PrefixRewrite = v.(string)
+
+																															}
+
+																															if w, ok := routeRedirectMapStrToI["response_code"]; ok && !isIntfNil(w) {
+																																routeRedirect.ResponseCode = uint32(w.(int))
+																															}
 
 																														}
 																													}
@@ -30541,8 +33727,9 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 													if v, ok := cs["http_loadbalancer"]; ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
 
 														advertiseChoiceTypeFound = true
-														advertiseChoiceIntNew := &ves_io_schema_views_workload.AdvertiseSinglePortType_HttpLoadbalancer{}
-														advertiseChoiceIntNew.HttpLoadbalancer = &ves_io_schema_views_workload.HTTPLoadBalancerType{}
+														advertiseChoiceIntNewNew := &ves_io_schema_views_workload.AdvertiseSinglePortType_HttpLoadbalancer{}
+														advertiseChoiceIntNewNew.HttpLoadbalancer = &ves_io_schema_views_workload.HTTPLoadBalancerType{}
+														advertiseChoiceIntNew.Port.AdvertiseChoice = advertiseChoiceIntNewNew
 
 														sl := v.([]interface{})
 														for _, set := range sl {
@@ -30560,7 +33747,7 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																			ls[i] = str
 																		}
 																	}
-																	advertiseChoiceIntNew.HttpLoadbalancer.Domains = ls
+																	advertiseChoiceIntNewNew.HttpLoadbalancer.Domains = ls
 
 																}
 
@@ -30571,7 +33758,7 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																	loadbalancerTypeTypeFound = true
 																	loadbalancerTypeInt := &ves_io_schema_views_workload.HTTPLoadBalancerType_Http{}
 																	loadbalancerTypeInt.Http = &ves_io_schema_views_http_loadbalancer.ProxyTypeHttp{}
-																	advertiseChoiceIntNew.HttpLoadbalancer.LoadbalancerType = loadbalancerTypeInt
+																	advertiseChoiceIntNewNew.HttpLoadbalancer.LoadbalancerType = loadbalancerTypeInt
 
 																	sl := v.([]interface{})
 																	for _, set := range sl {
@@ -30618,7 +33805,7 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																	loadbalancerTypeTypeFound = true
 																	loadbalancerTypeInt := &ves_io_schema_views_workload.HTTPLoadBalancerType_Https{}
 																	loadbalancerTypeInt.Https = &ves_io_schema_views_http_loadbalancer.ProxyTypeHttps{}
-																	advertiseChoiceIntNew.HttpLoadbalancer.LoadbalancerType = loadbalancerTypeInt
+																	advertiseChoiceIntNewNew.HttpLoadbalancer.LoadbalancerType = loadbalancerTypeInt
 
 																	sl := v.([]interface{})
 																	for _, set := range sl {
@@ -30638,7 +33825,33 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.Https.CoalescingOptions = coalescingOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						coalescingOptionsMapStrToI := set.(map[string]interface{})
+
+																						coalescingChoiceTypeFound := false
+
+																						if v, ok := coalescingOptionsMapStrToI["default_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_DefaultCoalescing{}
+																								coalescingChoiceInt.DefaultCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := coalescingOptionsMapStrToI["strict_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_StrictCoalescing{}
+																								coalescingChoiceInt.StrictCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -30748,7 +33961,114 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.Https.HttpProtocolOptions = httpProtocolOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						httpProtocolOptionsMapStrToI := set.(map[string]interface{})
+
+																						httpProtocolChoiceTypeFound := false
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+																							httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1Only{}
+																							httpProtocolChoiceInt.HttpProtocolEnableV1Only = &ves_io_schema_virtual_host.Http1ProtocolOptions{}
+																							httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+
+																							sl := v.([]interface{})
+																							for _, set := range sl {
+																								if set != nil {
+																									cs := set.(map[string]interface{})
+
+																									if v, ok := cs["header_transformation"]; ok && !isIntfNil(v) {
+
+																										sl := v.([]interface{})
+																										headerTransformation := &ves_io_schema.HeaderTransformationType{}
+																										httpProtocolChoiceInt.HttpProtocolEnableV1Only.HeaderTransformation = headerTransformation
+																										for _, set := range sl {
+																											if set != nil {
+																												headerTransformationMapStrToI := set.(map[string]interface{})
+
+																												headerTransformationChoiceTypeFound := false
+
+																												if v, ok := headerTransformationMapStrToI["default_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_DefaultHeaderTransformation{}
+																														headerTransformationChoiceInt.DefaultHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["legacy_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_LegacyHeaderTransformation{}
+																														headerTransformationChoiceInt.LegacyHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["preserve_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_PreserveCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.PreserveCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["proper_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_ProperCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.ProperCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																											}
+																										}
+
+																									}
+
+																								}
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_v2"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1V2{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV1V2 = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v2_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV2Only{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV2Only = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -31736,7 +35056,7 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																	loadbalancerTypeTypeFound = true
 																	loadbalancerTypeInt := &ves_io_schema_views_workload.HTTPLoadBalancerType_HttpsAutoCert{}
 																	loadbalancerTypeInt.HttpsAutoCert = &ves_io_schema_views_http_loadbalancer.ProxyTypeHttpsAutoCerts{}
-																	advertiseChoiceIntNew.HttpLoadbalancer.LoadbalancerType = loadbalancerTypeInt
+																	advertiseChoiceIntNewNew.HttpLoadbalancer.LoadbalancerType = loadbalancerTypeInt
 
 																	sl := v.([]interface{})
 																	for _, set := range sl {
@@ -31756,7 +35076,33 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.HttpsAutoCert.CoalescingOptions = coalescingOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						coalescingOptionsMapStrToI := set.(map[string]interface{})
+
+																						coalescingChoiceTypeFound := false
+
+																						if v, ok := coalescingOptionsMapStrToI["default_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_DefaultCoalescing{}
+																								coalescingChoiceInt.DefaultCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := coalescingOptionsMapStrToI["strict_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_StrictCoalescing{}
+																								coalescingChoiceInt.StrictCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -31866,7 +35212,114 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.HttpsAutoCert.HttpProtocolOptions = httpProtocolOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						httpProtocolOptionsMapStrToI := set.(map[string]interface{})
+
+																						httpProtocolChoiceTypeFound := false
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+																							httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1Only{}
+																							httpProtocolChoiceInt.HttpProtocolEnableV1Only = &ves_io_schema_virtual_host.Http1ProtocolOptions{}
+																							httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+
+																							sl := v.([]interface{})
+																							for _, set := range sl {
+																								if set != nil {
+																									cs := set.(map[string]interface{})
+
+																									if v, ok := cs["header_transformation"]; ok && !isIntfNil(v) {
+
+																										sl := v.([]interface{})
+																										headerTransformation := &ves_io_schema.HeaderTransformationType{}
+																										httpProtocolChoiceInt.HttpProtocolEnableV1Only.HeaderTransformation = headerTransformation
+																										for _, set := range sl {
+																											if set != nil {
+																												headerTransformationMapStrToI := set.(map[string]interface{})
+
+																												headerTransformationChoiceTypeFound := false
+
+																												if v, ok := headerTransformationMapStrToI["default_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_DefaultHeaderTransformation{}
+																														headerTransformationChoiceInt.DefaultHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["legacy_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_LegacyHeaderTransformation{}
+																														headerTransformationChoiceInt.LegacyHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["preserve_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_PreserveCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.PreserveCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["proper_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_ProperCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.ProperCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																											}
+																										}
+
+																									}
+
+																								}
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_v2"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1V2{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV1V2 = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v2_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV2Only{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV2Only = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -32263,7 +35716,7 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																	routeChoiceTypeFound = true
 																	routeChoiceInt := &ves_io_schema_views_workload.HTTPLoadBalancerType_DefaultRoute{}
 																	routeChoiceInt.DefaultRoute = &ves_io_schema_views_workload.MatchAllRouteType{}
-																	advertiseChoiceIntNew.HttpLoadbalancer.RouteChoice = routeChoiceInt
+																	advertiseChoiceIntNewNew.HttpLoadbalancer.RouteChoice = routeChoiceInt
 
 																	sl := v.([]interface{})
 																	for _, set := range sl {
@@ -32317,7 +35770,7 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																	routeChoiceTypeFound = true
 																	routeChoiceInt := &ves_io_schema_views_workload.HTTPLoadBalancerType_SpecificRoutes{}
 																	routeChoiceInt.SpecificRoutes = &ves_io_schema_views_workload.RouteType{}
-																	advertiseChoiceIntNew.HttpLoadbalancer.RouteChoice = routeChoiceInt
+																	advertiseChoiceIntNewNew.HttpLoadbalancer.RouteChoice = routeChoiceInt
 
 																	sl := v.([]interface{})
 																	for _, set := range sl {
@@ -32585,7 +36038,19 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																										choiceInt.DirectResponseRoute.RouteDirectResponse = routeDirectResponse
 																										for _, set := range sl {
 																											if set != nil {
-																												_ = set.(map[string]interface{})
+																												routeDirectResponseMapStrToI := set.(map[string]interface{})
+
+																												if w, ok := routeDirectResponseMapStrToI["response_body"]; ok && !isIntfNil(w) {
+																													routeDirectResponse.ResponseBody = w.(string)
+																												}
+
+																												if w, ok := routeDirectResponseMapStrToI["response_body_encoded"]; ok && !isIntfNil(w) {
+																													routeDirectResponse.ResponseBodyEncoded = w.(string)
+																												}
+
+																												if w, ok := routeDirectResponseMapStrToI["response_code"]; ok && !isIntfNil(w) {
+																													routeDirectResponse.ResponseCode = uint32(w.(int))
+																												}
 
 																											}
 																										}
@@ -32779,7 +36244,127 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																										choiceInt.RedirectRoute.RouteRedirect = routeRedirect
 																										for _, set := range sl {
 																											if set != nil {
-																												_ = set.(map[string]interface{})
+																												routeRedirectMapStrToI := set.(map[string]interface{})
+
+																												if w, ok := routeRedirectMapStrToI["host_redirect"]; ok && !isIntfNil(w) {
+																													routeRedirect.HostRedirect = w.(string)
+																												}
+
+																												if w, ok := routeRedirectMapStrToI["port_redirect"]; ok && !isIntfNil(w) {
+																													routeRedirect.PortRedirect = uint32(w.(int))
+																												}
+
+																												if w, ok := routeRedirectMapStrToI["proto_redirect"]; ok && !isIntfNil(w) {
+																													routeRedirect.ProtoRedirect = w.(string)
+																												}
+
+																												queryParamsTypeFound := false
+
+																												if v, ok := routeRedirectMapStrToI["all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+																													queryParamsInt := &ves_io_schema_route.RouteRedirect_AllParams{}
+
+																													routeRedirect.QueryParams = queryParamsInt
+
+																													queryParamsInt.AllParams = v.(bool)
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["remove_all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+
+																													if v.(bool) {
+																														queryParamsInt := &ves_io_schema_route.RouteRedirect_RemoveAllParams{}
+																														queryParamsInt.RemoveAllParams = &ves_io_schema.Empty{}
+																														routeRedirect.QueryParams = queryParamsInt
+																													}
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["replace_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+																													queryParamsInt := &ves_io_schema_route.RouteRedirect_ReplaceParams{}
+
+																													routeRedirect.QueryParams = queryParamsInt
+
+																													queryParamsInt.ReplaceParams = v.(string)
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["retain_all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+
+																													if v.(bool) {
+																														queryParamsInt := &ves_io_schema_route.RouteRedirect_RetainAllParams{}
+																														queryParamsInt.RetainAllParams = &ves_io_schema.Empty{}
+																														routeRedirect.QueryParams = queryParamsInt
+																													}
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["strip_query_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+																													queryParamsInt := &ves_io_schema_route.RouteRedirect_StripQueryParams{}
+																													queryParamsInt.StripQueryParams = &ves_io_schema_route.RouteQueryParams{}
+																													routeRedirect.QueryParams = queryParamsInt
+
+																													sl := v.([]interface{})
+																													for _, set := range sl {
+																														if set != nil {
+																															cs := set.(map[string]interface{})
+
+																															if v, ok := cs["query_params"]; ok && !isIntfNil(v) {
+
+																																ls := make([]string, len(v.([]interface{})))
+																																for i, v := range v.([]interface{}) {
+																																	if v == nil {
+																																		return fmt.Errorf("please provide valid non-empty string value of field query_params")
+																																	}
+																																	if str, ok := v.(string); ok {
+																																		ls[i] = str
+																																	}
+																																}
+																																queryParamsInt.StripQueryParams.QueryParams = ls
+
+																															}
+
+																														}
+																													}
+
+																												}
+
+																												redirectPathChoiceTypeFound := false
+
+																												if v, ok := routeRedirectMapStrToI["path_redirect"]; ok && !isIntfNil(v) && !redirectPathChoiceTypeFound {
+
+																													redirectPathChoiceTypeFound = true
+																													redirectPathChoiceInt := &ves_io_schema_route.RouteRedirect_PathRedirect{}
+
+																													routeRedirect.RedirectPathChoice = redirectPathChoiceInt
+
+																													redirectPathChoiceInt.PathRedirect = v.(string)
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["prefix_rewrite"]; ok && !isIntfNil(v) && !redirectPathChoiceTypeFound {
+
+																													redirectPathChoiceTypeFound = true
+																													redirectPathChoiceInt := &ves_io_schema_route.RouteRedirect_PrefixRewrite{}
+
+																													routeRedirect.RedirectPathChoice = redirectPathChoiceInt
+
+																													redirectPathChoiceInt.PrefixRewrite = v.(string)
+
+																												}
+
+																												if w, ok := routeRedirectMapStrToI["response_code"]; ok && !isIntfNil(w) {
+																													routeRedirect.ResponseCode = uint32(w.(int))
+																												}
 
 																											}
 																										}
@@ -32918,8 +36503,9 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 													if v, ok := cs["tcp_loadbalancer"]; ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
 
 														advertiseChoiceTypeFound = true
-														advertiseChoiceIntNew := &ves_io_schema_views_workload.AdvertiseSinglePortType_TcpLoadbalancer{}
-														advertiseChoiceIntNew.TcpLoadbalancer = &ves_io_schema_views_workload.TCPLoadBalancerType{}
+														advertiseChoiceIntNewNew := &ves_io_schema_views_workload.AdvertiseSinglePortType_TcpLoadbalancer{}
+														advertiseChoiceIntNewNew.TcpLoadbalancer = &ves_io_schema_views_workload.TCPLoadBalancerType{}
+														advertiseChoiceIntNew.Port.AdvertiseChoice = advertiseChoiceIntNewNew
 
 														sl := v.([]interface{})
 														for _, set := range sl {
@@ -32937,13 +36523,13 @@ func resourceVolterraWorkloadCreate(d *schema.ResourceData, meta interface{}) er
 																			ls[i] = str
 																		}
 																	}
-																	advertiseChoiceIntNew.TcpLoadbalancer.Domains = ls
+																	advertiseChoiceIntNewNew.TcpLoadbalancer.Domains = ls
 
 																}
 
 																if v, ok := cs["with_sni"]; ok && !isIntfNil(v) {
 
-																	advertiseChoiceIntNew.TcpLoadbalancer.WithSni = v.(bool)
+																	advertiseChoiceIntNewNew.TcpLoadbalancer.WithSni = v.(bool)
 
 																}
 
@@ -34317,6 +37903,7 @@ func resourceVolterraWorkloadRead(d *schema.ResourceData, meta interface{}) erro
 		}
 		return fmt.Errorf("Error finding Volterra Workload %q: %s", d.Id(), err)
 	}
+
 	return setWorkloadFields(client, d, resp)
 }
 
@@ -35636,24 +39223,22 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																if v, ok := cs["site"]; ok && !isIntfNil(v) {
 
 																	sl := v.([]interface{})
-																	site := &ves_io_schema_views.ObjectRefType{}
-																	choiceInt.Site.Site = site
+																	siteInt := &ves_io_schema_views.ObjectRefType{}
+																	choiceInt.Site.Site = siteInt
+
 																	for _, set := range sl {
 																		if set != nil {
-																			siteMapStrToI := set.(map[string]interface{})
-
-																			if w, ok := siteMapStrToI["name"]; ok && !isIntfNil(w) {
-																				site.Name = w.(string)
+																			sMapToStrVal := set.(map[string]interface{})
+																			if val, ok := sMapToStrVal["name"]; ok && !isIntfNil(v) {
+																				siteInt.Name = val.(string)
+																			}
+																			if val, ok := sMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																				siteInt.Namespace = val.(string)
 																			}
 
-																			if w, ok := siteMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																				site.Namespace = w.(string)
+																			if val, ok := sMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																				siteInt.Tenant = val.(string)
 																			}
-
-																			if w, ok := siteMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																				site.Tenant = w.(string)
-																			}
-
 																		}
 																	}
 
@@ -35685,24 +39270,22 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																if v, ok := cs["virtual_site"]; ok && !isIntfNil(v) {
 
 																	sl := v.([]interface{})
-																	virtualSite := &ves_io_schema_views.ObjectRefType{}
-																	choiceInt.VirtualSite.VirtualSite = virtualSite
+																	virtualSiteInt := &ves_io_schema_views.ObjectRefType{}
+																	choiceInt.VirtualSite.VirtualSite = virtualSiteInt
+
 																	for _, set := range sl {
 																		if set != nil {
-																			virtualSiteMapStrToI := set.(map[string]interface{})
-
-																			if w, ok := virtualSiteMapStrToI["name"]; ok && !isIntfNil(w) {
-																				virtualSite.Name = w.(string)
+																			vsMapToStrVal := set.(map[string]interface{})
+																			if val, ok := vsMapToStrVal["name"]; ok && !isIntfNil(v) {
+																				virtualSiteInt.Name = val.(string)
+																			}
+																			if val, ok := vsMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																				virtualSiteInt.Namespace = val.(string)
 																			}
 
-																			if w, ok := virtualSiteMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																				virtualSite.Namespace = w.(string)
+																			if val, ok := vsMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																				virtualSiteInt.Tenant = val.(string)
 																			}
-
-																			if w, ok := virtualSiteMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																				virtualSite.Tenant = w.(string)
-																			}
-
 																		}
 																	}
 
@@ -35920,7 +39503,33 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.Https.CoalescingOptions = coalescingOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						coalescingOptionsMapStrToI := set.(map[string]interface{})
+
+																						coalescingChoiceTypeFound := false
+
+																						if v, ok := coalescingOptionsMapStrToI["default_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_DefaultCoalescing{}
+																								coalescingChoiceInt.DefaultCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := coalescingOptionsMapStrToI["strict_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_StrictCoalescing{}
+																								coalescingChoiceInt.StrictCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -36030,7 +39639,114 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.Https.HttpProtocolOptions = httpProtocolOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						httpProtocolOptionsMapStrToI := set.(map[string]interface{})
+
+																						httpProtocolChoiceTypeFound := false
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+																							httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1Only{}
+																							httpProtocolChoiceInt.HttpProtocolEnableV1Only = &ves_io_schema_virtual_host.Http1ProtocolOptions{}
+																							httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+
+																							sl := v.([]interface{})
+																							for _, set := range sl {
+																								if set != nil {
+																									cs := set.(map[string]interface{})
+
+																									if v, ok := cs["header_transformation"]; ok && !isIntfNil(v) {
+
+																										sl := v.([]interface{})
+																										headerTransformation := &ves_io_schema.HeaderTransformationType{}
+																										httpProtocolChoiceInt.HttpProtocolEnableV1Only.HeaderTransformation = headerTransformation
+																										for _, set := range sl {
+																											if set != nil {
+																												headerTransformationMapStrToI := set.(map[string]interface{})
+
+																												headerTransformationChoiceTypeFound := false
+
+																												if v, ok := headerTransformationMapStrToI["default_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_DefaultHeaderTransformation{}
+																														headerTransformationChoiceInt.DefaultHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["legacy_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_LegacyHeaderTransformation{}
+																														headerTransformationChoiceInt.LegacyHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["preserve_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_PreserveCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.PreserveCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["proper_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_ProperCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.ProperCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																											}
+																										}
+
+																									}
+
+																								}
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_v2"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1V2{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV1V2 = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v2_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV2Only{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV2Only = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -37038,7 +40754,33 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.HttpsAutoCert.CoalescingOptions = coalescingOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						coalescingOptionsMapStrToI := set.(map[string]interface{})
+
+																						coalescingChoiceTypeFound := false
+
+																						if v, ok := coalescingOptionsMapStrToI["default_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_DefaultCoalescing{}
+																								coalescingChoiceInt.DefaultCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := coalescingOptionsMapStrToI["strict_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_StrictCoalescing{}
+																								coalescingChoiceInt.StrictCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -37148,7 +40890,114 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.HttpsAutoCert.HttpProtocolOptions = httpProtocolOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						httpProtocolOptionsMapStrToI := set.(map[string]interface{})
+
+																						httpProtocolChoiceTypeFound := false
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+																							httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1Only{}
+																							httpProtocolChoiceInt.HttpProtocolEnableV1Only = &ves_io_schema_virtual_host.Http1ProtocolOptions{}
+																							httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+
+																							sl := v.([]interface{})
+																							for _, set := range sl {
+																								if set != nil {
+																									cs := set.(map[string]interface{})
+
+																									if v, ok := cs["header_transformation"]; ok && !isIntfNil(v) {
+
+																										sl := v.([]interface{})
+																										headerTransformation := &ves_io_schema.HeaderTransformationType{}
+																										httpProtocolChoiceInt.HttpProtocolEnableV1Only.HeaderTransformation = headerTransformation
+																										for _, set := range sl {
+																											if set != nil {
+																												headerTransformationMapStrToI := set.(map[string]interface{})
+
+																												headerTransformationChoiceTypeFound := false
+
+																												if v, ok := headerTransformationMapStrToI["default_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_DefaultHeaderTransformation{}
+																														headerTransformationChoiceInt.DefaultHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["legacy_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_LegacyHeaderTransformation{}
+																														headerTransformationChoiceInt.LegacyHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["preserve_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_PreserveCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.PreserveCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["proper_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_ProperCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.ProperCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																											}
+																										}
+
+																									}
+
+																								}
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_v2"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1V2{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV1V2 = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v2_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV2Only{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV2Only = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -37867,7 +41716,19 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																										choiceInt.DirectResponseRoute.RouteDirectResponse = routeDirectResponse
 																										for _, set := range sl {
 																											if set != nil {
-																												_ = set.(map[string]interface{})
+																												routeDirectResponseMapStrToI := set.(map[string]interface{})
+
+																												if w, ok := routeDirectResponseMapStrToI["response_body"]; ok && !isIntfNil(w) {
+																													routeDirectResponse.ResponseBody = w.(string)
+																												}
+
+																												if w, ok := routeDirectResponseMapStrToI["response_body_encoded"]; ok && !isIntfNil(w) {
+																													routeDirectResponse.ResponseBodyEncoded = w.(string)
+																												}
+
+																												if w, ok := routeDirectResponseMapStrToI["response_code"]; ok && !isIntfNil(w) {
+																													routeDirectResponse.ResponseCode = uint32(w.(int))
+																												}
 
 																											}
 																										}
@@ -38061,7 +41922,127 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																										choiceInt.RedirectRoute.RouteRedirect = routeRedirect
 																										for _, set := range sl {
 																											if set != nil {
-																												_ = set.(map[string]interface{})
+																												routeRedirectMapStrToI := set.(map[string]interface{})
+
+																												if w, ok := routeRedirectMapStrToI["host_redirect"]; ok && !isIntfNil(w) {
+																													routeRedirect.HostRedirect = w.(string)
+																												}
+
+																												if w, ok := routeRedirectMapStrToI["port_redirect"]; ok && !isIntfNil(w) {
+																													routeRedirect.PortRedirect = uint32(w.(int))
+																												}
+
+																												if w, ok := routeRedirectMapStrToI["proto_redirect"]; ok && !isIntfNil(w) {
+																													routeRedirect.ProtoRedirect = w.(string)
+																												}
+
+																												queryParamsTypeFound := false
+
+																												if v, ok := routeRedirectMapStrToI["all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+																													queryParamsInt := &ves_io_schema_route.RouteRedirect_AllParams{}
+
+																													routeRedirect.QueryParams = queryParamsInt
+
+																													queryParamsInt.AllParams = v.(bool)
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["remove_all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+
+																													if v.(bool) {
+																														queryParamsInt := &ves_io_schema_route.RouteRedirect_RemoveAllParams{}
+																														queryParamsInt.RemoveAllParams = &ves_io_schema.Empty{}
+																														routeRedirect.QueryParams = queryParamsInt
+																													}
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["replace_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+																													queryParamsInt := &ves_io_schema_route.RouteRedirect_ReplaceParams{}
+
+																													routeRedirect.QueryParams = queryParamsInt
+
+																													queryParamsInt.ReplaceParams = v.(string)
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["retain_all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+
+																													if v.(bool) {
+																														queryParamsInt := &ves_io_schema_route.RouteRedirect_RetainAllParams{}
+																														queryParamsInt.RetainAllParams = &ves_io_schema.Empty{}
+																														routeRedirect.QueryParams = queryParamsInt
+																													}
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["strip_query_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+																													queryParamsInt := &ves_io_schema_route.RouteRedirect_StripQueryParams{}
+																													queryParamsInt.StripQueryParams = &ves_io_schema_route.RouteQueryParams{}
+																													routeRedirect.QueryParams = queryParamsInt
+
+																													sl := v.([]interface{})
+																													for _, set := range sl {
+																														if set != nil {
+																															cs := set.(map[string]interface{})
+
+																															if v, ok := cs["query_params"]; ok && !isIntfNil(v) {
+
+																																ls := make([]string, len(v.([]interface{})))
+																																for i, v := range v.([]interface{}) {
+																																	if v == nil {
+																																		return fmt.Errorf("please provide valid non-empty string value of field query_params")
+																																	}
+																																	if str, ok := v.(string); ok {
+																																		ls[i] = str
+																																	}
+																																}
+																																queryParamsInt.StripQueryParams.QueryParams = ls
+
+																															}
+
+																														}
+																													}
+
+																												}
+
+																												redirectPathChoiceTypeFound := false
+
+																												if v, ok := routeRedirectMapStrToI["path_redirect"]; ok && !isIntfNil(v) && !redirectPathChoiceTypeFound {
+
+																													redirectPathChoiceTypeFound = true
+																													redirectPathChoiceInt := &ves_io_schema_route.RouteRedirect_PathRedirect{}
+
+																													routeRedirect.RedirectPathChoice = redirectPathChoiceInt
+
+																													redirectPathChoiceInt.PathRedirect = v.(string)
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["prefix_rewrite"]; ok && !isIntfNil(v) && !redirectPathChoiceTypeFound {
+
+																													redirectPathChoiceTypeFound = true
+																													redirectPathChoiceInt := &ves_io_schema_route.RouteRedirect_PrefixRewrite{}
+
+																													routeRedirect.RedirectPathChoice = redirectPathChoiceInt
+
+																													redirectPathChoiceInt.PrefixRewrite = v.(string)
+
+																												}
+
+																												if w, ok := routeRedirectMapStrToI["response_code"]; ok && !isIntfNil(w) {
+																													routeRedirect.ResponseCode = uint32(w.(int))
+																												}
 
 																											}
 																										}
@@ -38621,7 +42602,33 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																							loadbalancerTypeInt.Https.CoalescingOptions = coalescingOptions
 																							for _, set := range sl {
 																								if set != nil {
-																									_ = set.(map[string]interface{})
+																									coalescingOptionsMapStrToI := set.(map[string]interface{})
+
+																									coalescingChoiceTypeFound := false
+
+																									if v, ok := coalescingOptionsMapStrToI["default_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																										coalescingChoiceTypeFound = true
+
+																										if v.(bool) {
+																											coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_DefaultCoalescing{}
+																											coalescingChoiceInt.DefaultCoalescing = &ves_io_schema.Empty{}
+																											coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																										}
+
+																									}
+
+																									if v, ok := coalescingOptionsMapStrToI["strict_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																										coalescingChoiceTypeFound = true
+
+																										if v.(bool) {
+																											coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_StrictCoalescing{}
+																											coalescingChoiceInt.StrictCoalescing = &ves_io_schema.Empty{}
+																											coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																										}
+
+																									}
 
 																								}
 																							}
@@ -38731,7 +42738,114 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																							loadbalancerTypeInt.Https.HttpProtocolOptions = httpProtocolOptions
 																							for _, set := range sl {
 																								if set != nil {
-																									_ = set.(map[string]interface{})
+																									httpProtocolOptionsMapStrToI := set.(map[string]interface{})
+
+																									httpProtocolChoiceTypeFound := false
+
+																									if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																										httpProtocolChoiceTypeFound = true
+																										httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1Only{}
+																										httpProtocolChoiceInt.HttpProtocolEnableV1Only = &ves_io_schema_virtual_host.Http1ProtocolOptions{}
+																										httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+
+																										sl := v.([]interface{})
+																										for _, set := range sl {
+																											if set != nil {
+																												cs := set.(map[string]interface{})
+
+																												if v, ok := cs["header_transformation"]; ok && !isIntfNil(v) {
+
+																													sl := v.([]interface{})
+																													headerTransformation := &ves_io_schema.HeaderTransformationType{}
+																													httpProtocolChoiceInt.HttpProtocolEnableV1Only.HeaderTransformation = headerTransformation
+																													for _, set := range sl {
+																														if set != nil {
+																															headerTransformationMapStrToI := set.(map[string]interface{})
+
+																															headerTransformationChoiceTypeFound := false
+
+																															if v, ok := headerTransformationMapStrToI["default_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_DefaultHeaderTransformation{}
+																																	headerTransformationChoiceInt.DefaultHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																															if v, ok := headerTransformationMapStrToI["legacy_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_LegacyHeaderTransformation{}
+																																	headerTransformationChoiceInt.LegacyHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																															if v, ok := headerTransformationMapStrToI["preserve_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_PreserveCaseHeaderTransformation{}
+																																	headerTransformationChoiceInt.PreserveCaseHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																															if v, ok := headerTransformationMapStrToI["proper_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_ProperCaseHeaderTransformation{}
+																																	headerTransformationChoiceInt.ProperCaseHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																														}
+																													}
+
+																												}
+
+																											}
+																										}
+
+																									}
+
+																									if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_v2"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																										httpProtocolChoiceTypeFound = true
+
+																										if v.(bool) {
+																											httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1V2{}
+																											httpProtocolChoiceInt.HttpProtocolEnableV1V2 = &ves_io_schema.Empty{}
+																											httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																										}
+
+																									}
+
+																									if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v2_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																										httpProtocolChoiceTypeFound = true
+
+																										if v.(bool) {
+																											httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV2Only{}
+																											httpProtocolChoiceInt.HttpProtocolEnableV2Only = &ves_io_schema.Empty{}
+																											httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																										}
+
+																									}
 
 																								}
 																							}
@@ -39739,7 +43853,33 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																							loadbalancerTypeInt.HttpsAutoCert.CoalescingOptions = coalescingOptions
 																							for _, set := range sl {
 																								if set != nil {
-																									_ = set.(map[string]interface{})
+																									coalescingOptionsMapStrToI := set.(map[string]interface{})
+
+																									coalescingChoiceTypeFound := false
+
+																									if v, ok := coalescingOptionsMapStrToI["default_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																										coalescingChoiceTypeFound = true
+
+																										if v.(bool) {
+																											coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_DefaultCoalescing{}
+																											coalescingChoiceInt.DefaultCoalescing = &ves_io_schema.Empty{}
+																											coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																										}
+
+																									}
+
+																									if v, ok := coalescingOptionsMapStrToI["strict_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																										coalescingChoiceTypeFound = true
+
+																										if v.(bool) {
+																											coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_StrictCoalescing{}
+																											coalescingChoiceInt.StrictCoalescing = &ves_io_schema.Empty{}
+																											coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																										}
+
+																									}
 
 																								}
 																							}
@@ -39849,7 +43989,114 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																							loadbalancerTypeInt.HttpsAutoCert.HttpProtocolOptions = httpProtocolOptions
 																							for _, set := range sl {
 																								if set != nil {
-																									_ = set.(map[string]interface{})
+																									httpProtocolOptionsMapStrToI := set.(map[string]interface{})
+
+																									httpProtocolChoiceTypeFound := false
+
+																									if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																										httpProtocolChoiceTypeFound = true
+																										httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1Only{}
+																										httpProtocolChoiceInt.HttpProtocolEnableV1Only = &ves_io_schema_virtual_host.Http1ProtocolOptions{}
+																										httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+
+																										sl := v.([]interface{})
+																										for _, set := range sl {
+																											if set != nil {
+																												cs := set.(map[string]interface{})
+
+																												if v, ok := cs["header_transformation"]; ok && !isIntfNil(v) {
+
+																													sl := v.([]interface{})
+																													headerTransformation := &ves_io_schema.HeaderTransformationType{}
+																													httpProtocolChoiceInt.HttpProtocolEnableV1Only.HeaderTransformation = headerTransformation
+																													for _, set := range sl {
+																														if set != nil {
+																															headerTransformationMapStrToI := set.(map[string]interface{})
+
+																															headerTransformationChoiceTypeFound := false
+
+																															if v, ok := headerTransformationMapStrToI["default_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_DefaultHeaderTransformation{}
+																																	headerTransformationChoiceInt.DefaultHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																															if v, ok := headerTransformationMapStrToI["legacy_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_LegacyHeaderTransformation{}
+																																	headerTransformationChoiceInt.LegacyHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																															if v, ok := headerTransformationMapStrToI["preserve_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_PreserveCaseHeaderTransformation{}
+																																	headerTransformationChoiceInt.PreserveCaseHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																															if v, ok := headerTransformationMapStrToI["proper_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_ProperCaseHeaderTransformation{}
+																																	headerTransformationChoiceInt.ProperCaseHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																														}
+																													}
+
+																												}
+
+																											}
+																										}
+
+																									}
+
+																									if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_v2"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																										httpProtocolChoiceTypeFound = true
+
+																										if v.(bool) {
+																											httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1V2{}
+																											httpProtocolChoiceInt.HttpProtocolEnableV1V2 = &ves_io_schema.Empty{}
+																											httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																										}
+
+																									}
+
+																									if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v2_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																										httpProtocolChoiceTypeFound = true
+
+																										if v.(bool) {
+																											httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV2Only{}
+																											httpProtocolChoiceInt.HttpProtocolEnableV2Only = &ves_io_schema.Empty{}
+																											httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																										}
+
+																									}
 
 																								}
 																							}
@@ -40568,7 +44815,19 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																													choiceInt.DirectResponseRoute.RouteDirectResponse = routeDirectResponse
 																													for _, set := range sl {
 																														if set != nil {
-																															_ = set.(map[string]interface{})
+																															routeDirectResponseMapStrToI := set.(map[string]interface{})
+
+																															if w, ok := routeDirectResponseMapStrToI["response_body"]; ok && !isIntfNil(w) {
+																																routeDirectResponse.ResponseBody = w.(string)
+																															}
+
+																															if w, ok := routeDirectResponseMapStrToI["response_body_encoded"]; ok && !isIntfNil(w) {
+																																routeDirectResponse.ResponseBodyEncoded = w.(string)
+																															}
+
+																															if w, ok := routeDirectResponseMapStrToI["response_code"]; ok && !isIntfNil(w) {
+																																routeDirectResponse.ResponseCode = uint32(w.(int))
+																															}
 
 																														}
 																													}
@@ -40762,7 +45021,127 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																													choiceInt.RedirectRoute.RouteRedirect = routeRedirect
 																													for _, set := range sl {
 																														if set != nil {
-																															_ = set.(map[string]interface{})
+																															routeRedirectMapStrToI := set.(map[string]interface{})
+
+																															if w, ok := routeRedirectMapStrToI["host_redirect"]; ok && !isIntfNil(w) {
+																																routeRedirect.HostRedirect = w.(string)
+																															}
+
+																															if w, ok := routeRedirectMapStrToI["port_redirect"]; ok && !isIntfNil(w) {
+																																routeRedirect.PortRedirect = uint32(w.(int))
+																															}
+
+																															if w, ok := routeRedirectMapStrToI["proto_redirect"]; ok && !isIntfNil(w) {
+																																routeRedirect.ProtoRedirect = w.(string)
+																															}
+
+																															queryParamsTypeFound := false
+
+																															if v, ok := routeRedirectMapStrToI["all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																																queryParamsTypeFound = true
+																																queryParamsInt := &ves_io_schema_route.RouteRedirect_AllParams{}
+
+																																routeRedirect.QueryParams = queryParamsInt
+
+																																queryParamsInt.AllParams = v.(bool)
+
+																															}
+
+																															if v, ok := routeRedirectMapStrToI["remove_all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																																queryParamsTypeFound = true
+
+																																if v.(bool) {
+																																	queryParamsInt := &ves_io_schema_route.RouteRedirect_RemoveAllParams{}
+																																	queryParamsInt.RemoveAllParams = &ves_io_schema.Empty{}
+																																	routeRedirect.QueryParams = queryParamsInt
+																																}
+
+																															}
+
+																															if v, ok := routeRedirectMapStrToI["replace_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																																queryParamsTypeFound = true
+																																queryParamsInt := &ves_io_schema_route.RouteRedirect_ReplaceParams{}
+
+																																routeRedirect.QueryParams = queryParamsInt
+
+																																queryParamsInt.ReplaceParams = v.(string)
+
+																															}
+
+																															if v, ok := routeRedirectMapStrToI["retain_all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																																queryParamsTypeFound = true
+
+																																if v.(bool) {
+																																	queryParamsInt := &ves_io_schema_route.RouteRedirect_RetainAllParams{}
+																																	queryParamsInt.RetainAllParams = &ves_io_schema.Empty{}
+																																	routeRedirect.QueryParams = queryParamsInt
+																																}
+
+																															}
+
+																															if v, ok := routeRedirectMapStrToI["strip_query_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																																queryParamsTypeFound = true
+																																queryParamsInt := &ves_io_schema_route.RouteRedirect_StripQueryParams{}
+																																queryParamsInt.StripQueryParams = &ves_io_schema_route.RouteQueryParams{}
+																																routeRedirect.QueryParams = queryParamsInt
+
+																																sl := v.([]interface{})
+																																for _, set := range sl {
+																																	if set != nil {
+																																		cs := set.(map[string]interface{})
+
+																																		if v, ok := cs["query_params"]; ok && !isIntfNil(v) {
+
+																																			ls := make([]string, len(v.([]interface{})))
+																																			for i, v := range v.([]interface{}) {
+																																				if v == nil {
+																																					return fmt.Errorf("please provide valid non-empty string value of field query_params")
+																																				}
+																																				if str, ok := v.(string); ok {
+																																					ls[i] = str
+																																				}
+																																			}
+																																			queryParamsInt.StripQueryParams.QueryParams = ls
+
+																																		}
+
+																																	}
+																																}
+
+																															}
+
+																															redirectPathChoiceTypeFound := false
+
+																															if v, ok := routeRedirectMapStrToI["path_redirect"]; ok && !isIntfNil(v) && !redirectPathChoiceTypeFound {
+
+																																redirectPathChoiceTypeFound = true
+																																redirectPathChoiceInt := &ves_io_schema_route.RouteRedirect_PathRedirect{}
+
+																																routeRedirect.RedirectPathChoice = redirectPathChoiceInt
+
+																																redirectPathChoiceInt.PathRedirect = v.(string)
+
+																															}
+
+																															if v, ok := routeRedirectMapStrToI["prefix_rewrite"]; ok && !isIntfNil(v) && !redirectPathChoiceTypeFound {
+
+																																redirectPathChoiceTypeFound = true
+																																redirectPathChoiceInt := &ves_io_schema_route.RouteRedirect_PrefixRewrite{}
+
+																																routeRedirect.RedirectPathChoice = redirectPathChoiceInt
+
+																																redirectPathChoiceInt.PrefixRewrite = v.(string)
+
+																															}
+
+																															if w, ok := routeRedirectMapStrToI["response_code"]; ok && !isIntfNil(w) {
+																																routeRedirect.ResponseCode = uint32(w.(int))
+																															}
 
 																														}
 																													}
@@ -41030,8 +45409,9 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 													if v, ok := cs["http_loadbalancer"]; ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
 
 														advertiseChoiceTypeFound = true
-														advertiseChoiceIntNew := &ves_io_schema_views_workload.AdvertiseSinglePortType_HttpLoadbalancer{}
-														advertiseChoiceIntNew.HttpLoadbalancer = &ves_io_schema_views_workload.HTTPLoadBalancerType{}
+														advertiseChoiceIntNewNew := &ves_io_schema_views_workload.AdvertiseSinglePortType_HttpLoadbalancer{}
+														advertiseChoiceIntNewNew.HttpLoadbalancer = &ves_io_schema_views_workload.HTTPLoadBalancerType{}
+														advertiseChoiceIntNew.Port.AdvertiseChoice = advertiseChoiceIntNewNew
 
 														sl := v.([]interface{})
 														for _, set := range sl {
@@ -41049,7 +45429,7 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																			ls[i] = str
 																		}
 																	}
-																	advertiseChoiceIntNew.HttpLoadbalancer.Domains = ls
+																	advertiseChoiceIntNewNew.HttpLoadbalancer.Domains = ls
 
 																}
 
@@ -41060,7 +45440,7 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																	loadbalancerTypeTypeFound = true
 																	loadbalancerTypeInt := &ves_io_schema_views_workload.HTTPLoadBalancerType_Http{}
 																	loadbalancerTypeInt.Http = &ves_io_schema_views_http_loadbalancer.ProxyTypeHttp{}
-																	advertiseChoiceIntNew.HttpLoadbalancer.LoadbalancerType = loadbalancerTypeInt
+																	advertiseChoiceIntNewNew.HttpLoadbalancer.LoadbalancerType = loadbalancerTypeInt
 
 																	sl := v.([]interface{})
 																	for _, set := range sl {
@@ -41107,7 +45487,7 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																	loadbalancerTypeTypeFound = true
 																	loadbalancerTypeInt := &ves_io_schema_views_workload.HTTPLoadBalancerType_Https{}
 																	loadbalancerTypeInt.Https = &ves_io_schema_views_http_loadbalancer.ProxyTypeHttps{}
-																	advertiseChoiceIntNew.HttpLoadbalancer.LoadbalancerType = loadbalancerTypeInt
+																	advertiseChoiceIntNewNew.HttpLoadbalancer.LoadbalancerType = loadbalancerTypeInt
 
 																	sl := v.([]interface{})
 																	for _, set := range sl {
@@ -41127,7 +45507,33 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.Https.CoalescingOptions = coalescingOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						coalescingOptionsMapStrToI := set.(map[string]interface{})
+
+																						coalescingChoiceTypeFound := false
+
+																						if v, ok := coalescingOptionsMapStrToI["default_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_DefaultCoalescing{}
+																								coalescingChoiceInt.DefaultCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := coalescingOptionsMapStrToI["strict_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_StrictCoalescing{}
+																								coalescingChoiceInt.StrictCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -41237,7 +45643,114 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.Https.HttpProtocolOptions = httpProtocolOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						httpProtocolOptionsMapStrToI := set.(map[string]interface{})
+
+																						httpProtocolChoiceTypeFound := false
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+																							httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1Only{}
+																							httpProtocolChoiceInt.HttpProtocolEnableV1Only = &ves_io_schema_virtual_host.Http1ProtocolOptions{}
+																							httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+
+																							sl := v.([]interface{})
+																							for _, set := range sl {
+																								if set != nil {
+																									cs := set.(map[string]interface{})
+
+																									if v, ok := cs["header_transformation"]; ok && !isIntfNil(v) {
+
+																										sl := v.([]interface{})
+																										headerTransformation := &ves_io_schema.HeaderTransformationType{}
+																										httpProtocolChoiceInt.HttpProtocolEnableV1Only.HeaderTransformation = headerTransformation
+																										for _, set := range sl {
+																											if set != nil {
+																												headerTransformationMapStrToI := set.(map[string]interface{})
+
+																												headerTransformationChoiceTypeFound := false
+
+																												if v, ok := headerTransformationMapStrToI["default_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_DefaultHeaderTransformation{}
+																														headerTransformationChoiceInt.DefaultHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["legacy_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_LegacyHeaderTransformation{}
+																														headerTransformationChoiceInt.LegacyHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["preserve_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_PreserveCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.PreserveCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["proper_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_ProperCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.ProperCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																											}
+																										}
+
+																									}
+
+																								}
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_v2"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1V2{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV1V2 = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v2_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV2Only{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV2Only = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -42225,7 +46738,7 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																	loadbalancerTypeTypeFound = true
 																	loadbalancerTypeInt := &ves_io_schema_views_workload.HTTPLoadBalancerType_HttpsAutoCert{}
 																	loadbalancerTypeInt.HttpsAutoCert = &ves_io_schema_views_http_loadbalancer.ProxyTypeHttpsAutoCerts{}
-																	advertiseChoiceIntNew.HttpLoadbalancer.LoadbalancerType = loadbalancerTypeInt
+																	advertiseChoiceIntNewNew.HttpLoadbalancer.LoadbalancerType = loadbalancerTypeInt
 
 																	sl := v.([]interface{})
 																	for _, set := range sl {
@@ -42245,7 +46758,33 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.HttpsAutoCert.CoalescingOptions = coalescingOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						coalescingOptionsMapStrToI := set.(map[string]interface{})
+
+																						coalescingChoiceTypeFound := false
+
+																						if v, ok := coalescingOptionsMapStrToI["default_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_DefaultCoalescing{}
+																								coalescingChoiceInt.DefaultCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := coalescingOptionsMapStrToI["strict_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_StrictCoalescing{}
+																								coalescingChoiceInt.StrictCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -42355,7 +46894,114 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.HttpsAutoCert.HttpProtocolOptions = httpProtocolOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						httpProtocolOptionsMapStrToI := set.(map[string]interface{})
+
+																						httpProtocolChoiceTypeFound := false
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+																							httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1Only{}
+																							httpProtocolChoiceInt.HttpProtocolEnableV1Only = &ves_io_schema_virtual_host.Http1ProtocolOptions{}
+																							httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+
+																							sl := v.([]interface{})
+																							for _, set := range sl {
+																								if set != nil {
+																									cs := set.(map[string]interface{})
+
+																									if v, ok := cs["header_transformation"]; ok && !isIntfNil(v) {
+
+																										sl := v.([]interface{})
+																										headerTransformation := &ves_io_schema.HeaderTransformationType{}
+																										httpProtocolChoiceInt.HttpProtocolEnableV1Only.HeaderTransformation = headerTransformation
+																										for _, set := range sl {
+																											if set != nil {
+																												headerTransformationMapStrToI := set.(map[string]interface{})
+
+																												headerTransformationChoiceTypeFound := false
+
+																												if v, ok := headerTransformationMapStrToI["default_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_DefaultHeaderTransformation{}
+																														headerTransformationChoiceInt.DefaultHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["legacy_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_LegacyHeaderTransformation{}
+																														headerTransformationChoiceInt.LegacyHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["preserve_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_PreserveCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.PreserveCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["proper_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_ProperCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.ProperCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																											}
+																										}
+
+																									}
+
+																								}
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_v2"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1V2{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV1V2 = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v2_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV2Only{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV2Only = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -42752,7 +47398,7 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																	routeChoiceTypeFound = true
 																	routeChoiceInt := &ves_io_schema_views_workload.HTTPLoadBalancerType_DefaultRoute{}
 																	routeChoiceInt.DefaultRoute = &ves_io_schema_views_workload.MatchAllRouteType{}
-																	advertiseChoiceIntNew.HttpLoadbalancer.RouteChoice = routeChoiceInt
+																	advertiseChoiceIntNewNew.HttpLoadbalancer.RouteChoice = routeChoiceInt
 
 																	sl := v.([]interface{})
 																	for _, set := range sl {
@@ -42806,7 +47452,7 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																	routeChoiceTypeFound = true
 																	routeChoiceInt := &ves_io_schema_views_workload.HTTPLoadBalancerType_SpecificRoutes{}
 																	routeChoiceInt.SpecificRoutes = &ves_io_schema_views_workload.RouteType{}
-																	advertiseChoiceIntNew.HttpLoadbalancer.RouteChoice = routeChoiceInt
+																	advertiseChoiceIntNewNew.HttpLoadbalancer.RouteChoice = routeChoiceInt
 
 																	sl := v.([]interface{})
 																	for _, set := range sl {
@@ -43074,7 +47720,19 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																										choiceInt.DirectResponseRoute.RouteDirectResponse = routeDirectResponse
 																										for _, set := range sl {
 																											if set != nil {
-																												_ = set.(map[string]interface{})
+																												routeDirectResponseMapStrToI := set.(map[string]interface{})
+
+																												if w, ok := routeDirectResponseMapStrToI["response_body"]; ok && !isIntfNil(w) {
+																													routeDirectResponse.ResponseBody = w.(string)
+																												}
+
+																												if w, ok := routeDirectResponseMapStrToI["response_body_encoded"]; ok && !isIntfNil(w) {
+																													routeDirectResponse.ResponseBodyEncoded = w.(string)
+																												}
+
+																												if w, ok := routeDirectResponseMapStrToI["response_code"]; ok && !isIntfNil(w) {
+																													routeDirectResponse.ResponseCode = uint32(w.(int))
+																												}
 
 																											}
 																										}
@@ -43268,7 +47926,127 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																										choiceInt.RedirectRoute.RouteRedirect = routeRedirect
 																										for _, set := range sl {
 																											if set != nil {
-																												_ = set.(map[string]interface{})
+																												routeRedirectMapStrToI := set.(map[string]interface{})
+
+																												if w, ok := routeRedirectMapStrToI["host_redirect"]; ok && !isIntfNil(w) {
+																													routeRedirect.HostRedirect = w.(string)
+																												}
+
+																												if w, ok := routeRedirectMapStrToI["port_redirect"]; ok && !isIntfNil(w) {
+																													routeRedirect.PortRedirect = uint32(w.(int))
+																												}
+
+																												if w, ok := routeRedirectMapStrToI["proto_redirect"]; ok && !isIntfNil(w) {
+																													routeRedirect.ProtoRedirect = w.(string)
+																												}
+
+																												queryParamsTypeFound := false
+
+																												if v, ok := routeRedirectMapStrToI["all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+																													queryParamsInt := &ves_io_schema_route.RouteRedirect_AllParams{}
+
+																													routeRedirect.QueryParams = queryParamsInt
+
+																													queryParamsInt.AllParams = v.(bool)
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["remove_all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+
+																													if v.(bool) {
+																														queryParamsInt := &ves_io_schema_route.RouteRedirect_RemoveAllParams{}
+																														queryParamsInt.RemoveAllParams = &ves_io_schema.Empty{}
+																														routeRedirect.QueryParams = queryParamsInt
+																													}
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["replace_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+																													queryParamsInt := &ves_io_schema_route.RouteRedirect_ReplaceParams{}
+
+																													routeRedirect.QueryParams = queryParamsInt
+
+																													queryParamsInt.ReplaceParams = v.(string)
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["retain_all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+
+																													if v.(bool) {
+																														queryParamsInt := &ves_io_schema_route.RouteRedirect_RetainAllParams{}
+																														queryParamsInt.RetainAllParams = &ves_io_schema.Empty{}
+																														routeRedirect.QueryParams = queryParamsInt
+																													}
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["strip_query_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+																													queryParamsInt := &ves_io_schema_route.RouteRedirect_StripQueryParams{}
+																													queryParamsInt.StripQueryParams = &ves_io_schema_route.RouteQueryParams{}
+																													routeRedirect.QueryParams = queryParamsInt
+
+																													sl := v.([]interface{})
+																													for _, set := range sl {
+																														if set != nil {
+																															cs := set.(map[string]interface{})
+
+																															if v, ok := cs["query_params"]; ok && !isIntfNil(v) {
+
+																																ls := make([]string, len(v.([]interface{})))
+																																for i, v := range v.([]interface{}) {
+																																	if v == nil {
+																																		return fmt.Errorf("please provide valid non-empty string value of field query_params")
+																																	}
+																																	if str, ok := v.(string); ok {
+																																		ls[i] = str
+																																	}
+																																}
+																																queryParamsInt.StripQueryParams.QueryParams = ls
+
+																															}
+
+																														}
+																													}
+
+																												}
+
+																												redirectPathChoiceTypeFound := false
+
+																												if v, ok := routeRedirectMapStrToI["path_redirect"]; ok && !isIntfNil(v) && !redirectPathChoiceTypeFound {
+
+																													redirectPathChoiceTypeFound = true
+																													redirectPathChoiceInt := &ves_io_schema_route.RouteRedirect_PathRedirect{}
+
+																													routeRedirect.RedirectPathChoice = redirectPathChoiceInt
+
+																													redirectPathChoiceInt.PathRedirect = v.(string)
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["prefix_rewrite"]; ok && !isIntfNil(v) && !redirectPathChoiceTypeFound {
+
+																													redirectPathChoiceTypeFound = true
+																													redirectPathChoiceInt := &ves_io_schema_route.RouteRedirect_PrefixRewrite{}
+
+																													routeRedirect.RedirectPathChoice = redirectPathChoiceInt
+
+																													redirectPathChoiceInt.PrefixRewrite = v.(string)
+
+																												}
+
+																												if w, ok := routeRedirectMapStrToI["response_code"]; ok && !isIntfNil(w) {
+																													routeRedirect.ResponseCode = uint32(w.(int))
+																												}
 
 																											}
 																										}
@@ -43407,8 +48185,9 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 													if v, ok := cs["tcp_loadbalancer"]; ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
 
 														advertiseChoiceTypeFound = true
-														advertiseChoiceIntNew := &ves_io_schema_views_workload.AdvertiseSinglePortType_TcpLoadbalancer{}
-														advertiseChoiceIntNew.TcpLoadbalancer = &ves_io_schema_views_workload.TCPLoadBalancerType{}
+														advertiseChoiceIntNewNew := &ves_io_schema_views_workload.AdvertiseSinglePortType_TcpLoadbalancer{}
+														advertiseChoiceIntNewNew.TcpLoadbalancer = &ves_io_schema_views_workload.TCPLoadBalancerType{}
+														advertiseChoiceIntNew.Port.AdvertiseChoice = advertiseChoiceIntNewNew
 
 														sl := v.([]interface{})
 														for _, set := range sl {
@@ -43426,13 +48205,13 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																			ls[i] = str
 																		}
 																	}
-																	advertiseChoiceIntNew.TcpLoadbalancer.Domains = ls
+																	advertiseChoiceIntNewNew.TcpLoadbalancer.Domains = ls
 
 																}
 
 																if v, ok := cs["with_sni"]; ok && !isIntfNil(v) {
 
-																	advertiseChoiceIntNew.TcpLoadbalancer.WithSni = v.(bool)
+																	advertiseChoiceIntNewNew.TcpLoadbalancer.WithSni = v.(bool)
 
 																}
 
@@ -45761,24 +50540,22 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																if v, ok := cs["site"]; ok && !isIntfNil(v) {
 
 																	sl := v.([]interface{})
-																	site := &ves_io_schema_views.ObjectRefType{}
-																	choiceInt.Site.Site = site
+																	siteInt := &ves_io_schema_views.ObjectRefType{}
+																	choiceInt.Site.Site = siteInt
+
 																	for _, set := range sl {
 																		if set != nil {
-																			siteMapStrToI := set.(map[string]interface{})
-
-																			if w, ok := siteMapStrToI["name"]; ok && !isIntfNil(w) {
-																				site.Name = w.(string)
+																			sMapToStrVal := set.(map[string]interface{})
+																			if val, ok := sMapToStrVal["name"]; ok && !isIntfNil(v) {
+																				siteInt.Name = val.(string)
+																			}
+																			if val, ok := sMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																				siteInt.Namespace = val.(string)
 																			}
 
-																			if w, ok := siteMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																				site.Namespace = w.(string)
+																			if val, ok := sMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																				siteInt.Tenant = val.(string)
 																			}
-
-																			if w, ok := siteMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																				site.Tenant = w.(string)
-																			}
-
 																		}
 																	}
 
@@ -45810,24 +50587,22 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																if v, ok := cs["virtual_site"]; ok && !isIntfNil(v) {
 
 																	sl := v.([]interface{})
-																	virtualSite := &ves_io_schema_views.ObjectRefType{}
-																	choiceInt.VirtualSite.VirtualSite = virtualSite
+																	virtualSiteInt := &ves_io_schema_views.ObjectRefType{}
+																	choiceInt.VirtualSite.VirtualSite = virtualSiteInt
+
 																	for _, set := range sl {
 																		if set != nil {
-																			virtualSiteMapStrToI := set.(map[string]interface{})
-
-																			if w, ok := virtualSiteMapStrToI["name"]; ok && !isIntfNil(w) {
-																				virtualSite.Name = w.(string)
+																			vsMapToStrVal := set.(map[string]interface{})
+																			if val, ok := vsMapToStrVal["name"]; ok && !isIntfNil(v) {
+																				virtualSiteInt.Name = val.(string)
+																			}
+																			if val, ok := vsMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																				virtualSiteInt.Namespace = val.(string)
 																			}
 
-																			if w, ok := virtualSiteMapStrToI["namespace"]; ok && !isIntfNil(w) {
-																				virtualSite.Namespace = w.(string)
+																			if val, ok := vsMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																				virtualSiteInt.Tenant = val.(string)
 																			}
-
-																			if w, ok := virtualSiteMapStrToI["tenant"]; ok && !isIntfNil(w) {
-																				virtualSite.Tenant = w.(string)
-																			}
-
 																		}
 																	}
 
@@ -46045,7 +50820,33 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.Https.CoalescingOptions = coalescingOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						coalescingOptionsMapStrToI := set.(map[string]interface{})
+
+																						coalescingChoiceTypeFound := false
+
+																						if v, ok := coalescingOptionsMapStrToI["default_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_DefaultCoalescing{}
+																								coalescingChoiceInt.DefaultCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := coalescingOptionsMapStrToI["strict_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_StrictCoalescing{}
+																								coalescingChoiceInt.StrictCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -46155,7 +50956,114 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.Https.HttpProtocolOptions = httpProtocolOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						httpProtocolOptionsMapStrToI := set.(map[string]interface{})
+
+																						httpProtocolChoiceTypeFound := false
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+																							httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1Only{}
+																							httpProtocolChoiceInt.HttpProtocolEnableV1Only = &ves_io_schema_virtual_host.Http1ProtocolOptions{}
+																							httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+
+																							sl := v.([]interface{})
+																							for _, set := range sl {
+																								if set != nil {
+																									cs := set.(map[string]interface{})
+
+																									if v, ok := cs["header_transformation"]; ok && !isIntfNil(v) {
+
+																										sl := v.([]interface{})
+																										headerTransformation := &ves_io_schema.HeaderTransformationType{}
+																										httpProtocolChoiceInt.HttpProtocolEnableV1Only.HeaderTransformation = headerTransformation
+																										for _, set := range sl {
+																											if set != nil {
+																												headerTransformationMapStrToI := set.(map[string]interface{})
+
+																												headerTransformationChoiceTypeFound := false
+
+																												if v, ok := headerTransformationMapStrToI["default_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_DefaultHeaderTransformation{}
+																														headerTransformationChoiceInt.DefaultHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["legacy_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_LegacyHeaderTransformation{}
+																														headerTransformationChoiceInt.LegacyHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["preserve_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_PreserveCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.PreserveCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["proper_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_ProperCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.ProperCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																											}
+																										}
+
+																									}
+
+																								}
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_v2"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1V2{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV1V2 = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v2_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV2Only{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV2Only = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -47163,7 +52071,33 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.HttpsAutoCert.CoalescingOptions = coalescingOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						coalescingOptionsMapStrToI := set.(map[string]interface{})
+
+																						coalescingChoiceTypeFound := false
+
+																						if v, ok := coalescingOptionsMapStrToI["default_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_DefaultCoalescing{}
+																								coalescingChoiceInt.DefaultCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := coalescingOptionsMapStrToI["strict_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_StrictCoalescing{}
+																								coalescingChoiceInt.StrictCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -47273,7 +52207,114 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.HttpsAutoCert.HttpProtocolOptions = httpProtocolOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						httpProtocolOptionsMapStrToI := set.(map[string]interface{})
+
+																						httpProtocolChoiceTypeFound := false
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+																							httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1Only{}
+																							httpProtocolChoiceInt.HttpProtocolEnableV1Only = &ves_io_schema_virtual_host.Http1ProtocolOptions{}
+																							httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+
+																							sl := v.([]interface{})
+																							for _, set := range sl {
+																								if set != nil {
+																									cs := set.(map[string]interface{})
+
+																									if v, ok := cs["header_transformation"]; ok && !isIntfNil(v) {
+
+																										sl := v.([]interface{})
+																										headerTransformation := &ves_io_schema.HeaderTransformationType{}
+																										httpProtocolChoiceInt.HttpProtocolEnableV1Only.HeaderTransformation = headerTransformation
+																										for _, set := range sl {
+																											if set != nil {
+																												headerTransformationMapStrToI := set.(map[string]interface{})
+
+																												headerTransformationChoiceTypeFound := false
+
+																												if v, ok := headerTransformationMapStrToI["default_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_DefaultHeaderTransformation{}
+																														headerTransformationChoiceInt.DefaultHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["legacy_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_LegacyHeaderTransformation{}
+																														headerTransformationChoiceInt.LegacyHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["preserve_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_PreserveCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.PreserveCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["proper_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_ProperCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.ProperCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																											}
+																										}
+
+																									}
+
+																								}
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_v2"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1V2{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV1V2 = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v2_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV2Only{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV2Only = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -47992,7 +53033,19 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																										choiceInt.DirectResponseRoute.RouteDirectResponse = routeDirectResponse
 																										for _, set := range sl {
 																											if set != nil {
-																												_ = set.(map[string]interface{})
+																												routeDirectResponseMapStrToI := set.(map[string]interface{})
+
+																												if w, ok := routeDirectResponseMapStrToI["response_body"]; ok && !isIntfNil(w) {
+																													routeDirectResponse.ResponseBody = w.(string)
+																												}
+
+																												if w, ok := routeDirectResponseMapStrToI["response_body_encoded"]; ok && !isIntfNil(w) {
+																													routeDirectResponse.ResponseBodyEncoded = w.(string)
+																												}
+
+																												if w, ok := routeDirectResponseMapStrToI["response_code"]; ok && !isIntfNil(w) {
+																													routeDirectResponse.ResponseCode = uint32(w.(int))
+																												}
 
 																											}
 																										}
@@ -48186,7 +53239,127 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																										choiceInt.RedirectRoute.RouteRedirect = routeRedirect
 																										for _, set := range sl {
 																											if set != nil {
-																												_ = set.(map[string]interface{})
+																												routeRedirectMapStrToI := set.(map[string]interface{})
+
+																												if w, ok := routeRedirectMapStrToI["host_redirect"]; ok && !isIntfNil(w) {
+																													routeRedirect.HostRedirect = w.(string)
+																												}
+
+																												if w, ok := routeRedirectMapStrToI["port_redirect"]; ok && !isIntfNil(w) {
+																													routeRedirect.PortRedirect = uint32(w.(int))
+																												}
+
+																												if w, ok := routeRedirectMapStrToI["proto_redirect"]; ok && !isIntfNil(w) {
+																													routeRedirect.ProtoRedirect = w.(string)
+																												}
+
+																												queryParamsTypeFound := false
+
+																												if v, ok := routeRedirectMapStrToI["all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+																													queryParamsInt := &ves_io_schema_route.RouteRedirect_AllParams{}
+
+																													routeRedirect.QueryParams = queryParamsInt
+
+																													queryParamsInt.AllParams = v.(bool)
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["remove_all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+
+																													if v.(bool) {
+																														queryParamsInt := &ves_io_schema_route.RouteRedirect_RemoveAllParams{}
+																														queryParamsInt.RemoveAllParams = &ves_io_schema.Empty{}
+																														routeRedirect.QueryParams = queryParamsInt
+																													}
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["replace_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+																													queryParamsInt := &ves_io_schema_route.RouteRedirect_ReplaceParams{}
+
+																													routeRedirect.QueryParams = queryParamsInt
+
+																													queryParamsInt.ReplaceParams = v.(string)
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["retain_all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+
+																													if v.(bool) {
+																														queryParamsInt := &ves_io_schema_route.RouteRedirect_RetainAllParams{}
+																														queryParamsInt.RetainAllParams = &ves_io_schema.Empty{}
+																														routeRedirect.QueryParams = queryParamsInt
+																													}
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["strip_query_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+																													queryParamsInt := &ves_io_schema_route.RouteRedirect_StripQueryParams{}
+																													queryParamsInt.StripQueryParams = &ves_io_schema_route.RouteQueryParams{}
+																													routeRedirect.QueryParams = queryParamsInt
+
+																													sl := v.([]interface{})
+																													for _, set := range sl {
+																														if set != nil {
+																															cs := set.(map[string]interface{})
+
+																															if v, ok := cs["query_params"]; ok && !isIntfNil(v) {
+
+																																ls := make([]string, len(v.([]interface{})))
+																																for i, v := range v.([]interface{}) {
+																																	if v == nil {
+																																		return fmt.Errorf("please provide valid non-empty string value of field query_params")
+																																	}
+																																	if str, ok := v.(string); ok {
+																																		ls[i] = str
+																																	}
+																																}
+																																queryParamsInt.StripQueryParams.QueryParams = ls
+
+																															}
+
+																														}
+																													}
+
+																												}
+
+																												redirectPathChoiceTypeFound := false
+
+																												if v, ok := routeRedirectMapStrToI["path_redirect"]; ok && !isIntfNil(v) && !redirectPathChoiceTypeFound {
+
+																													redirectPathChoiceTypeFound = true
+																													redirectPathChoiceInt := &ves_io_schema_route.RouteRedirect_PathRedirect{}
+
+																													routeRedirect.RedirectPathChoice = redirectPathChoiceInt
+
+																													redirectPathChoiceInt.PathRedirect = v.(string)
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["prefix_rewrite"]; ok && !isIntfNil(v) && !redirectPathChoiceTypeFound {
+
+																													redirectPathChoiceTypeFound = true
+																													redirectPathChoiceInt := &ves_io_schema_route.RouteRedirect_PrefixRewrite{}
+
+																													routeRedirect.RedirectPathChoice = redirectPathChoiceInt
+
+																													redirectPathChoiceInt.PrefixRewrite = v.(string)
+
+																												}
+
+																												if w, ok := routeRedirectMapStrToI["response_code"]; ok && !isIntfNil(w) {
+																													routeRedirect.ResponseCode = uint32(w.(int))
+																												}
 
 																											}
 																										}
@@ -48746,7 +53919,33 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																							loadbalancerTypeInt.Https.CoalescingOptions = coalescingOptions
 																							for _, set := range sl {
 																								if set != nil {
-																									_ = set.(map[string]interface{})
+																									coalescingOptionsMapStrToI := set.(map[string]interface{})
+
+																									coalescingChoiceTypeFound := false
+
+																									if v, ok := coalescingOptionsMapStrToI["default_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																										coalescingChoiceTypeFound = true
+
+																										if v.(bool) {
+																											coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_DefaultCoalescing{}
+																											coalescingChoiceInt.DefaultCoalescing = &ves_io_schema.Empty{}
+																											coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																										}
+
+																									}
+
+																									if v, ok := coalescingOptionsMapStrToI["strict_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																										coalescingChoiceTypeFound = true
+
+																										if v.(bool) {
+																											coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_StrictCoalescing{}
+																											coalescingChoiceInt.StrictCoalescing = &ves_io_schema.Empty{}
+																											coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																										}
+
+																									}
 
 																								}
 																							}
@@ -48856,7 +54055,114 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																							loadbalancerTypeInt.Https.HttpProtocolOptions = httpProtocolOptions
 																							for _, set := range sl {
 																								if set != nil {
-																									_ = set.(map[string]interface{})
+																									httpProtocolOptionsMapStrToI := set.(map[string]interface{})
+
+																									httpProtocolChoiceTypeFound := false
+
+																									if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																										httpProtocolChoiceTypeFound = true
+																										httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1Only{}
+																										httpProtocolChoiceInt.HttpProtocolEnableV1Only = &ves_io_schema_virtual_host.Http1ProtocolOptions{}
+																										httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+
+																										sl := v.([]interface{})
+																										for _, set := range sl {
+																											if set != nil {
+																												cs := set.(map[string]interface{})
+
+																												if v, ok := cs["header_transformation"]; ok && !isIntfNil(v) {
+
+																													sl := v.([]interface{})
+																													headerTransformation := &ves_io_schema.HeaderTransformationType{}
+																													httpProtocolChoiceInt.HttpProtocolEnableV1Only.HeaderTransformation = headerTransformation
+																													for _, set := range sl {
+																														if set != nil {
+																															headerTransformationMapStrToI := set.(map[string]interface{})
+
+																															headerTransformationChoiceTypeFound := false
+
+																															if v, ok := headerTransformationMapStrToI["default_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_DefaultHeaderTransformation{}
+																																	headerTransformationChoiceInt.DefaultHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																															if v, ok := headerTransformationMapStrToI["legacy_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_LegacyHeaderTransformation{}
+																																	headerTransformationChoiceInt.LegacyHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																															if v, ok := headerTransformationMapStrToI["preserve_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_PreserveCaseHeaderTransformation{}
+																																	headerTransformationChoiceInt.PreserveCaseHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																															if v, ok := headerTransformationMapStrToI["proper_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_ProperCaseHeaderTransformation{}
+																																	headerTransformationChoiceInt.ProperCaseHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																														}
+																													}
+
+																												}
+
+																											}
+																										}
+
+																									}
+
+																									if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_v2"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																										httpProtocolChoiceTypeFound = true
+
+																										if v.(bool) {
+																											httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1V2{}
+																											httpProtocolChoiceInt.HttpProtocolEnableV1V2 = &ves_io_schema.Empty{}
+																											httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																										}
+
+																									}
+
+																									if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v2_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																										httpProtocolChoiceTypeFound = true
+
+																										if v.(bool) {
+																											httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV2Only{}
+																											httpProtocolChoiceInt.HttpProtocolEnableV2Only = &ves_io_schema.Empty{}
+																											httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																										}
+
+																									}
 
 																								}
 																							}
@@ -49864,7 +55170,33 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																							loadbalancerTypeInt.HttpsAutoCert.CoalescingOptions = coalescingOptions
 																							for _, set := range sl {
 																								if set != nil {
-																									_ = set.(map[string]interface{})
+																									coalescingOptionsMapStrToI := set.(map[string]interface{})
+
+																									coalescingChoiceTypeFound := false
+
+																									if v, ok := coalescingOptionsMapStrToI["default_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																										coalescingChoiceTypeFound = true
+
+																										if v.(bool) {
+																											coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_DefaultCoalescing{}
+																											coalescingChoiceInt.DefaultCoalescing = &ves_io_schema.Empty{}
+																											coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																										}
+
+																									}
+
+																									if v, ok := coalescingOptionsMapStrToI["strict_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																										coalescingChoiceTypeFound = true
+
+																										if v.(bool) {
+																											coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_StrictCoalescing{}
+																											coalescingChoiceInt.StrictCoalescing = &ves_io_schema.Empty{}
+																											coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																										}
+
+																									}
 
 																								}
 																							}
@@ -49974,7 +55306,114 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																							loadbalancerTypeInt.HttpsAutoCert.HttpProtocolOptions = httpProtocolOptions
 																							for _, set := range sl {
 																								if set != nil {
-																									_ = set.(map[string]interface{})
+																									httpProtocolOptionsMapStrToI := set.(map[string]interface{})
+
+																									httpProtocolChoiceTypeFound := false
+
+																									if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																										httpProtocolChoiceTypeFound = true
+																										httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1Only{}
+																										httpProtocolChoiceInt.HttpProtocolEnableV1Only = &ves_io_schema_virtual_host.Http1ProtocolOptions{}
+																										httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+
+																										sl := v.([]interface{})
+																										for _, set := range sl {
+																											if set != nil {
+																												cs := set.(map[string]interface{})
+
+																												if v, ok := cs["header_transformation"]; ok && !isIntfNil(v) {
+
+																													sl := v.([]interface{})
+																													headerTransformation := &ves_io_schema.HeaderTransformationType{}
+																													httpProtocolChoiceInt.HttpProtocolEnableV1Only.HeaderTransformation = headerTransformation
+																													for _, set := range sl {
+																														if set != nil {
+																															headerTransformationMapStrToI := set.(map[string]interface{})
+
+																															headerTransformationChoiceTypeFound := false
+
+																															if v, ok := headerTransformationMapStrToI["default_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_DefaultHeaderTransformation{}
+																																	headerTransformationChoiceInt.DefaultHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																															if v, ok := headerTransformationMapStrToI["legacy_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_LegacyHeaderTransformation{}
+																																	headerTransformationChoiceInt.LegacyHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																															if v, ok := headerTransformationMapStrToI["preserve_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_PreserveCaseHeaderTransformation{}
+																																	headerTransformationChoiceInt.PreserveCaseHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																															if v, ok := headerTransformationMapStrToI["proper_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																																headerTransformationChoiceTypeFound = true
+
+																																if v.(bool) {
+																																	headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_ProperCaseHeaderTransformation{}
+																																	headerTransformationChoiceInt.ProperCaseHeaderTransformation = &ves_io_schema.Empty{}
+																																	headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																																}
+
+																															}
+
+																														}
+																													}
+
+																												}
+
+																											}
+																										}
+
+																									}
+
+																									if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_v2"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																										httpProtocolChoiceTypeFound = true
+
+																										if v.(bool) {
+																											httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1V2{}
+																											httpProtocolChoiceInt.HttpProtocolEnableV1V2 = &ves_io_schema.Empty{}
+																											httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																										}
+
+																									}
+
+																									if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v2_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																										httpProtocolChoiceTypeFound = true
+
+																										if v.(bool) {
+																											httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV2Only{}
+																											httpProtocolChoiceInt.HttpProtocolEnableV2Only = &ves_io_schema.Empty{}
+																											httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																										}
+
+																									}
 
 																								}
 																							}
@@ -50693,7 +56132,19 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																													choiceInt.DirectResponseRoute.RouteDirectResponse = routeDirectResponse
 																													for _, set := range sl {
 																														if set != nil {
-																															_ = set.(map[string]interface{})
+																															routeDirectResponseMapStrToI := set.(map[string]interface{})
+
+																															if w, ok := routeDirectResponseMapStrToI["response_body"]; ok && !isIntfNil(w) {
+																																routeDirectResponse.ResponseBody = w.(string)
+																															}
+
+																															if w, ok := routeDirectResponseMapStrToI["response_body_encoded"]; ok && !isIntfNil(w) {
+																																routeDirectResponse.ResponseBodyEncoded = w.(string)
+																															}
+
+																															if w, ok := routeDirectResponseMapStrToI["response_code"]; ok && !isIntfNil(w) {
+																																routeDirectResponse.ResponseCode = uint32(w.(int))
+																															}
 
 																														}
 																													}
@@ -50887,7 +56338,127 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																													choiceInt.RedirectRoute.RouteRedirect = routeRedirect
 																													for _, set := range sl {
 																														if set != nil {
-																															_ = set.(map[string]interface{})
+																															routeRedirectMapStrToI := set.(map[string]interface{})
+
+																															if w, ok := routeRedirectMapStrToI["host_redirect"]; ok && !isIntfNil(w) {
+																																routeRedirect.HostRedirect = w.(string)
+																															}
+
+																															if w, ok := routeRedirectMapStrToI["port_redirect"]; ok && !isIntfNil(w) {
+																																routeRedirect.PortRedirect = uint32(w.(int))
+																															}
+
+																															if w, ok := routeRedirectMapStrToI["proto_redirect"]; ok && !isIntfNil(w) {
+																																routeRedirect.ProtoRedirect = w.(string)
+																															}
+
+																															queryParamsTypeFound := false
+
+																															if v, ok := routeRedirectMapStrToI["all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																																queryParamsTypeFound = true
+																																queryParamsInt := &ves_io_schema_route.RouteRedirect_AllParams{}
+
+																																routeRedirect.QueryParams = queryParamsInt
+
+																																queryParamsInt.AllParams = v.(bool)
+
+																															}
+
+																															if v, ok := routeRedirectMapStrToI["remove_all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																																queryParamsTypeFound = true
+
+																																if v.(bool) {
+																																	queryParamsInt := &ves_io_schema_route.RouteRedirect_RemoveAllParams{}
+																																	queryParamsInt.RemoveAllParams = &ves_io_schema.Empty{}
+																																	routeRedirect.QueryParams = queryParamsInt
+																																}
+
+																															}
+
+																															if v, ok := routeRedirectMapStrToI["replace_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																																queryParamsTypeFound = true
+																																queryParamsInt := &ves_io_schema_route.RouteRedirect_ReplaceParams{}
+
+																																routeRedirect.QueryParams = queryParamsInt
+
+																																queryParamsInt.ReplaceParams = v.(string)
+
+																															}
+
+																															if v, ok := routeRedirectMapStrToI["retain_all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																																queryParamsTypeFound = true
+
+																																if v.(bool) {
+																																	queryParamsInt := &ves_io_schema_route.RouteRedirect_RetainAllParams{}
+																																	queryParamsInt.RetainAllParams = &ves_io_schema.Empty{}
+																																	routeRedirect.QueryParams = queryParamsInt
+																																}
+
+																															}
+
+																															if v, ok := routeRedirectMapStrToI["strip_query_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																																queryParamsTypeFound = true
+																																queryParamsInt := &ves_io_schema_route.RouteRedirect_StripQueryParams{}
+																																queryParamsInt.StripQueryParams = &ves_io_schema_route.RouteQueryParams{}
+																																routeRedirect.QueryParams = queryParamsInt
+
+																																sl := v.([]interface{})
+																																for _, set := range sl {
+																																	if set != nil {
+																																		cs := set.(map[string]interface{})
+
+																																		if v, ok := cs["query_params"]; ok && !isIntfNil(v) {
+
+																																			ls := make([]string, len(v.([]interface{})))
+																																			for i, v := range v.([]interface{}) {
+																																				if v == nil {
+																																					return fmt.Errorf("please provide valid non-empty string value of field query_params")
+																																				}
+																																				if str, ok := v.(string); ok {
+																																					ls[i] = str
+																																				}
+																																			}
+																																			queryParamsInt.StripQueryParams.QueryParams = ls
+
+																																		}
+
+																																	}
+																																}
+
+																															}
+
+																															redirectPathChoiceTypeFound := false
+
+																															if v, ok := routeRedirectMapStrToI["path_redirect"]; ok && !isIntfNil(v) && !redirectPathChoiceTypeFound {
+
+																																redirectPathChoiceTypeFound = true
+																																redirectPathChoiceInt := &ves_io_schema_route.RouteRedirect_PathRedirect{}
+
+																																routeRedirect.RedirectPathChoice = redirectPathChoiceInt
+
+																																redirectPathChoiceInt.PathRedirect = v.(string)
+
+																															}
+
+																															if v, ok := routeRedirectMapStrToI["prefix_rewrite"]; ok && !isIntfNil(v) && !redirectPathChoiceTypeFound {
+
+																																redirectPathChoiceTypeFound = true
+																																redirectPathChoiceInt := &ves_io_schema_route.RouteRedirect_PrefixRewrite{}
+
+																																routeRedirect.RedirectPathChoice = redirectPathChoiceInt
+
+																																redirectPathChoiceInt.PrefixRewrite = v.(string)
+
+																															}
+
+																															if w, ok := routeRedirectMapStrToI["response_code"]; ok && !isIntfNil(w) {
+																																routeRedirect.ResponseCode = uint32(w.(int))
+																															}
 
 																														}
 																													}
@@ -51155,8 +56726,9 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 													if v, ok := cs["http_loadbalancer"]; ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
 
 														advertiseChoiceTypeFound = true
-														advertiseChoiceIntNew := &ves_io_schema_views_workload.AdvertiseSinglePortType_HttpLoadbalancer{}
-														advertiseChoiceIntNew.HttpLoadbalancer = &ves_io_schema_views_workload.HTTPLoadBalancerType{}
+														advertiseChoiceIntNewNew := &ves_io_schema_views_workload.AdvertiseSinglePortType_HttpLoadbalancer{}
+														advertiseChoiceIntNewNew.HttpLoadbalancer = &ves_io_schema_views_workload.HTTPLoadBalancerType{}
+														advertiseChoiceIntNew.Port.AdvertiseChoice = advertiseChoiceIntNewNew
 
 														sl := v.([]interface{})
 														for _, set := range sl {
@@ -51174,7 +56746,7 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																			ls[i] = str
 																		}
 																	}
-																	advertiseChoiceIntNew.HttpLoadbalancer.Domains = ls
+																	advertiseChoiceIntNewNew.HttpLoadbalancer.Domains = ls
 
 																}
 
@@ -51185,7 +56757,7 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																	loadbalancerTypeTypeFound = true
 																	loadbalancerTypeInt := &ves_io_schema_views_workload.HTTPLoadBalancerType_Http{}
 																	loadbalancerTypeInt.Http = &ves_io_schema_views_http_loadbalancer.ProxyTypeHttp{}
-																	advertiseChoiceIntNew.HttpLoadbalancer.LoadbalancerType = loadbalancerTypeInt
+																	advertiseChoiceIntNewNew.HttpLoadbalancer.LoadbalancerType = loadbalancerTypeInt
 
 																	sl := v.([]interface{})
 																	for _, set := range sl {
@@ -51232,7 +56804,7 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																	loadbalancerTypeTypeFound = true
 																	loadbalancerTypeInt := &ves_io_schema_views_workload.HTTPLoadBalancerType_Https{}
 																	loadbalancerTypeInt.Https = &ves_io_schema_views_http_loadbalancer.ProxyTypeHttps{}
-																	advertiseChoiceIntNew.HttpLoadbalancer.LoadbalancerType = loadbalancerTypeInt
+																	advertiseChoiceIntNewNew.HttpLoadbalancer.LoadbalancerType = loadbalancerTypeInt
 
 																	sl := v.([]interface{})
 																	for _, set := range sl {
@@ -51252,7 +56824,33 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.Https.CoalescingOptions = coalescingOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						coalescingOptionsMapStrToI := set.(map[string]interface{})
+
+																						coalescingChoiceTypeFound := false
+
+																						if v, ok := coalescingOptionsMapStrToI["default_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_DefaultCoalescing{}
+																								coalescingChoiceInt.DefaultCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := coalescingOptionsMapStrToI["strict_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_StrictCoalescing{}
+																								coalescingChoiceInt.StrictCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -51362,7 +56960,114 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.Https.HttpProtocolOptions = httpProtocolOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						httpProtocolOptionsMapStrToI := set.(map[string]interface{})
+
+																						httpProtocolChoiceTypeFound := false
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+																							httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1Only{}
+																							httpProtocolChoiceInt.HttpProtocolEnableV1Only = &ves_io_schema_virtual_host.Http1ProtocolOptions{}
+																							httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+
+																							sl := v.([]interface{})
+																							for _, set := range sl {
+																								if set != nil {
+																									cs := set.(map[string]interface{})
+
+																									if v, ok := cs["header_transformation"]; ok && !isIntfNil(v) {
+
+																										sl := v.([]interface{})
+																										headerTransformation := &ves_io_schema.HeaderTransformationType{}
+																										httpProtocolChoiceInt.HttpProtocolEnableV1Only.HeaderTransformation = headerTransformation
+																										for _, set := range sl {
+																											if set != nil {
+																												headerTransformationMapStrToI := set.(map[string]interface{})
+
+																												headerTransformationChoiceTypeFound := false
+
+																												if v, ok := headerTransformationMapStrToI["default_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_DefaultHeaderTransformation{}
+																														headerTransformationChoiceInt.DefaultHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["legacy_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_LegacyHeaderTransformation{}
+																														headerTransformationChoiceInt.LegacyHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["preserve_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_PreserveCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.PreserveCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["proper_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_ProperCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.ProperCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																											}
+																										}
+
+																									}
+
+																								}
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_v2"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1V2{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV1V2 = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v2_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV2Only{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV2Only = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -52350,7 +58055,7 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																	loadbalancerTypeTypeFound = true
 																	loadbalancerTypeInt := &ves_io_schema_views_workload.HTTPLoadBalancerType_HttpsAutoCert{}
 																	loadbalancerTypeInt.HttpsAutoCert = &ves_io_schema_views_http_loadbalancer.ProxyTypeHttpsAutoCerts{}
-																	advertiseChoiceIntNew.HttpLoadbalancer.LoadbalancerType = loadbalancerTypeInt
+																	advertiseChoiceIntNewNew.HttpLoadbalancer.LoadbalancerType = loadbalancerTypeInt
 
 																	sl := v.([]interface{})
 																	for _, set := range sl {
@@ -52370,7 +58075,33 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.HttpsAutoCert.CoalescingOptions = coalescingOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						coalescingOptionsMapStrToI := set.(map[string]interface{})
+
+																						coalescingChoiceTypeFound := false
+
+																						if v, ok := coalescingOptionsMapStrToI["default_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_DefaultCoalescing{}
+																								coalescingChoiceInt.DefaultCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := coalescingOptionsMapStrToI["strict_coalescing"]; ok && !isIntfNil(v) && !coalescingChoiceTypeFound {
+
+																							coalescingChoiceTypeFound = true
+
+																							if v.(bool) {
+																								coalescingChoiceInt := &ves_io_schema.TLSCoalescingOptions_StrictCoalescing{}
+																								coalescingChoiceInt.StrictCoalescing = &ves_io_schema.Empty{}
+																								coalescingOptions.CoalescingChoice = coalescingChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -52480,7 +58211,114 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																				loadbalancerTypeInt.HttpsAutoCert.HttpProtocolOptions = httpProtocolOptions
 																				for _, set := range sl {
 																					if set != nil {
-																						_ = set.(map[string]interface{})
+																						httpProtocolOptionsMapStrToI := set.(map[string]interface{})
+
+																						httpProtocolChoiceTypeFound := false
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+																							httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1Only{}
+																							httpProtocolChoiceInt.HttpProtocolEnableV1Only = &ves_io_schema_virtual_host.Http1ProtocolOptions{}
+																							httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+
+																							sl := v.([]interface{})
+																							for _, set := range sl {
+																								if set != nil {
+																									cs := set.(map[string]interface{})
+
+																									if v, ok := cs["header_transformation"]; ok && !isIntfNil(v) {
+
+																										sl := v.([]interface{})
+																										headerTransformation := &ves_io_schema.HeaderTransformationType{}
+																										httpProtocolChoiceInt.HttpProtocolEnableV1Only.HeaderTransformation = headerTransformation
+																										for _, set := range sl {
+																											if set != nil {
+																												headerTransformationMapStrToI := set.(map[string]interface{})
+
+																												headerTransformationChoiceTypeFound := false
+
+																												if v, ok := headerTransformationMapStrToI["default_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_DefaultHeaderTransformation{}
+																														headerTransformationChoiceInt.DefaultHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["legacy_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_LegacyHeaderTransformation{}
+																														headerTransformationChoiceInt.LegacyHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["preserve_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_PreserveCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.PreserveCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																												if v, ok := headerTransformationMapStrToI["proper_case_header_transformation"]; ok && !isIntfNil(v) && !headerTransformationChoiceTypeFound {
+
+																													headerTransformationChoiceTypeFound = true
+
+																													if v.(bool) {
+																														headerTransformationChoiceInt := &ves_io_schema.HeaderTransformationType_ProperCaseHeaderTransformation{}
+																														headerTransformationChoiceInt.ProperCaseHeaderTransformation = &ves_io_schema.Empty{}
+																														headerTransformation.HeaderTransformationChoice = headerTransformationChoiceInt
+																													}
+
+																												}
+
+																											}
+																										}
+
+																									}
+
+																								}
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v1_v2"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV1V2{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV1V2 = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
+
+																						if v, ok := httpProtocolOptionsMapStrToI["http_protocol_enable_v2_only"]; ok && !isIntfNil(v) && !httpProtocolChoiceTypeFound {
+
+																							httpProtocolChoiceTypeFound = true
+
+																							if v.(bool) {
+																								httpProtocolChoiceInt := &ves_io_schema_virtual_host.HttpProtocolOptions_HttpProtocolEnableV2Only{}
+																								httpProtocolChoiceInt.HttpProtocolEnableV2Only = &ves_io_schema.Empty{}
+																								httpProtocolOptions.HttpProtocolChoice = httpProtocolChoiceInt
+																							}
+
+																						}
 
 																					}
 																				}
@@ -52877,7 +58715,7 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																	routeChoiceTypeFound = true
 																	routeChoiceInt := &ves_io_schema_views_workload.HTTPLoadBalancerType_DefaultRoute{}
 																	routeChoiceInt.DefaultRoute = &ves_io_schema_views_workload.MatchAllRouteType{}
-																	advertiseChoiceIntNew.HttpLoadbalancer.RouteChoice = routeChoiceInt
+																	advertiseChoiceIntNewNew.HttpLoadbalancer.RouteChoice = routeChoiceInt
 
 																	sl := v.([]interface{})
 																	for _, set := range sl {
@@ -52931,7 +58769,7 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																	routeChoiceTypeFound = true
 																	routeChoiceInt := &ves_io_schema_views_workload.HTTPLoadBalancerType_SpecificRoutes{}
 																	routeChoiceInt.SpecificRoutes = &ves_io_schema_views_workload.RouteType{}
-																	advertiseChoiceIntNew.HttpLoadbalancer.RouteChoice = routeChoiceInt
+																	advertiseChoiceIntNewNew.HttpLoadbalancer.RouteChoice = routeChoiceInt
 
 																	sl := v.([]interface{})
 																	for _, set := range sl {
@@ -53199,7 +59037,19 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																										choiceInt.DirectResponseRoute.RouteDirectResponse = routeDirectResponse
 																										for _, set := range sl {
 																											if set != nil {
-																												_ = set.(map[string]interface{})
+																												routeDirectResponseMapStrToI := set.(map[string]interface{})
+
+																												if w, ok := routeDirectResponseMapStrToI["response_body"]; ok && !isIntfNil(w) {
+																													routeDirectResponse.ResponseBody = w.(string)
+																												}
+
+																												if w, ok := routeDirectResponseMapStrToI["response_body_encoded"]; ok && !isIntfNil(w) {
+																													routeDirectResponse.ResponseBodyEncoded = w.(string)
+																												}
+
+																												if w, ok := routeDirectResponseMapStrToI["response_code"]; ok && !isIntfNil(w) {
+																													routeDirectResponse.ResponseCode = uint32(w.(int))
+																												}
 
 																											}
 																										}
@@ -53393,7 +59243,127 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																										choiceInt.RedirectRoute.RouteRedirect = routeRedirect
 																										for _, set := range sl {
 																											if set != nil {
-																												_ = set.(map[string]interface{})
+																												routeRedirectMapStrToI := set.(map[string]interface{})
+
+																												if w, ok := routeRedirectMapStrToI["host_redirect"]; ok && !isIntfNil(w) {
+																													routeRedirect.HostRedirect = w.(string)
+																												}
+
+																												if w, ok := routeRedirectMapStrToI["port_redirect"]; ok && !isIntfNil(w) {
+																													routeRedirect.PortRedirect = uint32(w.(int))
+																												}
+
+																												if w, ok := routeRedirectMapStrToI["proto_redirect"]; ok && !isIntfNil(w) {
+																													routeRedirect.ProtoRedirect = w.(string)
+																												}
+
+																												queryParamsTypeFound := false
+
+																												if v, ok := routeRedirectMapStrToI["all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+																													queryParamsInt := &ves_io_schema_route.RouteRedirect_AllParams{}
+
+																													routeRedirect.QueryParams = queryParamsInt
+
+																													queryParamsInt.AllParams = v.(bool)
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["remove_all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+
+																													if v.(bool) {
+																														queryParamsInt := &ves_io_schema_route.RouteRedirect_RemoveAllParams{}
+																														queryParamsInt.RemoveAllParams = &ves_io_schema.Empty{}
+																														routeRedirect.QueryParams = queryParamsInt
+																													}
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["replace_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+																													queryParamsInt := &ves_io_schema_route.RouteRedirect_ReplaceParams{}
+
+																													routeRedirect.QueryParams = queryParamsInt
+
+																													queryParamsInt.ReplaceParams = v.(string)
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["retain_all_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+
+																													if v.(bool) {
+																														queryParamsInt := &ves_io_schema_route.RouteRedirect_RetainAllParams{}
+																														queryParamsInt.RetainAllParams = &ves_io_schema.Empty{}
+																														routeRedirect.QueryParams = queryParamsInt
+																													}
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["strip_query_params"]; ok && !isIntfNil(v) && !queryParamsTypeFound {
+
+																													queryParamsTypeFound = true
+																													queryParamsInt := &ves_io_schema_route.RouteRedirect_StripQueryParams{}
+																													queryParamsInt.StripQueryParams = &ves_io_schema_route.RouteQueryParams{}
+																													routeRedirect.QueryParams = queryParamsInt
+
+																													sl := v.([]interface{})
+																													for _, set := range sl {
+																														if set != nil {
+																															cs := set.(map[string]interface{})
+
+																															if v, ok := cs["query_params"]; ok && !isIntfNil(v) {
+
+																																ls := make([]string, len(v.([]interface{})))
+																																for i, v := range v.([]interface{}) {
+																																	if v == nil {
+																																		return fmt.Errorf("please provide valid non-empty string value of field query_params")
+																																	}
+																																	if str, ok := v.(string); ok {
+																																		ls[i] = str
+																																	}
+																																}
+																																queryParamsInt.StripQueryParams.QueryParams = ls
+
+																															}
+
+																														}
+																													}
+
+																												}
+
+																												redirectPathChoiceTypeFound := false
+
+																												if v, ok := routeRedirectMapStrToI["path_redirect"]; ok && !isIntfNil(v) && !redirectPathChoiceTypeFound {
+
+																													redirectPathChoiceTypeFound = true
+																													redirectPathChoiceInt := &ves_io_schema_route.RouteRedirect_PathRedirect{}
+
+																													routeRedirect.RedirectPathChoice = redirectPathChoiceInt
+
+																													redirectPathChoiceInt.PathRedirect = v.(string)
+
+																												}
+
+																												if v, ok := routeRedirectMapStrToI["prefix_rewrite"]; ok && !isIntfNil(v) && !redirectPathChoiceTypeFound {
+
+																													redirectPathChoiceTypeFound = true
+																													redirectPathChoiceInt := &ves_io_schema_route.RouteRedirect_PrefixRewrite{}
+
+																													routeRedirect.RedirectPathChoice = redirectPathChoiceInt
+
+																													redirectPathChoiceInt.PrefixRewrite = v.(string)
+
+																												}
+
+																												if w, ok := routeRedirectMapStrToI["response_code"]; ok && !isIntfNil(w) {
+																													routeRedirect.ResponseCode = uint32(w.(int))
+																												}
 
 																											}
 																										}
@@ -53532,8 +59502,9 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 													if v, ok := cs["tcp_loadbalancer"]; ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
 
 														advertiseChoiceTypeFound = true
-														advertiseChoiceIntNew := &ves_io_schema_views_workload.AdvertiseSinglePortType_TcpLoadbalancer{}
-														advertiseChoiceIntNew.TcpLoadbalancer = &ves_io_schema_views_workload.TCPLoadBalancerType{}
+														advertiseChoiceIntNewNew := &ves_io_schema_views_workload.AdvertiseSinglePortType_TcpLoadbalancer{}
+														advertiseChoiceIntNewNew.TcpLoadbalancer = &ves_io_schema_views_workload.TCPLoadBalancerType{}
+														advertiseChoiceIntNew.Port.AdvertiseChoice = advertiseChoiceIntNewNew
 
 														sl := v.([]interface{})
 														for _, set := range sl {
@@ -53551,13 +59522,13 @@ func resourceVolterraWorkloadUpdate(d *schema.ResourceData, meta interface{}) er
 																			ls[i] = str
 																		}
 																	}
-																	advertiseChoiceIntNew.TcpLoadbalancer.Domains = ls
+																	advertiseChoiceIntNewNew.TcpLoadbalancer.Domains = ls
 
 																}
 
 																if v, ok := cs["with_sni"]; ok && !isIntfNil(v) {
 
-																	advertiseChoiceIntNew.TcpLoadbalancer.WithSni = v.(bool)
+																	advertiseChoiceIntNewNew.TcpLoadbalancer.WithSni = v.(bool)
 
 																}
 
@@ -54935,5 +60906,11 @@ func resourceVolterraWorkloadDelete(d *schema.ResourceData, meta interface{}) er
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_views_workload.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_views_workload.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting Workload: %w", err)
+	}
+	return nil
+
 }

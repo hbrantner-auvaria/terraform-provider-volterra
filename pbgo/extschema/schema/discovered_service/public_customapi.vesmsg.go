@@ -1362,6 +1362,31 @@ func (v *ValidateHTTPLBRequest) Validate(ctx context.Context, pm interface{}, op
 			}
 		}
 	}
+
+	switch m.GetCaching().(type) {
+	case *HTTPLBRequest_DefaultCachingDisable:
+		if fv, exists := v.FldValidators["caching.default_caching_disable"]; exists {
+			val := m.GetCaching().(*HTTPLBRequest_DefaultCachingDisable).DefaultCachingDisable
+			vOpts := append(opts,
+				db.WithValidateField("caching"),
+				db.WithValidateField("default_caching_disable"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *HTTPLBRequest_DefaultCachingEnable:
+		if fv, exists := v.FldValidators["caching.default_caching_enable"]; exists {
+			val := m.GetCaching().(*HTTPLBRequest_DefaultCachingEnable).DefaultCachingEnable
+			vOpts := append(opts,
+				db.WithValidateField("caching"),
+				db.WithValidateField("default_caching_enable"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
 	if fv, exists := v.FldValidators["domain"]; exists {
 		vOpts := append(opts, db.WithValidateField("domain"))
 		if err := fv(ctx, m.GetDomain(), vOpts...); err != nil {

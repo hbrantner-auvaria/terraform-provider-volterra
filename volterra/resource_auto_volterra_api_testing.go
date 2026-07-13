@@ -1842,6 +1842,7 @@ func resourceVolterraApiTestingRead(d *schema.ResourceData, meta interface{}) er
 		}
 		return fmt.Errorf("Error finding Volterra ApiTesting %q: %s", d.Id(), err)
 	}
+
 	return setApiTestingFields(client, d, resp)
 }
 
@@ -2886,5 +2887,11 @@ func resourceVolterraApiTestingDelete(d *schema.ResourceData, meta interface{}) 
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_api_sec_api_testing.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_api_sec_api_testing.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting ApiTesting: %w", err)
+	}
+	return nil
+
 }

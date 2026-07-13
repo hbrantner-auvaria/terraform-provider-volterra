@@ -1096,6 +1096,7 @@ func resourceVolterraSiteSegmentStaticRoutesRead(d *schema.ResourceData, meta in
 		}
 		return fmt.Errorf("Error finding Volterra SiteSegmentStaticRoutes %q: %s", d.Id(), err)
 	}
+
 	return setSiteSegmentStaticRoutesFields(client, d, resp)
 }
 
@@ -1747,5 +1748,11 @@ func resourceVolterraSiteSegmentStaticRoutesDelete(d *schema.ResourceData, meta 
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_site_segment_static_routes.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_site_segment_static_routes.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting SiteSegmentStaticRoutes: %w", err)
+	}
+	return nil
+
 }

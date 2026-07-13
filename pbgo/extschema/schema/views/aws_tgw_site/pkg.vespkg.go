@@ -116,10 +116,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
-			FieldPath:           "spec.aws_parameters.encryption_choice",
-			AllowedEnvironments: []string{"crt", "demo1"},
-		},
-		{
 			FieldPath:           "spec.aws_parameters.tgw_cidr.ipv6",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
@@ -144,10 +140,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		{
 			FieldPath:           "spec.aws_parameters.az_nodes.#.workload_subnet.subnet_param.ipv6",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
-		},
-		{
-			FieldPath:           "spec.aws_parameters.encryption_choice",
-			AllowedEnvironments: []string{"crt", "demo1"},
 		},
 		{
 			FieldPath:           "spec.aws_parameters.tgw_cidr.ipv6",
@@ -182,10 +174,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		{
 			FieldPath:           "create_form.spec.aws_parameters.az_nodes.#.workload_subnet.subnet_param.ipv6",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
-		},
-		{
-			FieldPath:           "create_form.spec.aws_parameters.encryption_choice",
-			AllowedEnvironments: []string{"crt", "demo1"},
 		},
 		{
 			FieldPath:           "create_form.spec.aws_parameters.tgw_cidr.ipv6",
@@ -232,10 +220,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
-			FieldPath:           "spec.aws_parameters.encryption_choice",
-			AllowedEnvironments: []string{"crt", "demo1"},
-		},
-		{
 			FieldPath:           "spec.aws_parameters.tgw_cidr.ipv6",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
@@ -246,14 +230,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		{
 			FieldPath:           "spec.custom_dns.outside_nameserver_v6",
 			AllowedEnvironments: []string{"crt", "prod", "softbank_mec", "staging", "test"},
-		},
-		{
-			FieldPath:           "status.#.vpc_attachments.tgw_status",
-			AllowedEnvironments: []string{"demo1", "test"},
-		},
-		{
-			FieldPath:           "status.#.vpc_attachments.transit_gateway_resource_share_status",
-			AllowedEnvironments: []string{"demo1", "test"},
 		},
 	}
 	mdr.RPCDeprecatedResponseFieldsRegistry["ves.io.schema.views.aws_tgw_site.API.List"] = []string{
@@ -277,10 +253,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
-			FieldPath:           "items.#.get_spec.aws_parameters.encryption_choice",
-			AllowedEnvironments: []string{"crt", "demo1"},
-		},
-		{
 			FieldPath:           "items.#.get_spec.aws_parameters.tgw_cidr.ipv6",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
@@ -291,14 +263,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		{
 			FieldPath:           "items.#.get_spec.custom_dns.outside_nameserver_v6",
 			AllowedEnvironments: []string{"crt", "prod", "softbank_mec", "staging", "test"},
-		},
-		{
-			FieldPath:           "items.#.status_set.#.vpc_attachments.tgw_status",
-			AllowedEnvironments: []string{"demo1", "test"},
-		},
-		{
-			FieldPath:           "items.#.status_set.#.vpc_attachments.transit_gateway_resource_share_status",
-			AllowedEnvironments: []string{"demo1", "test"},
 		},
 	}
 	mdr.RPCSubscriptionFieldsRegistry["ves.io.schema.views.aws_tgw_site.API.Replace"] = []svcfw.SubscriptionField{

@@ -1035,6 +1035,31 @@ func (v *ValidateCreateSpecType) Validate(ctx context.Context, pm interface{}, o
 		}
 	}
 
+	switch m.GetAdvancedDeliveryChoice().(type) {
+	case *CreateSpecType_DisableAdvancedDelivery:
+		if fv, exists := v.FldValidators["advanced_delivery_choice.disable_advanced_delivery"]; exists {
+			val := m.GetAdvancedDeliveryChoice().(*CreateSpecType_DisableAdvancedDelivery).DisableAdvancedDelivery
+			vOpts := append(opts,
+				db.WithValidateField("advanced_delivery_choice"),
+				db.WithValidateField("disable_advanced_delivery"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *CreateSpecType_EnableAdvancedDelivery:
+		if fv, exists := v.FldValidators["advanced_delivery_choice.enable_advanced_delivery"]; exists {
+			val := m.GetAdvancedDeliveryChoice().(*CreateSpecType_EnableAdvancedDelivery).EnableAdvancedDelivery
+			vOpts := append(opts,
+				db.WithValidateField("advanced_delivery_choice"),
+				db.WithValidateField("enable_advanced_delivery"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+
 	if fv, exists := v.FldValidators["blocked_services_choice"]; exists {
 		val := m.GetBlockedServicesChoice()
 		vOpts := append(opts,
@@ -1146,6 +1171,31 @@ func (v *ValidateCreateSpecType) Validate(ctx context.Context, pm interface{}, o
 		vOpts := append(opts, db.WithValidateField("local_vrf"))
 		if err := fv(ctx, m.GetLocalVrf(), vOpts...); err != nil {
 			return err
+		}
+	}
+
+	switch m.GetLogAnonymizationChoice().(type) {
+	case *CreateSpecType_DisableLogAnonymization:
+		if fv, exists := v.FldValidators["log_anonymization_choice.disable_log_anonymization"]; exists {
+			val := m.GetLogAnonymizationChoice().(*CreateSpecType_DisableLogAnonymization).DisableLogAnonymization
+			vOpts := append(opts,
+				db.WithValidateField("log_anonymization_choice"),
+				db.WithValidateField("disable_log_anonymization"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *CreateSpecType_EnableLogAnonymization:
+		if fv, exists := v.FldValidators["log_anonymization_choice.enable_log_anonymization"]; exists {
+			val := m.GetLogAnonymizationChoice().(*CreateSpecType_EnableLogAnonymization).EnableLogAnonymization
+			vOpts := append(opts,
+				db.WithValidateField("log_anonymization_choice"),
+				db.WithValidateField("enable_log_anonymization"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -3371,6 +3421,31 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 		}
 	}
 
+	switch m.GetAdvancedDeliveryChoice().(type) {
+	case *GetSpecType_DisableAdvancedDelivery:
+		if fv, exists := v.FldValidators["advanced_delivery_choice.disable_advanced_delivery"]; exists {
+			val := m.GetAdvancedDeliveryChoice().(*GetSpecType_DisableAdvancedDelivery).DisableAdvancedDelivery
+			vOpts := append(opts,
+				db.WithValidateField("advanced_delivery_choice"),
+				db.WithValidateField("disable_advanced_delivery"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *GetSpecType_EnableAdvancedDelivery:
+		if fv, exists := v.FldValidators["advanced_delivery_choice.enable_advanced_delivery"]; exists {
+			val := m.GetAdvancedDeliveryChoice().(*GetSpecType_EnableAdvancedDelivery).EnableAdvancedDelivery
+			vOpts := append(opts,
+				db.WithValidateField("advanced_delivery_choice"),
+				db.WithValidateField("enable_advanced_delivery"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+
 	if fv, exists := v.FldValidators["blocked_services_choice"]; exists {
 		val := m.GetBlockedServicesChoice()
 		vOpts := append(opts,
@@ -3482,6 +3557,31 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 		vOpts := append(opts, db.WithValidateField("local_vrf"))
 		if err := fv(ctx, m.GetLocalVrf(), vOpts...); err != nil {
 			return err
+		}
+	}
+
+	switch m.GetLogAnonymizationChoice().(type) {
+	case *GetSpecType_DisableLogAnonymization:
+		if fv, exists := v.FldValidators["log_anonymization_choice.disable_log_anonymization"]; exists {
+			val := m.GetLogAnonymizationChoice().(*GetSpecType_DisableLogAnonymization).DisableLogAnonymization
+			vOpts := append(opts,
+				db.WithValidateField("log_anonymization_choice"),
+				db.WithValidateField("disable_log_anonymization"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *GetSpecType_EnableLogAnonymization:
+		if fv, exists := v.FldValidators["log_anonymization_choice.enable_log_anonymization"]; exists {
+			val := m.GetLogAnonymizationChoice().(*GetSpecType_EnableLogAnonymization).EnableLogAnonymization
+			vOpts := append(opts,
+				db.WithValidateField("log_anonymization_choice"),
+				db.WithValidateField("enable_log_anonymization"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -4707,6 +4807,31 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 		}
 	}
 
+	switch m.GetAdvancedDeliveryChoice().(type) {
+	case *GlobalSpecType_DisableAdvancedDelivery:
+		if fv, exists := v.FldValidators["advanced_delivery_choice.disable_advanced_delivery"]; exists {
+			val := m.GetAdvancedDeliveryChoice().(*GlobalSpecType_DisableAdvancedDelivery).DisableAdvancedDelivery
+			vOpts := append(opts,
+				db.WithValidateField("advanced_delivery_choice"),
+				db.WithValidateField("disable_advanced_delivery"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *GlobalSpecType_EnableAdvancedDelivery:
+		if fv, exists := v.FldValidators["advanced_delivery_choice.enable_advanced_delivery"]; exists {
+			val := m.GetAdvancedDeliveryChoice().(*GlobalSpecType_EnableAdvancedDelivery).EnableAdvancedDelivery
+			vOpts := append(opts,
+				db.WithValidateField("advanced_delivery_choice"),
+				db.WithValidateField("enable_advanced_delivery"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+
 	if fv, exists := v.FldValidators["blocked_services_choice"]; exists {
 		val := m.GetBlockedServicesChoice()
 		vOpts := append(opts,
@@ -4849,6 +4974,31 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 		vOpts := append(opts, db.WithValidateField("local_vrf"))
 		if err := fv(ctx, m.GetLocalVrf(), vOpts...); err != nil {
 			return err
+		}
+	}
+
+	switch m.GetLogAnonymizationChoice().(type) {
+	case *GlobalSpecType_DisableLogAnonymization:
+		if fv, exists := v.FldValidators["log_anonymization_choice.disable_log_anonymization"]; exists {
+			val := m.GetLogAnonymizationChoice().(*GlobalSpecType_DisableLogAnonymization).DisableLogAnonymization
+			vOpts := append(opts,
+				db.WithValidateField("log_anonymization_choice"),
+				db.WithValidateField("disable_log_anonymization"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *GlobalSpecType_EnableLogAnonymization:
+		if fv, exists := v.FldValidators["log_anonymization_choice.enable_log_anonymization"]; exists {
+			val := m.GetLogAnonymizationChoice().(*GlobalSpecType_EnableLogAnonymization).EnableLogAnonymization
+			vOpts := append(opts,
+				db.WithValidateField("log_anonymization_choice"),
+				db.WithValidateField("enable_log_anonymization"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -8265,6 +8415,31 @@ func (v *ValidateReplaceSpecType) Validate(ctx context.Context, pm interface{}, 
 		}
 	}
 
+	switch m.GetAdvancedDeliveryChoice().(type) {
+	case *ReplaceSpecType_DisableAdvancedDelivery:
+		if fv, exists := v.FldValidators["advanced_delivery_choice.disable_advanced_delivery"]; exists {
+			val := m.GetAdvancedDeliveryChoice().(*ReplaceSpecType_DisableAdvancedDelivery).DisableAdvancedDelivery
+			vOpts := append(opts,
+				db.WithValidateField("advanced_delivery_choice"),
+				db.WithValidateField("disable_advanced_delivery"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *ReplaceSpecType_EnableAdvancedDelivery:
+		if fv, exists := v.FldValidators["advanced_delivery_choice.enable_advanced_delivery"]; exists {
+			val := m.GetAdvancedDeliveryChoice().(*ReplaceSpecType_EnableAdvancedDelivery).EnableAdvancedDelivery
+			vOpts := append(opts,
+				db.WithValidateField("advanced_delivery_choice"),
+				db.WithValidateField("enable_advanced_delivery"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+
 	if fv, exists := v.FldValidators["blocked_services_choice"]; exists {
 		val := m.GetBlockedServicesChoice()
 		vOpts := append(opts,
@@ -8376,6 +8551,31 @@ func (v *ValidateReplaceSpecType) Validate(ctx context.Context, pm interface{}, 
 		vOpts := append(opts, db.WithValidateField("local_vrf"))
 		if err := fv(ctx, m.GetLocalVrf(), vOpts...); err != nil {
 			return err
+		}
+	}
+
+	switch m.GetLogAnonymizationChoice().(type) {
+	case *ReplaceSpecType_DisableLogAnonymization:
+		if fv, exists := v.FldValidators["log_anonymization_choice.disable_log_anonymization"]; exists {
+			val := m.GetLogAnonymizationChoice().(*ReplaceSpecType_DisableLogAnonymization).DisableLogAnonymization
+			vOpts := append(opts,
+				db.WithValidateField("log_anonymization_choice"),
+				db.WithValidateField("disable_log_anonymization"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *ReplaceSpecType_EnableLogAnonymization:
+		if fv, exists := v.FldValidators["log_anonymization_choice.enable_log_anonymization"]; exists {
+			val := m.GetLogAnonymizationChoice().(*ReplaceSpecType_EnableLogAnonymization).EnableLogAnonymization
+			vOpts := append(opts,
+				db.WithValidateField("log_anonymization_choice"),
+				db.WithValidateField("enable_log_anonymization"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -10678,6 +10878,41 @@ func VlanInterfaceTypeValidator() db.Validator {
 }
 
 // create setters in CreateSpecType from GlobalSpecType for oneof fields
+func (r *CreateSpecType) SetAdvancedDeliveryChoiceToGlobalSpecType(o *GlobalSpecType) error {
+	switch of := r.AdvancedDeliveryChoice.(type) {
+	case nil:
+		o.AdvancedDeliveryChoice = nil
+
+	case *CreateSpecType_DisableAdvancedDelivery:
+		o.AdvancedDeliveryChoice = &GlobalSpecType_DisableAdvancedDelivery{DisableAdvancedDelivery: of.DisableAdvancedDelivery}
+
+	case *CreateSpecType_EnableAdvancedDelivery:
+		o.AdvancedDeliveryChoice = &GlobalSpecType_EnableAdvancedDelivery{EnableAdvancedDelivery: of.EnableAdvancedDelivery}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+func (r *CreateSpecType) GetAdvancedDeliveryChoiceFromGlobalSpecType(o *GlobalSpecType) error {
+	switch of := o.AdvancedDeliveryChoice.(type) {
+	case nil:
+		r.AdvancedDeliveryChoice = nil
+
+	case *GlobalSpecType_DisableAdvancedDelivery:
+		r.AdvancedDeliveryChoice = &CreateSpecType_DisableAdvancedDelivery{DisableAdvancedDelivery: of.DisableAdvancedDelivery}
+
+	case *GlobalSpecType_EnableAdvancedDelivery:
+		r.AdvancedDeliveryChoice = &CreateSpecType_EnableAdvancedDelivery{EnableAdvancedDelivery: of.EnableAdvancedDelivery}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+// create setters in CreateSpecType from GlobalSpecType for oneof fields
 func (r *CreateSpecType) SetBlockedServicesChoiceToGlobalSpecType(o *GlobalSpecType) error {
 	switch of := r.BlockedServicesChoice.(type) {
 	case nil:
@@ -10781,6 +11016,41 @@ func (r *CreateSpecType) GetForwardProxyChoiceFromGlobalSpecType(o *GlobalSpecTy
 
 	case *GlobalSpecType_NoForwardProxy:
 		r.ForwardProxyChoice = &CreateSpecType_NoForwardProxy{NoForwardProxy: of.NoForwardProxy}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+// create setters in CreateSpecType from GlobalSpecType for oneof fields
+func (r *CreateSpecType) SetLogAnonymizationChoiceToGlobalSpecType(o *GlobalSpecType) error {
+	switch of := r.LogAnonymizationChoice.(type) {
+	case nil:
+		o.LogAnonymizationChoice = nil
+
+	case *CreateSpecType_DisableLogAnonymization:
+		o.LogAnonymizationChoice = &GlobalSpecType_DisableLogAnonymization{DisableLogAnonymization: of.DisableLogAnonymization}
+
+	case *CreateSpecType_EnableLogAnonymization:
+		o.LogAnonymizationChoice = &GlobalSpecType_EnableLogAnonymization{EnableLogAnonymization: of.EnableLogAnonymization}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+func (r *CreateSpecType) GetLogAnonymizationChoiceFromGlobalSpecType(o *GlobalSpecType) error {
+	switch of := o.LogAnonymizationChoice.(type) {
+	case nil:
+		r.LogAnonymizationChoice = nil
+
+	case *GlobalSpecType_DisableLogAnonymization:
+		r.LogAnonymizationChoice = &CreateSpecType_DisableLogAnonymization{DisableLogAnonymization: of.DisableLogAnonymization}
+
+	case *GlobalSpecType_EnableLogAnonymization:
+		r.LogAnonymizationChoice = &CreateSpecType_EnableLogAnonymization{EnableLogAnonymization: of.EnableLogAnonymization}
 
 	default:
 		return fmt.Errorf("Unknown oneof field %T", of)
@@ -11180,12 +11450,14 @@ func (m *CreateSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool
 		return
 	}
 	m.AdminUserCredentials = f.GetAdminUserCredentials()
+	m.GetAdvancedDeliveryChoiceFromGlobalSpecType(f)
 	m.GetBlockedServicesChoiceFromGlobalSpecType(f)
 	m.DnsNtpConfig = f.GetDnsNtpConfig()
 	m.GetEnterpriseProxyChoiceFromGlobalSpecType(f)
 	m.GetForwardProxyChoiceFromGlobalSpecType(f)
 	m.LoadBalancing = f.GetLoadBalancing()
 	m.LocalVrf = f.GetLocalVrf()
+	m.GetLogAnonymizationChoiceFromGlobalSpecType(f)
 	m.GetLogsReceiverChoiceFromGlobalSpecType(f)
 	m.GetManagementNetworkChoiceFromGlobalSpecType(f)
 	m.GetNetworkPolicyChoiceFromGlobalSpecType(f)
@@ -11221,12 +11493,14 @@ func (m *CreateSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) 
 	_ = m1
 
 	f.AdminUserCredentials = m1.AdminUserCredentials
+	m1.SetAdvancedDeliveryChoiceToGlobalSpecType(f)
 	m1.SetBlockedServicesChoiceToGlobalSpecType(f)
 	f.DnsNtpConfig = m1.DnsNtpConfig
 	m1.SetEnterpriseProxyChoiceToGlobalSpecType(f)
 	m1.SetForwardProxyChoiceToGlobalSpecType(f)
 	f.LoadBalancing = m1.LoadBalancing
 	f.LocalVrf = m1.LocalVrf
+	m1.SetLogAnonymizationChoiceToGlobalSpecType(f)
 	m1.SetLogsReceiverChoiceToGlobalSpecType(f)
 	m1.SetManagementNetworkChoiceToGlobalSpecType(f)
 	m1.SetNetworkPolicyChoiceToGlobalSpecType(f)
@@ -11252,6 +11526,41 @@ func (m *CreateSpecType) ToGlobalSpecType(f *GlobalSpecType) {
 
 func (m *CreateSpecType) ToGlobalSpecTypeWithoutDeepCopy(f *GlobalSpecType) {
 	m.toGlobalSpecType(f, false)
+}
+
+// create setters in GetSpecType from GlobalSpecType for oneof fields
+func (r *GetSpecType) SetAdvancedDeliveryChoiceToGlobalSpecType(o *GlobalSpecType) error {
+	switch of := r.AdvancedDeliveryChoice.(type) {
+	case nil:
+		o.AdvancedDeliveryChoice = nil
+
+	case *GetSpecType_DisableAdvancedDelivery:
+		o.AdvancedDeliveryChoice = &GlobalSpecType_DisableAdvancedDelivery{DisableAdvancedDelivery: of.DisableAdvancedDelivery}
+
+	case *GetSpecType_EnableAdvancedDelivery:
+		o.AdvancedDeliveryChoice = &GlobalSpecType_EnableAdvancedDelivery{EnableAdvancedDelivery: of.EnableAdvancedDelivery}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+func (r *GetSpecType) GetAdvancedDeliveryChoiceFromGlobalSpecType(o *GlobalSpecType) error {
+	switch of := o.AdvancedDeliveryChoice.(type) {
+	case nil:
+		r.AdvancedDeliveryChoice = nil
+
+	case *GlobalSpecType_DisableAdvancedDelivery:
+		r.AdvancedDeliveryChoice = &GetSpecType_DisableAdvancedDelivery{DisableAdvancedDelivery: of.DisableAdvancedDelivery}
+
+	case *GlobalSpecType_EnableAdvancedDelivery:
+		r.AdvancedDeliveryChoice = &GetSpecType_EnableAdvancedDelivery{EnableAdvancedDelivery: of.EnableAdvancedDelivery}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
 }
 
 // create setters in GetSpecType from GlobalSpecType for oneof fields
@@ -11358,6 +11667,41 @@ func (r *GetSpecType) GetForwardProxyChoiceFromGlobalSpecType(o *GlobalSpecType)
 
 	case *GlobalSpecType_NoForwardProxy:
 		r.ForwardProxyChoice = &GetSpecType_NoForwardProxy{NoForwardProxy: of.NoForwardProxy}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+// create setters in GetSpecType from GlobalSpecType for oneof fields
+func (r *GetSpecType) SetLogAnonymizationChoiceToGlobalSpecType(o *GlobalSpecType) error {
+	switch of := r.LogAnonymizationChoice.(type) {
+	case nil:
+		o.LogAnonymizationChoice = nil
+
+	case *GetSpecType_DisableLogAnonymization:
+		o.LogAnonymizationChoice = &GlobalSpecType_DisableLogAnonymization{DisableLogAnonymization: of.DisableLogAnonymization}
+
+	case *GetSpecType_EnableLogAnonymization:
+		o.LogAnonymizationChoice = &GlobalSpecType_EnableLogAnonymization{EnableLogAnonymization: of.EnableLogAnonymization}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+func (r *GetSpecType) GetLogAnonymizationChoiceFromGlobalSpecType(o *GlobalSpecType) error {
+	switch of := o.LogAnonymizationChoice.(type) {
+	case nil:
+		r.LogAnonymizationChoice = nil
+
+	case *GlobalSpecType_DisableLogAnonymization:
+		r.LogAnonymizationChoice = &GetSpecType_DisableLogAnonymization{DisableLogAnonymization: of.DisableLogAnonymization}
+
+	case *GlobalSpecType_EnableLogAnonymization:
+		r.LogAnonymizationChoice = &GetSpecType_EnableLogAnonymization{EnableLogAnonymization: of.EnableLogAnonymization}
 
 	default:
 		return fmt.Errorf("Unknown oneof field %T", of)
@@ -11757,12 +12101,14 @@ func (m *GetSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 		return
 	}
 	m.AdminUserCredentials = f.GetAdminUserCredentials()
+	m.GetAdvancedDeliveryChoiceFromGlobalSpecType(f)
 	m.GetBlockedServicesChoiceFromGlobalSpecType(f)
 	m.DnsNtpConfig = f.GetDnsNtpConfig()
 	m.GetEnterpriseProxyChoiceFromGlobalSpecType(f)
 	m.GetForwardProxyChoiceFromGlobalSpecType(f)
 	m.LoadBalancing = f.GetLoadBalancing()
 	m.LocalVrf = f.GetLocalVrf()
+	m.GetLogAnonymizationChoiceFromGlobalSpecType(f)
 	m.GetLogsReceiverChoiceFromGlobalSpecType(f)
 	m.GetManagementNetworkChoiceFromGlobalSpecType(f)
 	m.GetNetworkPolicyChoiceFromGlobalSpecType(f)
@@ -11802,12 +12148,14 @@ func (m *GetSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	_ = m1
 
 	f.AdminUserCredentials = m1.AdminUserCredentials
+	m1.SetAdvancedDeliveryChoiceToGlobalSpecType(f)
 	m1.SetBlockedServicesChoiceToGlobalSpecType(f)
 	f.DnsNtpConfig = m1.DnsNtpConfig
 	m1.SetEnterpriseProxyChoiceToGlobalSpecType(f)
 	m1.SetForwardProxyChoiceToGlobalSpecType(f)
 	f.LoadBalancing = m1.LoadBalancing
 	f.LocalVrf = m1.LocalVrf
+	m1.SetLogAnonymizationChoiceToGlobalSpecType(f)
 	m1.SetLogsReceiverChoiceToGlobalSpecType(f)
 	m1.SetManagementNetworkChoiceToGlobalSpecType(f)
 	m1.SetNetworkPolicyChoiceToGlobalSpecType(f)
@@ -11837,6 +12185,41 @@ func (m *GetSpecType) ToGlobalSpecType(f *GlobalSpecType) {
 
 func (m *GetSpecType) ToGlobalSpecTypeWithoutDeepCopy(f *GlobalSpecType) {
 	m.toGlobalSpecType(f, false)
+}
+
+// create setters in ReplaceSpecType from GlobalSpecType for oneof fields
+func (r *ReplaceSpecType) SetAdvancedDeliveryChoiceToGlobalSpecType(o *GlobalSpecType) error {
+	switch of := r.AdvancedDeliveryChoice.(type) {
+	case nil:
+		o.AdvancedDeliveryChoice = nil
+
+	case *ReplaceSpecType_DisableAdvancedDelivery:
+		o.AdvancedDeliveryChoice = &GlobalSpecType_DisableAdvancedDelivery{DisableAdvancedDelivery: of.DisableAdvancedDelivery}
+
+	case *ReplaceSpecType_EnableAdvancedDelivery:
+		o.AdvancedDeliveryChoice = &GlobalSpecType_EnableAdvancedDelivery{EnableAdvancedDelivery: of.EnableAdvancedDelivery}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+func (r *ReplaceSpecType) GetAdvancedDeliveryChoiceFromGlobalSpecType(o *GlobalSpecType) error {
+	switch of := o.AdvancedDeliveryChoice.(type) {
+	case nil:
+		r.AdvancedDeliveryChoice = nil
+
+	case *GlobalSpecType_DisableAdvancedDelivery:
+		r.AdvancedDeliveryChoice = &ReplaceSpecType_DisableAdvancedDelivery{DisableAdvancedDelivery: of.DisableAdvancedDelivery}
+
+	case *GlobalSpecType_EnableAdvancedDelivery:
+		r.AdvancedDeliveryChoice = &ReplaceSpecType_EnableAdvancedDelivery{EnableAdvancedDelivery: of.EnableAdvancedDelivery}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
 }
 
 // create setters in ReplaceSpecType from GlobalSpecType for oneof fields
@@ -11943,6 +12326,41 @@ func (r *ReplaceSpecType) GetForwardProxyChoiceFromGlobalSpecType(o *GlobalSpecT
 
 	case *GlobalSpecType_NoForwardProxy:
 		r.ForwardProxyChoice = &ReplaceSpecType_NoForwardProxy{NoForwardProxy: of.NoForwardProxy}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+// create setters in ReplaceSpecType from GlobalSpecType for oneof fields
+func (r *ReplaceSpecType) SetLogAnonymizationChoiceToGlobalSpecType(o *GlobalSpecType) error {
+	switch of := r.LogAnonymizationChoice.(type) {
+	case nil:
+		o.LogAnonymizationChoice = nil
+
+	case *ReplaceSpecType_DisableLogAnonymization:
+		o.LogAnonymizationChoice = &GlobalSpecType_DisableLogAnonymization{DisableLogAnonymization: of.DisableLogAnonymization}
+
+	case *ReplaceSpecType_EnableLogAnonymization:
+		o.LogAnonymizationChoice = &GlobalSpecType_EnableLogAnonymization{EnableLogAnonymization: of.EnableLogAnonymization}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+func (r *ReplaceSpecType) GetLogAnonymizationChoiceFromGlobalSpecType(o *GlobalSpecType) error {
+	switch of := o.LogAnonymizationChoice.(type) {
+	case nil:
+		r.LogAnonymizationChoice = nil
+
+	case *GlobalSpecType_DisableLogAnonymization:
+		r.LogAnonymizationChoice = &ReplaceSpecType_DisableLogAnonymization{DisableLogAnonymization: of.DisableLogAnonymization}
+
+	case *GlobalSpecType_EnableLogAnonymization:
+		r.LogAnonymizationChoice = &ReplaceSpecType_EnableLogAnonymization{EnableLogAnonymization: of.EnableLogAnonymization}
 
 	default:
 		return fmt.Errorf("Unknown oneof field %T", of)
@@ -12307,12 +12725,14 @@ func (m *ReplaceSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy boo
 		return
 	}
 	m.AdminUserCredentials = f.GetAdminUserCredentials()
+	m.GetAdvancedDeliveryChoiceFromGlobalSpecType(f)
 	m.GetBlockedServicesChoiceFromGlobalSpecType(f)
 	m.DnsNtpConfig = f.GetDnsNtpConfig()
 	m.GetEnterpriseProxyChoiceFromGlobalSpecType(f)
 	m.GetForwardProxyChoiceFromGlobalSpecType(f)
 	m.LoadBalancing = f.GetLoadBalancing()
 	m.LocalVrf = f.GetLocalVrf()
+	m.GetLogAnonymizationChoiceFromGlobalSpecType(f)
 	m.GetLogsReceiverChoiceFromGlobalSpecType(f)
 	m.GetNetworkPolicyChoiceFromGlobalSpecType(f)
 	m.GetNodeHaChoiceFromGlobalSpecType(f)
@@ -12347,12 +12767,14 @@ func (m *ReplaceSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool)
 	_ = m1
 
 	f.AdminUserCredentials = m1.AdminUserCredentials
+	m1.SetAdvancedDeliveryChoiceToGlobalSpecType(f)
 	m1.SetBlockedServicesChoiceToGlobalSpecType(f)
 	f.DnsNtpConfig = m1.DnsNtpConfig
 	m1.SetEnterpriseProxyChoiceToGlobalSpecType(f)
 	m1.SetForwardProxyChoiceToGlobalSpecType(f)
 	f.LoadBalancing = m1.LoadBalancing
 	f.LocalVrf = m1.LocalVrf
+	m1.SetLogAnonymizationChoiceToGlobalSpecType(f)
 	m1.SetLogsReceiverChoiceToGlobalSpecType(f)
 	m1.SetNetworkPolicyChoiceToGlobalSpecType(f)
 	m1.SetNodeHaChoiceToGlobalSpecType(f)

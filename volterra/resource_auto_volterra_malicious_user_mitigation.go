@@ -393,6 +393,7 @@ func resourceVolterraMaliciousUserMitigationRead(d *schema.ResourceData, meta in
 		}
 		return fmt.Errorf("Error finding Volterra MaliciousUserMitigation %q: %s", d.Id(), err)
 	}
+
 	return setMaliciousUserMitigationFields(client, d, resp)
 }
 
@@ -653,5 +654,11 @@ func resourceVolterraMaliciousUserMitigationDelete(d *schema.ResourceData, meta 
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_malicious_user_mitigation.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_malicious_user_mitigation.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting MaliciousUserMitigation: %w", err)
+	}
+	return nil
+
 }

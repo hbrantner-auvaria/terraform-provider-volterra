@@ -27,9 +27,14 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.api_sec.api_discovery.ReplaceResponse"] = ReplaceResponseValidator()
 	vr["ves.io.schema.api_sec.api_discovery.CreateSpecType"] = CreateSpecTypeValidator()
 	vr["ves.io.schema.api_sec.api_discovery.CustomAuthType"] = CustomAuthTypeValidator()
+	vr["ves.io.schema.api_sec.api_discovery.DiscoveryRule"] = DiscoveryRuleValidator()
+	vr["ves.io.schema.api_sec.api_discovery.ExclusionConfig"] = ExclusionConfigValidator()
 	vr["ves.io.schema.api_sec.api_discovery.GetSpecType"] = GetSpecTypeValidator()
 	vr["ves.io.schema.api_sec.api_discovery.GlobalSpecType"] = GlobalSpecTypeValidator()
+	vr["ves.io.schema.api_sec.api_discovery.HTTPHeaderCriteria"] = HTTPHeaderCriteriaValidator()
 	vr["ves.io.schema.api_sec.api_discovery.ReplaceSpecType"] = ReplaceSpecTypeValidator()
+	vr["ves.io.schema.api_sec.api_discovery.RuleProperties"] = RulePropertiesValidator()
+	vr["ves.io.schema.api_sec.api_discovery.UserDefinedApiDiscoveryPolicy"] = UserDefinedApiDiscoveryPolicyValidator()
 }
 
 func initializeEntryRegistry(mdr *svcfw.MDRegistry) {
@@ -44,6 +49,12 @@ func initializeEntryRegistry(mdr *svcfw.MDRegistry) {
 }
 
 func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
+	mdr.RPCHiddenInternalFieldsRegistry["ves.io.schema.api_sec.api_discovery.API.Create"] = []string{
+		"spec.user_defined_api_discovery_policy.discovery_rules.#.metadata.disable",
+	}
+	mdr.RPCHiddenInternalFieldsRegistry["ves.io.schema.api_sec.api_discovery.API.Replace"] = []string{
+		"spec.user_defined_api_discovery_policy.discovery_rules.#.metadata.disable",
+	}
 }
 
 func initializeAPIGwServiceSlugsRegistry(sm map[string]string) {

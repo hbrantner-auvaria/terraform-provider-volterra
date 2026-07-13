@@ -1047,6 +1047,7 @@ func resourceVolterraAppTypeRead(d *schema.ResourceData, meta interface{}) error
 		}
 		return fmt.Errorf("Error finding Volterra AppType %q: %s", d.Id(), err)
 	}
+
 	return setAppTypeFields(client, d, resp)
 }
 
@@ -1677,5 +1678,11 @@ func resourceVolterraAppTypeDelete(d *schema.ResourceData, meta interface{}) err
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_app_type.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_app_type.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting AppType: %w", err)
+	}
+	return nil
+
 }

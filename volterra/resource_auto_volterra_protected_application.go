@@ -5952,6 +5952,7 @@ func resourceVolterraProtectedApplicationRead(d *schema.ResourceData, meta inter
 		}
 		return fmt.Errorf("Error finding Volterra ProtectedApplication %q: %s", d.Id(), err)
 	}
+
 	return setProtectedApplicationFields(client, d, resp)
 }
 
@@ -9567,5 +9568,11 @@ func resourceVolterraProtectedApplicationDelete(d *schema.ResourceData, meta int
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_shape_bot_defense_protected_application.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_shape_bot_defense_protected_application.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting ProtectedApplication: %w", err)
+	}
+	return nil
+
 }

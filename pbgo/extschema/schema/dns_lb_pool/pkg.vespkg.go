@@ -52,44 +52,6 @@ func initializeEntryRegistry(mdr *svcfw.MDRegistry) {
 }
 
 func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
-	mdr.RPCAvailableInReqFieldRegistry["ves.io.schema.dns_lb_pool.API.Create"] = []svcfw.EnvironmentField{
-		{
-			FieldPath:           "spec.cname_pool.health_check_choice",
-			AllowedEnvironments: []string{"demo1", "test"},
-		},
-	}
-	mdr.RPCAvailableInResFieldRegistry["ves.io.schema.dns_lb_pool.API.Create"] = []svcfw.EnvironmentField{
-		{
-			FieldPath:           "spec.cname_pool.health_check_choice",
-			AllowedEnvironments: []string{"demo1", "test"},
-		},
-	}
-	mdr.RPCAvailableInResFieldRegistry["ves.io.schema.dns_lb_pool.API.Get"] = []svcfw.EnvironmentField{
-		{
-			FieldPath:           "create_form.spec.cname_pool.health_check_choice",
-			AllowedEnvironments: []string{"demo1", "test"},
-		},
-		{
-			FieldPath:           "replace_form.spec.cname_pool.health_check_choice",
-			AllowedEnvironments: []string{"demo1", "test"},
-		},
-		{
-			FieldPath:           "spec.cname_pool.health_check_choice",
-			AllowedEnvironments: []string{"demo1", "test"},
-		},
-	}
-	mdr.RPCAvailableInResFieldRegistry["ves.io.schema.dns_lb_pool.API.List"] = []svcfw.EnvironmentField{
-		{
-			FieldPath:           "items.#.get_spec.cname_pool.health_check_choice",
-			AllowedEnvironments: []string{"demo1", "test"},
-		},
-	}
-	mdr.RPCAvailableInReqFieldRegistry["ves.io.schema.dns_lb_pool.API.Replace"] = []svcfw.EnvironmentField{
-		{
-			FieldPath:           "spec.cname_pool.health_check_choice",
-			AllowedEnvironments: []string{"demo1", "test"},
-		},
-	}
 }
 
 func initializeAPIGwServiceSlugsRegistry(sm map[string]string) {

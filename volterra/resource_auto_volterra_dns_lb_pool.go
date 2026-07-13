@@ -259,6 +259,11 @@ func resourceVolterraDnsLbPool() *schema.Resource {
 										Optional: true,
 									},
 
+									"priority": {
+										Type:     schema.TypeInt,
+										Optional: true,
+									},
+
 									"ratio": {
 										Type:     schema.TypeInt,
 										Optional: true,
@@ -704,6 +709,10 @@ func resourceVolterraDnsLbPoolCreate(d *schema.ResourceData, meta interface{}) e
 								members[i].Name = w.(string)
 							}
 
+							if w, ok := membersMapStrToI["priority"]; ok && !isIntfNil(w) {
+								members[i].Priority = uint32(w.(int))
+							}
+
 							if w, ok := membersMapStrToI["ratio"]; ok && !isIntfNil(w) {
 								members[i].Ratio = uint32(w.(int))
 							}
@@ -890,6 +899,7 @@ func resourceVolterraDnsLbPoolRead(d *schema.ResourceData, meta interface{}) err
 		}
 		return fmt.Errorf("Error finding Volterra DnsLbPool %q: %s", d.Id(), err)
 	}
+
 	return setDnsLbPoolFields(client, d, resp)
 }
 
@@ -1220,6 +1230,10 @@ func resourceVolterraDnsLbPoolUpdate(d *schema.ResourceData, meta interface{}) e
 								members[i].Name = w.(string)
 							}
 
+							if w, ok := membersMapStrToI["priority"]; ok && !isIntfNil(w) {
+								members[i].Priority = uint32(w.(int))
+							}
+
 							if w, ok := membersMapStrToI["ratio"]; ok && !isIntfNil(w) {
 								members[i].Ratio = uint32(w.(int))
 							}
@@ -1408,5 +1422,11 @@ func resourceVolterraDnsLbPoolDelete(d *schema.ResourceData, meta interface{}) e
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_dns_lb_pool.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_dns_lb_pool.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting DnsLbPool: %w", err)
+	}
+	return nil
+
 }

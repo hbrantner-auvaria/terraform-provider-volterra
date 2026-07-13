@@ -49,15 +49,7 @@ resource "volterra_fleet" "example" {
 
   // One of the arguments from this list "default_sriov_interface sriov_interfaces" must be set
 
-  sriov_interfaces {
-    sriov_interface {
-      interface_name = "eth0"
-
-      number_of_vfio_vfs = "2"
-
-      number_of_vfs = "3"
-    }
-  }
+  default_sriov_interface = true
 
   // One of the arguments from this list "default_storage_class storage_class_list" must be set
 
@@ -73,68 +65,131 @@ resource "volterra_fleet" "example" {
 
       // One of the arguments from this list "custom_storage hpe_storage netapp_trident pure_service_orchestrator" must be set
 
-      hpe_storage {
-        api_server_port = "8080"
+      netapp_trident {
+        // One of the arguments from this list "netapp_backend_ontap_nas netapp_backend_ontap_san" must be set
 
-        csi_version = "2.2.0"
+        netapp_backend_ontap_nas {
+          auto_export_cidrs {
+            ipv6_prefixes = ["fd48:fa09:d9d4::/48"]
 
-        iscsi_chap_password {
-          blindfold_secret_info_internal {
-            decryption_provider = "value"
-
-            location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
-
-            store_provider = "value"
+            prefixes = ["192.168.20.0/24"]
           }
 
-          secret_encoding_type = "secret_encoding_type"
+          auto_export_policy = true
 
-          // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
+          backend_name = "value"
 
-          vault_secret_info {
-            key = "key_pem"
+          client_certificate = "value"
 
-            location = "v1/data/vhost_key"
+          client_private_key {
+            blindfold_secret_info_internal {
+              decryption_provider = "value"
 
-            provider = "vault-vh-provider"
+              location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
 
-            secret_encoding = "secret_encoding"
+              store_provider = "value"
+            }
 
-            version = "1"
+            secret_encoding_type = "secret_encoding_type"
+
+            // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
+
+            vault_secret_info {
+              key = "key_pem"
+
+              location = "v1/data/vhost_key"
+
+              provider = "vault-vh-provider"
+
+              secret_encoding = "secret_encoding"
+
+              version = "1"
+            }
+          }
+
+          // One of the arguments from this list "data_lif_dns_name data_lif_ip" can be set
+
+          data_lif_ip = "10.5.2.4"
+          labels = {
+            "key1" = "value1"
+          }
+          limit_aggregate_usage = "80%"
+          limit_volume_size = "50Gi"
+
+          // One of the arguments from this list "management_lif_dns_name management_lif_ip" must be set
+
+          management_lif_ip = "10.5.2.4"
+          nfs_mount_options = "nfsvers=4"
+          password {
+            blindfold_secret_info_internal {
+              decryption_provider = "value"
+
+              location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
+
+              store_provider = "value"
+            }
+
+            secret_encoding_type = "secret_encoding_type"
+
+            // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
+
+            blindfold_secret_info {
+              decryption_provider = "value"
+
+              location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
+
+              store_provider = "value"
+            }
+          }
+          region = "us_east_1b"
+          storage {
+            labels = {
+              "key1" = "value1"
+            }
+
+            volume_defaults {
+              encryption = true
+
+              export_policy = "default"
+
+              // One of the arguments from this list "adaptive_qos_policy no_qos qos_policy" must be set
+
+              adaptive_qos_policy = "adaptive_qos_policy"
+              security_style = "unix"
+              snapshot_dir = true
+              snapshot_policy = "none"
+              snapshot_reserve = "10"
+              space_reserve = "thick"
+              split_on_clone = true
+              tiering_policy = "snapshot-only"
+              unix_permissions = "777"
+            }
+
+            zone = "us_east_1b"
+          }
+          storage_driver_name = "ontap-nas"
+          storage_prefix = "trident"
+          svm = "trident_svm"
+          trusted_ca_certificate = "value"
+          username = "cluster-admin"
+          volume_defaults {
+            encryption = true
+
+            export_policy = "default"
+
+            // One of the arguments from this list "adaptive_qos_policy no_qos qos_policy" must be set
+
+            no_qos = true
+            security_style = "unix"
+            snapshot_dir = true
+            snapshot_policy = "none"
+            snapshot_reserve = "10"
+            space_reserve = "thick"
+            split_on_clone = true
+            tiering_policy = "snapshot-only"
+            unix_permissions = "777"
           }
         }
-
-        iscsi_chap_user = "admin"
-
-        log_level = "info"
-
-        password {
-          blindfold_secret_info_internal {
-            decryption_provider = "value"
-
-            location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
-
-            store_provider = "value"
-          }
-
-          secret_encoding_type = "secret_encoding_type"
-
-          // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
-
-          blindfold_secret_info {
-            decryption_provider = "value"
-
-            location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
-
-            store_provider = "value"
-          }
-        }
-
-        storage_server_ip_address = "10.10.10.10"
-
-        storage_server_name = "hpe-backend"
-
-        username = "admin"
       }
       storage_device = "DellEMC-isilon-F800-0"
     }
@@ -212,6 +267,12 @@ Argument Reference
 `interface_list` - (Optional) Add all interfaces belonging to this fleet. See [Interface Choice Interface List ](#interface-choice-interface-list) below for details.
 
 `kubernetes_upgrade_drain` - (Optional) Enable Kubernetes Drain during OS or SW upgrade. See [Kubernetes Upgrade Drain ](#kubernetes-upgrade-drain) below for details.
+
+###### One of the arguments from this list "disable_log_anonymization, enable_log_anonymization" can be set
+
+`disable_log_anonymization` - (Optional) Disable Log Anonymization for this site. (`Bool`).(Deprecated)
+
+`enable_log_anonymization` - (Optional) Enable Log Anonymization for this site. Traffic will be processed in the order that Log Anonymize. (`Bool`).(Deprecated)
 
 ###### One of the arguments from this list "log_receiver, logs_streaming_disabled" must be set
 

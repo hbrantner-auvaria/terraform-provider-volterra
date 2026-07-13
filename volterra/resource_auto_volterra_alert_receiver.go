@@ -2844,6 +2844,7 @@ func resourceVolterraAlertReceiverRead(d *schema.ResourceData, meta interface{})
 		}
 		return fmt.Errorf("Error finding Volterra AlertReceiver %q: %s", d.Id(), err)
 	}
+
 	return setAlertReceiverFields(client, d, resp)
 }
 
@@ -4446,5 +4447,11 @@ func resourceVolterraAlertReceiverDelete(d *schema.ResourceData, meta interface{
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_alert_receiver.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_alert_receiver.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting AlertReceiver: %w", err)
+	}
+	return nil
+
 }

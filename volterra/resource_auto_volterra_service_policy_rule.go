@@ -298,7 +298,7 @@ func resourceVolterraServicePolicyRule() *schema.Resource {
 
 			"challenge_action": {
 				Type:       schema.TypeString,
-				Required:   true,
+				Optional:   true,
 				Deprecated: "This field is deprecated and will be removed in future release.",
 			},
 
@@ -1519,11 +1519,6 @@ func resourceVolterraServicePolicyRule() *schema.Resource {
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
 
-												"kind": {
-													Type:     schema.TypeString,
-													Computed: true,
-												},
-
 												"name": {
 													Type:     schema.TypeString,
 													Optional: true,
@@ -1568,11 +1563,6 @@ func resourceVolterraServicePolicyRule() *schema.Resource {
 										Required: true,
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
-
-												"kind": {
-													Type:     schema.TypeString,
-													Computed: true,
-												},
 
 												"name": {
 													Type:     schema.TypeString,
@@ -5291,6 +5281,7 @@ func resourceVolterraServicePolicyRuleRead(d *schema.ResourceData, meta interfac
 		}
 		return fmt.Errorf("Error finding Volterra ServicePolicyRule %q: %s", d.Id(), err)
 	}
+
 	return setServicePolicyRuleFields(client, d, resp)
 }
 
@@ -8400,5 +8391,11 @@ func resourceVolterraServicePolicyRuleDelete(d *schema.ResourceData, meta interf
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_service_policy_rule.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_service_policy_rule.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting ServicePolicyRule: %w", err)
+	}
+	return nil
+
 }

@@ -1436,6 +1436,7 @@ func resourceVolterraExternalConnectorRead(d *schema.ResourceData, meta interfac
 		}
 		return fmt.Errorf("Error finding Volterra ExternalConnector %q: %s", d.Id(), err)
 	}
+
 	return setExternalConnectorFields(client, d, resp)
 }
 
@@ -2273,5 +2274,11 @@ func resourceVolterraExternalConnectorDelete(d *schema.ResourceData, meta interf
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_views_external_connector.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_views_external_connector.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting ExternalConnector: %w", err)
+	}
+	return nil
+
 }

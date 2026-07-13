@@ -2250,6 +2250,7 @@ func resourceVolterraZtnaRead(d *schema.ResourceData, meta interface{}) error {
 		}
 		return fmt.Errorf("Error finding Volterra Ztna %q: %s", d.Id(), err)
 	}
+
 	return setZtnaFields(client, d, resp)
 }
 
@@ -3390,5 +3391,11 @@ func resourceVolterraZtnaDelete(d *schema.ResourceData, meta interface{}) error 
 	opts := []vesapi.CallOpt{
 		vesapi.WithFailIfReferred(),
 	}
-	return client.DeleteObject(context.Background(), ves_io_schema_ztna.ObjectType, namespace, name, opts...)
+
+	err = client.DeleteObject(context.Background(), ves_io_schema_ztna.ObjectType, namespace, name, opts...)
+	if err != nil {
+		return fmt.Errorf("error deleting Ztna: %w", err)
+	}
+	return nil
+
 }
