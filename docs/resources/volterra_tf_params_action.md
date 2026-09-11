@@ -50,4 +50,4 @@ Attribute Reference
 
 ---
 
--   `tf_output` - Terraform output string, when action is `apply`
+-	`tf_output` - Terraform output string, when action is `apply`

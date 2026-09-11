@@ -22,6 +22,7 @@ import (
 	ves_io_schema_network_interface "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/network_interface"
 	ves_io_schema_site "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/site"
 	ves_io_schema_views "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/views"
+	ves_io_schema_views_common_waf "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/views/common_waf"
 	ves_io_schema_views_voltstack_site "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/views/voltstack_site"
 	ves_io_schema_virtual_network "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/virtual_network"
 )
@@ -8225,6 +8226,29 @@ func resourceVolterraVoltstackSite() *schema.Resource {
 			"volterra_certified_hw": {
 				Type:     schema.TypeString,
 				Required: true,
+			},
+
+			"waf_signatures": {
+
+				Type:     schema.TypeList,
+				MaxItems: 1,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+
+						"automatic": {
+
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+
+						"manual": {
+
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+					},
+				},
 			},
 
 			"worker_nodes": {
@@ -19446,6 +19470,47 @@ func resourceVolterraVoltstackSiteCreate(d *schema.ResourceData, meta interface{
 
 		createSpec.VolterraCertifiedHw =
 			v.(string)
+
+	}
+
+	//waf_signatures
+	if v, ok := d.GetOk("waf_signatures"); ok && !isIntfNil(v) {
+
+		sl := v.([]interface{})
+		wafSignatures := &ves_io_schema_views_common_waf.LiveSignaturesUpdate{}
+		createSpec.WafSignatures = wafSignatures
+		for _, set := range sl {
+			if set != nil {
+				wafSignaturesMapStrToI := set.(map[string]interface{})
+
+				signaturesUpdateModeChoiceTypeFound := false
+
+				if v, ok := wafSignaturesMapStrToI["automatic"]; ok && !isIntfNil(v) && !signaturesUpdateModeChoiceTypeFound {
+
+					signaturesUpdateModeChoiceTypeFound = true
+
+					if v.(bool) {
+						signaturesUpdateModeChoiceInt := &ves_io_schema_views_common_waf.LiveSignaturesUpdate_Automatic{}
+						signaturesUpdateModeChoiceInt.Automatic = &ves_io_schema.Empty{}
+						wafSignatures.SignaturesUpdateModeChoice = signaturesUpdateModeChoiceInt
+					}
+
+				}
+
+				if v, ok := wafSignaturesMapStrToI["manual"]; ok && !isIntfNil(v) && !signaturesUpdateModeChoiceTypeFound {
+
+					signaturesUpdateModeChoiceTypeFound = true
+
+					if v.(bool) {
+						signaturesUpdateModeChoiceInt := &ves_io_schema_views_common_waf.LiveSignaturesUpdate_Manual{}
+						signaturesUpdateModeChoiceInt.Manual = &ves_io_schema.Empty{}
+						wafSignatures.SignaturesUpdateModeChoice = signaturesUpdateModeChoiceInt
+					}
+
+				}
+
+			}
+		}
 
 	}
 
@@ -30686,6 +30751,46 @@ func resourceVolterraVoltstackSiteUpdate(d *schema.ResourceData, meta interface{
 
 		updateSpec.VolterraCertifiedHw =
 			v.(string)
+
+	}
+
+	if v, ok := d.GetOk("waf_signatures"); ok && !isIntfNil(v) {
+
+		sl := v.([]interface{})
+		wafSignatures := &ves_io_schema_views_common_waf.LiveSignaturesUpdate{}
+		updateSpec.WafSignatures = wafSignatures
+		for _, set := range sl {
+			if set != nil {
+				wafSignaturesMapStrToI := set.(map[string]interface{})
+
+				signaturesUpdateModeChoiceTypeFound := false
+
+				if v, ok := wafSignaturesMapStrToI["automatic"]; ok && !isIntfNil(v) && !signaturesUpdateModeChoiceTypeFound {
+
+					signaturesUpdateModeChoiceTypeFound = true
+
+					if v.(bool) {
+						signaturesUpdateModeChoiceInt := &ves_io_schema_views_common_waf.LiveSignaturesUpdate_Automatic{}
+						signaturesUpdateModeChoiceInt.Automatic = &ves_io_schema.Empty{}
+						wafSignatures.SignaturesUpdateModeChoice = signaturesUpdateModeChoiceInt
+					}
+
+				}
+
+				if v, ok := wafSignaturesMapStrToI["manual"]; ok && !isIntfNil(v) && !signaturesUpdateModeChoiceTypeFound {
+
+					signaturesUpdateModeChoiceTypeFound = true
+
+					if v.(bool) {
+						signaturesUpdateModeChoiceInt := &ves_io_schema_views_common_waf.LiveSignaturesUpdate_Manual{}
+						signaturesUpdateModeChoiceInt.Manual = &ves_io_schema.Empty{}
+						wafSignatures.SignaturesUpdateModeChoice = signaturesUpdateModeChoiceInt
+					}
+
+				}
+
+			}
+		}
 
 	}
 

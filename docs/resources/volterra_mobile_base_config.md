@@ -22,6 +22,7 @@ resource "volterra_mobile_base_config" "example" {
   fqdn      = ["mobile.example.com"]
   os        = ["os"]
 }
+
 ```
 
 Argument Reference
@@ -50,4 +51,4 @@ Argument Reference
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured mobile_base_config.
+-	`id` - This is the id of the configured mobile_base_config.

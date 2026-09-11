@@ -1990,6 +1990,23 @@ var APISwaggerJSON string = `{
                 }
             }
         },
+        "bot_defenseCosseBotInfraWithDeliveredVersion": {
+            "type": "object",
+            "description": "x-displayName: \"CoSSE Bot Infrastructure with Delivered version\"\nCoSSE Bot Infra Name with its delivered version",
+            "title": "CoSSE Bot Infrastructure with Delivered Version",
+            "properties": {
+                "cosse_bot_infra_name": {
+                    "type": "string",
+                    "description": "x-displayName: \"CoSSE Bot Infra name\"\nx-example: \"cosse-cluster-1\"\nThe cosse cluster id delivered this policy",
+                    "title": "CoSSE Bot Infra Name"
+                },
+                "delivered_version": {
+                    "type": "string",
+                    "description": "x-displayName: \"Delivered Version\"\nx-example: \"1.0\"\nThe version of policy delivered to cluster\nThe version format should be X.0",
+                    "title": "Delivered Version"
+                }
+            }
+        },
         "bot_defenseDeploymentMode": {
             "type": "string",
             "description": "Deployment Mode\n\nBy default, the mode will be Reverse Proxy\nYou need to submit an XC support ticket to request for API mode",
@@ -2324,6 +2341,46 @@ var APISwaggerJSON string = `{
                 }
             }
         },
+        "bot_defenseMobileConfigFetchPaths": {
+            "type": "object",
+            "description": "Android and iOS mobile SDK config fetch paths.",
+            "title": "Mobile Config Fetch Paths",
+            "x-displayname": "Mobile Config Fetch Paths",
+            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.MobileConfigFetchPaths",
+            "properties": {
+                "path_android": {
+                    "type": "string",
+                    "description": " Android mobile client will fetch F5 Client mobile configuration SDK from this path.\n This path must not conflict with any other website/mobile/application paths.\n\nExample: - \"/somepath\"-",
+                    "title": "Android Mobile Config Fetch Path",
+                    "x-displayname": "Android Mobile Config Fetch Path",
+                    "x-ves-example": "/somepath"
+                },
+                "path_ios": {
+                    "type": "string",
+                    "description": " iOS mobile client will fetch F5 Client mobile configuration SDK from this path.\n This path must not conflict with any other website/mobile/application paths.\n\nExample: - \"/somepath\"-",
+                    "title": "iOS Mobile Config Fetch Path",
+                    "x-displayname": "iOS Mobile Config Fetch Path",
+                    "x-ves-example": "/somepath"
+                },
+                "unavailable_text": {
+                    "type": "string",
+                    "description": " Certain mobile policies rely on older mobile components.",
+                    "title": "Unavailable Text",
+                    "x-displayname": "Unavailable"
+                }
+            }
+        },
+        "bot_defenseMobileConfigFetchStatus": {
+            "type": "string",
+            "description": "x-displayName: \"Mobile Config Fetch Status\"\nInternal status for mobile config fetch paths availability.\n\n - NOT_FETCHED: Default - not fetched yet.\n - FETCHED_NOT_AVAILABLE: Status fetched but paths are not available.\n - FETCHED_AND_AVAILABLE: Status fetched and paths are available.",
+            "title": "Mobile Config Fetch Status",
+            "enum": [
+                "NOT_FETCHED",
+                "FETCHED_NOT_AVAILABLE",
+                "FETCHED_AND_AVAILABLE"
+            ],
+            "default": "NOT_FETCHED"
+        },
         "bot_defenseNegationOperator": {
             "type": "string",
             "description": "Select from one of the Negation Operator.\n\n - NO: No\n\n - YES: Yes\n",
@@ -2436,7 +2493,7 @@ var APISwaggerJSON string = `{
             "description": "Configures Endpoint Policy Content",
             "title": "Endpoint Policy Content",
             "x-displayname": "Protected Endpoint",
-            "x-ves-displayorder": "4,1",
+            "x-ves-displayorder": "4,5,6,1",
             "x-ves-oneof-field-endpoint_type_choice": "[\"protected_mobile_endpoints\",\"protected_web_endpoints\"]",
             "x-ves-proto-message": "ves.io.schema.shape.bot_defense.ProtectedEndpoints",
             "properties": {
@@ -2446,6 +2503,12 @@ var APISwaggerJSON string = `{
                     "title": "JavaScript Download Path",
                     "x-displayname": "Web Client JavaScript Path",
                     "x-ves-example": "/common.js?single"
+                },
+                "mobile_config_fetch_paths": {
+                    "description": " Android and iOS mobile SDK config fetch paths.",
+                    "title": "Mobile Config Fetch Paths",
+                    "$ref": "#/definitions/bot_defenseMobileConfigFetchPaths",
+                    "x-displayname": "Mobile Config Fetch Paths"
                 },
                 "protected_mobile_endpoints": {
                     "description": "Exclusive with [protected_web_endpoints]\n Protected Mobile Endpoints List",
@@ -2458,6 +2521,12 @@ var APISwaggerJSON string = `{
                     "title": "Protected Web Endpoint Version",
                     "$ref": "#/definitions/bot_defenseProtectedWebEndpointList",
                     "x-displayname": "Web"
+                },
+                "telemetry_prefix": {
+                    "type": "string",
+                    "description": " Defines a set of headers used to detect signals based on telemetry prefix",
+                    "title": "Telemetry Prefix",
+                    "x-displayname": "Telemetry Prefix"
                 }
             }
         },

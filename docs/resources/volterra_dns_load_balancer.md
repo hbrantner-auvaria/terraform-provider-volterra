@@ -40,6 +40,7 @@ resource "volterra_dns_load_balancer" "example" {
     }
   }
 }
+
 ```
 
 Argument Reference
@@ -184,4 +185,4 @@ Rules to perform load balancing.
 Attribute Reference
 -------------------
 
-*   `id`- This is the id of the configured dns_load_balancer.
+-	`id` - This is the id of the configured dns_load_balancer.

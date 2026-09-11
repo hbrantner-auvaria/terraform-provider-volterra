@@ -20,6 +20,7 @@ resource "volterra_segment" "example" {
   name      = "acmecorp-web"
   namespace = "staging"
 }
+
 ```
 
 Argument Reference
@@ -41,7 +42,7 @@ Argument Reference
 
 ### Spec Argument Reference
 
-###### One of the arguments from this list "disable, enable" can be set
+###### One of the arguments from this list "spec_disable, enable" can be set
 
 `spec_disable` - (Optional) x-displayName: "Deny traffic from this segment to Internet" (`Bool`).
 
@@ -50,4 +51,4 @@ Argument Reference
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured segment.
+-	`id` - This is the id of the configured segment.

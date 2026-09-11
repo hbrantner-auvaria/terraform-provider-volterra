@@ -20,6 +20,7 @@ resource "volterra_workload_flavor" "example" {
   name      = "acmecorp-web"
   namespace = "staging"
 }
+
 ```
 
 Argument Reference
@@ -50,4 +51,4 @@ Argument Reference
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured workload_flavor.
+-	`id` - This is the id of the configured workload_flavor.

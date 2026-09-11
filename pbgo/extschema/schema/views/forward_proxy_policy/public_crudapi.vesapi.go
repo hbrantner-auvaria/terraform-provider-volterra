@@ -3376,7 +3376,7 @@ var APISwaggerJSON string = `{
             "properties": {
                 "ipv6_prefixes": {
                     "type": "array",
-                    "description": " Destination IPv6 prefixes.\n\nExample: - \"2001::1/64\"-\n\nValidation Rules:\n  ves.io.schema.rules.repeated.items.string.ipv6_prefix: true\n  ves.io.schema.rules.repeated.items.string.not_empty: true\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "description": " Destination IPv6 prefixes.\n\nExample: - \"2001::1/64\"-\n\nValidation Rules:\n  ves.io.schema.rules.repeated.items.string.ipv6_prefix: true\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "ipv6 prefixes",
                     "maxItems": 32,
                     "items": {
@@ -3386,7 +3386,6 @@ var APISwaggerJSON string = `{
                     "x-ves-example": "2001::1/64",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.repeated.items.string.ipv6_prefix": "true",
-                        "ves.io.schema.rules.repeated.items.string.not_empty": "true",
                         "ves.io.schema.rules.repeated.max_items": "32",
                         "ves.io.schema.rules.repeated.unique": "true"
                     }
@@ -3409,7 +3408,7 @@ var APISwaggerJSON string = `{
                 },
                 "prefixes": {
                     "type": "array",
-                    "description": " Destination IPv4 prefixes.\n\nExample: - \"10.0.0.1/24\"-\n\nValidation Rules:\n  ves.io.schema.rules.repeated.items.string.ipv4_prefix: true\n  ves.io.schema.rules.repeated.items.string.not_empty: true\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "description": " Destination IPv4 prefixes.\n\nExample: - \"10.0.0.1/24\"-\n\nValidation Rules:\n  ves.io.schema.rules.repeated.items.string.ipv4_prefix: true\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "prefixes",
                     "maxItems": 32,
                     "items": {
@@ -3419,7 +3418,6 @@ var APISwaggerJSON string = `{
                     "x-ves-example": "10.0.0.1/24",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.repeated.items.string.ipv4_prefix": "true",
-                        "ves.io.schema.rules.repeated.items.string.not_empty": "true",
                         "ves.io.schema.rules.repeated.max_items": "32",
                         "ves.io.schema.rules.repeated.unique": "true"
                     }

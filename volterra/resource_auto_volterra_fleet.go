@@ -15,11 +15,11 @@ import (
 
 	"gopkg.volterra.us/stdlib/client/vesapi"
 
-statemigration "github.com/volterraedge/terraform-provider-volterra/volterra/state_migration"
-
 	ves_io_schema "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema"
 	ves_io_schema_fleet "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/fleet"
 	ves_io_schema_views "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/views"
+
+	statemigration "github.com/volterraedge/terraform-provider-volterra/volterra/state_migration"
 )
 
 // resourceVolterraFleet is implementation of Volterra's Fleet resources
@@ -29,6 +29,15 @@ func resourceVolterraFleet() *schema.Resource {
 		Read:   resourceVolterraFleetRead,
 		Update: resourceVolterraFleetUpdate,
 		Delete: resourceVolterraFleetDelete,
+
+		SchemaVersion: 1,
+		StateUpgraders: []schema.StateUpgrader{
+			{
+				Type:    statemigration.ResourceFleetInstanceResourceV1().CoreConfigSchema().ImpliedType(),
+				Upgrade: statemigration.ResourceFleetInstanceStateUpgradeV1,
+				Version: 0,
+			},
+		},
 
 		Schema: map[string]*schema.Schema{
 
@@ -3447,6 +3456,49 @@ func resourceVolterraFleet() *schema.Resource {
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
 
+															"dual_stack": {
+
+																Type:     schema.TypeList,
+																MaxItems: 1,
+																Optional: true,
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"ipv4": {
+
+																			Type:     schema.TypeList,
+																			MaxItems: 1,
+																			Optional: true,
+																			Elem: &schema.Resource{
+																				Schema: map[string]*schema.Schema{
+
+																					"addr": {
+																						Type:     schema.TypeString,
+																						Optional: true,
+																					},
+																				},
+																			},
+																		},
+
+																		"ipv6": {
+
+																			Type:     schema.TypeList,
+																			MaxItems: 1,
+																			Optional: true,
+																			Elem: &schema.Resource{
+																				Schema: map[string]*schema.Schema{
+
+																					"addr": {
+																						Type:     schema.TypeString,
+																						Optional: true,
+																					},
+																				},
+																			},
+																		},
+																	},
+																},
+															},
+
 															"ipv4": {
 
 																Type:     schema.TypeList,
@@ -3603,14 +3655,6 @@ func resourceVolterraFleet() *schema.Resource {
 			"volterra_software_version": {
 				Type:     schema.TypeString,
 				Optional: true,
-			},
-		},
-		SchemaVersion: 1,
-		StateUpgraders: []schema.StateUpgrader{
-			{
-				Type:    statemigration.ResourceFleetInstanceResourceV1().CoreConfigSchema().ImpliedType(),
-				Upgrade: statemigration.ResourceFleetInstanceStateUpgradeV1,
-				Version: 0,
 			},
 		},
 	}
@@ -8100,6 +8144,59 @@ func resourceVolterraFleetCreate(d *schema.ResourceData, meta interface{}) error
 													nexthopAddressMapStrToI := set.(map[string]interface{})
 
 													verTypeFound := false
+
+													if v, ok := nexthopAddressMapStrToI["dual_stack"]; ok && !isIntfNil(v) && !verTypeFound {
+
+														verTypeFound = true
+														verInt := &ves_io_schema.IpAddressType_DualStack{}
+														verInt.DualStack = &ves_io_schema.DualStackAddressType{}
+														nexthopAddress.Ver = verInt
+
+														sl := v.([]interface{})
+														for _, set := range sl {
+															if set != nil {
+																cs := set.(map[string]interface{})
+
+																if v, ok := cs["ipv4"]; ok && !isIntfNil(v) {
+
+																	sl := v.([]interface{})
+																	ipv4 := &ves_io_schema.Ipv4AddressType{}
+																	verInt.DualStack.Ipv4 = ipv4
+																	for _, set := range sl {
+																		if set != nil {
+																			ipv4MapStrToI := set.(map[string]interface{})
+
+																			if w, ok := ipv4MapStrToI["addr"]; ok && !isIntfNil(w) {
+																				ipv4.Addr = w.(string)
+																			}
+
+																		}
+																	}
+
+																}
+
+																if v, ok := cs["ipv6"]; ok && !isIntfNil(v) {
+
+																	sl := v.([]interface{})
+																	ipv6 := &ves_io_schema.Ipv6AddressType{}
+																	verInt.DualStack.Ipv6 = ipv6
+																	for _, set := range sl {
+																		if set != nil {
+																			ipv6MapStrToI := set.(map[string]interface{})
+
+																			if w, ok := ipv6MapStrToI["addr"]; ok && !isIntfNil(w) {
+																				ipv6.Addr = w.(string)
+																			}
+
+																		}
+																	}
+
+																}
+
+															}
+														}
+
+													}
 
 													if v, ok := nexthopAddressMapStrToI["ipv4"]; ok && !isIntfNil(v) && !verTypeFound {
 
@@ -12836,6 +12933,59 @@ func resourceVolterraFleetUpdate(d *schema.ResourceData, meta interface{}) error
 													nexthopAddressMapStrToI := set.(map[string]interface{})
 
 													verTypeFound := false
+
+													if v, ok := nexthopAddressMapStrToI["dual_stack"]; ok && !isIntfNil(v) && !verTypeFound {
+
+														verTypeFound = true
+														verInt := &ves_io_schema.IpAddressType_DualStack{}
+														verInt.DualStack = &ves_io_schema.DualStackAddressType{}
+														nexthopAddress.Ver = verInt
+
+														sl := v.([]interface{})
+														for _, set := range sl {
+															if set != nil {
+																cs := set.(map[string]interface{})
+
+																if v, ok := cs["ipv4"]; ok && !isIntfNil(v) {
+
+																	sl := v.([]interface{})
+																	ipv4 := &ves_io_schema.Ipv4AddressType{}
+																	verInt.DualStack.Ipv4 = ipv4
+																	for _, set := range sl {
+																		if set != nil {
+																			ipv4MapStrToI := set.(map[string]interface{})
+
+																			if w, ok := ipv4MapStrToI["addr"]; ok && !isIntfNil(w) {
+																				ipv4.Addr = w.(string)
+																			}
+
+																		}
+																	}
+
+																}
+
+																if v, ok := cs["ipv6"]; ok && !isIntfNil(v) {
+
+																	sl := v.([]interface{})
+																	ipv6 := &ves_io_schema.Ipv6AddressType{}
+																	verInt.DualStack.Ipv6 = ipv6
+																	for _, set := range sl {
+																		if set != nil {
+																			ipv6MapStrToI := set.(map[string]interface{})
+
+																			if w, ok := ipv6MapStrToI["addr"]; ok && !isIntfNil(w) {
+																				ipv6.Addr = w.(string)
+																			}
+
+																		}
+																	}
+
+																}
+
+															}
+														}
+
+													}
 
 													if v, ok := nexthopAddressMapStrToI["ipv4"]; ok && !isIntfNil(v) && !verTypeFound {
 

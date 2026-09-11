@@ -3327,7 +3327,7 @@ var APISwaggerJSON string = `{
             "properties": {
                 "regions": {
                     "type": "array",
-                    "description": " A specific source location within AWS\n\nExample: - \"us-east-1\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.unique: true\n  ves.io.schema.rules.string.not_empty: true\n",
+                    "description": " A specific source location within AWS\n\nExample: - \"us-east-1\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.items.string.not_empty: true\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "AWS Regions",
                     "items": {
                         "type": "string"
@@ -3337,8 +3337,8 @@ var APISwaggerJSON string = `{
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true",
-                        "ves.io.schema.rules.repeated.unique": "true",
-                        "ves.io.schema.rules.string.not_empty": "true"
+                        "ves.io.schema.rules.repeated.items.string.not_empty": "true",
+                        "ves.io.schema.rules.repeated.unique": "true"
                     }
                 }
             }
@@ -3441,7 +3441,7 @@ var APISwaggerJSON string = `{
             "properties": {
                 "regions": {
                     "type": "array",
-                    "description": " A specific source location within F5 Distributed Cloud\n\nExample: - \"ves-io-us\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.unique: true\n  ves.io.schema.rules.string.not_empty: true\n",
+                    "description": " A specific source location within F5 Distributed Cloud\n\nExample: - \"ves-io-us\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.items.string.not_empty: true\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "F5 Distributed Cloud Regions",
                     "items": {
                         "type": "string"
@@ -3451,8 +3451,8 @@ var APISwaggerJSON string = `{
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true",
-                        "ves.io.schema.rules.repeated.unique": "true",
-                        "ves.io.schema.rules.string.not_empty": "true"
+                        "ves.io.schema.rules.repeated.items.string.not_empty": "true",
+                        "ves.io.schema.rules.repeated.unique": "true"
                     }
                 }
             }

@@ -28,8 +28,15 @@ resource "volterra_app_api_group" "example" {
 
   // One of the arguments from this list "api_definition bigip_virtual_server cdn_loadbalancer generic http_loadbalancer" must be set
 
-  generic = true
+  cdn_loadbalancer {
+    cdn_loadbalancer {
+      name      = "test1"
+      namespace = "staging"
+      tenant    = "acmecorp"
+    }
+  }
 }
+
 ```
 
 Argument Reference
@@ -158,4 +165,4 @@ Set scope to an HTTP Loadbalancer object to define the API endpoints list for AP
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured app_api_group.
+-	`id` - This is the id of the configured app_api_group.

@@ -321,8 +321,8 @@ var DefaultTopFlowAnomaliesRequestValidator = func() *ValidateTopFlowAnomaliesRe
 
 	vrhGroupBy := v.GroupByValidationRuleHandler
 	rulesGroupBy := map[string]string{
-		"ves.io.schema.rules.enum.defined_only":  "true",
-		"ves.io.schema.rules.repeated.max_items": "20",
+		"ves.io.schema.rules.repeated.items.enum.defined_only": "true",
+		"ves.io.schema.rules.repeated.max_items":               "20",
 	}
 	vFn, err = vrhGroupBy(rulesGroupBy)
 	if err != nil {

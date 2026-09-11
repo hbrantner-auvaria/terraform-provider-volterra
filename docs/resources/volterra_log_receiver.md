@@ -22,50 +22,62 @@ resource "volterra_log_receiver" "example" {
 
   // One of the arguments from this list "data_dog splunk syslog" must be set
 
-  splunk {
-    // One of the arguments from this list "splunk_server_ip splunk_server_name splunk_server_tls" must be set
+  syslog {
+    // One of the arguments from this list "syslog_rfc3164 syslog_rfc5424" must be set
 
-    splunk_server_name {
-      port = "3000"
+    syslog_rfc5424 = "500"
 
-      server_name = "server.example.com"
-    }
+    // One of the arguments from this list "tcp_server tls_server udp_server" must be set
 
-    splunk_hec_token {
-      blindfold_secret_info_internal {
-        decryption_provider = "value"
+    tls_server {
+      // One of the arguments from this list "trusted_ca_url volterra_ca" must be set
 
-        location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
+      volterra_ca = true
 
-        store_provider = "value"
+      // One of the arguments from this list "mtls_disabled mtls_enable" must be set
+
+      mtls_enable {
+        certificate = "value"
+
+        key_url {
+          blindfold_secret_info_internal {
+            decryption_provider = "value"
+
+            location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
+
+            store_provider = "value"
+          }
+
+          secret_encoding_type = "secret_encoding_type"
+
+          // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
+
+          vault_secret_info {
+            key = "key_pem"
+
+            location = "v1/data/vhost_key"
+
+            provider = "vault-vh-provider"
+
+            secret_encoding = "secret_encoding"
+
+            version = "1"
+          }
+        }
       }
 
-      secret_encoding_type = "secret_encoding_type"
+      // One of the arguments from this list "default_https_port default_syslog_tls_port port" must be set
 
-      // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
-
-      blindfold_secret_info {
-        decryption_provider = "value"
-
-        location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
-
-        store_provider = "value"
-      }
+      default_https_port = true
+      server_name = "server.acme.com"
     }
   }
 
   // One of the arguments from this list "log_receiver_sites site_local" must be set
 
-  log_receiver_sites {
-    network = "network"
-
-    site {
-      name      = "test1"
-      namespace = "staging"
-      tenant    = "acmecorp"
-    }
-  }
+  site_local = true
 }
+
 ```
 
 Argument Reference
@@ -430,4 +442,4 @@ Log receiver is accessible on a specific site..
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured log_receiver.
+-	`id` - This is the id of the configured log_receiver.

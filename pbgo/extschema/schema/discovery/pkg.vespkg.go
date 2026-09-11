@@ -133,7 +133,7 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 	mdr.RPCAvailableInReqFieldRegistry["ves.io.schema.discovery.API.Create"] = []svcfw.EnvironmentField{
 		{
 			FieldPath:           "spec.discovery_cbip",
-			AllowedEnvironments: []string{"crt", "demo1", "prod", "staging", "test"},
+			AllowedEnvironments: []string{"crt", "demo1", "preprod", "prod", "staging", "test"},
 		},
 		{
 			FieldPath:           "spec.discovery_consul.namespace_mapping_choice",
@@ -147,7 +147,7 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 	mdr.RPCAvailableInResFieldRegistry["ves.io.schema.discovery.API.Create"] = []svcfw.EnvironmentField{
 		{
 			FieldPath:           "spec.discovery_cbip",
-			AllowedEnvironments: []string{"crt", "demo1", "prod", "staging", "test"},
+			AllowedEnvironments: []string{"crt", "demo1", "preprod", "prod", "staging", "test"},
 		},
 		{
 			FieldPath:           "spec.discovery_consul.namespace_mapping_choice",
@@ -178,7 +178,7 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 	mdr.RPCAvailableInResFieldRegistry["ves.io.schema.discovery.API.Get"] = []svcfw.EnvironmentField{
 		{
 			FieldPath:           "create_form.spec.discovery_cbip",
-			AllowedEnvironments: []string{"crt", "demo1", "prod", "staging", "test"},
+			AllowedEnvironments: []string{"crt", "demo1", "preprod", "prod", "staging", "test"},
 		},
 		{
 			FieldPath:           "create_form.spec.discovery_consul.namespace_mapping_choice",
@@ -190,7 +190,7 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:           "replace_form.spec.discovery_cbip",
-			AllowedEnvironments: []string{"crt", "demo1", "prod", "staging", "test"},
+			AllowedEnvironments: []string{"crt", "demo1", "preprod", "prod", "staging", "test"},
 		},
 		{
 			FieldPath:           "replace_form.spec.discovery_consul.namespace_mapping_choice",
@@ -202,7 +202,7 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:           "spec.discovery_cbip",
-			AllowedEnvironments: []string{"crt", "demo1", "prod", "staging", "test"},
+			AllowedEnvironments: []string{"crt", "demo1", "preprod", "prod", "staging", "test"},
 		},
 		{
 			FieldPath:           "spec.discovery_consul.namespace_mapping_choice",
@@ -224,7 +224,7 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 	mdr.RPCAvailableInResFieldRegistry["ves.io.schema.discovery.API.List"] = []svcfw.EnvironmentField{
 		{
 			FieldPath:           "items.#.get_spec.discovery_cbip",
-			AllowedEnvironments: []string{"crt", "demo1", "prod", "staging", "test"},
+			AllowedEnvironments: []string{"crt", "demo1", "preprod", "prod", "staging", "test"},
 		},
 		{
 			FieldPath:           "items.#.get_spec.discovery_consul.namespace_mapping_choice",
@@ -282,7 +282,7 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 	mdr.RPCAvailableInReqFieldRegistry["ves.io.schema.discovery.API.Replace"] = []svcfw.EnvironmentField{
 		{
 			FieldPath:           "spec.discovery_cbip",
-			AllowedEnvironments: []string{"crt", "demo1", "prod", "staging", "test"},
+			AllowedEnvironments: []string{"crt", "demo1", "preprod", "prod", "staging", "test"},
 		},
 		{
 			FieldPath:           "spec.discovery_consul.namespace_mapping_choice",

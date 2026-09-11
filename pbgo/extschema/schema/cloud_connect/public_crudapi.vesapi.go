@@ -2558,7 +2558,7 @@ var APISwaggerJSON string = `{
             "properties": {
                 "route_table_id": {
                     "type": "array",
-                    "description": " Route table ID\n\nExample: - \"rtb-12345678901234567\"-\n\nValidation Rules:\n  ves.io.schema.rules.repeated.unique: true\n  ves.io.schema.rules.string.max_len: 64\n  ves.io.schema.rules.string.pattern: ^(rtb-)([a-z0-9]{8}|[a-z0-9]{17})$\n",
+                    "description": " Route table ID\n\nExample: - \"rtb-12345678901234567\"-\n\nValidation Rules:\n  ves.io.schema.rules.repeated.items.string.max_len: 64\n  ves.io.schema.rules.repeated.items.string.pattern: ^(rtb-)([a-z0-9]{8}|[a-z0-9]{17})$\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "Route table ID",
                     "items": {
                         "type": "string",
@@ -2567,9 +2567,9 @@ var APISwaggerJSON string = `{
                     "x-displayname": "Route table ID",
                     "x-ves-example": "rtb-12345678901234567",
                     "x-ves-validation-rules": {
-                        "ves.io.schema.rules.repeated.unique": "true",
-                        "ves.io.schema.rules.string.max_len": "64",
-                        "ves.io.schema.rules.string.pattern": "^(rtb-)([a-z0-9]{8}|[a-z0-9]{17})$"
+                        "ves.io.schema.rules.repeated.items.string.max_len": "64",
+                        "ves.io.schema.rules.repeated.items.string.pattern": "^(rtb-)([a-z0-9]{8}|[a-z0-9]{17})$",
+                        "ves.io.schema.rules.repeated.unique": "true"
                     }
                 }
             }
@@ -3399,7 +3399,7 @@ var APISwaggerJSON string = `{
             "properties": {
                 "route_table_id": {
                     "type": "array",
-                    "description": " Route table ID in the format /\u003cresource-group-name\u003e/\u003croute-table-name\u003e\n\nExample: - \"/rg-1/rtb-12345678901234567\"-\n\nValidation Rules:\n  ves.io.schema.rules.repeated.unique: true\n  ves.io.schema.rules.string.max_len: 256\n",
+                    "description": " Route table ID in the format /\u003cresource-group-name\u003e/\u003croute-table-name\u003e\n\nExample: - \"/rg-1/rtb-12345678901234567\"-\n\nValidation Rules:\n  ves.io.schema.rules.repeated.items.string.max_len: 256\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "Route table ID",
                     "items": {
                         "type": "string",
@@ -3408,8 +3408,8 @@ var APISwaggerJSON string = `{
                     "x-displayname": "Route table ID",
                     "x-ves-example": "/rg-1/rtb-12345678901234567",
                     "x-ves-validation-rules": {
-                        "ves.io.schema.rules.repeated.unique": "true",
-                        "ves.io.schema.rules.string.max_len": "256"
+                        "ves.io.schema.rules.repeated.items.string.max_len": "256",
+                        "ves.io.schema.rules.repeated.unique": "true"
                     }
                 }
             }
@@ -4438,6 +4438,27 @@ var APISwaggerJSON string = `{
                 }
             }
         },
+        "schemaDualStackAddressType": {
+            "type": "object",
+            "description": "DualStackAddressType represents both IPv4 and IPv6 together.",
+            "title": "Dualstack IPv4 and IPv6 Address",
+            "x-displayname": "Dualstack Address",
+            "x-ves-proto-message": "ves.io.schema.DualStackAddressType",
+            "properties": {
+                "ipv4": {
+                    "description": " IPv4 Address",
+                    "title": "IPv4 Address",
+                    "$ref": "#/definitions/schemaIpv4AddressType",
+                    "x-displayname": "IPv4 Address"
+                },
+                "ipv6": {
+                    "description": " IPv6 Address",
+                    "title": "IPv6 Address",
+                    "$ref": "#/definitions/schemaIpv6AddressType",
+                    "x-displayname": "IPv6 Address"
+                }
+            }
+        },
         "schemaErrorCode": {
             "type": "string",
             "description": "Union of all possible error-codes from system\n\n - EOK: No error\n - EPERMS: Permissions error\n - EBADINPUT: Input is not correct\n - ENOTFOUND: Not found\n - EEXISTS: Already exists\n - EUNKNOWN: Unknown/catchall error\n - ESERIALIZE: Error in serializing/de-serializing\n - EINTERNAL: Server error\n - EPARTIAL: Partial error",
@@ -4530,17 +4551,23 @@ var APISwaggerJSON string = `{
             "title": "IP Address",
             "x-displayname": "IP Address",
             "x-ves-displayorder": "3",
-            "x-ves-oneof-field-ver": "[\"ipv4\",\"ipv6\"]",
+            "x-ves-oneof-field-ver": "[\"dual_stack\",\"ipv4\",\"ipv6\"]",
             "x-ves-proto-message": "ves.io.schema.IpAddressType",
             "properties": {
+                "dual_stack": {
+                    "description": "Exclusive with [ipv4 ipv6]\n Both IPv4 and IPv6 addresses are specified together",
+                    "title": "Dual-stack Address (IPv4 + IPv6)",
+                    "$ref": "#/definitions/schemaDualStackAddressType",
+                    "x-displayname": "Dual-stack Address"
+                },
                 "ipv4": {
-                    "description": "Exclusive with [ipv6]\n IPv4 Address",
+                    "description": "Exclusive with [dual_stack ipv6]\n IPv4 Address",
                     "title": "IPv4 Address",
                     "$ref": "#/definitions/schemaIpv4AddressType",
                     "x-displayname": "IPv4 Address"
                 },
                 "ipv6": {
-                    "description": "Exclusive with [ipv4]\n IPv6 Address",
+                    "description": "Exclusive with [dual_stack ipv4]\n IPv6 Address",
                     "title": "IPv6 ADDRESS",
                     "$ref": "#/definitions/schemaIpv6AddressType",
                     "x-displayname": "IPv6 Address"

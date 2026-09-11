@@ -83,6 +83,7 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.views.securemesh_site_v2.GlobalSpecType"] = GlobalSpecTypeValidator()
 	vr["ves.io.schema.views.securemesh_site_v2.Interface"] = InterfaceValidator()
 	vr["ves.io.schema.views.securemesh_site_v2.KVMProviderType"] = KVMProviderTypeValidator()
+	vr["ves.io.schema.views.securemesh_site_v2.KubernetesProviderType"] = KubernetesProviderTypeValidator()
 	vr["ves.io.schema.views.securemesh_site_v2.LoadBalancingSettingsType"] = LoadBalancingSettingsTypeValidator()
 	vr["ves.io.schema.views.securemesh_site_v2.LocalVRFSettingType"] = LocalVRFSettingTypeValidator()
 	vr["ves.io.schema.views.securemesh_site_v2.LogReceiverWithNet"] = LogReceiverWithNetValidator()
@@ -92,6 +93,8 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.views.securemesh_site_v2.OCIProviderType"] = OCIProviderTypeValidator()
 	vr["ves.io.schema.views.securemesh_site_v2.OpenShiftProviderType"] = OpenShiftProviderTypeValidator()
 	vr["ves.io.schema.views.securemesh_site_v2.OpenstackProviderType"] = OpenstackProviderTypeValidator()
+	vr["ves.io.schema.views.securemesh_site_v2.PodAntiAffinityConfigType"] = PodAntiAffinityConfigTypeValidator()
+	vr["ves.io.schema.views.securemesh_site_v2.PodAntiAffinityRule"] = PodAntiAffinityRuleValidator()
 	vr["ves.io.schema.views.securemesh_site_v2.PrivateADNType"] = PrivateADNTypeValidator()
 	vr["ves.io.schema.views.securemesh_site_v2.RSeriesProviderType"] = RSeriesProviderTypeValidator()
 	vr["ves.io.schema.views.securemesh_site_v2.ReplaceSpecType"] = ReplaceSpecTypeValidator()
@@ -173,6 +176,14 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:     "ves.io.schema.views.securemesh_site_v2.CreateRequest.spec.provider_choice.baremetal.orchestration_choice.not_managed.node_list.interface_list.ipv6_address_choice.static_ipv6_address",
+			AddonServices: []string{"f5xc-ipv6-standard"},
+		},
+		{
+			FieldPath:     "ves.io.schema.views.securemesh_site_v2.CreateRequest.spec.provider_choice.eks_k8s.not_managed.node_list.interface_list.ipv6_address_choice.ipv6_auto_config",
+			AddonServices: []string{"f5xc-ipv6-standard"},
+		},
+		{
+			FieldPath:     "ves.io.schema.views.securemesh_site_v2.CreateRequest.spec.provider_choice.eks_k8s.not_managed.node_list.interface_list.ipv6_address_choice.static_ipv6_address",
 			AddonServices: []string{"f5xc-ipv6-standard"},
 		},
 		{
@@ -287,6 +298,12 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		"spec.custom_proxy.password.secret_encoding_type",
 		"spec.custom_proxy.password.vault_secret_info",
 		"spec.custom_proxy.password.wingman_secret_info",
+		"spec.eks_k8s.not_managed.node_list.#.interface_list.#.dhcp_server.dhcp_networks.#.network_prefix_allocator",
+		"spec.eks_k8s.not_managed.node_list.#.interface_list.#.dhcp_server.dhcp_networks.#.pools.#.exclude",
+		"spec.eks_k8s.not_managed.node_list.#.interface_list.#.dhcp_server.dhcp_option82_tag",
+		"spec.eks_k8s.not_managed.node_list.#.interface_list.#.ipv6_auto_config.router.stateful.dhcp_networks.#.network_prefix_allocator",
+		"spec.eks_k8s.not_managed.node_list.#.interface_list.#.ipv6_auto_config.router.stateful.dhcp_networks.#.pools.#.exclude",
+		"spec.eks_k8s.not_managed.node_list.#.interface_list.#.static_ipv6_address.fleet_static_ip",
 		"spec.equinix.not_managed.node_list.#.interface_list.#.dhcp_server.dhcp_networks.#.network_prefix_allocator",
 		"spec.equinix.not_managed.node_list.#.interface_list.#.dhcp_server.dhcp_networks.#.pools.#.exclude",
 		"spec.equinix.not_managed.node_list.#.interface_list.#.dhcp_server.dhcp_option82_tag",
@@ -373,6 +390,10 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
+			FieldPath:           "spec.eks_k8s.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
+			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
+		},
+		{
 			FieldPath:           "spec.equinix.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
@@ -435,10 +456,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		{
 			FieldPath:           "spec.openstack.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
-		},
-		{
-			FieldPath:           "spec.private_adn",
-			AllowedEnvironments: []string{"demo1", "test"},
 		},
 		{
 			FieldPath:           "spec.rseries.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
@@ -491,6 +508,10 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
+			FieldPath:           "spec.eks_k8s.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
+			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
+		},
+		{
 			FieldPath:           "spec.equinix.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
@@ -555,10 +576,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
-			FieldPath:           "spec.private_adn",
-			AllowedEnvironments: []string{"demo1", "test"},
-		},
-		{
 			FieldPath:           "spec.rseries.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
@@ -607,6 +624,10 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:           "create_form.spec.baremetal.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
+			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
+		},
+		{
+			FieldPath:           "create_form.spec.eks_k8s.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
@@ -674,10 +695,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
-			FieldPath:           "create_form.spec.private_adn",
-			AllowedEnvironments: []string{"demo1", "test"},
-		},
-		{
 			FieldPath:           "create_form.spec.rseries.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
@@ -723,6 +740,10 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:           "replace_form.spec.baremetal.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
+			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
+		},
+		{
+			FieldPath:           "replace_form.spec.eks_k8s.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
@@ -790,10 +811,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
-			FieldPath:           "replace_form.spec.private_adn",
-			AllowedEnvironments: []string{"demo1", "test"},
-		},
-		{
 			FieldPath:           "replace_form.spec.rseries.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
@@ -839,6 +856,10 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:           "spec.baremetal.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
+			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
+		},
+		{
+			FieldPath:           "spec.eks_k8s.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
@@ -906,10 +927,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
-			FieldPath:           "spec.private_adn",
-			AllowedEnvironments: []string{"demo1", "test"},
-		},
-		{
 			FieldPath:           "spec.rseries.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
@@ -957,6 +974,10 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:           "items.#.get_spec.baremetal.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
+			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
+		},
+		{
+			FieldPath:           "items.#.get_spec.eks_k8s.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
@@ -1022,10 +1043,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		{
 			FieldPath:           "items.#.get_spec.openstack.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
-		},
-		{
-			FieldPath:           "items.#.get_spec.private_adn",
-			AllowedEnvironments: []string{"demo1", "test"},
 		},
 		{
 			FieldPath:           "items.#.get_spec.rseries.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
@@ -1103,6 +1120,14 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:     "ves.io.schema.views.securemesh_site_v2.ReplaceRequest.spec.provider_choice.baremetal.orchestration_choice.not_managed.node_list.interface_list.ipv6_address_choice.static_ipv6_address",
+			AddonServices: []string{"f5xc-ipv6-standard"},
+		},
+		{
+			FieldPath:     "ves.io.schema.views.securemesh_site_v2.ReplaceRequest.spec.provider_choice.eks_k8s.not_managed.node_list.interface_list.ipv6_address_choice.ipv6_auto_config",
+			AddonServices: []string{"f5xc-ipv6-standard"},
+		},
+		{
+			FieldPath:     "ves.io.schema.views.securemesh_site_v2.ReplaceRequest.spec.provider_choice.eks_k8s.not_managed.node_list.interface_list.ipv6_address_choice.static_ipv6_address",
 			AddonServices: []string{"f5xc-ipv6-standard"},
 		},
 		{
@@ -1217,6 +1242,12 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		"spec.custom_proxy.password.secret_encoding_type",
 		"spec.custom_proxy.password.vault_secret_info",
 		"spec.custom_proxy.password.wingman_secret_info",
+		"spec.eks_k8s.not_managed.node_list.#.interface_list.#.dhcp_server.dhcp_networks.#.network_prefix_allocator",
+		"spec.eks_k8s.not_managed.node_list.#.interface_list.#.dhcp_server.dhcp_networks.#.pools.#.exclude",
+		"spec.eks_k8s.not_managed.node_list.#.interface_list.#.dhcp_server.dhcp_option82_tag",
+		"spec.eks_k8s.not_managed.node_list.#.interface_list.#.ipv6_auto_config.router.stateful.dhcp_networks.#.network_prefix_allocator",
+		"spec.eks_k8s.not_managed.node_list.#.interface_list.#.ipv6_auto_config.router.stateful.dhcp_networks.#.pools.#.exclude",
+		"spec.eks_k8s.not_managed.node_list.#.interface_list.#.static_ipv6_address.fleet_static_ip",
 		"spec.equinix.not_managed.node_list.#.interface_list.#.dhcp_server.dhcp_networks.#.network_prefix_allocator",
 		"spec.equinix.not_managed.node_list.#.interface_list.#.dhcp_server.dhcp_networks.#.pools.#.exclude",
 		"spec.equinix.not_managed.node_list.#.interface_list.#.dhcp_server.dhcp_option82_tag",
@@ -1303,6 +1334,10 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
+			FieldPath:           "spec.eks_k8s.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
+			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
+		},
+		{
 			FieldPath:           "spec.equinix.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
@@ -1365,10 +1400,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		{
 			FieldPath:           "spec.openstack.not_managed.node_list.#.interface_list.#.ipv6_address_choice",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
-		},
-		{
-			FieldPath:           "spec.private_adn",
-			AllowedEnvironments: []string{"demo1", "test"},
 		},
 		{
 			FieldPath:           "spec.rseries.not_managed.node_list.#.interface_list.#.ipv6_address_choice",

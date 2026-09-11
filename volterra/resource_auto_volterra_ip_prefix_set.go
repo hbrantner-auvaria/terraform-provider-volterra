@@ -304,7 +304,6 @@ func setIpPrefixSetFields(client *APIClient, d *schema.ResourceData, resp vesapi
 	d.Set("name", metadata.GetName())
 
 	d.Set("namespace", metadata.GetNamespace())
-
 	drift.DriftDetectionSpecIpPrefixSet(d, resp)
 
 	return nil

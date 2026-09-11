@@ -117,6 +117,15 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 	if m == nil {
 		return nil
 	}
+	if fv, exists := v.FldValidators["entitlement_configs"]; exists {
+		vOpts := append(opts, db.WithValidateField("entitlement_configs"))
+		for key, value := range m.GetEntitlementConfigs() {
+			vOpts := append(vOpts, db.WithValidateMapKey(key))
+			if err := fv(ctx, value, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
 	if fv, exists := v.FldValidators["service_usage_types"]; exists {
 		vOpts := append(opts, db.WithValidateField("service_usage_types"))
 		if err := fv(ctx, m.GetServiceUsageTypes(), vOpts...); err != nil {

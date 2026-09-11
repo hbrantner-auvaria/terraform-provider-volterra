@@ -60,6 +60,14 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 			AddonServices: []string{"f5xc-ipv6-standard"},
 		},
 		{
+			FieldPath:     "ves.io.schema.dns_proxy.CreateRequest.spec.proxy_advertisement.advertise_choice.advertise_custom.advertise_where.choice.advertise_dualstack_on_public",
+			AddonServices: []string{"f5xc-ipv6-standard"},
+		},
+		{
+			FieldPath:     "ves.io.schema.dns_proxy.CreateRequest.spec.proxy_advertisement.advertise_choice.advertise_custom.advertise_where.choice.advertise_v6_on_public",
+			AddonServices: []string{"f5xc-ipv6-standard"},
+		},
+		{
 			FieldPath:     "ves.io.schema.dns_proxy.CreateRequest.spec.proxy_advertisement.advertise_choice.advertise_custom.advertise_where.choice.cloud_edge_segment.ipv6",
 			AddonServices: []string{"f5xc-ipv6-standard"},
 		},
@@ -77,6 +85,14 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:     "ves.io.schema.dns_proxy.CreateRequest.spec.proxy_advertisement.advertise_choice.advertise_custom.advertise_where.choice.virtual_site_segment.ipv6",
+			AddonServices: []string{"f5xc-ipv6-standard"},
+		},
+		{
+			FieldPath:     "ves.io.schema.dns_proxy.CreateRequest.spec.proxy_advertisement.advertise_choice.advertise_on_public_default_dualstack_vip",
+			AddonServices: []string{"f5xc-ipv6-standard"},
+		},
+		{
+			FieldPath:     "ves.io.schema.dns_proxy.CreateRequest.spec.proxy_advertisement.advertise_choice.advertise_on_public_default_ipv6_vip",
 			AddonServices: []string{"f5xc-ipv6-standard"},
 		},
 	}
@@ -100,10 +116,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:           "spec.proxy_advertisement.advertise_custom.advertise_where.#.site.ipv6",
-			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
-		},
-		{
-			FieldPath:           "spec.proxy_advertisement.advertise_custom.advertise_where.#.site_segment.ipv6",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
@@ -137,10 +149,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
-			FieldPath:           "spec.proxy_advertisement.advertise_custom.advertise_where.#.site_segment.ipv6",
-			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
-		},
-		{
 			FieldPath:           "spec.proxy_advertisement.advertise_custom.advertise_where.#.virtual_network.v6_vip_choice",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
@@ -168,10 +176,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:           "create_form.spec.proxy_advertisement.advertise_custom.advertise_where.#.site.ipv6",
-			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
-		},
-		{
-			FieldPath:           "create_form.spec.proxy_advertisement.advertise_custom.advertise_where.#.site_segment.ipv6",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
@@ -203,10 +207,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
-			FieldPath:           "replace_form.spec.proxy_advertisement.advertise_custom.advertise_where.#.site_segment.ipv6",
-			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
-		},
-		{
 			FieldPath:           "replace_form.spec.proxy_advertisement.advertise_custom.advertise_where.#.virtual_network.v6_vip_choice",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
@@ -232,10 +232,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:           "spec.proxy_advertisement.advertise_custom.advertise_where.#.site.ipv6",
-			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
-		},
-		{
-			FieldPath:           "spec.proxy_advertisement.advertise_custom.advertise_where.#.site_segment.ipv6",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
@@ -269,10 +265,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
-			FieldPath:           "items.#.get_spec.proxy_advertisement.advertise_custom.advertise_where.#.site_segment.ipv6",
-			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
-		},
-		{
 			FieldPath:           "items.#.get_spec.proxy_advertisement.advertise_custom.advertise_where.#.virtual_network.v6_vip_choice",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
@@ -295,6 +287,14 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 			AddonServices: []string{"f5xc-ipv6-standard"},
 		},
 		{
+			FieldPath:     "ves.io.schema.dns_proxy.ReplaceRequest.spec.proxy_advertisement.advertise_choice.advertise_custom.advertise_where.choice.advertise_dualstack_on_public",
+			AddonServices: []string{"f5xc-ipv6-standard"},
+		},
+		{
+			FieldPath:     "ves.io.schema.dns_proxy.ReplaceRequest.spec.proxy_advertisement.advertise_choice.advertise_custom.advertise_where.choice.advertise_v6_on_public",
+			AddonServices: []string{"f5xc-ipv6-standard"},
+		},
+		{
 			FieldPath:     "ves.io.schema.dns_proxy.ReplaceRequest.spec.proxy_advertisement.advertise_choice.advertise_custom.advertise_where.choice.cloud_edge_segment.ipv6",
 			AddonServices: []string{"f5xc-ipv6-standard"},
 		},
@@ -312,6 +312,14 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:     "ves.io.schema.dns_proxy.ReplaceRequest.spec.proxy_advertisement.advertise_choice.advertise_custom.advertise_where.choice.virtual_site_segment.ipv6",
+			AddonServices: []string{"f5xc-ipv6-standard"},
+		},
+		{
+			FieldPath:     "ves.io.schema.dns_proxy.ReplaceRequest.spec.proxy_advertisement.advertise_choice.advertise_on_public_default_dualstack_vip",
+			AddonServices: []string{"f5xc-ipv6-standard"},
+		},
+		{
+			FieldPath:     "ves.io.schema.dns_proxy.ReplaceRequest.spec.proxy_advertisement.advertise_choice.advertise_on_public_default_ipv6_vip",
 			AddonServices: []string{"f5xc-ipv6-standard"},
 		},
 	}
@@ -335,10 +343,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:           "spec.proxy_advertisement.advertise_custom.advertise_where.#.site.ipv6",
-			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
-		},
-		{
-			FieldPath:           "spec.proxy_advertisement.advertise_custom.advertise_where.#.site_segment.ipv6",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{

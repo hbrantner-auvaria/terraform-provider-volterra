@@ -6998,11 +6998,34 @@ var ApiepCustomAPISwaggerJSON string = `{
                     "format": "date-time",
                     "x-displayname": "End Time"
                 },
+                "evidence_id": {
+                    "type": "string",
+                    "description": " UUID of the evidence document stored in ElasticSearch",
+                    "title": "evidence_id",
+                    "x-displayname": "Evidence ID"
+                },
                 "evidence_type": {
                     "description": " Type of evidence where vulnerability was found.",
                     "title": "evidence_type",
                     "$ref": "#/definitions/virtual_hostVulnEvidenceType",
-                    "x-displayname": "Evidence type"
+                    "x-displayname": "Evidence type",
+                    "x-ves-deprecated": "Not used in updated evidence model. Retained for backward compatibility"
+                },
+                "incident_ids": {
+                    "type": "array",
+                    "description": " List of security incident IDs that triggered this vulnerability.\n Populated only for incident-based vulnerabilities\n Empty for request-based vulnerabilities.",
+                    "title": "incident_ids",
+                    "items": {
+                        "type": "string"
+                    },
+                    "x-displayname": "Incident IDs"
+                },
+                "message": {
+                    "type": "string",
+                    "description": " Vulnerability message derived from a security incident\n\nExample: - \"References to Broken Function Level Authorization Incident\"-",
+                    "title": "message",
+                    "x-displayname": "Message",
+                    "x-ves-example": "References to Broken Function Level Authorization Incident"
                 },
                 "samples": {
                     "type": "array",
@@ -7011,7 +7034,8 @@ var ApiepCustomAPISwaggerJSON string = `{
                     "items": {
                         "$ref": "#/definitions/virtual_hostVulnEvidenceSample"
                     },
-                    "x-displayname": "Samples"
+                    "x-displayname": "Samples",
+                    "x-ves-deprecated": "Not used in the updated evidence model. Retained for backward compatibility"
                 },
                 "start_time": {
                     "type": "string",

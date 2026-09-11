@@ -960,7 +960,7 @@ type SMSv2InterfaceOptions struct {
 	// x-displayName: "Maximum Packet Size (MTU)"
 	// x-example: "1450"
 	// Maximum packet size (Maximum Transfer Unit) of the interface
-	// When configured, mtu must be between 512 and 16384
+	// When configured, mtu must be between 512 and 8000
 	// Set through Secure mesh V2 options
 	Mtu uint32 `protobuf:"varint,1,opt,name=mtu,proto3" json:"mtu,omitempty"`
 	// Use for Site to Site Connectivity

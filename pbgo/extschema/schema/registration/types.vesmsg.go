@@ -857,6 +857,92 @@ func GlobalSpecTypeValidator() db.Validator {
 
 // augmented methods on protoc/std generated struct
 
+func (m *Hugepage) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *Hugepage) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *Hugepage) DeepCopy() *Hugepage {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &Hugepage{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *Hugepage) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *Hugepage) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return HugepageValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateHugepage struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateHugepage) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*Hugepage)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *Hugepage got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["free"]; exists {
+		vOpts := append(opts, db.WithValidateField("free"))
+		if err := fv(ctx, m.GetFree(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["page_size"]; exists {
+		vOpts := append(opts, db.WithValidateField("page_size"))
+		if err := fv(ctx, m.GetPageSize(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["total"]; exists {
+		vOpts := append(opts, db.WithValidateField("total"))
+		if err := fv(ctx, m.GetTotal(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultHugepageValidator = func() *ValidateHugepage {
+	v := &ValidateHugepage{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func HugepageValidator() db.Validator {
+	return DefaultHugepageValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *Infra) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
@@ -984,6 +1070,15 @@ func (v *ValidateInfra) Validate(ctx context.Context, pm interface{}, opts ...db
 		vOpts := append(opts, db.WithValidateField("hostname"))
 		if err := fv(ctx, m.GetHostname(), vOpts...); err != nil {
 			return err
+		}
+	}
+	if fv, exists := v.FldValidators["hugepages"]; exists {
+		vOpts := append(opts, db.WithValidateField("hugepages"))
+		for idx, item := range m.GetHugepages() {
+			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
+			if err := fv(ctx, item, vOpts...); err != nil {
+				return err
+			}
 		}
 	}
 	if fv, exists := v.FldValidators["hw_info"]; exists {

@@ -3391,17 +3391,92 @@ var APISwaggerJSON string = `{
                 }
             }
         },
+        "common_securityBotDefenseAdvancedProtection": {
+            "type": "object",
+            "description": "Bot Defense Advanced Protection - replaces BotDefenseAdvancedType.",
+            "title": "BotDefenseAdvancedProtection",
+            "x-displayname": "Bot Defense Advanced",
+            "x-ves-oneof-field-client_type_choice": "[\"both_web_and_mobile\",\"mobile_only\",\"web_only\"]",
+            "x-ves-proto-message": "ves.io.schema.views.common_security.BotDefenseAdvancedProtection",
+            "properties": {
+                "both_web_and_mobile": {
+                    "description": "Exclusive with [mobile_only web_only]\n Only web and mobile app traffic, including browser-based traffic from mobile\n devices, is routed through this Bot Defense Infrastructure.",
+                    "title": "Both Web \u0026 Mobile",
+                    "$ref": "#/definitions/common_securityBothWebAndMobileType",
+                    "x-displayname": "Both Web \u0026 Mobile"
+                },
+                "mobile_only": {
+                    "description": "Exclusive with [both_web_and_mobile web_only]\n Only mobile app traffic, including browser-based traffic from mobile devices,\n is routed through this Bot Defense Infrastructure.",
+                    "title": "Mobile",
+                    "$ref": "#/definitions/common_securityMobileOnlyType",
+                    "x-displayname": "Mobile"
+                },
+                "web_only": {
+                    "description": "Exclusive with [both_web_and_mobile mobile_only]\n Only web traffic, including browser-based traffic from mobile devices,\n is routed through this Bot Defense Infrastructure.",
+                    "title": "Web",
+                    "$ref": "#/definitions/common_securityWebOnlyType",
+                    "x-displayname": "Web"
+                }
+            }
+        },
         "common_securityBotDefenseAdvancedType": {
             "type": "object",
-            "description": "Bot Defense Advanced",
+            "description": "x-displayName: \"Bot Defense Advanced\"\nBot Defense Advanced",
             "title": "BotDefenseAdvancedType",
-            "x-displayname": "Bot Defense Advanced",
-            "x-ves-oneof-field-java_script_choice": "[\"disable_js_insert\",\"js_insert_all_pages\",\"js_insert_all_pages_except\",\"js_insertion_rules\"]",
-            "x-ves-oneof-field-mobile_sdk_choice": "[\"disable_mobile_sdk\",\"mobile_sdk_config\"]",
-            "x-ves-proto-message": "ves.io.schema.views.common_security.BotDefenseAdvancedType",
             "properties": {
                 "disable_js_insert": {
-                    "description": "Exclusive with [js_insert_all_pages js_insert_all_pages_except js_insertion_rules]\n Disable JavaScript insertion.",
+                    "description": "x-displayName: \"Disable JavaScript Insertion\"\nDisable JavaScript insertion.",
+                    "title": "Disable JavaScript Insertion",
+                    "$ref": "#/definitions/schemaEmpty"
+                },
+                "disable_mobile_sdk": {
+                    "description": "x-displayName: \"Mobile SDK Not Configured\"",
+                    "title": "Mobile SDK Not Configured",
+                    "$ref": "#/definitions/schemaEmpty"
+                },
+                "js_insert_all_pages": {
+                    "description": "x-displayName: \"Insert JavaScript in All Pages\"\nInsert Bot Defense JavaScript in all pages.",
+                    "title": "Insert JavaScript in All Pages",
+                    "$ref": "#/definitions/common_securityShapeJavaScriptInsertAllType"
+                },
+                "js_insert_all_pages_except": {
+                    "description": "x-displayName: \"Insert JavaScript in All Pages with the Exceptions\"\nInsert Bot Defense JavaScript in all pages with the exceptions.",
+                    "title": "Insert JavaScript in All Pages with the Exceptions",
+                    "$ref": "#/definitions/common_securityShapeJavaScriptInsertAllWithExceptionsType"
+                },
+                "js_insertion_rules": {
+                    "description": "x-displayName: \"Custom JavaScript Insertion Rules\"\nSpecify custom JavaScript insertion rules.",
+                    "title": "Custom JavaScript Insertion Rules",
+                    "$ref": "#/definitions/common_securityShapeJavaScriptInsertType"
+                },
+                "mobile": {
+                    "description": "x-displayName: \"Infrastructure For Mobile\"\nSelect an infrastructure to process mobile traffic. Be sure to add your web app FQDN to the Bot Network Policy, and the infrastructure domain to the infrastructure ACL.",
+                    "title": "Mobile",
+                    "$ref": "#/definitions/schemaviewsObjectRefType"
+                },
+                "mobile_sdk_config": {
+                    "description": "x-displayName: \"Mobile SDK Configuration\"",
+                    "title": "Mobile SDK configuration",
+                    "$ref": "#/definitions/common_securityBotAdvancedMobileSDKConfigType"
+                },
+                "web": {
+                    "description": "x-displayName: \"Infrastructure For Web\"\nSelect an infrastructure to process web traffic. Be sure to add your web app FQDN to the Bot Network Policy, and the infrastructure domain to the infrastructure ACL.",
+                    "title": "Web",
+                    "$ref": "#/definitions/schemaviewsObjectRefType"
+                }
+            }
+        },
+        "common_securityBothWebAndMobileType": {
+            "type": "object",
+            "description": "Both Web and Mobile configuration",
+            "title": "BothWebAndMobileType",
+            "x-displayname": "Both Web \u0026 Mobile",
+            "x-ves-oneof-field-java_script_choice": "[\"disable_js_insert\",\"js_insert_all_pages\",\"js_insert_all_pages_except\",\"js_insertion_rules\"]",
+            "x-ves-oneof-field-mobile_sdk_choice": "[\"disable_mobile_sdk\",\"mobile_sdk_config\"]",
+            "x-ves-proto-message": "ves.io.schema.views.common_security.BothWebAndMobileType",
+            "properties": {
+                "disable_js_insert": {
+                    "description": "Exclusive with [js_insert_all_pages js_insert_all_pages_except js_insertion_rules]\n",
                     "title": "Disable JavaScript Insertion",
                     "$ref": "#/definitions/schemaEmpty",
                     "x-displayname": "Disable JavaScript Insertion"
@@ -3413,28 +3488,32 @@ var APISwaggerJSON string = `{
                     "x-displayname": "Mobile SDK Not Configured"
                 },
                 "js_insert_all_pages": {
-                    "description": "Exclusive with [disable_js_insert js_insert_all_pages_except js_insertion_rules]\n Insert Bot Defense JavaScript in all pages.",
+                    "description": "Exclusive with [disable_js_insert js_insert_all_pages_except js_insertion_rules]\n",
                     "title": "Insert JavaScript in All Pages",
                     "$ref": "#/definitions/common_securityShapeJavaScriptInsertAllType",
                     "x-displayname": "Insert JavaScript in All Pages"
                 },
                 "js_insert_all_pages_except": {
-                    "description": "Exclusive with [disable_js_insert js_insert_all_pages js_insertion_rules]\n Insert Bot Defense JavaScript in all pages with the exceptions.",
+                    "description": "Exclusive with [disable_js_insert js_insert_all_pages js_insertion_rules]\n",
                     "title": "Insert JavaScript in All Pages with the Exceptions",
                     "$ref": "#/definitions/common_securityShapeJavaScriptInsertAllWithExceptionsType",
                     "x-displayname": "Insert JavaScript in All Pages with the Exceptions"
                 },
                 "js_insertion_rules": {
-                    "description": "Exclusive with [disable_js_insert js_insert_all_pages js_insert_all_pages_except]\n Specify custom JavaScript insertion rules.",
+                    "description": "Exclusive with [disable_js_insert js_insert_all_pages js_insert_all_pages_except]\n",
                     "title": "Custom JavaScript Insertion Rules",
                     "$ref": "#/definitions/common_securityShapeJavaScriptInsertType",
                     "x-displayname": "Custom JavaScript Insertion Rules"
                 },
                 "mobile": {
-                    "description": " Select infrastructure for mobile.",
+                    "description": " Select an infrastructure to process mobile traffic. Be sure to add your web app FQDN to the Bot Network Policy, and the infrastructure domain to the infrastructure ACL.\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
                     "title": "Mobile",
                     "$ref": "#/definitions/schemaviewsObjectRefType",
-                    "x-displayname": "Infrastructure For Mobile"
+                    "x-displayname": "Infrastructure For Mobile",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true"
+                    }
                 },
                 "mobile_sdk_config": {
                     "description": "Exclusive with [disable_mobile_sdk]\n",
@@ -3443,10 +3522,14 @@ var APISwaggerJSON string = `{
                     "x-displayname": "Mobile SDK Configuration"
                 },
                 "web": {
-                    "description": " Select infrastructure for web.",
+                    "description": " Select an infrastructure to process web traffic. Be sure to add your web app FQDN to the Bot Network Policy, and the infrastructure domain to the infrastructure ACL.\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
                     "title": "Web",
                     "$ref": "#/definitions/schemaviewsObjectRefType",
-                    "x-displayname": "Infrastructure For Web"
+                    "x-displayname": "Infrastructure For Web",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true"
+                    }
                 }
             }
         },
@@ -3794,6 +3877,25 @@ var APISwaggerJSON string = `{
             "default": "HEADERS",
             "x-displayname": "Mobile Identifier",
             "x-ves-proto-enum": "ves.io.schema.views.common_security.MobileIdentifier"
+        },
+        "common_securityMobileOnlyType": {
+            "type": "object",
+            "description": "Mobile only configuration",
+            "title": "MobileOnlyType",
+            "x-displayname": "Mobile",
+            "x-ves-proto-message": "ves.io.schema.views.common_security.MobileOnlyType",
+            "properties": {
+                "mobile": {
+                    "description": " Select an infrastructure to process mobile traffic. Be sure to add your web app FQDN to the Bot Network Policy, and the infrastructure domain to the infrastructure ACL.\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "title": "Mobile",
+                    "$ref": "#/definitions/schemaviewsObjectRefType",
+                    "x-displayname": "Infrastructure For Mobile",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true"
+                    }
+                }
+            }
         },
         "common_securityMobileSDKConfigType": {
             "type": "object",
@@ -4206,6 +4308,50 @@ var APISwaggerJSON string = `{
                     "title": "Mobile Identifier",
                     "$ref": "#/definitions/common_securityMobileIdentifier",
                     "x-displayname": "Mobile Identifier"
+                }
+            }
+        },
+        "common_securityWebOnlyType": {
+            "type": "object",
+            "description": "Web only configuration",
+            "title": "WebOnlyType",
+            "x-displayname": "Web",
+            "x-ves-oneof-field-java_script_choice": "[\"disable_js_insert\",\"js_insert_all_pages\",\"js_insert_all_pages_except\",\"js_insertion_rules\"]",
+            "x-ves-proto-message": "ves.io.schema.views.common_security.WebOnlyType",
+            "properties": {
+                "disable_js_insert": {
+                    "description": "Exclusive with [js_insert_all_pages js_insert_all_pages_except js_insertion_rules]\n",
+                    "title": "Disable JavaScript Insertion",
+                    "$ref": "#/definitions/schemaEmpty",
+                    "x-displayname": "Disable JavaScript Insertion"
+                },
+                "js_insert_all_pages": {
+                    "description": "Exclusive with [disable_js_insert js_insert_all_pages_except js_insertion_rules]\n",
+                    "title": "Insert JavaScript in All Pages",
+                    "$ref": "#/definitions/common_securityShapeJavaScriptInsertAllType",
+                    "x-displayname": "Insert JavaScript in All Pages"
+                },
+                "js_insert_all_pages_except": {
+                    "description": "Exclusive with [disable_js_insert js_insert_all_pages js_insertion_rules]\n",
+                    "title": "Insert JavaScript in All Pages with the Exceptions",
+                    "$ref": "#/definitions/common_securityShapeJavaScriptInsertAllWithExceptionsType",
+                    "x-displayname": "Insert JavaScript in All Pages with the Exceptions"
+                },
+                "js_insertion_rules": {
+                    "description": "Exclusive with [disable_js_insert js_insert_all_pages js_insert_all_pages_except]\n",
+                    "title": "Custom JavaScript Insertion Rules",
+                    "$ref": "#/definitions/common_securityShapeJavaScriptInsertType",
+                    "x-displayname": "Custom JavaScript Insertion Rules"
+                },
+                "web": {
+                    "description": " Select an infrastructure to process web traffic. Be sure to add your web app FQDN to the Bot Network Policy, and the infrastructure domain to the infrastructure ACL.\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "title": "Web",
+                    "$ref": "#/definitions/schemaviewsObjectRefType",
+                    "x-displayname": "Infrastructure For Web",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true"
+                    }
                 }
             }
         },
@@ -5995,7 +6141,7 @@ var APISwaggerJSON string = `{
             "properties": {
                 "actions": {
                     "type": "array",
-                    "description": " Actions that should be taken when client identifier matches the rule\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.enum.defined_only: true\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 10\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "description": " Actions that should be taken when client identifier matches the rule\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.items.enum.defined_only: true\n  ves.io.schema.rules.repeated.max_items: 10\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "actions",
                     "maxItems": 10,
                     "items": {
@@ -6004,8 +6150,8 @@ var APISwaggerJSON string = `{
                     "x-displayname": "Actions",
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
-                        "ves.io.schema.rules.enum.defined_only": "true",
                         "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.repeated.items.enum.defined_only": "true",
                         "ves.io.schema.rules.repeated.max_items": "10",
                         "ves.io.schema.rules.repeated.unique": "true"
                     }
@@ -8300,13 +8446,12 @@ var APISwaggerJSON string = `{
                 },
                 "regex": {
                     "type": "string",
-                    "description": "Exclusive with [exact presence]\n Regex match of the header value in re2 format\n\nValidation Rules:\n  ves.io.schema.rules.string.max_bytes: 256\n  ves.io.schema.rules.string.not_empty: true\n  ves.io.schema.rules.string.regex: true\n",
+                    "description": "Exclusive with [exact presence]\n Regex match of the header value in re2 format\n\nValidation Rules:\n  ves.io.schema.rules.string.max_bytes: 256\n  ves.io.schema.rules.string.regex: true\n",
                     "title": "regex",
                     "maxLength": 256,
                     "x-displayname": "Regex",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.string.max_bytes": "256",
-                        "ves.io.schema.rules.string.not_empty": "true",
                         "ves.io.schema.rules.string.regex": "true"
                     }
                 }
@@ -10647,7 +10792,7 @@ var APISwaggerJSON string = `{
                 },
                 "re_name_list": {
                     "type": "array",
-                    "description": " List of RE names for match\n\nExample: - \"ves-io-re01\"-\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.unique: true\n  ves.io.schema.rules.string.max_len: 64\n",
+                    "description": " List of RE names for match\n\nExample: - \"ves-io-re01\"-\n\nValidation Rules:\n  ves.io.schema.rules.repeated.items.string.max_len: 64\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "RE Name list",
                     "maxItems": 32,
                     "items": {
@@ -10657,9 +10802,9 @@ var APISwaggerJSON string = `{
                     "x-displayname": "RE Names",
                     "x-ves-example": "ves-io-re01",
                     "x-ves-validation-rules": {
+                        "ves.io.schema.rules.repeated.items.string.max_len": "64",
                         "ves.io.schema.rules.repeated.max_items": "32",
-                        "ves.io.schema.rules.repeated.unique": "true",
-                        "ves.io.schema.rules.string.max_len": "64"
+                        "ves.io.schema.rules.repeated.unique": "true"
                     }
                 }
             }
@@ -12293,7 +12438,7 @@ var APISwaggerJSON string = `{
                 },
                 "regex_values": {
                     "type": "array",
-                    "description": " A list of regular expressions to match the input against.\n\nExample: - \"['^new .*$', 'san f.*', '.* del .*']\"-\n\nValidation Rules:\n  ves.io.schema.rules.repeated.items.string.max_bytes: 256\n  ves.io.schema.rules.repeated.items.string.not_empty: true\n  ves.io.schema.rules.repeated.items.string.regex: true\n  ves.io.schema.rules.repeated.max_items: 16\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "description": " A list of regular expressions to match the input against.\n\nExample: - \"['^new .*$', 'san f.*', '.* del .*']\"-\n\nValidation Rules:\n  ves.io.schema.rules.repeated.items.string.max_bytes: 256\n  ves.io.schema.rules.repeated.items.string.regex: true\n  ves.io.schema.rules.repeated.max_items: 16\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "regex values",
                     "maxItems": 16,
                     "items": {
@@ -12304,7 +12449,6 @@ var APISwaggerJSON string = `{
                     "x-ves-example": "['^new .*$', 'san f.*', '.* del .*']",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.repeated.items.string.max_bytes": "256",
-                        "ves.io.schema.rules.repeated.items.string.not_empty": "true",
                         "ves.io.schema.rules.repeated.items.string.regex": "true",
                         "ves.io.schema.rules.repeated.max_items": "16",
                         "ves.io.schema.rules.repeated.unique": "true"
@@ -13044,7 +13188,7 @@ var APISwaggerJSON string = `{
                     "x-displayname": "Preserve Case"
                 },
                 "proper_case_header_transformation": {
-                    "description": "Exclusive with [default_header_transformation legacy_header_transformation preserve_case_header_transformation]\n Normalize the headers to proper case words. The fist character and any character\n following a special character will be capitalized if it’s an alpha character.\n For example, “content-type” becomes “Content-Type”, and “foo$b#$are” becomes “Foo$B#$Are”",
+                    "description": "Exclusive with [default_header_transformation legacy_header_transformation preserve_case_header_transformation]\n Normalize the headers to proper case words. The first character and any character\n following a special character will be capitalized if it’s an alpha character.\n For example, “content-type” becomes “Content-Type”, and “foo$b#$are” becomes “Foo$B#$Are”",
                     "title": "Proper case header transformation",
                     "$ref": "#/definitions/schemaEmpty",
                     "x-displayname": "Proper Case"
@@ -14624,7 +14768,7 @@ var APISwaggerJSON string = `{
                 },
                 "arg_matchers": {
                     "type": "array",
-                    "description": " A list of predicates for all POST args that need to be matched. The criteria for matching each arg are described in individual instances\n of ArgMatcherType. The actual arg values are extracted from the request API as a list of strings for each arg selector name.\n Note that all specified arg matcher predicates must evaluate to true.\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 16\n",
+                    "description": " A list of predicates for all POST args that need to be matched. The criteria for matching each arg are described in individual instances\n of ArgMatcherType. The actual arg values are extracted from the request API as a list of strings for each arg selector name.\n Note that all specified arg matcher predicates must evaluate to true. A request body greater than 64KB will not be evaluated.\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 16\n",
                     "maxItems": 16,
                     "items": {
                         "$ref": "#/definitions/policyArgMatcherType"
@@ -14642,7 +14786,7 @@ var APISwaggerJSON string = `{
                     "$ref": "#/definitions/policyAsnMatcherType"
                 },
                 "body_matcher": {
-                    "description": " Predicate for matching the request body string. The criteria for matching the request body is described in MatcherType.\n The actual request body value is extracted from the request API as a string.",
+                    "description": " Predicate for matching the request body string. The criteria for matching the request body is described in MatcherType.\n The actual request body value is extracted from the request API as a string. A request body greater than 64KB will not be evaluated.",
                     "$ref": "#/definitions/policyMatcherType"
                 },
                 "client_selector": {
@@ -15501,18 +15645,30 @@ var APISwaggerJSON string = `{
             "title": "WhereType",
             "x-displayname": "Select Where to Advertise",
             "x-ves-displayorder": "4,5",
-            "x-ves-oneof-field-choice": "[\"advertise_on_public\",\"cloud_edge_segment\",\"segment\",\"site\",\"site_segment\",\"virtual_network\",\"virtual_site\",\"virtual_site_segment\",\"virtual_site_with_vip\",\"vk8s_service\"]",
+            "x-ves-oneof-field-choice": "[\"advertise_dualstack_on_public\",\"advertise_on_public\",\"advertise_v6_on_public\",\"cloud_edge_segment\",\"segment\",\"site\",\"site_segment\",\"virtual_network\",\"virtual_site\",\"virtual_site_segment\",\"virtual_site_with_vip\",\"vk8s_service\"]",
             "x-ves-oneof-field-port_choice": "[\"port\",\"port_ranges\",\"use_default_port\"]",
             "x-ves-proto-message": "ves.io.schema.views.WhereType",
             "properties": {
+                "advertise_dualstack_on_public": {
+                    "description": "Exclusive with [advertise_on_public advertise_v6_on_public cloud_edge_segment segment site site_segment virtual_network virtual_site virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise this load balancer with Dualstack VIP on public network",
+                    "title": "Advertise DualStack On Public",
+                    "$ref": "#/definitions/viewsAdvertisePublic",
+                    "x-displayname": "Internet (Specified Dualstack VIP)"
+                },
                 "advertise_on_public": {
-                    "description": "Exclusive with [cloud_edge_segment segment site site_segment virtual_network virtual_site virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise this load balancer on public network",
+                    "description": "Exclusive with [advertise_dualstack_on_public advertise_v6_on_public cloud_edge_segment segment site site_segment virtual_network virtual_site virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise this load balancer on public network",
                     "title": "Advertise On Public",
                     "$ref": "#/definitions/viewsAdvertisePublic",
                     "x-displayname": "Internet (Specified VIP)"
                 },
+                "advertise_v6_on_public": {
+                    "description": "Exclusive with [advertise_dualstack_on_public advertise_on_public cloud_edge_segment segment site site_segment virtual_network virtual_site virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise this load balancer with IPv6 VIP on public network",
+                    "title": "Advertise IPv6 On Public",
+                    "$ref": "#/definitions/viewsAdvertisePublic",
+                    "x-displayname": "Internet (Specified IPv6 VIP)"
+                },
                 "cloud_edge_segment": {
-                    "description": "Exclusive with [advertise_on_public segment site site_segment virtual_network virtual_site virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise on a segment on a Cloud Edge",
+                    "description": "Exclusive with [advertise_dualstack_on_public advertise_on_public advertise_v6_on_public segment site site_segment virtual_network virtual_site virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise on a segment on a Cloud Edge",
                     "title": "Segment on Cloud Edge",
                     "$ref": "#/definitions/viewsWhereCloudEdgeSegment",
                     "x-displayname": "Segment on Cloud Edge"
@@ -15544,19 +15700,19 @@ var APISwaggerJSON string = `{
                     }
                 },
                 "segment": {
-                    "description": "Exclusive with [advertise_on_public cloud_edge_segment site site_segment virtual_network virtual_site virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise on a segment",
+                    "description": "Exclusive with [advertise_dualstack_on_public advertise_on_public advertise_v6_on_public cloud_edge_segment site site_segment virtual_network virtual_site virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise on a segment",
                     "title": "Segment",
                     "$ref": "#/definitions/viewsWhereSegment",
                     "x-displayname": "Segment"
                 },
                 "site": {
-                    "description": "Exclusive with [advertise_on_public cloud_edge_segment segment site_segment virtual_network virtual_site virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise on a customer site and a given network.",
+                    "description": "Exclusive with [advertise_dualstack_on_public advertise_on_public advertise_v6_on_public cloud_edge_segment segment site_segment virtual_network virtual_site virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise on a customer site and a given network.",
                     "title": "Site",
                     "$ref": "#/definitions/viewsWhereSite",
                     "x-displayname": "Site"
                 },
                 "site_segment": {
-                    "description": "Exclusive with [advertise_on_public cloud_edge_segment segment site virtual_network virtual_site virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise on a segment on a site",
+                    "description": "Exclusive with [advertise_dualstack_on_public advertise_on_public advertise_v6_on_public cloud_edge_segment segment site virtual_network virtual_site virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise on a segment on a site",
                     "title": "Segment on Site",
                     "$ref": "#/definitions/viewsWhereSiteSegment",
                     "x-displayname": "Segment on Site"
@@ -15568,31 +15724,31 @@ var APISwaggerJSON string = `{
                     "x-displayname": "Use Default Listen Port"
                 },
                 "virtual_network": {
-                    "description": "Exclusive with [advertise_on_public cloud_edge_segment segment site site_segment virtual_site virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise on a virtual network",
+                    "description": "Exclusive with [advertise_dualstack_on_public advertise_on_public advertise_v6_on_public cloud_edge_segment segment site site_segment virtual_site virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise on a virtual network",
                     "title": "Virtual Network",
                     "$ref": "#/definitions/viewsWhereVirtualNetwork",
                     "x-displayname": "Virtual Network"
                 },
                 "virtual_site": {
-                    "description": "Exclusive with [advertise_on_public cloud_edge_segment segment site site_segment virtual_network virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise on a customer virtual site and a given network.",
+                    "description": "Exclusive with [advertise_dualstack_on_public advertise_on_public advertise_v6_on_public cloud_edge_segment segment site site_segment virtual_network virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise on a customer virtual site and a given network.",
                     "title": "Virtual Site",
                     "$ref": "#/definitions/viewsWhereVirtualSite",
                     "x-displayname": "Virtual Site"
                 },
                 "virtual_site_segment": {
-                    "description": "Exclusive with [advertise_on_public cloud_edge_segment segment site site_segment virtual_network virtual_site virtual_site_with_vip vk8s_service]\n Advertise on a segment on a virtual site",
+                    "description": "Exclusive with [advertise_dualstack_on_public advertise_on_public advertise_v6_on_public cloud_edge_segment segment site site_segment virtual_network virtual_site virtual_site_with_vip vk8s_service]\n Advertise on a segment on a virtual site",
                     "title": "Segment on Virtual Site",
                     "$ref": "#/definitions/viewsWhereVirtualSiteSegment",
                     "x-displayname": "Segment on Virtual Site"
                 },
                 "virtual_site_with_vip": {
-                    "description": "Exclusive with [advertise_on_public cloud_edge_segment segment site site_segment virtual_network virtual_site virtual_site_segment vk8s_service]\n Advertise on a customer virtual site and a given network and IP.",
+                    "description": "Exclusive with [advertise_dualstack_on_public advertise_on_public advertise_v6_on_public cloud_edge_segment segment site site_segment virtual_network virtual_site virtual_site_segment vk8s_service]\n Advertise on a customer virtual site and a given network and IP.",
                     "title": "Virtual Site With Specified VIP",
                     "$ref": "#/definitions/viewsWhereVirtualSiteSpecifiedVIP",
                     "x-displayname": "Virtual Site (Specified VIP)"
                 },
                 "vk8s_service": {
-                    "description": "Exclusive with [advertise_on_public cloud_edge_segment segment site site_segment virtual_network virtual_site virtual_site_segment virtual_site_with_vip]\n Advertise on vK8s Service Network on RE.",
+                    "description": "Exclusive with [advertise_dualstack_on_public advertise_on_public advertise_v6_on_public cloud_edge_segment segment site site_segment virtual_network virtual_site virtual_site_segment virtual_site_with_vip]\n Advertise on vK8s Service Network on RE.",
                     "title": "vK8s services network",
                     "$ref": "#/definitions/viewsWhereVK8SService",
                     "x-displayname": "vK8s Service Network on RE"
@@ -16062,11 +16218,11 @@ var APISwaggerJSON string = `{
             "description": "Shape of the HTTP load balancer specification",
             "title": "GlobalSpecType",
             "x-displayname": "Global Specification",
-            "x-ves-oneof-field-advertise_choice": "[\"advertise_custom\",\"advertise_on_public\",\"advertise_on_public_default_vip\",\"do_not_advertise\"]",
+            "x-ves-oneof-field-advertise_choice": "[\"advertise_custom\",\"advertise_dualstack_on_public\",\"advertise_on_public\",\"advertise_on_public_default_dualstack_vip\",\"advertise_on_public_default_ipv6_vip\",\"advertise_on_public_default_vip\",\"advertise_v6_on_public\",\"do_not_advertise\"]",
             "x-ves-oneof-field-api_definition_choice": "[\"api_specification\",\"disable_api_definition\"]",
             "x-ves-oneof-field-api_discovery_choice": "[\"disable_api_discovery\",\"enable_api_discovery\"]",
             "x-ves-oneof-field-api_testing_choice": "[\"api_testing\",\"disable_api_testing\"]",
-            "x-ves-oneof-field-bot_defense_choice": "[\"bot_defense\",\"bot_defense_advanced\",\"disable_bot_defense\"]",
+            "x-ves-oneof-field-bot_defense_choice": "[\"bot_defense\",\"bot_defense_advanced_protection\",\"disable_bot_defense\"]",
             "x-ves-oneof-field-cache_options": "[\"caching_policy\",\"disable_caching\"]",
             "x-ves-oneof-field-challenge_type": "[\"captcha_challenge\",\"enable_challenge\",\"js_challenge\",\"no_challenge\",\"policy_based_challenge\"]",
             "x-ves-oneof-field-client_side_defense_choice": "[\"client_side_defense\",\"disable_client_side_defense\"]",
@@ -16104,22 +16260,46 @@ var APISwaggerJSON string = `{
                     "x-ves-example": "true"
                 },
                 "advertise_custom": {
-                    "description": "Exclusive with [advertise_on_public advertise_on_public_default_vip do_not_advertise]\n Advertise this load balancer on specific sites",
+                    "description": "Exclusive with [advertise_dualstack_on_public advertise_on_public advertise_on_public_default_dualstack_vip advertise_on_public_default_ipv6_vip advertise_on_public_default_vip advertise_v6_on_public do_not_advertise]\n Advertise this load balancer on specific sites",
                     "title": "Advertise Custom",
                     "$ref": "#/definitions/viewsAdvertiseCustom",
                     "x-displayname": "Custom"
                 },
+                "advertise_dualstack_on_public": {
+                    "description": "Exclusive with [advertise_custom advertise_on_public advertise_on_public_default_dualstack_vip advertise_on_public_default_ipv6_vip advertise_on_public_default_vip advertise_v6_on_public do_not_advertise]\n Advertise this Dualstack load balancer address on public network",
+                    "title": "Advertise Dualstack On Public",
+                    "$ref": "#/definitions/viewsAdvertisePublic",
+                    "x-displayname": "Internet (Specified Dualstack)"
+                },
                 "advertise_on_public": {
-                    "description": "Exclusive with [advertise_custom advertise_on_public_default_vip do_not_advertise]\n Advertise this load balancer on public network",
+                    "description": "Exclusive with [advertise_custom advertise_dualstack_on_public advertise_on_public_default_dualstack_vip advertise_on_public_default_ipv6_vip advertise_on_public_default_vip advertise_v6_on_public do_not_advertise]\n Advertise this load balancer on specified IPv4 on public network",
                     "title": "Advertise On Public",
                     "$ref": "#/definitions/viewsAdvertisePublic",
-                    "x-displayname": "Internet (Specified VIP)"
+                    "x-displayname": "Internet (Specified IPv4)"
+                },
+                "advertise_on_public_default_dualstack_vip": {
+                    "description": "Exclusive with [advertise_custom advertise_dualstack_on_public advertise_on_public advertise_on_public_default_ipv6_vip advertise_on_public_default_vip advertise_v6_on_public do_not_advertise]\n Advertise this load balancer on public network with default Dualstack VIP",
+                    "title": "Advertise Dualstack VIP Public Network",
+                    "$ref": "#/definitions/schemaEmpty",
+                    "x-displayname": "Internet (Dualstack)"
+                },
+                "advertise_on_public_default_ipv6_vip": {
+                    "description": "Exclusive with [advertise_custom advertise_dualstack_on_public advertise_on_public advertise_on_public_default_dualstack_vip advertise_on_public_default_vip advertise_v6_on_public do_not_advertise]\n Advertise this load balancer on public network with default IPv6 VIP",
+                    "title": "Advertise IPv6 VIP On Public Network",
+                    "$ref": "#/definitions/schemaEmpty",
+                    "x-displayname": "Internet (IPv6)"
                 },
                 "advertise_on_public_default_vip": {
-                    "description": "Exclusive with [advertise_custom advertise_on_public do_not_advertise]\n Advertise this load balancer on public network with default VIP",
+                    "description": "Exclusive with [advertise_custom advertise_dualstack_on_public advertise_on_public advertise_on_public_default_dualstack_vip advertise_on_public_default_ipv6_vip advertise_v6_on_public do_not_advertise]\n Advertise this load balancer on public network with default IPv4 VIP",
                     "title": "Advertise On Public Default VIP",
                     "$ref": "#/definitions/schemaEmpty",
-                    "x-displayname": "Internet"
+                    "x-displayname": "Internet (IPv4)"
+                },
+                "advertise_v6_on_public": {
+                    "description": "Exclusive with [advertise_custom advertise_dualstack_on_public advertise_on_public advertise_on_public_default_dualstack_vip advertise_on_public_default_ipv6_vip advertise_on_public_default_vip do_not_advertise]\n Advertise this IPv6 load balancer address on public network",
+                    "title": "Advertise IPv6 On Public",
+                    "$ref": "#/definitions/viewsAdvertisePublic",
+                    "x-displayname": "Internet (Specified IPv6)"
                 },
                 "api_protection_rules": {
                     "description": " API Protection Rules can be defined in two categories.\n The first category includes fine-grained rules, per API path and methods.\n The second category includes rules per API groups or Server URLs.\n If request matches any rule in the first category, second category rules are not evaluated.\n Rules can also include additional conditions, for example specific clients can access certain API endpoint or API group.",
@@ -16178,15 +16358,15 @@ var APISwaggerJSON string = `{
                     }
                 },
                 "bot_defense": {
-                    "description": "Exclusive with [bot_defense_advanced disable_bot_defense]\n Select Bot Defense Standard",
+                    "description": "Exclusive with [bot_defense_advanced_protection disable_bot_defense]\n Select Bot Defense Standard",
                     "title": "Enable Bot Defense Standard",
                     "$ref": "#/definitions/common_securityShapeBotDefenseType",
                     "x-displayname": "Enable Bot Defense Standard"
                 },
-                "bot_defense_advanced": {
+                "bot_defense_advanced_protection": {
                     "description": "Exclusive with [bot_defense disable_bot_defense]\n Select Bot Defense",
-                    "title": "Enable Bot Defense for XC Bot A-la-carte offering and Bot advanced customers",
-                    "$ref": "#/definitions/common_securityBotDefenseAdvancedType",
+                    "title": "Bot Defense Advanced Protection",
+                    "$ref": "#/definitions/common_securityBotDefenseAdvancedProtection",
                     "x-displayname": "Enable Bot Defense"
                 },
                 "caching_policy": {
@@ -16314,7 +16494,7 @@ var APISwaggerJSON string = `{
                     "x-displayname": "Disable"
                 },
                 "disable_bot_defense": {
-                    "description": "Exclusive with [bot_defense bot_defense_advanced]\n No Bot Defense configuration for this load balancer",
+                    "description": "Exclusive with [bot_defense bot_defense_advanced_protection]\n No Bot Defense configuration for this load balancer",
                     "title": "Disable Bot Defense",
                     "$ref": "#/definitions/schemaEmpty",
                     "x-displayname": "Disable"
@@ -16389,7 +16569,7 @@ var APISwaggerJSON string = `{
                     "x-displayname": "DNS Information"
                 },
                 "do_not_advertise": {
-                    "description": "Exclusive with [advertise_custom advertise_on_public advertise_on_public_default_vip]\n Do not advertise this load balancer",
+                    "description": "Exclusive with [advertise_custom advertise_dualstack_on_public advertise_on_public advertise_on_public_default_dualstack_vip advertise_on_public_default_ipv6_vip advertise_on_public_default_vip advertise_v6_on_public]\n Do not advertise this load balancer",
                     "title": "Do Not Advertise",
                     "$ref": "#/definitions/schemaEmpty",
                     "x-displayname": "Do Not Advertise"
@@ -17370,7 +17550,7 @@ var APISwaggerJSON string = `{
         },
         "virtual_hostVirtualHostState": {
             "type": "string",
-            "description": "State of the virtual host\n\n - VIRTUAL_HOST_READY: VIRTUAL_HOST_READY\n\nVirtual host is ready to install\n - VIRTUAL_HOST_PENDING_VERIFICATION: VIRTUAL_HOST_PENDING_VERIFICATION\n\nVirtual host is verfication pending for some or all of its domains\n - VIRTUAL_HOST_VERIFICATION_FAILED: VIRTUAL_HOST_VERIFICATION_FAILED\n\nVirtual host has one or more domains for which verification failed\n - VIRTUAL_HOST_PENDING_DNS_DELEGATION: VIRTUAL_HOST_PENDING_DNS_DELEGATION\n\nVirtual host is pending DNS delegation\n - VIRTUAL_HOST_PENDING_A_RECORD: VIRTUAL_HOST_PENDING_A_RECORD\n\nVirtual host is waiting for one or more A records to be created\n - VIRTUAL_HOST_DNS_A_RECORD_ADDED: VIRTUAL_HOST_DNS_A_RECORD_ADDED\n\nDNS A record has been added for this Virtual host\n - VIRTUAL_HOST_INTERNET_NLB_PENDING_CREATION: VIRTUAL_HOST_INTERNET_NLB_PENDING_CREATION\n\nInternet facing NLB, is being created on the site/sites belonging to the virtual site\n - VIRTUAL_HOST_INTERNET_NLB_CREATION_FAILED: VIRTUAL_HOST_INTERNET_NLB_CREATION_FAILED\n\nInternet NLB creation failed on the site/sites. InternetNLBVIPStatus will have more information.",
+            "description": "State of the virtual host\n\n - VIRTUAL_HOST_READY: VIRTUAL_HOST_READY\n\nVirtual host is ready to install\n - VIRTUAL_HOST_PENDING_VERIFICATION: VIRTUAL_HOST_PENDING_VERIFICATION\n\nVirtual host is verfication pending for some or all of its domains\n - VIRTUAL_HOST_VERIFICATION_FAILED: VIRTUAL_HOST_VERIFICATION_FAILED\n\nVirtual host has one or more domains for which verification failed\n - VIRTUAL_HOST_PENDING_DNS_DELEGATION: VIRTUAL_HOST_PENDING_DNS_DELEGATION\n\nVirtual host is pending DNS delegation\n - VIRTUAL_HOST_PENDING_A_RECORD: VIRTUAL_HOST_PENDING_A_RECORD\n\nVirtual host is waiting for one or more A records to be created\n - VIRTUAL_HOST_DNS_A_RECORD_ADDED: VIRTUAL_HOST_DNS_A_RECORD_ADDED\n\nDNS A record has been added for this Virtual host\n - VIRTUAL_HOST_INTERNET_NLB_PENDING_CREATION: VIRTUAL_HOST_INTERNET_NLB_PENDING_CREATION\n\nInternet facing NLB, is being created on the site/sites belonging to the virtual site\n - VIRTUAL_HOST_INTERNET_NLB_CREATION_FAILED: VIRTUAL_HOST_INTERNET_NLB_CREATION_FAILED\n\nInternet NLB creation failed on the site/sites. InternetNLBVIPStatus will have more information.\n - VIRTUAL_HOST_PENDING_AAAA_RECORD: VIRTUAL_HOST_PENDING_AAAA_RECORD\n\nVirtual host is waiting for one or more AAAA records to be created\n - VIRTUAL_HOST_DNS_AAAA_RECORD_ADDED: VIRTUAL_HOST_DNS_AAAA_RECORD_ADDED\n\nDNS AAAA record has been added for this Virtual host\n - VIRTUAL_HOST_PENDING_DUALSTACK_RECORDS: VIRTUAL_HOST_PENDING_DUALSTACK_RECORDS\n\nVirtual host is waiting for one or more Dualstack records to be created\n - VIRTUAL_HOST_DNS_DUALSTACK_RECORDS_ADDED: VIRTUAL_HOST_DNS_DUALSTACK_RECORDS_ADDED\n\nDNS Dualstack records has been added for this Virtual host",
             "title": "VirtualHostState",
             "enum": [
                 "VIRTUAL_HOST_READY",
@@ -17380,7 +17560,11 @@ var APISwaggerJSON string = `{
                 "VIRTUAL_HOST_PENDING_A_RECORD",
                 "VIRTUAL_HOST_DNS_A_RECORD_ADDED",
                 "VIRTUAL_HOST_INTERNET_NLB_PENDING_CREATION",
-                "VIRTUAL_HOST_INTERNET_NLB_CREATION_FAILED"
+                "VIRTUAL_HOST_INTERNET_NLB_CREATION_FAILED",
+                "VIRTUAL_HOST_PENDING_AAAA_RECORD",
+                "VIRTUAL_HOST_DNS_AAAA_RECORD_ADDED",
+                "VIRTUAL_HOST_PENDING_DUALSTACK_RECORDS",
+                "VIRTUAL_HOST_DNS_DUALSTACK_RECORDS_ADDED"
             ],
             "default": "VIRTUAL_HOST_READY",
             "x-displayname": "Virtual Host State",
@@ -17400,6 +17584,15 @@ var APISwaggerJSON string = `{
                     "x-displayname": "IP Address",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.string.ip": "true"
+                    }
+                },
+                "ipv6_address": {
+                    "type": "string",
+                    "description": " IPv6 address associated with virtual host\n\nValidation Rules:\n  ves.io.schema.rules.string.ipv6: true\n",
+                    "title": "IPv6 address",
+                    "x-displayname": "IPv6 Address",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.string.ipv6": "true"
                     }
                 }
             }

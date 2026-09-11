@@ -3391,6 +3391,29 @@ func ResourceSecureMeshSiteInstanceResourceV1() *schema.Resource {
 				Required: true,
 			},
 
+			"waf_signatures": {
+
+				Type:     schema.TypeList,
+				MaxItems: 1,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+
+						"automatic": {
+
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+
+						"manual": {
+
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+					},
+				},
+			},
+
 			"worker_nodes": {
 
 				Type: schema.TypeList,

@@ -22,7 +22,7 @@ resource "volterra_cdn_loadbalancer" "example" {
 
   // One of the arguments from this list "api_specification api_specification_on_cache_miss disable_api_definition" must be set
 
-  api_specification {
+  api_specification_on_cache_miss {
     api_definition {
       name      = "test1"
       namespace = "staging"
@@ -36,11 +36,212 @@ resource "volterra_cdn_loadbalancer" "example" {
 
   // One of the arguments from this list "api_discovery_on_cache_miss disable_api_discovery enable_api_discovery" must be set
 
-  disable_api_discovery = true
+  enable_api_discovery {
+    api_crawler {
+      // One of the arguments from this list "api_crawler_config disable_api_crawler" must be set
+
+      api_crawler_config {
+        domains {
+          domain = "domain"
+
+          simple_login {
+            password {
+              blindfold_secret_info_internal {
+                decryption_provider = "value"
+
+                location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
+
+                store_provider = "value"
+              }
+
+              secret_encoding_type = "secret_encoding_type"
+
+              // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
+
+              blindfold_secret_info {
+                decryption_provider = "value"
+
+                location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
+
+                store_provider = "value"
+              }
+            }
+
+            user = "user"
+          }
+        }
+      }
+    }
+
+    api_discovery_from_code_scan {
+      code_base_integrations {
+        // One of the arguments from this list "all_repos selected_repos" must be set
+
+        all_repos = true
+
+        code_base_integration {
+          name      = "test1"
+          namespace = "staging"
+          tenant    = "acmecorp"
+        }
+      }
+    }
+
+    // One of the arguments from this list "custom_api_auth_discovery default_api_auth_discovery" must be set
+
+    default_api_auth_discovery = true
+    discovered_api_settings {
+      purge_duration_for_inactive_discovered_apis = "2"
+    }
+
+    // One of the arguments from this list "disable_learn_from_redirect_traffic enable_learn_from_redirect_traffic" must be set
+
+    enable_learn_from_redirect_traffic = true
+    sensitive_data_detection_rules {
+      custom_sensitive_data_detection_rules {
+        metadata {
+          description = "Virtual Host for acmecorp website"
+
+          disable = true
+
+          name = "acmecorp-web"
+        }
+
+        sensitive_data_detection_config {
+          // One of the arguments from this list "any_domain specific_domain" must be set
+
+          any_domain = true
+
+          // One of the arguments from this list "key_pattern key_value_pattern value_pattern" must be set
+
+          key_pattern {
+            // One of the arguments from this list "exact_value regex_value" must be set
+
+            exact_value = "x-volt-header"
+          }
+
+          // One of the arguments from this list "all_request_sections all_response_sections all_sections custom_sections" must be set
+
+          all_sections = true
+
+          // One of the arguments from this list "any_target api_endpoint_target api_group base_path" must be set
+
+          base_path = "/v1"
+        }
+
+        sensitive_data_type {
+          type = "EMAIL"
+        }
+      }
+
+      disabled_built_in_rules {
+        name = "[EMAIL, CC]"
+      }
+    }
+  }
 
   // One of the arguments from this list "bot_defense bot_defense_advanced disable_bot_defense" must be set
 
-  disable_bot_defense = true
+  bot_defense {
+    // One of the arguments from this list "disable_cors_support enable_cors_support" must be set
+
+    enable_cors_support = true
+
+    policy {
+      // One of the arguments from this list "disable_js_insert js_insert_all_pages js_insert_all_pages_except js_insertion_rules" must be set
+
+      disable_js_insert = true
+
+      javascript_mode = "javascript_mode"
+
+      js_download_path = "value"
+
+      // One of the arguments from this list "disable_mobile_sdk mobile_sdk_config" must be set
+
+      disable_mobile_sdk = true
+      protected_app_endpoints {
+        // One of the arguments from this list "mobile web web_mobile" must be set
+
+        web_mobile {
+          header {
+            // One of the arguments from this list "check_not_present check_present item" must be set
+
+            check_present = true
+
+            name = "Accept-Encoding"
+          }
+
+          headers {
+            // One of the arguments from this list "check_not_present check_present item" must be set
+
+            check_present = true
+
+            name = "Accept-Encoding"
+          }
+
+          mobile_identifier = "mobile_identifier"
+        }
+
+        // One of the arguments from this list "any_domain domain" can be set
+
+        any_domain = true
+
+        // One of the arguments from this list "flow_label undefined_flow_label" must be set
+
+        undefined_flow_label = true
+
+        // One of the arguments from this list "allow_good_bots mitigate_good_bots" must be set
+
+        allow_good_bots = true
+        headers {
+          invert_matcher = true
+
+          // One of the arguments from this list "check_not_present check_present item presence" must be set
+
+          presence = true
+          name = "Accept-Encoding"
+        }
+        http_methods = ["http_methods"]
+        metadata {
+          description = "Virtual Host for acmecorp website"
+
+          disable = true
+
+          name = "acmecorp-web"
+        }
+        mitigation {
+          // One of the arguments from this list "block flag none redirect" can be set
+
+          block {
+            body = "string://LzxwPiBZb3VyIHJlcXVlc3Qgd2FzIGJsb2NrZWQgPC9wPg=="
+
+            body_hash = "92959a96fd69146c5fe7cbde6e5720f2"
+
+            status = "status"
+          }
+        }
+        path {
+          // One of the arguments from this list "path prefix regex" must be set
+
+          regex = "regex"
+        }
+        protocol = "protocol"
+        query_params {
+          invert_matcher = true
+
+          key = "sourceid"
+
+          // One of the arguments from this list "check_not_present check_present item presence" must be set
+
+          presence = true
+        }
+      }
+    }
+
+    regional_endpoint = "regional_endpoint"
+
+    timeout = "300"
+  }
 
   // One of the arguments from this list "client_side_defense disable_client_side_defense" must be set
 
@@ -49,7 +250,7 @@ resource "volterra_cdn_loadbalancer" "example" {
 
   // One of the arguments from this list "l7_ddos_action_block l7_ddos_action_default l7_ddos_action_js_challenge l7_ddos_action_none" must be set
 
-  l7_ddos_action_block = true
+  l7_ddos_action_default = true
 
   // One of the arguments from this list "http https https_auto_cert" must be set
 
@@ -112,6 +313,7 @@ resource "volterra_cdn_loadbalancer" "example" {
 
   disable_waf = true
 }
+
 ```
 
 Argument Reference
@@ -1409,7 +1611,7 @@ Select Bot Defense Advanced.
 
 `js_insertion_rules` - (Optional) Specify custom JavaScript insertion rules.. See [Java Script Choice Js Insertion Rules ](#java-script-choice-js-insertion-rules) below for details.
 
-`mobile` - (Optional) Select infrastructure for mobile.. See [ref](#ref) below for details.
+`mobile` - (Optional) Select an infrastructure to process mobile traffic. Be sure to add your web app FQDN to the Bot Network Policy, and the infrastructure domain to the infrastructure ACL.. See [ref](#ref) below for details.
 
 ###### One of the arguments from this list "disable_mobile_sdk, mobile_sdk_config" must be set
 
@@ -1417,7 +1619,7 @@ Select Bot Defense Advanced.
 
 `mobile_sdk_config` - (Optional). See [Mobile Sdk Choice Mobile Sdk Config ](#mobile-sdk-choice-mobile-sdk-config) below for details.
 
-`web` - (Optional) Select infrastructure for web.. See [ref](#ref) below for details.
+`web` - (Optional) Select an infrastructure to process web traffic. Be sure to add your web app FQDN to the Bot Network Policy, and the infrastructure domain to the infrastructure ACL.. See [ref](#ref) below for details.
 
 ### Bypass Rate Limiting Rules Bypass Rate Limiting Rules
 
@@ -1429,7 +1631,7 @@ This category defines rules per URL or API group. If request matches any of thes
 
 `any_url` - (Optional) Any URL (`Bool`).
 
-`api_endpoint` - (Required) The endpoint (path) of the request.. See [Destination Type Api Endpoint ](#destination-type-api-endpoint) below for details.
+`api_endpoint` - (Optional) The endpoint (path) of the request.. See [Destination Type Api Endpoint ](#destination-type-api-endpoint) below for details.
 
 `api_groups` - (Optional) Validation will be performed for the endpoints mentioned in the API Groups. See [Destination Type Api Groups ](#destination-type-api-groups) below for details.
 
@@ -3367,7 +3569,7 @@ List of original servers.
 
 `public_name` - (Optional) Specify origin server with public DNS name. See [Choice Public Name ](#choice-public-name) below for details.
 
-`port` - (Optional) Port the workload can be reached on (`Int`).
+`port` - (Optional) Enter a custom port only if your origin server uses a non-default port. Leave the value as 0 to automatically use 443 (TLS) or 80 (non-TLS). (`Int`).
 
 ### Origin Pool Public Name
 
@@ -5246,4 +5448,4 @@ X-Forwarded-Client-Cert header will be added with the configured fields.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured cdn_loadbalancer.
+-	`id` - This is the id of the configured cdn_loadbalancer.

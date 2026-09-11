@@ -3580,7 +3580,7 @@ var APISwaggerJSON string = `{
                     "x-displayname": "Preserve Case"
                 },
                 "proper_case_header_transformation": {
-                    "description": "Exclusive with [default_header_transformation legacy_header_transformation preserve_case_header_transformation]\n Normalize the headers to proper case words. The fist character and any character\n following a special character will be capitalized if it’s an alpha character.\n For example, “content-type” becomes “Content-Type”, and “foo$b#$are” becomes “Foo$B#$Are”",
+                    "description": "Exclusive with [default_header_transformation legacy_header_transformation preserve_case_header_transformation]\n Normalize the headers to proper case words. The first character and any character\n following a special character will be capitalized if it’s an alpha character.\n For example, “content-type” becomes “Content-Type”, and “foo$b#$are” becomes “Foo$B#$Are”",
                     "title": "Proper case header transformation",
                     "$ref": "#/definitions/schemaEmpty",
                     "x-displayname": "Proper Case"
@@ -4482,7 +4482,8 @@ var APISwaggerJSON string = `{
             "description": "Certificate Parameters for authentication, TLS ciphers, and trust store",
             "title": "UpstreamCertificateParamsType",
             "x-displayname": "Upstream Certificate Parameters",
-            "x-ves-displayorder": "1,2,3,4,5",
+            "x-ves-displayorder": "1,6,3,4,5",
+            "x-ves-oneof-field-server_validation_choice": "[\"skip_server_verification\",\"tls_validation_params\",\"volterra_trusted_ca\"]",
             "x-ves-proto-message": "ves.io.schema.UpstreamCertificateParamsType",
             "properties": {
                 "certificates": {
@@ -4528,11 +4529,23 @@ var APISwaggerJSON string = `{
                     "$ref": "#/definitions/schemaTlsProtocol",
                     "x-displayname": "Minimum TLS Version"
                 },
-                "validation_params": {
-                    "description": " This includes URL for a trust store, whether SAN verification is required\n and list of Subject Alt Names for verification",
-                    "title": "validation_params",
+                "skip_server_verification": {
+                    "description": "Exclusive with [tls_validation_params volterra_trusted_ca]\n Skip server verification",
+                    "title": "Skip Server Verification",
+                    "$ref": "#/definitions/schemaEmpty",
+                    "x-displayname": "Skip Verification"
+                },
+                "tls_validation_params": {
+                    "description": "Exclusive with [skip_server_verification volterra_trusted_ca]\n This includes URL for a trust store, whether SAN verification is required\n and list of Subject Alt Names for verification",
+                    "title": "tls_validation_params",
                     "$ref": "#/definitions/schemaTlsValidationParamsType",
                     "x-displayname": "Root CA Validation parameters"
+                },
+                "volterra_trusted_ca": {
+                    "description": "Exclusive with [skip_server_verification tls_validation_params]\n Perform origin server verification using F5XC Default Root CA Certificate",
+                    "title": "F5XC Root CA",
+                    "$ref": "#/definitions/schemaEmpty",
+                    "x-displayname": "Use Default Root CA Certificate"
                 }
             }
         },

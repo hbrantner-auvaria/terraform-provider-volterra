@@ -6401,7 +6401,6 @@ var DefaultTLSConfigTypeValidator = func() *ValidateTLSConfigType {
 	rulesCaChoiceTrustedCaUrl := map[string]string{
 		"ves.io.schema.rules.string.max_bytes":      "131072",
 		"ves.io.schema.rules.string.truststore_url": "true",
-		"ves.io.schema.rules.string.uri_ref":        "true",
 	}
 	vFnMap["ca_choice.trusted_ca_url"], err = vrhCaChoiceTrustedCaUrl(rulesCaChoiceTrustedCaUrl)
 	if err != nil {

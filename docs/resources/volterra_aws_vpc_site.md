@@ -35,7 +35,17 @@ resource "volterra_aws_vpc_site" "example" {
 
   // One of the arguments from this list "direct_connect_disabled direct_connect_enabled private_connectivity" must be set
 
-  direct_connect_disabled = true
+  private_connectivity {
+    cloud_link {
+      name      = "test1"
+      namespace = "staging"
+      tenant    = "acmecorp"
+    }
+
+    // One of the arguments from this list "inside outside" can be set
+
+    outside = true
+  }
 
   // One of the arguments from this list "egress_gateway_default egress_nat_gw egress_virtual_private_gateway" must be set
 
@@ -56,7 +66,11 @@ resource "volterra_aws_vpc_site" "example" {
 
   // One of the arguments from this list "custom_security_group f5xc_security_group" must be set
 
-  f5xc_security_group = true
+  custom_security_group {
+    inside_security_group_id = "sg-0db952838ba829943"
+
+    outside_security_group_id = "sg-0db952838ba829943"
+  }
 
   // One of the arguments from this list "ingress_egress_gw ingress_gw voltstack_cluster" must be set
 
@@ -64,7 +78,7 @@ resource "volterra_aws_vpc_site" "example" {
     allowed_vip_port {
       // One of the arguments from this list "custom_ports disable_allowed_vip_port use_http_https_port use_http_port use_https_port" can be set
 
-      disable_allowed_vip_port = true
+      use_http_port = true
     }
 
     aws_certified_hw = "aws-byol-voltmesh"
@@ -88,10 +102,10 @@ resource "volterra_aws_vpc_site" "example" {
     performance_enhancement_mode {
       // One of the arguments from this list "perf_mode_l3_enhanced perf_mode_l7_enhanced" must be set
 
-      perf_mode_l3_enhanced {
-        // One of the arguments from this list "jumbo no_jumbo" must be set
+      perf_mode_l7_enhanced {
+        // One of the arguments from this list "jumbo_disabled jumbo_enabled" must be set
 
-        no_jumbo = true
+        jumbo_disabled = true
       }
     }
   }
@@ -101,6 +115,7 @@ resource "volterra_aws_vpc_site" "example" {
 
   nodes_per_az = "2"
 }
+
 ```
 
 Argument Reference
@@ -216,6 +231,8 @@ Argument Reference
 
 `vpc` - (Optional) Choice of using existing VPC or create new VPC. See [Vpc ](#vpc) below for details.
 
+`waf_signatures` - (Optional) Select WAF Signatures Update Mode for the site. By default, new signatures will be applied manually.. See [Waf Signatures ](#waf-signatures) below for details.
+
 ###### One of the arguments from this list "no_worker_nodes, nodes_per_az, total_nodes" must be set
 
 `no_worker_nodes` - (Optional) Worker nodes is set to zero (`Bool`).
@@ -311,6 +328,16 @@ Choice of using existing VPC or create new VPC.
 `new_vpc` - (Optional) Parameters for creating new VPC. See [Choice New Vpc ](#choice-new-vpc) below for details.
 
 `vpc_id` - (Optional) Information about existing VPC ID (`String`).
+
+### Waf Signatures
+
+Select WAF Signatures Update Mode for the site. By default, new signatures will be applied manually..
+
+###### One of the arguments from this list "automatic, manual" can be set
+
+`automatic` - (Optional) New WAF signatures will be applied automatically as soon as they are released. (`Bool`).
+
+`manual` - (Optional) New WAF signatures will only be applied when an update is triggered manually. (`Bool`).
 
 ### Admin Password Blindfold Secret Info Internal
 
@@ -529,6 +556,18 @@ Enable Private Connectivity to Site.
 `inside` - (Optional) CloudLink will be associated, and routes will be propagated with the Site Local Inside Network of this Site (`Bool`).
 
 `outside` - (Optional) CloudLink will be associated, and routes will be propagated with the Site Local Outside Network of this Site (`Bool`).
+
+### Dual Stack Ipv4
+
+IPv4 Address.
+
+`addr` - (Optional) IPv4 Address in string form with dot-decimal notation (`String`).
+
+### Dual Stack Ipv6
+
+IPv6 Address.
+
+`addr` - (Optional) e.g. '2001:db8:0:0:0:0:2:1' becomes '2001:db8::2:1' or '2001:db8:0:0:0:2:0:0' becomes '2001:db8::2::' (`String`).
 
 ### Egress Gateway Choice Egress Nat Gw
 
@@ -830,7 +869,9 @@ Firewall Policy is disabled for this site..
 
 Nexthop address when type is "Use-Configured".
 
-###### One of the arguments from this list "ipv4, ipv6" can be set
+###### One of the arguments from this list "dual_stack, ipv4, ipv6" can be set
+
+`dual_stack` - (Optional) Both IPv4 and IPv6 addresses are specified together. See [Ver Dual Stack ](#ver-dual-stack) below for details.
 
 `ipv4` - (Optional) IPv4 Address. See [Ver Ipv4 ](#ver-ipv4) below for details.
 
@@ -1017,6 +1058,14 @@ With this option, ingress and egress traffic will be controlled via security gro
 `inside_security_group_id` - (Optional) Security Group ID to be attached to SLI(Site Local Inside) Interface (`String`).
 
 `outside_security_group_id` - (Optional) Security Group ID to be attached to SLO(Site Local Outside) Interface (`String`).
+
+### Signatures Update Mode Choice Automatic
+
+New WAF signatures will be applied automatically as soon as they are released..
+
+### Signatures Update Mode Choice Manual
+
+New WAF signatures will only be applied when an update is triggered manually..
 
 ### Signing Cert Choice Custom Certificate
 
@@ -1240,6 +1289,14 @@ Disable Vega Upgrade Mode.
 
 When enabled, vega will inform RE to stop traffic to the specific node..
 
+### Ver Dual Stack
+
+Both IPv4 and IPv6 addresses are specified together.
+
+`ipv4` - (Optional) IPv4 Address. See [Dual Stack Ipv4 ](#dual-stack-ipv4) below for details.
+
+`ipv6` - (Optional) IPv6 Address. See [Dual Stack Ipv6 ](#dual-stack-ipv6) below for details.
+
 ### Ver Ipv4
 
 IPv4 Address.
@@ -1327,4 +1384,4 @@ Only Single AZ or Three AZ(s) nodes are supported currently..
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured aws_vpc_site.
+-	`id` - This is the id of the configured aws_vpc_site.

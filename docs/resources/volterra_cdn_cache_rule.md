@@ -20,6 +20,7 @@ resource "volterra_cdn_cache_rule" "example" {
   name      = "acmecorp-web"
   namespace = "staging"
 }
+
 ```
 
 Argument Reference
@@ -240,4 +241,4 @@ The Cache Rule Expression Terms that are ANDed.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured cdn_cache_rule.
+-	`id` - This is the id of the configured cdn_cache_rule.

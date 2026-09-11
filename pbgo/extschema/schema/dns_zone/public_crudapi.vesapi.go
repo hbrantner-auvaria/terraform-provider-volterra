@@ -3089,8 +3089,8 @@ var APISwaggerJSON string = `{
         },
         "dns_zoneDNSSECMode": {
             "type": "object",
-            "title": "DNSSEC Mode Disable",
-            "x-displayname": "Disable",
+            "title": "DNSSEC Mode",
+            "x-displayname": "DNSSEC Mode",
             "x-ves-oneof-field-mode": "[\"disable\",\"enable\"]",
             "x-ves-proto-message": "ves.io.schema.dns_zone.DNSSECMode",
             "properties": {

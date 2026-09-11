@@ -298,6 +298,88 @@ func AwsVpcListValidator() db.Validator {
 
 // augmented methods on protoc/std generated struct
 
+func (m *DualStackAddressType) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *DualStackAddressType) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *DualStackAddressType) DeepCopy() *DualStackAddressType {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &DualStackAddressType{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *DualStackAddressType) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *DualStackAddressType) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return DualStackAddressTypeValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateDualStackAddressType struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateDualStackAddressType) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*DualStackAddressType)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *DualStackAddressType got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["ipv4"]; exists {
+		vOpts := append(opts, db.WithValidateField("ipv4"))
+		if err := fv(ctx, m.GetIpv4(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["ipv6"]; exists {
+		vOpts := append(opts, db.WithValidateField("ipv6"))
+		if err := fv(ctx, m.GetIpv6(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultDualStackAddressTypeValidator = func() *ValidateDualStackAddressType {
+	v := &ValidateDualStackAddressType{FldValidators: map[string]db.ValidatorFunc{}}
+	v.FldValidators["ipv4"] = Ipv4AddressTypeValidator().Validate
+	v.FldValidators["ipv6"] = Ipv6AddressTypeValidator().Validate
+
+	return v
+}()
+
+func DualStackAddressTypeValidator() db.Validator {
+	return DefaultDualStackAddressTypeValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *IpAddressType) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
@@ -374,6 +456,17 @@ func (v *ValidateIpAddressType) Validate(ctx context.Context, pm interface{}, op
 				return err
 			}
 		}
+	case *IpAddressType_DualStack:
+		if fv, exists := v.FldValidators["ver.dual_stack"]; exists {
+			val := m.GetVer().(*IpAddressType_DualStack).DualStack
+			vOpts := append(opts,
+				db.WithValidateField("ver"),
+				db.WithValidateField("dual_stack"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 	return nil
 }
@@ -383,6 +476,7 @@ var DefaultIpAddressTypeValidator = func() *ValidateIpAddressType {
 	v := &ValidateIpAddressType{FldValidators: map[string]db.ValidatorFunc{}}
 	v.FldValidators["ver.ipv4"] = Ipv4AddressTypeValidator().Validate
 	v.FldValidators["ver.ipv6"] = Ipv6AddressTypeValidator().Validate
+	v.FldValidators["ver.dual_stack"] = DualStackAddressTypeValidator().Validate
 
 	return v
 }()

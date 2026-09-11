@@ -31,7 +31,7 @@ resource "volterra_v1_dns_monitor" "example" {
 
   // One of the arguments from this list "interval_12_hours interval_15_mins interval_1_day interval_1_hour interval_1_min interval_30_mins interval_30_secs interval_5_mins interval_6_hours" must be set
 
-  interval_1_min   = true
+  interval_30_mins = true
   lookup_timeout   = ["5000"]
   on_failure_count = ["2"]
 
@@ -42,6 +42,7 @@ resource "volterra_v1_dns_monitor" "example" {
   record_type               = ["A"]
   source_critical_threshold = ["1"]
 }
+
 ```
 
 Argument Reference
@@ -200,4 +201,4 @@ x-displayName: "Disable".
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured v1_dns_monitor.
+-	`id` - This is the id of the configured v1_dns_monitor.

@@ -3678,9 +3678,15 @@ var APISwaggerJSON string = `{
             "x-ves-oneof-field-last_hop_pool_choice": "[\"last_hop_pool\",\"last_hop_pool_none\"]",
             "x-ves-oneof-field-request_logging_profile_choice": "[\"request_logging_profile\",\"request_logging_profile_none\"]",
             "x-ves-oneof-field-statistics_profile_choice": "[\"statistics_profile\",\"statistics_profile_none\"]",
-            "x-ves-oneof-field-virtual_server_type": "[\"http\",\"http3\",\"https\",\"tcp\",\"udp\"]",
+            "x-ves-oneof-field-virtual_server_type": "[\"https\"]",
             "x-ves-proto-message": "ves.io.schema.views.virtual_server.GlobalSpecType",
             "properties": {
+                "access_profile": {
+                    "description": " Specified an access policy that determines the authentication rules and access controls applied to user sessions for this virtual server",
+                    "title": "Per Session Access Policy",
+                    "$ref": "#/definitions/schemaviewsObjectRefType",
+                    "x-displayname": "Per Session Access Policy"
+                },
                 "auto_last_hop": {
                     "description": " When enabled, allows the system to send return traffic to the MAC address that transmitted the request, even if the routing table points to a different network or interface. As a result, the system can send return traffic to clients even when there is no matching route. For example, if the system does not have a default route configured and the client is located on a remote network. This setting is also useful when the system is load balancing transparent devices that do not modify the source IP address of the packet. Without the last hop option enabled, the system could return connections to a different transparent node, resulting in asymmetric routing. You can configure this setting globally and on an object level. You set the global Auto Last Hop value on the System :: Configuration :: Local Traffic :: General screen. To configure this setting globally, retain the Default setting. When you configure Auto Last Hop with a value other than Default at the object level, its setting takes precedence over the global setting. This enables you to configure auto last hop on a per-virtual server basis. The default is Default, meaning that the system uses the global auto-lasthop setting to send back the request.",
                     "title": "Auto Last Hop",
@@ -3757,20 +3763,14 @@ var APISwaggerJSON string = `{
                     "$ref": "#/definitions/schemaEmpty",
                     "x-displayname": "None"
                 },
-                "http": {
-                    "description": "Exclusive with [http3 https tcp udp]\n Selection provides configuration for HTTP and HTTP/2 services",
-                    "title": "HTTP",
-                    "$ref": "#/definitions/virtual_serverHTTPServices",
-                    "x-displayname": "HTTP"
-                },
                 "http3": {
-                    "description": "Exclusive with [http https tcp udp]\n Selection provides configuration for HTTP/3 services",
+                    "description": " Selection provides configuration for HTTP/3 services",
                     "title": "HTTP/3",
                     "$ref": "#/definitions/virtual_serverHTTP3Services",
                     "x-displayname": "HTTP/3"
                 },
                 "https": {
-                    "description": "Exclusive with [http http3 tcp udp]\n Selection provides configuration for HTTP and HTTP/2 services with TLS configuration",
+                    "description": "Exclusive with []\n Selection provides configuration for HTTP and HTTP/2 services with TLS configuration",
                     "title": "HTTPS",
                     "$ref": "#/definitions/virtual_serverHTTPServices",
                     "x-displayname": "HTTPS"
@@ -3862,12 +3862,6 @@ var APISwaggerJSON string = `{
                     "$ref": "#/definitions/schemaEmpty",
                     "x-displayname": "None"
                 },
-                "tcp": {
-                    "description": "Exclusive with [http http3 https udp]\n Selection provides configuration for TCP services",
-                    "title": "TCP",
-                    "$ref": "#/definitions/virtual_serverTCPServices",
-                    "x-displayname": "TCP"
-                },
                 "traffic_policies": {
                     "type": "array",
                     "description": " Specifies the Traffic Policy you want use for this virtual server.\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 32\n",
@@ -3885,12 +3879,6 @@ var APISwaggerJSON string = `{
                     "title": "Translation",
                     "$ref": "#/definitions/virtual_serverTranslationType",
                     "x-displayname": "Translation"
-                },
-                "udp": {
-                    "description": "Exclusive with [http http3 https tcp]\n Selection provides configuration for UDP services",
-                    "title": "UDP",
-                    "$ref": "#/definitions/virtual_serverUDPServices",
-                    "x-displayname": "UDP"
                 },
                 "view_internal": {
                     "description": " Reference to view internal object",
@@ -4178,23 +4166,29 @@ var APISwaggerJSON string = `{
             "type": "object",
             "title": "HTTPDefaultServerSelection",
             "x-displayname": "HTTP Server Selection",
-            "x-ves-oneof-field-http2_server_profile_choice": "[\"http2_server_profile\",\"http2_server_profile_none\"]",
+            "x-ves-oneof-field-http2_server_profile_choice": "[\"http2_server_profile\",\"http2_server_profile_none\",\"http2_server_profile_same_as_client\"]",
             "x-ves-oneof-field-http_server_profile_choice": "[\"http_server_profile\",\"http_server_profile_same_as_client\"]",
             "x-ves-oneof-field-protocol_server_profile_choice": "[\"protocol_server_profile\",\"protocol_server_profile_same_as_client\"]",
             "x-ves-oneof-field-websocket_server_profile_choice": "[\"websocket_server_profile\",\"websocket_server_profile_same_as_client\"]",
             "x-ves-proto-message": "ves.io.schema.views.virtual_server.HTTPDefaultServerSelection",
             "properties": {
                 "http2_server_profile": {
-                    "description": "Exclusive with [http2_server_profile_none]\n",
+                    "description": "Exclusive with [http2_server_profile_none http2_server_profile_same_as_client]\n",
                     "title": "Select Profile",
                     "$ref": "#/definitions/schemaviewsObjectRefType",
                     "x-displayname": "Select Profile"
                 },
                 "http2_server_profile_none": {
-                    "description": "Exclusive with [http2_server_profile]\n",
+                    "description": "Exclusive with [http2_server_profile http2_server_profile_same_as_client]\n",
                     "title": "None",
                     "$ref": "#/definitions/schemaEmpty",
                     "x-displayname": "None"
+                },
+                "http2_server_profile_same_as_client": {
+                    "description": "Exclusive with [http2_server_profile http2_server_profile_none]\n",
+                    "title": "Use Client Profile",
+                    "$ref": "#/definitions/schemaEmpty",
+                    "x-displayname": "Use Client Profile"
                 },
                 "http_server_profile": {
                     "description": "Exclusive with [http_server_profile_same_as_client]\n",
@@ -4479,94 +4473,12 @@ var APISwaggerJSON string = `{
                         "$ref": "#/definitions/ioschemaObjectRefType"
                     },
                     "x-displayname": "Config Object"
-                }
-            }
-        },
-        "virtual_serverTCPDefaultServerSelection": {
-            "type": "object",
-            "title": "TCPDefaultServerSelection",
-            "x-displayname": "TCP Server Selection",
-            "x-ves-oneof-field-tcp_server_profile_choice": "[\"tcp_server_profile\",\"tcp_server_profile_use_client\"]",
-            "x-ves-proto-message": "ves.io.schema.views.virtual_server.TCPDefaultServerSelection",
-            "properties": {
-                "ssl_server_profiles": {
-                    "type": "array",
-                    "description": " Specifies the SSL profile for managing server-side SSL traffic. The list contains entries for each already defined server-side SSL profile.\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.unique: true\n",
-                    "title": "SSL Profile (Server)",
-                    "maxItems": 32,
-                    "items": {
-                        "$ref": "#/definitions/schemaviewsObjectRefType"
-                    },
-                    "x-displayname": "SSL Profile (Server)",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.repeated.max_items": "32",
-                        "ves.io.schema.rules.repeated.unique": "true"
-                    }
                 },
-                "tcp_server_profile": {
-                    "description": "Exclusive with [tcp_server_profile_use_client]\n",
-                    "title": "Select Profile",
-                    "$ref": "#/definitions/schemaviewsObjectRefType",
-                    "x-displayname": "Select Profile"
-                },
-                "tcp_server_profile_use_client": {
-                    "description": "Exclusive with [tcp_server_profile]\n",
-                    "title": "Same as Client Profile (Use Client Profile)",
-                    "$ref": "#/definitions/schemaEmpty",
-                    "x-displayname": "Use Client Profile"
-                }
-            }
-        },
-        "virtual_serverTCPServices": {
-            "type": "object",
-            "title": "TCP Services",
-            "x-displayname": "TCP Services",
-            "x-ves-oneof-field-server_app_type_choice": "[\"server_app_type_same_as_client\"]",
-            "x-ves-proto-message": "ves.io.schema.views.virtual_server.TCPServices",
-            "properties": {
-                "protocol_client_profile": {
-                    "description": " Specifies that the selected profile is a client-side profile. The list contains entries for each already defined client protocol profile.\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
-                    "title": "Protocol Profile (Client)",
-                    "$ref": "#/definitions/schemaviewsObjectRefType",
-                    "x-displayname": "Protocol Profile (Client)",
-                    "x-ves-required": "true",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.message.required": "true"
-                    }
-                },
-                "server_app_type_same_as_client": {
-                    "description": "Exclusive with []\n",
-                    "title": "Same As Client App Type",
-                    "$ref": "#/definitions/virtual_serverTCPDefaultServerSelection",
-                    "x-displayname": "Same As Client"
-                },
-                "services": {
-                    "type": "array",
-                    "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 128\n  ves.io.schema.rules.repeated.unique: true\n",
-                    "title": "Services",
-                    "maxItems": 128,
-                    "items": {
-                        "$ref": "#/definitions/viewsvirtual_serverServiceType"
-                    },
-                    "x-displayname": "Services",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.repeated.max_items": "128",
-                        "ves.io.schema.rules.repeated.unique": "true"
-                    }
-                },
-                "ssl_client_profiles": {
-                    "type": "array",
-                    "description": " Specifies the SSL profile for managing client-side SSL traffic. The list contains entries for each already defined client-side SSL profile.\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.unique: true\n",
-                    "title": "Client SSL Profile",
-                    "maxItems": 32,
-                    "items": {
-                        "$ref": "#/definitions/schemaviewsObjectRefType"
-                    },
-                    "x-displayname": "SSL Profile (Client)",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.repeated.max_items": "32",
-                        "ves.io.schema.rules.repeated.unique": "true"
-                    }
+                "status": {
+                    "type": "string",
+                    "description": " Depicts Success or Failure from control plane",
+                    "title": "status",
+                    "x-displayname": "Status"
                 }
             }
         },
@@ -4593,94 +4505,6 @@ var APISwaggerJSON string = `{
                     "title": "Source Port",
                     "$ref": "#/definitions/schemaTMMVirtualServerSourcePortType",
                     "x-displayname": "Source Port"
-                }
-            }
-        },
-        "virtual_serverUDPDefaultServerSelection": {
-            "type": "object",
-            "title": "UDPDefaultServerSelection",
-            "x-displayname": "UDP Server Selection",
-            "x-ves-oneof-field-udp_server_profile_choice": "[\"udp_server_profile\",\"udp_server_profile_use_client\"]",
-            "x-ves-proto-message": "ves.io.schema.views.virtual_server.UDPDefaultServerSelection",
-            "properties": {
-                "ssl_server_profiles": {
-                    "type": "array",
-                    "description": " Specifies the SSL profile for managing server-side SSL traffic. The list contains entries for each already defined server-side SSL profile.\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.unique: true\n",
-                    "title": "SSL Profile (Server)",
-                    "maxItems": 32,
-                    "items": {
-                        "$ref": "#/definitions/schemaviewsObjectRefType"
-                    },
-                    "x-displayname": "SSL Profile (Server)",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.repeated.max_items": "32",
-                        "ves.io.schema.rules.repeated.unique": "true"
-                    }
-                },
-                "udp_server_profile": {
-                    "description": "Exclusive with [udp_server_profile_use_client]\n",
-                    "title": "Select Profile",
-                    "$ref": "#/definitions/schemaviewsObjectRefType",
-                    "x-displayname": "Select Profile"
-                },
-                "udp_server_profile_use_client": {
-                    "description": "Exclusive with [udp_server_profile]\n",
-                    "title": "Use Client Profile",
-                    "$ref": "#/definitions/schemaEmpty",
-                    "x-displayname": "Use Client Profile"
-                }
-            }
-        },
-        "virtual_serverUDPServices": {
-            "type": "object",
-            "title": "UDP Services",
-            "x-displayname": "UDP Services",
-            "x-ves-oneof-field-server_app_type_choice": "[\"server_app_type_same_as_client\"]",
-            "x-ves-proto-message": "ves.io.schema.views.virtual_server.UDPServices",
-            "properties": {
-                "protocol_client_profile": {
-                    "description": " Specifies that the selected profile is a client-side profile. The list contains entries for each already defined client protocol profile.\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
-                    "title": "Protocol Profile (Client)",
-                    "$ref": "#/definitions/schemaviewsObjectRefType",
-                    "x-displayname": "Protocol Profile (Client)",
-                    "x-ves-required": "true",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.message.required": "true"
-                    }
-                },
-                "server_app_type_same_as_client": {
-                    "description": "Exclusive with []\n",
-                    "title": "Same As Client App Type",
-                    "$ref": "#/definitions/virtual_serverUDPDefaultServerSelection",
-                    "x-displayname": "Same As Client"
-                },
-                "services": {
-                    "type": "array",
-                    "description": "\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 128\n  ves.io.schema.rules.repeated.unique: true\n",
-                    "title": "Services",
-                    "maxItems": 128,
-                    "items": {
-                        "$ref": "#/definitions/viewsvirtual_serverServiceType"
-                    },
-                    "x-displayname": "Services",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.repeated.max_items": "128",
-                        "ves.io.schema.rules.repeated.unique": "true"
-                    }
-                },
-                "ssl_client_profiles": {
-                    "type": "array",
-                    "description": " Specifies the SSL profile for managing client-side SSL traffic. The list contains entries for each already defined client-side SSL profile.\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.unique: true\n",
-                    "title": "Client SSL Profile",
-                    "maxItems": 32,
-                    "items": {
-                        "$ref": "#/definitions/schemaviewsObjectRefType"
-                    },
-                    "x-displayname": "SSL Profile (Client)",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.repeated.max_items": "32",
-                        "ves.io.schema.rules.repeated.unique": "true"
-                    }
                 }
             }
         },

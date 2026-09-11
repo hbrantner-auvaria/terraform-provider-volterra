@@ -206,6 +206,7 @@ func testActiveAlertPolicy(name, namespace string) string {
 			receivers {
 				name = volterra_alert_receiver.email.name
 				namespace = volterra_namespace.system.name
+				tenant    = "ves-io"
 			}
 			routes {
 				send = true

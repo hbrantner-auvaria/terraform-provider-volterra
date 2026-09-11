@@ -548,7 +548,13 @@ func (m *ObjectGetRsp) GetDRefInfo() ([]db.DRefInfo, error) {
 		return nil, nil
 	}
 
-	return m.GetSystemMetadataDRefInfo()
+	var drInfos []db.DRefInfo
+	if fdrInfos, err := m.GetSystemMetadataDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetSystemMetadataDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	return drInfos, nil
 }
 
 // GetDRefInfo for the field's type
@@ -617,6 +623,15 @@ func (v *ValidateObjectGetRsp) Validate(ctx context.Context, pm interface{}, opt
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["status"]; exists {
+		vOpts := append(opts, db.WithValidateField("status"))
+		for idx, item := range m.GetStatus() {
+			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
+			if err := fv(ctx, item, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
 	if fv, exists := v.FldValidators["system_metadata"]; exists {
 		vOpts := append(opts, db.WithValidateField("system_metadata"))
 		if err := fv(ctx, m.GetSystemMetadata(), vOpts...); err != nil {
@@ -632,6 +647,7 @@ var DefaultObjectGetRspValidator = func() *ValidateObjectGetRsp {
 	v.FldValidators["metadata"] = ves_io_schema.ObjectMetaTypeValidator().Validate
 	v.FldValidators["system_metadata"] = ves_io_schema.SystemObjectMetaTypeValidator().Validate
 	v.FldValidators["spec"] = ves_io_schema_vs_profiles_services_quic_profile.SpecTypeValidator().Validate
+	v.FldValidators["status"] = ves_io_schema_vs_profiles_services_quic_profile.StatusObjectValidator().Validate
 
 	return v
 }()
@@ -940,7 +956,13 @@ func (m *ObjectListRspItem) GetDRefInfo() ([]db.DRefInfo, error) {
 		return nil, nil
 	}
 
-	return m.GetSystemMetadataDRefInfo()
+	var drInfos []db.DRefInfo
+	if fdrInfos, err := m.GetSystemMetadataDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetSystemMetadataDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	return drInfos, nil
 }
 
 // GetDRefInfo for the field's type
@@ -1015,6 +1037,15 @@ func (v *ValidateObjectListRspItem) Validate(ctx context.Context, pm interface{}
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["status"]; exists {
+		vOpts := append(opts, db.WithValidateField("status"))
+		for idx, item := range m.GetStatus() {
+			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
+			if err := fv(ctx, item, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
 	if fv, exists := v.FldValidators["system_metadata"]; exists {
 		vOpts := append(opts, db.WithValidateField("system_metadata"))
 		if err := fv(ctx, m.GetSystemMetadata(), vOpts...); err != nil {
@@ -1036,6 +1067,7 @@ var DefaultObjectListRspItemValidator = func() *ValidateObjectListRspItem {
 	v.FldValidators["metadata"] = ves_io_schema.ObjectMetaTypeValidator().Validate
 	v.FldValidators["system_metadata"] = ves_io_schema.SystemObjectMetaTypeValidator().Validate
 	v.FldValidators["spec"] = ves_io_schema_vs_profiles_services_quic_profile.SpecTypeValidator().Validate
+	v.FldValidators["status"] = ves_io_schema_vs_profiles_services_quic_profile.StatusObjectValidator().Validate
 
 	return v
 }()
@@ -1352,6 +1384,7 @@ func (m *ObjectGetRsp) fromObject(e db.Entry, withDeepCopy bool) {
 	m.Metadata = f.GetMetadata()
 
 	m.Spec = f.GetSpec()
+
 	m.SystemMetadata = f.GetSystemMetadata()
 }
 
@@ -1375,6 +1408,7 @@ func (m *ObjectGetRsp) toObject(e db.Entry, withDeepCopy bool) {
 	f.Metadata = m1.Metadata
 
 	f.Spec = m1.Spec
+
 	f.SystemMetadata = m1.SystemMetadata
 }
 
@@ -1396,6 +1430,7 @@ func (m *ObjectListRspItem) fromObject(e db.Entry, withDeepCopy bool) {
 	m.Metadata = f.GetMetadata()
 
 	m.Spec = f.GetSpec()
+
 	m.SystemMetadata = f.GetSystemMetadata()
 
 }
@@ -1420,6 +1455,7 @@ func (m *ObjectListRspItem) toObject(e db.Entry, withDeepCopy bool) {
 	f.Metadata = m1.Metadata
 
 	f.Spec = m1.Spec
+
 	f.SystemMetadata = m1.SystemMetadata
 
 }

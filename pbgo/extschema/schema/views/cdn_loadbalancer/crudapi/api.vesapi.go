@@ -3836,7 +3836,7 @@ var APISwaggerJSON string = `{
                     "$ref": "#/definitions/common_securityShapeJavaScriptInsertType"
                 },
                 "mobile": {
-                    "description": "x-displayName: \"Infrastructure For Mobile\"\nSelect infrastructure for mobile.",
+                    "description": "x-displayName: \"Infrastructure For Mobile\"\nSelect an infrastructure to process mobile traffic. Be sure to add your web app FQDN to the Bot Network Policy, and the infrastructure domain to the infrastructure ACL.",
                     "title": "Mobile",
                     "$ref": "#/definitions/schemaviewsObjectRefType"
                 },
@@ -3846,7 +3846,7 @@ var APISwaggerJSON string = `{
                     "$ref": "#/definitions/common_securityBotAdvancedMobileSDKConfigType"
                 },
                 "web": {
-                    "description": "x-displayName: \"Infrastructure For Web\"\nSelect infrastructure for web.",
+                    "description": "x-displayName: \"Infrastructure For Web\"\nSelect an infrastructure to process web traffic. Be sure to add your web app FQDN to the Bot Network Policy, and the infrastructure domain to the infrastructure ACL.",
                     "title": "Web",
                     "$ref": "#/definitions/schemaviewsObjectRefType"
                 }
@@ -6174,7 +6174,7 @@ var APISwaggerJSON string = `{
             "properties": {
                 "actions": {
                     "type": "array",
-                    "description": " Actions that should be taken when client identifier matches the rule\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.enum.defined_only: true\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 10\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "description": " Actions that should be taken when client identifier matches the rule\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.items.enum.defined_only: true\n  ves.io.schema.rules.repeated.max_items: 10\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "actions",
                     "maxItems": 10,
                     "items": {
@@ -6183,8 +6183,8 @@ var APISwaggerJSON string = `{
                     "x-displayname": "Actions",
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
-                        "ves.io.schema.rules.enum.defined_only": "true",
                         "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.repeated.items.enum.defined_only": "true",
                         "ves.io.schema.rules.repeated.max_items": "10",
                         "ves.io.schema.rules.repeated.unique": "true"
                     }
@@ -6769,13 +6769,12 @@ var APISwaggerJSON string = `{
                 },
                 "regex": {
                     "type": "string",
-                    "description": "Exclusive with [exact presence]\n Regex match of the header value in re2 format\n\nValidation Rules:\n  ves.io.schema.rules.string.max_bytes: 256\n  ves.io.schema.rules.string.not_empty: true\n  ves.io.schema.rules.string.regex: true\n",
+                    "description": "Exclusive with [exact presence]\n Regex match of the header value in re2 format\n\nValidation Rules:\n  ves.io.schema.rules.string.max_bytes: 256\n  ves.io.schema.rules.string.regex: true\n",
                     "title": "regex",
                     "maxLength": 256,
                     "x-displayname": "Regex",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.string.max_bytes": "256",
-                        "ves.io.schema.rules.string.not_empty": "true",
                         "ves.io.schema.rules.string.regex": "true"
                     }
                 }
@@ -9577,7 +9576,7 @@ var APISwaggerJSON string = `{
                 },
                 "regex_values": {
                     "type": "array",
-                    "description": " A list of regular expressions to match the input against.\n\nExample: - \"['^new .*$', 'san f.*', '.* del .*']\"-\n\nValidation Rules:\n  ves.io.schema.rules.repeated.items.string.max_bytes: 256\n  ves.io.schema.rules.repeated.items.string.not_empty: true\n  ves.io.schema.rules.repeated.items.string.regex: true\n  ves.io.schema.rules.repeated.max_items: 16\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "description": " A list of regular expressions to match the input against.\n\nExample: - \"['^new .*$', 'san f.*', '.* del .*']\"-\n\nValidation Rules:\n  ves.io.schema.rules.repeated.items.string.max_bytes: 256\n  ves.io.schema.rules.repeated.items.string.regex: true\n  ves.io.schema.rules.repeated.max_items: 16\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "regex values",
                     "maxItems": 16,
                     "items": {
@@ -9588,7 +9587,6 @@ var APISwaggerJSON string = `{
                     "x-ves-example": "['^new .*$', 'san f.*', '.* del .*']",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.repeated.items.string.max_bytes": "256",
-                        "ves.io.schema.rules.repeated.items.string.not_empty": "true",
                         "ves.io.schema.rules.repeated.items.string.regex": "true",
                         "ves.io.schema.rules.repeated.max_items": "16",
                         "ves.io.schema.rules.repeated.unique": "true"
@@ -11296,7 +11294,7 @@ var APISwaggerJSON string = `{
                 },
                 "arg_matchers": {
                     "type": "array",
-                    "description": " A list of predicates for all POST args that need to be matched. The criteria for matching each arg are described in individual instances\n of ArgMatcherType. The actual arg values are extracted from the request API as a list of strings for each arg selector name.\n Note that all specified arg matcher predicates must evaluate to true.\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 16\n",
+                    "description": " A list of predicates for all POST args that need to be matched. The criteria for matching each arg are described in individual instances\n of ArgMatcherType. The actual arg values are extracted from the request API as a list of strings for each arg selector name.\n Note that all specified arg matcher predicates must evaluate to true. A request body greater than 64KB will not be evaluated.\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 16\n",
                     "maxItems": 16,
                     "items": {
                         "$ref": "#/definitions/policyArgMatcherType"
@@ -11314,7 +11312,7 @@ var APISwaggerJSON string = `{
                     "$ref": "#/definitions/policyAsnMatcherType"
                 },
                 "body_matcher": {
-                    "description": " Predicate for matching the request body string. The criteria for matching the request body is described in MatcherType.\n The actual request body value is extracted from the request API as a string.",
+                    "description": " Predicate for matching the request body string. The criteria for matching the request body is described in MatcherType.\n The actual request body value is extracted from the request API as a string. A request body greater than 64KB will not be evaluated.",
                     "$ref": "#/definitions/policyMatcherType"
                 },
                 "client_selector": {
@@ -11788,7 +11786,7 @@ var APISwaggerJSON string = `{
             "properties": {
                 "port": {
                     "type": "integer",
-                    "description": " Port the workload can be reached on\n\nExample: - \"80\"-\n\nValidation Rules:\n  ves.io.schema.rules.uint32.gte: 0\n  ves.io.schema.rules.uint32.lte: 65535\n",
+                    "description": " Port the workload can be reached on\n Enter a custom port only if your origin server uses a non-default port. Leave the value as 0 to automatically use 443 (TLS) or 80 (non-TLS).\n\nExample: - \"80\"-\n\nValidation Rules:\n  ves.io.schema.rules.uint32.gte: 0\n  ves.io.schema.rules.uint32.lte: 65535\n",
                     "title": "Port",
                     "format": "int64",
                     "x-displayname": "Origin Server Port",
@@ -13235,7 +13233,7 @@ var APISwaggerJSON string = `{
         },
         "virtual_hostVirtualHostState": {
             "type": "string",
-            "description": "State of the virtual host\n\n - VIRTUAL_HOST_READY: VIRTUAL_HOST_READY\n\nVirtual host is ready to install\n - VIRTUAL_HOST_PENDING_VERIFICATION: VIRTUAL_HOST_PENDING_VERIFICATION\n\nVirtual host is verfication pending for some or all of its domains\n - VIRTUAL_HOST_VERIFICATION_FAILED: VIRTUAL_HOST_VERIFICATION_FAILED\n\nVirtual host has one or more domains for which verification failed\n - VIRTUAL_HOST_PENDING_DNS_DELEGATION: VIRTUAL_HOST_PENDING_DNS_DELEGATION\n\nVirtual host is pending DNS delegation\n - VIRTUAL_HOST_PENDING_A_RECORD: VIRTUAL_HOST_PENDING_A_RECORD\n\nVirtual host is waiting for one or more A records to be created\n - VIRTUAL_HOST_DNS_A_RECORD_ADDED: VIRTUAL_HOST_DNS_A_RECORD_ADDED\n\nDNS A record has been added for this Virtual host\n - VIRTUAL_HOST_INTERNET_NLB_PENDING_CREATION: VIRTUAL_HOST_INTERNET_NLB_PENDING_CREATION\n\nInternet facing NLB, is being created on the site/sites belonging to the virtual site\n - VIRTUAL_HOST_INTERNET_NLB_CREATION_FAILED: VIRTUAL_HOST_INTERNET_NLB_CREATION_FAILED\n\nInternet NLB creation failed on the site/sites. InternetNLBVIPStatus will have more information.",
+            "description": "State of the virtual host\n\n - VIRTUAL_HOST_READY: VIRTUAL_HOST_READY\n\nVirtual host is ready to install\n - VIRTUAL_HOST_PENDING_VERIFICATION: VIRTUAL_HOST_PENDING_VERIFICATION\n\nVirtual host is verfication pending for some or all of its domains\n - VIRTUAL_HOST_VERIFICATION_FAILED: VIRTUAL_HOST_VERIFICATION_FAILED\n\nVirtual host has one or more domains for which verification failed\n - VIRTUAL_HOST_PENDING_DNS_DELEGATION: VIRTUAL_HOST_PENDING_DNS_DELEGATION\n\nVirtual host is pending DNS delegation\n - VIRTUAL_HOST_PENDING_A_RECORD: VIRTUAL_HOST_PENDING_A_RECORD\n\nVirtual host is waiting for one or more A records to be created\n - VIRTUAL_HOST_DNS_A_RECORD_ADDED: VIRTUAL_HOST_DNS_A_RECORD_ADDED\n\nDNS A record has been added for this Virtual host\n - VIRTUAL_HOST_INTERNET_NLB_PENDING_CREATION: VIRTUAL_HOST_INTERNET_NLB_PENDING_CREATION\n\nInternet facing NLB, is being created on the site/sites belonging to the virtual site\n - VIRTUAL_HOST_INTERNET_NLB_CREATION_FAILED: VIRTUAL_HOST_INTERNET_NLB_CREATION_FAILED\n\nInternet NLB creation failed on the site/sites. InternetNLBVIPStatus will have more information.\n - VIRTUAL_HOST_PENDING_AAAA_RECORD: VIRTUAL_HOST_PENDING_AAAA_RECORD\n\nVirtual host is waiting for one or more AAAA records to be created\n - VIRTUAL_HOST_DNS_AAAA_RECORD_ADDED: VIRTUAL_HOST_DNS_AAAA_RECORD_ADDED\n\nDNS AAAA record has been added for this Virtual host\n - VIRTUAL_HOST_PENDING_DUALSTACK_RECORDS: VIRTUAL_HOST_PENDING_DUALSTACK_RECORDS\n\nVirtual host is waiting for one or more Dualstack records to be created\n - VIRTUAL_HOST_DNS_DUALSTACK_RECORDS_ADDED: VIRTUAL_HOST_DNS_DUALSTACK_RECORDS_ADDED\n\nDNS Dualstack records has been added for this Virtual host",
             "title": "VirtualHostState",
             "enum": [
                 "VIRTUAL_HOST_READY",
@@ -13245,7 +13243,11 @@ var APISwaggerJSON string = `{
                 "VIRTUAL_HOST_PENDING_A_RECORD",
                 "VIRTUAL_HOST_DNS_A_RECORD_ADDED",
                 "VIRTUAL_HOST_INTERNET_NLB_PENDING_CREATION",
-                "VIRTUAL_HOST_INTERNET_NLB_CREATION_FAILED"
+                "VIRTUAL_HOST_INTERNET_NLB_CREATION_FAILED",
+                "VIRTUAL_HOST_PENDING_AAAA_RECORD",
+                "VIRTUAL_HOST_DNS_AAAA_RECORD_ADDED",
+                "VIRTUAL_HOST_PENDING_DUALSTACK_RECORDS",
+                "VIRTUAL_HOST_DNS_DUALSTACK_RECORDS_ADDED"
             ],
             "default": "VIRTUAL_HOST_READY",
             "x-displayname": "Virtual Host State",
@@ -13265,6 +13267,15 @@ var APISwaggerJSON string = `{
                     "x-displayname": "IP Address",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.string.ip": "true"
+                    }
+                },
+                "ipv6_address": {
+                    "type": "string",
+                    "description": " IPv6 address associated with virtual host\n\nValidation Rules:\n  ves.io.schema.rules.string.ipv6: true\n",
+                    "title": "IPv6 address",
+                    "x-displayname": "IPv6 Address",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.string.ipv6": "true"
                     }
                 }
             }

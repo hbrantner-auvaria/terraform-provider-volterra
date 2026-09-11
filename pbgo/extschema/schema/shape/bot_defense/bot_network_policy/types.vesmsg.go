@@ -113,6 +113,52 @@ func (v *ValidateGetSpecType) BotInfrasWithVersionValidationRuleHandler(rules ma
 
 	return validatorFn, nil
 }
+func (v *ValidateGetSpecType) CosseBotInfrasWithDeliveredVersionValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepMessageItemRules(rules)
+	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Message ValidationRuleHandler for cosse_bot_infras_with_delivered_version")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []*ves_io_schema_shape_bot_defense.CosseBotInfraWithDeliveredVersion, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+			if err := ves_io_schema_shape_bot_defense.CosseBotInfraWithDeliveredVersionValidator().Validate(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for cosse_bot_infras_with_delivered_version")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]*ves_io_schema_shape_bot_defense.CosseBotInfraWithDeliveredVersion)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []*ves_io_schema_shape_bot_defense.CosseBotInfraWithDeliveredVersion, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
+			if err != nil {
+				return errors.Wrapf(err, "Converting %v to JSON", elem)
+			}
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated cosse_bot_infras_with_delivered_version")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items cosse_bot_infras_with_delivered_version")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
 
 func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
 	m, ok := pm.(*GetSpecType)
@@ -133,6 +179,12 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["cosse_bot_infras_with_delivered_version"]; exists {
+		vOpts := append(opts, db.WithValidateField("cosse_bot_infras_with_delivered_version"))
+		if err := fv(ctx, m.GetCosseBotInfrasWithDeliveredVersion(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["latest_version"]; exists {
 		vOpts := append(opts, db.WithValidateField("latest_version"))
 		if err := fv(ctx, m.GetLatestVersion(), vOpts...); err != nil {
@@ -148,6 +200,12 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 	if fv, exists := v.FldValidators["update_user"]; exists {
 		vOpts := append(opts, db.WithValidateField("update_user"))
 		if err := fv(ctx, m.GetUpdateUser(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["used_for_cosse"]; exists {
+		vOpts := append(opts, db.WithValidateField("used_for_cosse"))
+		if err := fv(ctx, m.GetUsedForCosse(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -175,6 +233,17 @@ var DefaultGetSpecTypeValidator = func() *ValidateGetSpecType {
 		panic(errMsg)
 	}
 	v.FldValidators["bot_infras_with_version"] = vFn
+
+	vrhCosseBotInfrasWithDeliveredVersion := v.CosseBotInfrasWithDeliveredVersionValidationRuleHandler
+	rulesCosseBotInfrasWithDeliveredVersion := map[string]string{
+		"ves.io.schema.rules.repeated.unique": "true",
+	}
+	vFn, err = vrhCosseBotInfrasWithDeliveredVersion(rulesCosseBotInfrasWithDeliveredVersion)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for GetSpecType.cosse_bot_infras_with_delivered_version: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["cosse_bot_infras_with_delivered_version"] = vFn
 	v.FldValidators["network_policy_content"] = ves_io_schema_shape_bot_defense.NetworkPolicyContentValidator().Validate
 
 	return v
@@ -340,6 +409,52 @@ func (v *ValidateGlobalSpecType) BotInfrasWithVersionValidationRuleHandler(rules
 
 	return validatorFn, nil
 }
+func (v *ValidateGlobalSpecType) CosseBotInfrasWithDeliveredVersionValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepMessageItemRules(rules)
+	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Message ValidationRuleHandler for cosse_bot_infras_with_delivered_version")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []*ves_io_schema_shape_bot_defense.CosseBotInfraWithDeliveredVersion, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+			if err := ves_io_schema_shape_bot_defense.CosseBotInfraWithDeliveredVersionValidator().Validate(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for cosse_bot_infras_with_delivered_version")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]*ves_io_schema_shape_bot_defense.CosseBotInfraWithDeliveredVersion)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []*ves_io_schema_shape_bot_defense.CosseBotInfraWithDeliveredVersion, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
+			if err != nil {
+				return errors.Wrapf(err, "Converting %v to JSON", elem)
+			}
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated cosse_bot_infras_with_delivered_version")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items cosse_bot_infras_with_delivered_version")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
 
 func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
 	m, ok := pm.(*GlobalSpecType)
@@ -363,6 +478,12 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 	if fv, exists := v.FldValidators["comments"]; exists {
 		vOpts := append(opts, db.WithValidateField("comments"))
 		if err := fv(ctx, m.GetComments(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["cosse_bot_infras_with_delivered_version"]; exists {
+		vOpts := append(opts, db.WithValidateField("cosse_bot_infras_with_delivered_version"))
+		if err := fv(ctx, m.GetCosseBotInfrasWithDeliveredVersion(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -411,6 +532,12 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["used_for_cosse"]; exists {
+		vOpts := append(opts, db.WithValidateField("used_for_cosse"))
+		if err := fv(ctx, m.GetUsedForCosse(), vOpts...); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -446,6 +573,17 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 		panic(errMsg)
 	}
 	v.FldValidators["bot_infras_with_version"] = vFn
+
+	vrhCosseBotInfrasWithDeliveredVersion := v.CosseBotInfrasWithDeliveredVersionValidationRuleHandler
+	rulesCosseBotInfrasWithDeliveredVersion := map[string]string{
+		"ves.io.schema.rules.repeated.unique": "true",
+	}
+	vFn, err = vrhCosseBotInfrasWithDeliveredVersion(rulesCosseBotInfrasWithDeliveredVersion)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for GlobalSpecType.cosse_bot_infras_with_delivered_version: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["cosse_bot_infras_with_delivered_version"] = vFn
 	v.FldValidators["network_policy_version"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["network_policy_content"] = ves_io_schema_shape_bot_defense.NetworkPolicyContentValidator().Validate
 
@@ -587,9 +725,11 @@ func (m *GetSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 		return
 	}
 	m.BotInfrasWithVersion = f.GetBotInfrasWithVersion()
+	m.CosseBotInfrasWithDeliveredVersion = f.GetCosseBotInfrasWithDeliveredVersion()
 	m.LatestVersion = f.GetLatestVersion()
 	m.NetworkPolicyContent = f.GetNetworkPolicyContent()
 	m.UpdateUser = f.GetUpdateUser()
+	m.UsedForCosse = f.GetUsedForCosse()
 }
 
 func (m *GetSpecType) FromGlobalSpecType(f *GlobalSpecType) {
@@ -608,9 +748,11 @@ func (m *GetSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	_ = m1
 
 	f.BotInfrasWithVersion = m1.BotInfrasWithVersion
+	f.CosseBotInfrasWithDeliveredVersion = m1.CosseBotInfrasWithDeliveredVersion
 	f.LatestVersion = m1.LatestVersion
 	f.NetworkPolicyContent = m1.NetworkPolicyContent
 	f.UpdateUser = m1.UpdateUser
+	f.UsedForCosse = m1.UsedForCosse
 }
 
 func (m *GetSpecType) ToGlobalSpecType(f *GlobalSpecType) {

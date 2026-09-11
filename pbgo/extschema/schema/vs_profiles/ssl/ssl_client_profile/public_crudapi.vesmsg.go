@@ -61,6 +61,30 @@ func (m *CreateRequest) Validate(ctx context.Context, opts ...db.ValidateOpt) er
 	return CreateRequestValidator().Validate(ctx, m, opts...)
 }
 
+func (m *CreateRequest) GetDRefInfo() ([]db.DRefInfo, error) {
+	if m == nil {
+		return nil, nil
+	}
+
+	return m.GetSpecDRefInfo()
+}
+
+// GetDRefInfo for the field's type
+func (m *CreateRequest) GetSpecDRefInfo() ([]db.DRefInfo, error) {
+	if m.GetSpec() == nil {
+		return nil, nil
+	}
+	drInfos, err := m.GetSpec().GetDRefInfo()
+	if err != nil {
+		return nil, errors.Wrap(err, "GetSpec().GetDRefInfo() FAILED")
+	}
+	for i := range drInfos {
+		dri := &drInfos[i]
+		dri.DRField = "spec." + dri.DRField
+	}
+	return drInfos, err
+}
+
 type ValidateCreateRequest struct {
 	FldValidators map[string]db.ValidatorFunc
 }
@@ -141,6 +165,30 @@ func (m *CreateResponse) DeepCopyProto() proto.Message {
 
 func (m *CreateResponse) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
 	return CreateResponseValidator().Validate(ctx, m, opts...)
+}
+
+func (m *CreateResponse) GetDRefInfo() ([]db.DRefInfo, error) {
+	if m == nil {
+		return nil, nil
+	}
+
+	return m.GetSpecDRefInfo()
+}
+
+// GetDRefInfo for the field's type
+func (m *CreateResponse) GetSpecDRefInfo() ([]db.DRefInfo, error) {
+	if m.GetSpec() == nil {
+		return nil, nil
+	}
+	drInfos, err := m.GetSpec().GetDRefInfo()
+	if err != nil {
+		return nil, errors.Wrap(err, "GetSpec().GetDRefInfo() FAILED")
+	}
+	for i := range drInfos {
+		dri := &drInfos[i]
+		dri.DRField = "spec." + dri.DRField
+	}
+	return drInfos, err
 }
 
 type ValidateCreateResponse struct {
@@ -403,6 +451,78 @@ func (m *GetResponse) Validate(ctx context.Context, opts ...db.ValidateOpt) erro
 	return GetResponseValidator().Validate(ctx, m, opts...)
 }
 
+func (m *GetResponse) GetDRefInfo() ([]db.DRefInfo, error) {
+	if m == nil {
+		return nil, nil
+	}
+
+	var drInfos []db.DRefInfo
+	if fdrInfos, err := m.GetCreateFormDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetCreateFormDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetReplaceFormDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetReplaceFormDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetSpecDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetSpecDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	return drInfos, nil
+}
+
+// GetDRefInfo for the field's type
+func (m *GetResponse) GetCreateFormDRefInfo() ([]db.DRefInfo, error) {
+	if m.GetCreateForm() == nil {
+		return nil, nil
+	}
+	drInfos, err := m.GetCreateForm().GetDRefInfo()
+	if err != nil {
+		return nil, errors.Wrap(err, "GetCreateForm().GetDRefInfo() FAILED")
+	}
+	for i := range drInfos {
+		dri := &drInfos[i]
+		dri.DRField = "create_form." + dri.DRField
+	}
+	return drInfos, err
+}
+
+// GetDRefInfo for the field's type
+func (m *GetResponse) GetReplaceFormDRefInfo() ([]db.DRefInfo, error) {
+	if m.GetReplaceForm() == nil {
+		return nil, nil
+	}
+	drInfos, err := m.GetReplaceForm().GetDRefInfo()
+	if err != nil {
+		return nil, errors.Wrap(err, "GetReplaceForm().GetDRefInfo() FAILED")
+	}
+	for i := range drInfos {
+		dri := &drInfos[i]
+		dri.DRField = "replace_form." + dri.DRField
+	}
+	return drInfos, err
+}
+
+// GetDRefInfo for the field's type
+func (m *GetResponse) GetSpecDRefInfo() ([]db.DRefInfo, error) {
+	if m.GetSpec() == nil {
+		return nil, nil
+	}
+	drInfos, err := m.GetSpec().GetDRefInfo()
+	if err != nil {
+		return nil, errors.Wrap(err, "GetSpec().GetDRefInfo() FAILED")
+	}
+	for i := range drInfos {
+		dri := &drInfos[i]
+		dri.DRField = "spec." + dri.DRField
+	}
+	return drInfos, err
+}
+
 type ValidateGetResponse struct {
 	FldValidators map[string]db.ValidatorFunc
 }
@@ -477,6 +597,15 @@ func (v *ValidateGetResponse) Validate(ctx context.Context, pm interface{}, opts
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["status"]; exists {
+		vOpts := append(opts, db.WithValidateField("status"))
+		for idx, item := range m.GetStatus() {
+			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
+			if err := fv(ctx, item, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
 	if fv, exists := v.FldValidators["system_metadata"]; exists {
 		vOpts := append(opts, db.WithValidateField("system_metadata"))
 		if err := fv(ctx, m.GetSystemMetadata(), vOpts...); err != nil {
@@ -493,6 +622,7 @@ var DefaultGetResponseValidator = func() *ValidateGetResponse {
 	v.FldValidators["replace_form"] = ReplaceRequestValidator().Validate
 	v.FldValidators["metadata"] = ves_io_schema.ObjectGetMetaTypeValidator().Validate
 	v.FldValidators["spec"] = GetSpecTypeValidator().Validate
+	v.FldValidators["status"] = StatusObjectValidator().Validate
 
 	return v
 }()
@@ -636,6 +766,34 @@ func (m *ListResponse) Validate(ctx context.Context, opts ...db.ValidateOpt) err
 	return ListResponseValidator().Validate(ctx, m, opts...)
 }
 
+func (m *ListResponse) GetDRefInfo() ([]db.DRefInfo, error) {
+	if m == nil {
+		return nil, nil
+	}
+
+	return m.GetItemsDRefInfo()
+}
+
+// GetDRefInfo for the field's type
+func (m *ListResponse) GetItemsDRefInfo() ([]db.DRefInfo, error) {
+	if m.GetItems() == nil {
+		return nil, nil
+	}
+	var drInfos []db.DRefInfo
+	for idx, e := range m.GetItems() {
+		driSet, err := e.GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetItems() GetDRefInfo() FAILED")
+		}
+		for i := range driSet {
+			dri := &driSet[i]
+			dri.DRField = fmt.Sprintf("items[%v].%s", idx, dri.DRField)
+		}
+		drInfos = append(drInfos, driSet...)
+	}
+	return drInfos, nil
+}
+
 type ValidateListResponse struct {
 	FldValidators map[string]db.ValidatorFunc
 }
@@ -723,6 +881,36 @@ func (m *ListResponseItem) Validate(ctx context.Context, opts ...db.ValidateOpt)
 	return ListResponseItemValidator().Validate(ctx, m, opts...)
 }
 
+func (m *ListResponseItem) GetDRefInfo() ([]db.DRefInfo, error) {
+	if m == nil {
+		return nil, nil
+	}
+
+	var drInfos []db.DRefInfo
+	if fdrInfos, err := m.GetGetSpecDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetGetSpecDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	return drInfos, nil
+}
+
+// GetDRefInfo for the field's type
+func (m *ListResponseItem) GetGetSpecDRefInfo() ([]db.DRefInfo, error) {
+	if m.GetGetSpec() == nil {
+		return nil, nil
+	}
+	drInfos, err := m.GetGetSpec().GetDRefInfo()
+	if err != nil {
+		return nil, errors.Wrap(err, "GetGetSpec().GetDRefInfo() FAILED")
+	}
+	for i := range drInfos {
+		dri := &drInfos[i]
+		dri.DRField = "get_spec." + dri.DRField
+	}
+	return drInfos, err
+}
+
 type ValidateListResponseItem struct {
 	FldValidators map[string]db.ValidatorFunc
 }
@@ -800,6 +988,15 @@ func (v *ValidateListResponseItem) Validate(ctx context.Context, pm interface{},
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["status_set"]; exists {
+		vOpts := append(opts, db.WithValidateField("status_set"))
+		for idx, item := range m.GetStatusSet() {
+			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
+			if err := fv(ctx, item, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
 	if fv, exists := v.FldValidators["system_metadata"]; exists {
 		vOpts := append(opts, db.WithValidateField("system_metadata"))
 		if err := fv(ctx, m.GetSystemMetadata(), vOpts...); err != nil {
@@ -825,6 +1022,7 @@ func (v *ValidateListResponseItem) Validate(ctx context.Context, pm interface{},
 var DefaultListResponseItemValidator = func() *ValidateListResponseItem {
 	v := &ValidateListResponseItem{FldValidators: map[string]db.ValidatorFunc{}}
 	v.FldValidators["get_spec"] = GetSpecTypeValidator().Validate
+	v.FldValidators["status_set"] = StatusObjectValidator().Validate
 	v.FldValidators["metadata"] = ves_io_schema.ObjectGetMetaTypeValidator().Validate
 
 	return v
@@ -869,6 +1067,30 @@ func (m *ReplaceRequest) DeepCopyProto() proto.Message {
 
 func (m *ReplaceRequest) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
 	return ReplaceRequestValidator().Validate(ctx, m, opts...)
+}
+
+func (m *ReplaceRequest) GetDRefInfo() ([]db.DRefInfo, error) {
+	if m == nil {
+		return nil, nil
+	}
+
+	return m.GetSpecDRefInfo()
+}
+
+// GetDRefInfo for the field's type
+func (m *ReplaceRequest) GetSpecDRefInfo() ([]db.DRefInfo, error) {
+	if m.GetSpec() == nil {
+		return nil, nil
+	}
+	drInfos, err := m.GetSpec().GetDRefInfo()
+	if err != nil {
+		return nil, errors.Wrap(err, "GetSpec().GetDRefInfo() FAILED")
+	}
+	for i := range drInfos {
+		dri := &drInfos[i]
+		dri.DRField = "spec." + dri.DRField
+	}
+	return drInfos, err
 }
 
 type ValidateReplaceRequest struct {

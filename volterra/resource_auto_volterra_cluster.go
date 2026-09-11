@@ -492,7 +492,13 @@ func resourceVolterraCluster() *schema.Resource {
 										Optional: true,
 									},
 
-									"validation_params": {
+									"skip_server_verification": {
+
+										Type:     schema.TypeBool,
+										Optional: true,
+									},
+
+									"tls_validation_params": {
 
 										Type:     schema.TypeList,
 										MaxItems: 1,
@@ -559,6 +565,97 @@ func resourceVolterraCluster() *schema.Resource {
 													Type: schema.TypeList,
 
 													Optional: true,
+													Elem: &schema.Schema{
+														Type: schema.TypeString,
+													},
+												},
+											},
+										},
+									},
+
+									"volterra_trusted_ca": {
+
+										Type:     schema.TypeBool,
+										Optional: true,
+									},
+
+									"validation_params": {
+
+										Type:       schema.TypeList,
+										MaxItems:   1,
+										Optional:   true,
+										Deprecated: "This field is deprecated and will be removed in future release.",
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"skip_hostname_verification": {
+													Type:       schema.TypeBool,
+													Optional:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
+												},
+
+												"trusted_ca": {
+
+													Type:       schema.TypeList,
+													MaxItems:   1,
+													Optional:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
+													Elem: &schema.Resource{
+														Schema: map[string]*schema.Schema{
+
+															"trusted_ca_list": {
+																Type:       schema.TypeList,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"kind": {
+																			Type:       schema.TypeString,
+																			Computed:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																		},
+
+																		"name": {
+																			Type:       schema.TypeString,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																		},
+																		"namespace": {
+																			Type:       schema.TypeString,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																		},
+																		"tenant": {
+																			Type:       schema.TypeString,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+
+												"trusted_ca_url": {
+
+													Type:       schema.TypeString,
+													Optional:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
+												},
+
+												"use_volterra_trusted_ca_url": {
+													Type:       schema.TypeBool,
+													Optional:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
+												},
+
+												"verify_subject_alt_names": {
+													Type: schema.TypeList,
+
+													Optional:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
 													Elem: &schema.Schema{
 														Type: schema.TypeString,
 													},
@@ -1624,6 +1721,140 @@ func resourceVolterraClusterCreate(d *schema.ResourceData, meta interface{}) err
 							if v, ok := cs["minimum_protocol_version"]; ok && !isIntfNil(v) {
 
 								tlsParamsChoiceInt.CertParams.MinimumProtocolVersion = ves_io_schema.TlsProtocol(ves_io_schema.TlsProtocol_value[v.(string)])
+
+							}
+
+							serverValidationChoiceTypeFound := false
+
+							if v, ok := cs["skip_server_verification"]; ok && !isIntfNil(v) && !serverValidationChoiceTypeFound {
+
+								serverValidationChoiceTypeFound = true
+
+								if v.(bool) {
+									serverValidationChoiceInt := &ves_io_schema.UpstreamCertificateParamsType_SkipServerVerification{}
+									serverValidationChoiceInt.SkipServerVerification = &ves_io_schema.Empty{}
+									tlsParamsChoiceInt.CertParams.ServerValidationChoice = serverValidationChoiceInt
+								}
+
+							}
+
+							if v, ok := cs["tls_validation_params"]; ok && !isIntfNil(v) && !serverValidationChoiceTypeFound {
+
+								serverValidationChoiceTypeFound = true
+								serverValidationChoiceInt := &ves_io_schema.UpstreamCertificateParamsType_TlsValidationParams{}
+								serverValidationChoiceInt.TlsValidationParams = &ves_io_schema.TlsValidationParamsType{}
+								tlsParamsChoiceInt.CertParams.ServerValidationChoice = serverValidationChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["skip_hostname_verification"]; ok && !isIntfNil(v) {
+
+											serverValidationChoiceInt.TlsValidationParams.SkipHostnameVerification = v.(bool)
+
+										}
+
+										trustedCaChoiceTypeFound := false
+
+										if v, ok := cs["trusted_ca"]; ok && !isIntfNil(v) && !trustedCaChoiceTypeFound {
+
+											trustedCaChoiceTypeFound = true
+											trustedCaChoiceInt := &ves_io_schema.TlsValidationParamsType_TrustedCa{}
+											trustedCaChoiceInt.TrustedCa = &ves_io_schema.TrustedCAList{}
+											serverValidationChoiceInt.TlsValidationParams.TrustedCaChoice = trustedCaChoiceInt
+
+											sl := v.([]interface{})
+											for _, set := range sl {
+												if set != nil {
+													cs := set.(map[string]interface{})
+
+													if v, ok := cs["trusted_ca_list"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														trustedCaListInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+														trustedCaChoiceInt.TrustedCa.TrustedCaList = trustedCaListInt
+														for i, ps := range sl {
+															if ps != nil {
+
+																tclMapToStrVal := ps.(map[string]interface{})
+																trustedCaListInt[i] = &ves_io_schema.ObjectRefType{}
+
+																trustedCaListInt[i].Kind = "trusted_ca_list"
+
+																if v, ok := tclMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	trustedCaListInt[i].Name = v.(string)
+																}
+
+																if v, ok := tclMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	trustedCaListInt[i].Namespace = v.(string)
+																}
+
+																if v, ok := tclMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	trustedCaListInt[i].Tenant = v.(string)
+																}
+
+																if v, ok := tclMapToStrVal["uid"]; ok && !isIntfNil(v) {
+																	trustedCaListInt[i].Uid = v.(string)
+																}
+
+															}
+														}
+
+													}
+
+												}
+											}
+
+										}
+
+										if v, ok := cs["trusted_ca_url"]; ok && !isIntfNil(v) && !trustedCaChoiceTypeFound {
+
+											trustedCaChoiceTypeFound = true
+											trustedCaChoiceInt := &ves_io_schema.TlsValidationParamsType_TrustedCaUrl{}
+
+											serverValidationChoiceInt.TlsValidationParams.TrustedCaChoice = trustedCaChoiceInt
+
+											trustedCaChoiceInt.TrustedCaUrl = v.(string)
+
+										}
+
+										if v, ok := cs["use_volterra_trusted_ca_url"]; ok && !isIntfNil(v) {
+
+											serverValidationChoiceInt.TlsValidationParams.UseVolterraTrustedCaUrl = v.(bool)
+
+										}
+
+										if v, ok := cs["verify_subject_alt_names"]; ok && !isIntfNil(v) {
+
+											ls := make([]string, len(v.([]interface{})))
+											for i, v := range v.([]interface{}) {
+												if v == nil {
+													return fmt.Errorf("please provide valid non-empty string value of field verify_subject_alt_names")
+												}
+												if str, ok := v.(string); ok {
+													ls[i] = str
+												}
+											}
+											serverValidationChoiceInt.TlsValidationParams.VerifySubjectAltNames = ls
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["volterra_trusted_ca"]; ok && !isIntfNil(v) && !serverValidationChoiceTypeFound {
+
+								serverValidationChoiceTypeFound = true
+
+								if v.(bool) {
+									serverValidationChoiceInt := &ves_io_schema.UpstreamCertificateParamsType_VolterraTrustedCa{}
+									serverValidationChoiceInt.VolterraTrustedCa = &ves_io_schema.Empty{}
+									tlsParamsChoiceInt.CertParams.ServerValidationChoice = serverValidationChoiceInt
+								}
 
 							}
 
@@ -2907,6 +3138,140 @@ func resourceVolterraClusterUpdate(d *schema.ResourceData, meta interface{}) err
 							if v, ok := cs["minimum_protocol_version"]; ok && !isIntfNil(v) {
 
 								tlsParamsChoiceInt.CertParams.MinimumProtocolVersion = ves_io_schema.TlsProtocol(ves_io_schema.TlsProtocol_value[v.(string)])
+
+							}
+
+							serverValidationChoiceTypeFound := false
+
+							if v, ok := cs["skip_server_verification"]; ok && !isIntfNil(v) && !serverValidationChoiceTypeFound {
+
+								serverValidationChoiceTypeFound = true
+
+								if v.(bool) {
+									serverValidationChoiceInt := &ves_io_schema.UpstreamCertificateParamsType_SkipServerVerification{}
+									serverValidationChoiceInt.SkipServerVerification = &ves_io_schema.Empty{}
+									tlsParamsChoiceInt.CertParams.ServerValidationChoice = serverValidationChoiceInt
+								}
+
+							}
+
+							if v, ok := cs["tls_validation_params"]; ok && !isIntfNil(v) && !serverValidationChoiceTypeFound {
+
+								serverValidationChoiceTypeFound = true
+								serverValidationChoiceInt := &ves_io_schema.UpstreamCertificateParamsType_TlsValidationParams{}
+								serverValidationChoiceInt.TlsValidationParams = &ves_io_schema.TlsValidationParamsType{}
+								tlsParamsChoiceInt.CertParams.ServerValidationChoice = serverValidationChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["skip_hostname_verification"]; ok && !isIntfNil(v) {
+
+											serverValidationChoiceInt.TlsValidationParams.SkipHostnameVerification = v.(bool)
+
+										}
+
+										trustedCaChoiceTypeFound := false
+
+										if v, ok := cs["trusted_ca"]; ok && !isIntfNil(v) && !trustedCaChoiceTypeFound {
+
+											trustedCaChoiceTypeFound = true
+											trustedCaChoiceInt := &ves_io_schema.TlsValidationParamsType_TrustedCa{}
+											trustedCaChoiceInt.TrustedCa = &ves_io_schema.TrustedCAList{}
+											serverValidationChoiceInt.TlsValidationParams.TrustedCaChoice = trustedCaChoiceInt
+
+											sl := v.([]interface{})
+											for _, set := range sl {
+												if set != nil {
+													cs := set.(map[string]interface{})
+
+													if v, ok := cs["trusted_ca_list"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														trustedCaListInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+														trustedCaChoiceInt.TrustedCa.TrustedCaList = trustedCaListInt
+														for i, ps := range sl {
+															if ps != nil {
+
+																tclMapToStrVal := ps.(map[string]interface{})
+																trustedCaListInt[i] = &ves_io_schema.ObjectRefType{}
+
+																trustedCaListInt[i].Kind = "trusted_ca_list"
+
+																if v, ok := tclMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	trustedCaListInt[i].Name = v.(string)
+																}
+
+																if v, ok := tclMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	trustedCaListInt[i].Namespace = v.(string)
+																}
+
+																if v, ok := tclMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	trustedCaListInt[i].Tenant = v.(string)
+																}
+
+																if v, ok := tclMapToStrVal["uid"]; ok && !isIntfNil(v) {
+																	trustedCaListInt[i].Uid = v.(string)
+																}
+
+															}
+														}
+
+													}
+
+												}
+											}
+
+										}
+
+										if v, ok := cs["trusted_ca_url"]; ok && !isIntfNil(v) && !trustedCaChoiceTypeFound {
+
+											trustedCaChoiceTypeFound = true
+											trustedCaChoiceInt := &ves_io_schema.TlsValidationParamsType_TrustedCaUrl{}
+
+											serverValidationChoiceInt.TlsValidationParams.TrustedCaChoice = trustedCaChoiceInt
+
+											trustedCaChoiceInt.TrustedCaUrl = v.(string)
+
+										}
+
+										if v, ok := cs["use_volterra_trusted_ca_url"]; ok && !isIntfNil(v) {
+
+											serverValidationChoiceInt.TlsValidationParams.UseVolterraTrustedCaUrl = v.(bool)
+
+										}
+
+										if v, ok := cs["verify_subject_alt_names"]; ok && !isIntfNil(v) {
+
+											ls := make([]string, len(v.([]interface{})))
+											for i, v := range v.([]interface{}) {
+												if v == nil {
+													return fmt.Errorf("please provide valid non-empty string value of field verify_subject_alt_names")
+												}
+												if str, ok := v.(string); ok {
+													ls[i] = str
+												}
+											}
+											serverValidationChoiceInt.TlsValidationParams.VerifySubjectAltNames = ls
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["volterra_trusted_ca"]; ok && !isIntfNil(v) && !serverValidationChoiceTypeFound {
+
+								serverValidationChoiceTypeFound = true
+
+								if v.(bool) {
+									serverValidationChoiceInt := &ves_io_schema.UpstreamCertificateParamsType_VolterraTrustedCa{}
+									serverValidationChoiceInt.VolterraTrustedCa = &ves_io_schema.Empty{}
+									tlsParamsChoiceInt.CertParams.ServerValidationChoice = serverValidationChoiceInt
+								}
 
 							}
 

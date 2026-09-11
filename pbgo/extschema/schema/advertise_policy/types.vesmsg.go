@@ -237,6 +237,42 @@ func (v *ValidateCreateSpecType) Validate(ctx context.Context, pm interface{}, o
 		}
 	}
 
+	switch m.GetAddressType().(type) {
+	case *CreateSpecType_Ipv4:
+		if fv, exists := v.FldValidators["address_type.ipv4"]; exists {
+			val := m.GetAddressType().(*CreateSpecType_Ipv4).Ipv4
+			vOpts := append(opts,
+				db.WithValidateField("address_type"),
+				db.WithValidateField("ipv4"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *CreateSpecType_Ipv6:
+		if fv, exists := v.FldValidators["address_type.ipv6"]; exists {
+			val := m.GetAddressType().(*CreateSpecType_Ipv6).Ipv6
+			vOpts := append(opts,
+				db.WithValidateField("address_type"),
+				db.WithValidateField("ipv6"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *CreateSpecType_Dualstack:
+		if fv, exists := v.FldValidators["address_type.dualstack"]; exists {
+			val := m.GetAddressType().(*CreateSpecType_Dualstack).Dualstack
+			vOpts := append(opts,
+				db.WithValidateField("address_type"),
+				db.WithValidateField("dualstack"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+
 	if fv, exists := v.FldValidators["port_choice"]; exists {
 		val := m.GetPortChoice()
 		vOpts := append(opts,
@@ -595,6 +631,42 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 		}
 	}
 
+	switch m.GetAddressType().(type) {
+	case *GetSpecType_Ipv4:
+		if fv, exists := v.FldValidators["address_type.ipv4"]; exists {
+			val := m.GetAddressType().(*GetSpecType_Ipv4).Ipv4
+			vOpts := append(opts,
+				db.WithValidateField("address_type"),
+				db.WithValidateField("ipv4"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *GetSpecType_Ipv6:
+		if fv, exists := v.FldValidators["address_type.ipv6"]; exists {
+			val := m.GetAddressType().(*GetSpecType_Ipv6).Ipv6
+			vOpts := append(opts,
+				db.WithValidateField("address_type"),
+				db.WithValidateField("ipv6"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *GetSpecType_Dualstack:
+		if fv, exists := v.FldValidators["address_type.dualstack"]; exists {
+			val := m.GetAddressType().(*GetSpecType_Dualstack).Dualstack
+			vOpts := append(opts,
+				db.WithValidateField("address_type"),
+				db.WithValidateField("dualstack"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+
 	if fv, exists := v.FldValidators["port_choice"]; exists {
 		val := m.GetPortChoice()
 		vOpts := append(opts,
@@ -950,6 +1022,42 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 		vOpts := append(opts, db.WithValidateField("address"))
 		if err := fv(ctx, m.GetAddress(), vOpts...); err != nil {
 			return err
+		}
+	}
+
+	switch m.GetAddressType().(type) {
+	case *GlobalSpecType_Ipv4:
+		if fv, exists := v.FldValidators["address_type.ipv4"]; exists {
+			val := m.GetAddressType().(*GlobalSpecType_Ipv4).Ipv4
+			vOpts := append(opts,
+				db.WithValidateField("address_type"),
+				db.WithValidateField("ipv4"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *GlobalSpecType_Ipv6:
+		if fv, exists := v.FldValidators["address_type.ipv6"]; exists {
+			val := m.GetAddressType().(*GlobalSpecType_Ipv6).Ipv6
+			vOpts := append(opts,
+				db.WithValidateField("address_type"),
+				db.WithValidateField("ipv6"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *GlobalSpecType_Dualstack:
+		if fv, exists := v.FldValidators["address_type.dualstack"]; exists {
+			val := m.GetAddressType().(*GlobalSpecType_Dualstack).Dualstack
+			vOpts := append(opts,
+				db.WithValidateField("address_type"),
+				db.WithValidateField("dualstack"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -1423,6 +1531,42 @@ func (v *ValidateReplaceSpecType) Validate(ctx context.Context, pm interface{}, 
 		}
 	}
 
+	switch m.GetAddressType().(type) {
+	case *ReplaceSpecType_Ipv4:
+		if fv, exists := v.FldValidators["address_type.ipv4"]; exists {
+			val := m.GetAddressType().(*ReplaceSpecType_Ipv4).Ipv4
+			vOpts := append(opts,
+				db.WithValidateField("address_type"),
+				db.WithValidateField("ipv4"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *ReplaceSpecType_Ipv6:
+		if fv, exists := v.FldValidators["address_type.ipv6"]; exists {
+			val := m.GetAddressType().(*ReplaceSpecType_Ipv6).Ipv6
+			vOpts := append(opts,
+				db.WithValidateField("address_type"),
+				db.WithValidateField("ipv6"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *ReplaceSpecType_Dualstack:
+		if fv, exists := v.FldValidators["address_type.dualstack"]; exists {
+			val := m.GetAddressType().(*ReplaceSpecType_Dualstack).Dualstack
+			vOpts := append(opts,
+				db.WithValidateField("address_type"),
+				db.WithValidateField("dualstack"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+
 	if fv, exists := v.FldValidators["port_choice"]; exists {
 		val := m.GetPortChoice()
 		vOpts := append(opts,
@@ -1676,6 +1820,47 @@ func TMMVirtualAddressTypeValidator() db.Validator {
 }
 
 // create setters in CreateSpecType from GlobalSpecType for oneof fields
+func (r *CreateSpecType) SetAddressTypeToGlobalSpecType(o *GlobalSpecType) error {
+	switch of := r.AddressType.(type) {
+	case nil:
+		o.AddressType = nil
+
+	case *CreateSpecType_Dualstack:
+		o.AddressType = &GlobalSpecType_Dualstack{Dualstack: of.Dualstack}
+
+	case *CreateSpecType_Ipv4:
+		o.AddressType = &GlobalSpecType_Ipv4{Ipv4: of.Ipv4}
+
+	case *CreateSpecType_Ipv6:
+		o.AddressType = &GlobalSpecType_Ipv6{Ipv6: of.Ipv6}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+func (r *CreateSpecType) GetAddressTypeFromGlobalSpecType(o *GlobalSpecType) error {
+	switch of := o.AddressType.(type) {
+	case nil:
+		r.AddressType = nil
+
+	case *GlobalSpecType_Dualstack:
+		r.AddressType = &CreateSpecType_Dualstack{Dualstack: of.Dualstack}
+
+	case *GlobalSpecType_Ipv4:
+		r.AddressType = &CreateSpecType_Ipv4{Ipv4: of.Ipv4}
+
+	case *GlobalSpecType_Ipv6:
+		r.AddressType = &CreateSpecType_Ipv6{Ipv6: of.Ipv6}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+// create setters in CreateSpecType from GlobalSpecType for oneof fields
 func (r *CreateSpecType) SetPortChoiceToGlobalSpecType(o *GlobalSpecType) error {
 	switch of := r.PortChoice.(type) {
 	case nil:
@@ -1715,6 +1900,7 @@ func (m *CreateSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool
 		return
 	}
 	m.Address = f.GetAddress()
+	m.GetAddressTypeFromGlobalSpecType(f)
 	m.GetPortChoiceFromGlobalSpecType(f)
 	m.Protocol = f.GetProtocol()
 	m.PublicIp = f.GetPublicIp()
@@ -1739,6 +1925,7 @@ func (m *CreateSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) 
 	_ = m1
 
 	f.Address = m1.Address
+	m1.SetAddressTypeToGlobalSpecType(f)
 	m1.SetPortChoiceToGlobalSpecType(f)
 	f.Protocol = m1.Protocol
 	f.PublicIp = m1.PublicIp
@@ -1753,6 +1940,47 @@ func (m *CreateSpecType) ToGlobalSpecType(f *GlobalSpecType) {
 
 func (m *CreateSpecType) ToGlobalSpecTypeWithoutDeepCopy(f *GlobalSpecType) {
 	m.toGlobalSpecType(f, false)
+}
+
+// create setters in GetSpecType from GlobalSpecType for oneof fields
+func (r *GetSpecType) SetAddressTypeToGlobalSpecType(o *GlobalSpecType) error {
+	switch of := r.AddressType.(type) {
+	case nil:
+		o.AddressType = nil
+
+	case *GetSpecType_Dualstack:
+		o.AddressType = &GlobalSpecType_Dualstack{Dualstack: of.Dualstack}
+
+	case *GetSpecType_Ipv4:
+		o.AddressType = &GlobalSpecType_Ipv4{Ipv4: of.Ipv4}
+
+	case *GetSpecType_Ipv6:
+		o.AddressType = &GlobalSpecType_Ipv6{Ipv6: of.Ipv6}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+func (r *GetSpecType) GetAddressTypeFromGlobalSpecType(o *GlobalSpecType) error {
+	switch of := o.AddressType.(type) {
+	case nil:
+		r.AddressType = nil
+
+	case *GlobalSpecType_Dualstack:
+		r.AddressType = &GetSpecType_Dualstack{Dualstack: of.Dualstack}
+
+	case *GlobalSpecType_Ipv4:
+		r.AddressType = &GetSpecType_Ipv4{Ipv4: of.Ipv4}
+
+	case *GlobalSpecType_Ipv6:
+		r.AddressType = &GetSpecType_Ipv6{Ipv6: of.Ipv6}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
 }
 
 // create setters in GetSpecType from GlobalSpecType for oneof fields
@@ -1795,6 +2023,7 @@ func (m *GetSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 		return
 	}
 	m.Address = f.GetAddress()
+	m.GetAddressTypeFromGlobalSpecType(f)
 	m.GetPortChoiceFromGlobalSpecType(f)
 	m.Protocol = f.GetProtocol()
 	m.PublicIp = f.GetPublicIp()
@@ -1819,6 +2048,7 @@ func (m *GetSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	_ = m1
 
 	f.Address = m1.Address
+	m1.SetAddressTypeToGlobalSpecType(f)
 	m1.SetPortChoiceToGlobalSpecType(f)
 	f.Protocol = m1.Protocol
 	f.PublicIp = m1.PublicIp
@@ -1833,6 +2063,47 @@ func (m *GetSpecType) ToGlobalSpecType(f *GlobalSpecType) {
 
 func (m *GetSpecType) ToGlobalSpecTypeWithoutDeepCopy(f *GlobalSpecType) {
 	m.toGlobalSpecType(f, false)
+}
+
+// create setters in ReplaceSpecType from GlobalSpecType for oneof fields
+func (r *ReplaceSpecType) SetAddressTypeToGlobalSpecType(o *GlobalSpecType) error {
+	switch of := r.AddressType.(type) {
+	case nil:
+		o.AddressType = nil
+
+	case *ReplaceSpecType_Dualstack:
+		o.AddressType = &GlobalSpecType_Dualstack{Dualstack: of.Dualstack}
+
+	case *ReplaceSpecType_Ipv4:
+		o.AddressType = &GlobalSpecType_Ipv4{Ipv4: of.Ipv4}
+
+	case *ReplaceSpecType_Ipv6:
+		o.AddressType = &GlobalSpecType_Ipv6{Ipv6: of.Ipv6}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+func (r *ReplaceSpecType) GetAddressTypeFromGlobalSpecType(o *GlobalSpecType) error {
+	switch of := o.AddressType.(type) {
+	case nil:
+		r.AddressType = nil
+
+	case *GlobalSpecType_Dualstack:
+		r.AddressType = &ReplaceSpecType_Dualstack{Dualstack: of.Dualstack}
+
+	case *GlobalSpecType_Ipv4:
+		r.AddressType = &ReplaceSpecType_Ipv4{Ipv4: of.Ipv4}
+
+	case *GlobalSpecType_Ipv6:
+		r.AddressType = &ReplaceSpecType_Ipv6{Ipv6: of.Ipv6}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
 }
 
 // create setters in ReplaceSpecType from GlobalSpecType for oneof fields
@@ -1875,6 +2146,7 @@ func (m *ReplaceSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy boo
 		return
 	}
 	m.Address = f.GetAddress()
+	m.GetAddressTypeFromGlobalSpecType(f)
 	m.GetPortChoiceFromGlobalSpecType(f)
 	m.Protocol = f.GetProtocol()
 	m.PublicIp = f.GetPublicIp()
@@ -1899,6 +2171,7 @@ func (m *ReplaceSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool)
 	_ = m1
 
 	f.Address = m1.Address
+	m1.SetAddressTypeToGlobalSpecType(f)
 	m1.SetPortChoiceToGlobalSpecType(f)
 	f.Protocol = m1.Protocol
 	f.PublicIp = m1.PublicIp

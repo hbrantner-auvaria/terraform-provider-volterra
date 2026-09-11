@@ -21,6 +21,7 @@ resource "volterra_authorization_server" "example" {
   namespace = "staging"
   jwks_uri  = ["jwks_uri"]
 }
+
 ```
 
 Argument Reference
@@ -47,4 +48,4 @@ Argument Reference
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured authorization_server.
+-	`id` - This is the id of the configured authorization_server.

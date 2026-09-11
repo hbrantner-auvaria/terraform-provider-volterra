@@ -31,17 +31,17 @@ resource "volterra_fleet" "example" {
 
   // One of the arguments from this list "disable_gpu enable_gpu enable_vgpu" must be set
 
-  enable_gpu = true
+  enable_vgpu {
+    feature_type = "feature_type"
+
+    server_address = "gridlicense1.example.com"
+
+    server_port = "7070"
+  }
 
   // One of the arguments from this list "default_config device_list interface_list" must be set
 
-  interface_list {
-    interfaces {
-      name      = "test1"
-      namespace = "staging"
-      tenant    = "acmecorp"
-    }
-  }
+  default_config = true
 
   // One of the arguments from this list "log_receiver logs_streaming_disabled" must be set
 
@@ -57,143 +57,7 @@ resource "volterra_fleet" "example" {
 
   // One of the arguments from this list "no_storage_device storage_device_list" must be set
 
-  storage_device_list {
-    storage_devices {
-      advanced_advanced_parameters = {
-        "key1" = "value1"
-      }
-
-      // One of the arguments from this list "custom_storage hpe_storage netapp_trident pure_service_orchestrator" must be set
-
-      netapp_trident {
-        // One of the arguments from this list "netapp_backend_ontap_nas netapp_backend_ontap_san" must be set
-
-        netapp_backend_ontap_nas {
-          auto_export_cidrs {
-            ipv6_prefixes = ["fd48:fa09:d9d4::/48"]
-
-            prefixes = ["192.168.20.0/24"]
-          }
-
-          auto_export_policy = true
-
-          backend_name = "value"
-
-          client_certificate = "value"
-
-          client_private_key {
-            blindfold_secret_info_internal {
-              decryption_provider = "value"
-
-              location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
-
-              store_provider = "value"
-            }
-
-            secret_encoding_type = "secret_encoding_type"
-
-            // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
-
-            vault_secret_info {
-              key = "key_pem"
-
-              location = "v1/data/vhost_key"
-
-              provider = "vault-vh-provider"
-
-              secret_encoding = "secret_encoding"
-
-              version = "1"
-            }
-          }
-
-          // One of the arguments from this list "data_lif_dns_name data_lif_ip" can be set
-
-          data_lif_ip = "10.5.2.4"
-          labels = {
-            "key1" = "value1"
-          }
-          limit_aggregate_usage = "80%"
-          limit_volume_size = "50Gi"
-
-          // One of the arguments from this list "management_lif_dns_name management_lif_ip" must be set
-
-          management_lif_ip = "10.5.2.4"
-          nfs_mount_options = "nfsvers=4"
-          password {
-            blindfold_secret_info_internal {
-              decryption_provider = "value"
-
-              location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
-
-              store_provider = "value"
-            }
-
-            secret_encoding_type = "secret_encoding_type"
-
-            // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
-
-            blindfold_secret_info {
-              decryption_provider = "value"
-
-              location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
-
-              store_provider = "value"
-            }
-          }
-          region = "us_east_1b"
-          storage {
-            labels = {
-              "key1" = "value1"
-            }
-
-            volume_defaults {
-              encryption = true
-
-              export_policy = "default"
-
-              // One of the arguments from this list "adaptive_qos_policy no_qos qos_policy" must be set
-
-              adaptive_qos_policy = "adaptive_qos_policy"
-              security_style = "unix"
-              snapshot_dir = true
-              snapshot_policy = "none"
-              snapshot_reserve = "10"
-              space_reserve = "thick"
-              split_on_clone = true
-              tiering_policy = "snapshot-only"
-              unix_permissions = "777"
-            }
-
-            zone = "us_east_1b"
-          }
-          storage_driver_name = "ontap-nas"
-          storage_prefix = "trident"
-          svm = "trident_svm"
-          trusted_ca_certificate = "value"
-          username = "cluster-admin"
-          volume_defaults {
-            encryption = true
-
-            export_policy = "default"
-
-            // One of the arguments from this list "adaptive_qos_policy no_qos qos_policy" must be set
-
-            no_qos = true
-            security_style = "unix"
-            snapshot_dir = true
-            snapshot_policy = "none"
-            snapshot_reserve = "10"
-            space_reserve = "thick"
-            split_on_clone = true
-            tiering_policy = "snapshot-only"
-            unix_permissions = "777"
-          }
-        }
-      }
-      storage_device = "DellEMC-isilon-F800-0"
-    }
-  }
+  no_storage_device = true
 
   // One of the arguments from this list "no_storage_interfaces storage_interface_list" must be set
 
@@ -205,8 +69,9 @@ resource "volterra_fleet" "example" {
 
   // One of the arguments from this list "allow_all_usb deny_all_usb usb_policy" must be set
 
-  deny_all_usb = true
+  allow_all_usb = true
 }
+
 ```
 
 Argument Reference
@@ -722,6 +587,18 @@ device instance specific sections.
 
 `owner` - (Required) This option is not yet supported (`String`).
 
+### Dual Stack Ipv4
+
+IPv4 Address.
+
+`addr` - (Optional) IPv4 Address in string form with dot-decimal notation (`String`).
+
+### Dual Stack Ipv6
+
+IPv6 Address.
+
+`addr` - (Optional) e.g. '2001:db8:0:0:0:0:2:1' becomes '2001:db8::2:1' or '2001:db8:0:0:0:2:0:0' becomes '2001:db8::2::' (`String`).
+
 ### Flash Array Flash Arrays
 
 For FlashArrays you must set the "mgmt_endpoint" and "api_token".
@@ -1060,7 +937,9 @@ List of QoS volume defaults types.
 
 Nexthop address when type is "Use-Configured".
 
-###### One of the arguments from this list "ipv4, ipv6" can be set
+###### One of the arguments from this list "dual_stack, ipv4, ipv6" can be set
+
+`dual_stack` - (Optional) Both IPv4 and IPv6 addresses are specified together. See [Ver Dual Stack ](#ver-dual-stack) below for details.
 
 `ipv4` - (Optional) IPv4 Address. See [Ver Ipv4 ](#ver-ipv4) below for details.
 
@@ -1366,6 +1245,14 @@ Disable Vega Upgrade Mode.
 
 When enabled, vega will inform RE to stop traffic to the specific node..
 
+### Ver Dual Stack
+
+Both IPv4 and IPv6 addresses are specified together.
+
+`ipv4` - (Optional) IPv4 Address. See [Dual Stack Ipv4 ](#dual-stack-ipv4) below for details.
+
+`ipv6` - (Optional) IPv6 Address. See [Dual Stack Ipv6 ](#dual-stack-ipv6) below for details.
+
 ### Ver Ipv4
 
 IPv4 Address.
@@ -1401,4 +1288,4 @@ VMs support is enabled for this fleet.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured fleet.
+-	`id` - This is the id of the configured fleet.

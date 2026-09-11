@@ -26,6 +26,212 @@ var (
 
 // augmented methods on protoc/std generated struct
 
+func (m *AddCryptoKeyRequest) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *AddCryptoKeyRequest) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *AddCryptoKeyRequest) DeepCopy() *AddCryptoKeyRequest {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &AddCryptoKeyRequest{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *AddCryptoKeyRequest) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *AddCryptoKeyRequest) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return AddCryptoKeyRequestValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateAddCryptoKeyRequest struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateAddCryptoKeyRequest) ZoneNameValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for zone_name")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateAddCryptoKeyRequest) KeyTypeValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for key_type")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateAddCryptoKeyRequest) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*AddCryptoKeyRequest)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *AddCryptoKeyRequest got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["key_type"]; exists {
+		vOpts := append(opts, db.WithValidateField("key_type"))
+		if err := fv(ctx, m.GetKeyType(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["namespace"]; exists {
+		vOpts := append(opts, db.WithValidateField("namespace"))
+		if err := fv(ctx, m.GetNamespace(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["zone_name"]; exists {
+		vOpts := append(opts, db.WithValidateField("zone_name"))
+		if err := fv(ctx, m.GetZoneName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultAddCryptoKeyRequestValidator = func() *ValidateAddCryptoKeyRequest {
+	v := &ValidateAddCryptoKeyRequest{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhZoneName := v.ZoneNameValidationRuleHandler
+	rulesZoneName := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhZoneName(rulesZoneName)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for AddCryptoKeyRequest.zone_name: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["zone_name"] = vFn
+
+	vrhKeyType := v.KeyTypeValidationRuleHandler
+	rulesKeyType := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhKeyType(rulesKeyType)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for AddCryptoKeyRequest.key_type: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["key_type"] = vFn
+
+	return v
+}()
+
+func AddCryptoKeyRequestValidator() db.Validator {
+	return DefaultAddCryptoKeyRequestValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *AddCryptoKeyResponse) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *AddCryptoKeyResponse) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *AddCryptoKeyResponse) DeepCopy() *AddCryptoKeyResponse {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &AddCryptoKeyResponse{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *AddCryptoKeyResponse) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *AddCryptoKeyResponse) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return AddCryptoKeyResponseValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateAddCryptoKeyResponse struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateAddCryptoKeyResponse) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*AddCryptoKeyResponse)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *AddCryptoKeyResponse got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["key"]; exists {
+		vOpts := append(opts, db.WithValidateField("key"))
+		if err := fv(ctx, m.GetKey(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultAddCryptoKeyResponseValidator = func() *ValidateAddCryptoKeyResponse {
+	v := &ValidateAddCryptoKeyResponse{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func AddCryptoKeyResponseValidator() db.Validator {
+	return DefaultAddCryptoKeyResponseValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *CloneReq) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
@@ -182,6 +388,431 @@ var DefaultCloneRespValidator = func() *ValidateCloneResp {
 
 func CloneRespValidator() db.Validator {
 	return DefaultCloneRespValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *DeleteCryptoKeyRequest) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *DeleteCryptoKeyRequest) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *DeleteCryptoKeyRequest) DeepCopy() *DeleteCryptoKeyRequest {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &DeleteCryptoKeyRequest{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *DeleteCryptoKeyRequest) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *DeleteCryptoKeyRequest) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return DeleteCryptoKeyRequestValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateDeleteCryptoKeyRequest struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateDeleteCryptoKeyRequest) ZoneNameValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for zone_name")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateDeleteCryptoKeyRequest) KeyIdValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewUint32ValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for key_id")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateDeleteCryptoKeyRequest) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*DeleteCryptoKeyRequest)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *DeleteCryptoKeyRequest got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["key_id"]; exists {
+		vOpts := append(opts, db.WithValidateField("key_id"))
+		if err := fv(ctx, m.GetKeyId(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["namespace"]; exists {
+		vOpts := append(opts, db.WithValidateField("namespace"))
+		if err := fv(ctx, m.GetNamespace(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["zone_name"]; exists {
+		vOpts := append(opts, db.WithValidateField("zone_name"))
+		if err := fv(ctx, m.GetZoneName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultDeleteCryptoKeyRequestValidator = func() *ValidateDeleteCryptoKeyRequest {
+	v := &ValidateDeleteCryptoKeyRequest{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhZoneName := v.ZoneNameValidationRuleHandler
+	rulesZoneName := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhZoneName(rulesZoneName)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for DeleteCryptoKeyRequest.zone_name: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["zone_name"] = vFn
+
+	vrhKeyId := v.KeyIdValidationRuleHandler
+	rulesKeyId := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhKeyId(rulesKeyId)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for DeleteCryptoKeyRequest.key_id: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["key_id"] = vFn
+
+	return v
+}()
+
+func DeleteCryptoKeyRequestValidator() db.Validator {
+	return DefaultDeleteCryptoKeyRequestValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *DeleteCryptoKeyResponse) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *DeleteCryptoKeyResponse) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *DeleteCryptoKeyResponse) DeepCopy() *DeleteCryptoKeyResponse {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &DeleteCryptoKeyResponse{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *DeleteCryptoKeyResponse) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *DeleteCryptoKeyResponse) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return DeleteCryptoKeyResponseValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateDeleteCryptoKeyResponse struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateDeleteCryptoKeyResponse) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*DeleteCryptoKeyResponse)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *DeleteCryptoKeyResponse got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultDeleteCryptoKeyResponseValidator = func() *ValidateDeleteCryptoKeyResponse {
+	v := &ValidateDeleteCryptoKeyResponse{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func DeleteCryptoKeyResponseValidator() db.Validator {
+	return DefaultDeleteCryptoKeyResponseValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *EditCryptoKeyRequest) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *EditCryptoKeyRequest) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *EditCryptoKeyRequest) DeepCopy() *EditCryptoKeyRequest {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &EditCryptoKeyRequest{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *EditCryptoKeyRequest) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *EditCryptoKeyRequest) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return EditCryptoKeyRequestValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateEditCryptoKeyRequest struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateEditCryptoKeyRequest) ZoneNameValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for zone_name")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateEditCryptoKeyRequest) KeyIdValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewUint32ValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for key_id")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateEditCryptoKeyRequest) ActiveValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewBoolValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for active")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateEditCryptoKeyRequest) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*EditCryptoKeyRequest)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *EditCryptoKeyRequest got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["active"]; exists {
+		vOpts := append(opts, db.WithValidateField("active"))
+		if err := fv(ctx, m.GetActive(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["key_id"]; exists {
+		vOpts := append(opts, db.WithValidateField("key_id"))
+		if err := fv(ctx, m.GetKeyId(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["namespace"]; exists {
+		vOpts := append(opts, db.WithValidateField("namespace"))
+		if err := fv(ctx, m.GetNamespace(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["zone_name"]; exists {
+		vOpts := append(opts, db.WithValidateField("zone_name"))
+		if err := fv(ctx, m.GetZoneName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultEditCryptoKeyRequestValidator = func() *ValidateEditCryptoKeyRequest {
+	v := &ValidateEditCryptoKeyRequest{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhZoneName := v.ZoneNameValidationRuleHandler
+	rulesZoneName := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhZoneName(rulesZoneName)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for EditCryptoKeyRequest.zone_name: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["zone_name"] = vFn
+
+	vrhKeyId := v.KeyIdValidationRuleHandler
+	rulesKeyId := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhKeyId(rulesKeyId)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for EditCryptoKeyRequest.key_id: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["key_id"] = vFn
+
+	vrhActive := v.ActiveValidationRuleHandler
+	rulesActive := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhActive(rulesActive)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for EditCryptoKeyRequest.active: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["active"] = vFn
+
+	return v
+}()
+
+func EditCryptoKeyRequestValidator() db.Validator {
+	return DefaultEditCryptoKeyRequestValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *EditCryptoKeyResponse) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *EditCryptoKeyResponse) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *EditCryptoKeyResponse) DeepCopy() *EditCryptoKeyResponse {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &EditCryptoKeyResponse{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *EditCryptoKeyResponse) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *EditCryptoKeyResponse) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return EditCryptoKeyResponseValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateEditCryptoKeyResponse struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateEditCryptoKeyResponse) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*EditCryptoKeyResponse)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *EditCryptoKeyResponse got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultEditCryptoKeyResponseValidator = func() *ValidateEditCryptoKeyResponse {
+	v := &ValidateEditCryptoKeyResponse{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func EditCryptoKeyResponseValidator() db.Validator {
+	return DefaultEditCryptoKeyResponseValidator
 }
 
 // augmented methods on protoc/std generated struct
@@ -429,6 +1060,190 @@ var DefaultF5CSDNSZoneConfigurationValidator = func() *ValidateF5CSDNSZoneConfig
 
 func F5CSDNSZoneConfigurationValidator() db.Validator {
 	return DefaultF5CSDNSZoneConfigurationValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *GetCryptoKeysRequest) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *GetCryptoKeysRequest) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *GetCryptoKeysRequest) DeepCopy() *GetCryptoKeysRequest {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &GetCryptoKeysRequest{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *GetCryptoKeysRequest) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *GetCryptoKeysRequest) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return GetCryptoKeysRequestValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateGetCryptoKeysRequest struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateGetCryptoKeysRequest) ZoneNameValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for zone_name")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateGetCryptoKeysRequest) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*GetCryptoKeysRequest)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *GetCryptoKeysRequest got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["namespace"]; exists {
+		vOpts := append(opts, db.WithValidateField("namespace"))
+		if err := fv(ctx, m.GetNamespace(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["zone_name"]; exists {
+		vOpts := append(opts, db.WithValidateField("zone_name"))
+		if err := fv(ctx, m.GetZoneName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultGetCryptoKeysRequestValidator = func() *ValidateGetCryptoKeysRequest {
+	v := &ValidateGetCryptoKeysRequest{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhZoneName := v.ZoneNameValidationRuleHandler
+	rulesZoneName := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhZoneName(rulesZoneName)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for GetCryptoKeysRequest.zone_name: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["zone_name"] = vFn
+
+	return v
+}()
+
+func GetCryptoKeysRequestValidator() db.Validator {
+	return DefaultGetCryptoKeysRequestValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *GetCryptoKeysResponse) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *GetCryptoKeysResponse) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *GetCryptoKeysResponse) DeepCopy() *GetCryptoKeysResponse {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &GetCryptoKeysResponse{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *GetCryptoKeysResponse) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *GetCryptoKeysResponse) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return GetCryptoKeysResponseValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateGetCryptoKeysResponse struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateGetCryptoKeysResponse) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*GetCryptoKeysResponse)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *GetCryptoKeysResponse got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["keys"]; exists {
+		vOpts := append(opts, db.WithValidateField("keys"))
+		for idx, item := range m.GetKeys() {
+			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
+			if err := fv(ctx, item, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultGetCryptoKeysResponseValidator = func() *ValidateGetCryptoKeysResponse {
+	v := &ValidateGetCryptoKeysResponse{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func GetCryptoKeysResponseValidator() db.Validator {
+	return DefaultGetCryptoKeysResponseValidator
 }
 
 // augmented methods on protoc/std generated struct

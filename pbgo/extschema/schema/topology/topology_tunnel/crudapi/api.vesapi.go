@@ -3206,6 +3206,41 @@ var APISwaggerJSON string = `{
                 }
             }
         },
+        "schemasiteBfdPeerState": {
+            "type": "string",
+            "description": "Indicates the state of BFD session\n\nBFD session state is unknown\nBFD session is Down\nBFD session is Up",
+            "title": "BFD Peer State",
+            "enum": [
+                "BFD_PEER_UNKNOWN",
+                "BFD_PEER_DOWN",
+                "BFD_PEER_UP"
+            ],
+            "default": "BFD_PEER_UNKNOWN",
+            "x-displayname": "BFD Peer State",
+            "x-ves-proto-enum": "ves.io.schema.site.BfdPeerState"
+        },
+        "schemasiteBfdPeerStatusType": {
+            "type": "object",
+            "description": "Status of BFD session for this BGP peer",
+            "title": "BFD Peer Status",
+            "x-displayname": "BFD Peer Status",
+            "x-ves-proto-message": "ves.io.schema.site.BfdPeerStatusType",
+            "properties": {
+                "state": {
+                    "description": " Current state of the BFD session",
+                    "title": "State",
+                    "$ref": "#/definitions/schemasiteBfdPeerState",
+                    "x-displayname": "State"
+                },
+                "state_change_timestamp": {
+                    "type": "string",
+                    "description": " Timestamp at which last BFD state change happened",
+                    "title": "State Change Timestamp",
+                    "format": "date-time",
+                    "x-displayname": "State Change Timestamp"
+                }
+            }
+        },
         "siteTunnelConnectionStatus": {
             "type": "object",
             "description": "Status of tunnel connection that a Ver has originated / terminated",
@@ -3213,6 +3248,12 @@ var APISwaggerJSON string = `{
             "x-displayname": "Tunnel Connection Status",
             "x-ves-proto-message": "ves.io.schema.site.TunnelConnectionStatus",
             "properties": {
+                "bfd_status": {
+                    "description": " Status of BFD session for this peer. Only present when BFD is enabled for the peer.",
+                    "title": "BFD Status",
+                    "$ref": "#/definitions/schemasiteBfdPeerStatusType",
+                    "x-displayname": "BFD Status"
+                },
                 "bgp": {
                     "type": "array",
                     "description": " Internal reference to BGP object corresponding to this tunnel\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 1\n",

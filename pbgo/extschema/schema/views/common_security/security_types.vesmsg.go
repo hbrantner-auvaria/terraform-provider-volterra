@@ -894,6 +894,197 @@ func BotDefenseAdvancedPolicyTypeValidator() db.Validator {
 
 // augmented methods on protoc/std generated struct
 
+func (m *BotDefenseAdvancedProtection) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *BotDefenseAdvancedProtection) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *BotDefenseAdvancedProtection) DeepCopy() *BotDefenseAdvancedProtection {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &BotDefenseAdvancedProtection{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *BotDefenseAdvancedProtection) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *BotDefenseAdvancedProtection) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return BotDefenseAdvancedProtectionValidator().Validate(ctx, m, opts...)
+}
+
+func (m *BotDefenseAdvancedProtection) GetDRefInfo() ([]db.DRefInfo, error) {
+	if m == nil {
+		return nil, nil
+	}
+
+	return m.GetClientTypeChoiceDRefInfo()
+}
+
+// GetDRefInfo for the field's type
+func (m *BotDefenseAdvancedProtection) GetClientTypeChoiceDRefInfo() ([]db.DRefInfo, error) {
+	if m.GetClientTypeChoice() == nil {
+		return nil, nil
+	}
+	switch m.GetClientTypeChoice().(type) {
+	case *BotDefenseAdvancedProtection_BothWebAndMobile:
+		drInfos, err := m.GetBothWebAndMobile().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetBothWebAndMobile().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "both_web_and_mobile." + dri.DRField
+		}
+		return drInfos, err
+	case *BotDefenseAdvancedProtection_WebOnly:
+		drInfos, err := m.GetWebOnly().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetWebOnly().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "web_only." + dri.DRField
+		}
+		return drInfos, err
+	case *BotDefenseAdvancedProtection_MobileOnly:
+		drInfos, err := m.GetMobileOnly().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetMobileOnly().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "mobile_only." + dri.DRField
+		}
+		return drInfos, err
+	default:
+		return nil, nil
+	}
+}
+
+type ValidateBotDefenseAdvancedProtection struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateBotDefenseAdvancedProtection) ClientTypeChoiceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for client_type_choice")
+	}
+	return validatorFn, nil
+}
+
+func (v *ValidateBotDefenseAdvancedProtection) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*BotDefenseAdvancedProtection)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *BotDefenseAdvancedProtection got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+
+	if fv, exists := v.FldValidators["client_type_choice"]; exists {
+		val := m.GetClientTypeChoice()
+		vOpts := append(opts,
+			db.WithValidateField("client_type_choice"),
+		)
+		if err := fv(ctx, val, vOpts...); err != nil {
+			return err
+		}
+	}
+
+	switch m.GetClientTypeChoice().(type) {
+	case *BotDefenseAdvancedProtection_BothWebAndMobile:
+		if fv, exists := v.FldValidators["client_type_choice.both_web_and_mobile"]; exists {
+			val := m.GetClientTypeChoice().(*BotDefenseAdvancedProtection_BothWebAndMobile).BothWebAndMobile
+			vOpts := append(opts,
+				db.WithValidateField("client_type_choice"),
+				db.WithValidateField("both_web_and_mobile"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *BotDefenseAdvancedProtection_WebOnly:
+		if fv, exists := v.FldValidators["client_type_choice.web_only"]; exists {
+			val := m.GetClientTypeChoice().(*BotDefenseAdvancedProtection_WebOnly).WebOnly
+			vOpts := append(opts,
+				db.WithValidateField("client_type_choice"),
+				db.WithValidateField("web_only"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *BotDefenseAdvancedProtection_MobileOnly:
+		if fv, exists := v.FldValidators["client_type_choice.mobile_only"]; exists {
+			val := m.GetClientTypeChoice().(*BotDefenseAdvancedProtection_MobileOnly).MobileOnly
+			vOpts := append(opts,
+				db.WithValidateField("client_type_choice"),
+				db.WithValidateField("mobile_only"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultBotDefenseAdvancedProtectionValidator = func() *ValidateBotDefenseAdvancedProtection {
+	v := &ValidateBotDefenseAdvancedProtection{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+	vrhClientTypeChoice := v.ClientTypeChoiceValidationRuleHandler
+	rulesClientTypeChoice := map[string]string{
+		"ves.io.schema.rules.message.required_oneof": "true",
+	}
+	vFn, err = vrhClientTypeChoice(rulesClientTypeChoice)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for BotDefenseAdvancedProtection.client_type_choice: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["client_type_choice"] = vFn
+	v.FldValidators["client_type_choice.both_web_and_mobile"] = BothWebAndMobileTypeValidator().Validate
+	v.FldValidators["client_type_choice.web_only"] = WebOnlyTypeValidator().Validate
+	v.FldValidators["client_type_choice.mobile_only"] = MobileOnlyTypeValidator().Validate
+
+	return v
+}()
+
+func BotDefenseAdvancedProtectionValidator() db.Validator {
+	return DefaultBotDefenseAdvancedProtectionValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *BotDefenseAdvancedType) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
@@ -1218,6 +1409,388 @@ var DefaultBotDefenseAdvancedTypeValidator = func() *ValidateBotDefenseAdvancedT
 
 func BotDefenseAdvancedTypeValidator() db.Validator {
 	return DefaultBotDefenseAdvancedTypeValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *BothWebAndMobileType) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *BothWebAndMobileType) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *BothWebAndMobileType) DeepCopy() *BothWebAndMobileType {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &BothWebAndMobileType{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *BothWebAndMobileType) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *BothWebAndMobileType) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return BothWebAndMobileTypeValidator().Validate(ctx, m, opts...)
+}
+
+func (m *BothWebAndMobileType) GetDRefInfo() ([]db.DRefInfo, error) {
+	if m == nil {
+		return nil, nil
+	}
+
+	var drInfos []db.DRefInfo
+	if fdrInfos, err := m.GetMobileDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetMobileDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetWebDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetWebDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	return drInfos, nil
+}
+
+func (m *BothWebAndMobileType) GetMobileDRefInfo() ([]db.DRefInfo, error) {
+	vref := m.GetMobile()
+	if vref == nil {
+		return nil, nil
+	}
+	vdRef := db.NewDirectRefForView(vref)
+	vdRef.SetKind("bot_infrastructure.Object")
+	dri := db.DRefInfo{
+		RefdType:   "bot_infrastructure.Object",
+		RefdTenant: vref.Tenant,
+		RefdNS:     vref.Namespace,
+		RefdName:   vref.Name,
+		DRField:    "mobile",
+		Ref:        vdRef,
+	}
+	return []db.DRefInfo{dri}, nil
+}
+
+// GetMobileDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *BothWebAndMobileType) GetMobileDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "bot_infrastructure.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: bot_infrastructure")
+	}
+	vref := m.GetMobile()
+	if vref == nil {
+		return nil, nil
+	}
+	ref := &ves_io_schema.ObjectRefType{
+		Kind:      "bot_infrastructure.Object",
+		Tenant:    vref.Tenant,
+		Namespace: vref.Namespace,
+		Name:      vref.Name,
+	}
+	refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+	if err != nil {
+		return nil, errors.Wrap(err, "Getting referred entry")
+	}
+	if refdEnt != nil {
+		entries = append(entries, refdEnt)
+	}
+	return entries, nil
+}
+
+func (m *BothWebAndMobileType) GetWebDRefInfo() ([]db.DRefInfo, error) {
+	vref := m.GetWeb()
+	if vref == nil {
+		return nil, nil
+	}
+	vdRef := db.NewDirectRefForView(vref)
+	vdRef.SetKind("bot_infrastructure.Object")
+	dri := db.DRefInfo{
+		RefdType:   "bot_infrastructure.Object",
+		RefdTenant: vref.Tenant,
+		RefdNS:     vref.Namespace,
+		RefdName:   vref.Name,
+		DRField:    "web",
+		Ref:        vdRef,
+	}
+	return []db.DRefInfo{dri}, nil
+}
+
+// GetWebDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *BothWebAndMobileType) GetWebDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "bot_infrastructure.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: bot_infrastructure")
+	}
+	vref := m.GetWeb()
+	if vref == nil {
+		return nil, nil
+	}
+	ref := &ves_io_schema.ObjectRefType{
+		Kind:      "bot_infrastructure.Object",
+		Tenant:    vref.Tenant,
+		Namespace: vref.Namespace,
+		Name:      vref.Name,
+	}
+	refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+	if err != nil {
+		return nil, errors.Wrap(err, "Getting referred entry")
+	}
+	if refdEnt != nil {
+		entries = append(entries, refdEnt)
+	}
+	return entries, nil
+}
+
+type ValidateBothWebAndMobileType struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateBothWebAndMobileType) JavaScriptChoiceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for java_script_choice")
+	}
+	return validatorFn, nil
+}
+func (v *ValidateBothWebAndMobileType) MobileSdkChoiceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for mobile_sdk_choice")
+	}
+	return validatorFn, nil
+}
+func (v *ValidateBothWebAndMobileType) WebValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	reqdValidatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "MessageValidationRuleHandler for web")
+	}
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		if err := reqdValidatorFn(ctx, val, opts...); err != nil {
+			return err
+		}
+		if err := ves_io_schema_views.ObjectRefTypeValidator().Validate(ctx, val, opts...); err != nil {
+			return err
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateBothWebAndMobileType) MobileValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	reqdValidatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "MessageValidationRuleHandler for mobile")
+	}
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		if err := reqdValidatorFn(ctx, val, opts...); err != nil {
+			return err
+		}
+		if err := ves_io_schema_views.ObjectRefTypeValidator().Validate(ctx, val, opts...); err != nil {
+			return err
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateBothWebAndMobileType) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*BothWebAndMobileType)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *BothWebAndMobileType got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+
+	if fv, exists := v.FldValidators["java_script_choice"]; exists {
+		val := m.GetJavaScriptChoice()
+		vOpts := append(opts,
+			db.WithValidateField("java_script_choice"),
+		)
+		if err := fv(ctx, val, vOpts...); err != nil {
+			return err
+		}
+	}
+
+	switch m.GetJavaScriptChoice().(type) {
+	case *BothWebAndMobileType_DisableJsInsert:
+		if fv, exists := v.FldValidators["java_script_choice.disable_js_insert"]; exists {
+			val := m.GetJavaScriptChoice().(*BothWebAndMobileType_DisableJsInsert).DisableJsInsert
+			vOpts := append(opts,
+				db.WithValidateField("java_script_choice"),
+				db.WithValidateField("disable_js_insert"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *BothWebAndMobileType_JsInsertAllPages:
+		if fv, exists := v.FldValidators["java_script_choice.js_insert_all_pages"]; exists {
+			val := m.GetJavaScriptChoice().(*BothWebAndMobileType_JsInsertAllPages).JsInsertAllPages
+			vOpts := append(opts,
+				db.WithValidateField("java_script_choice"),
+				db.WithValidateField("js_insert_all_pages"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *BothWebAndMobileType_JsInsertAllPagesExcept:
+		if fv, exists := v.FldValidators["java_script_choice.js_insert_all_pages_except"]; exists {
+			val := m.GetJavaScriptChoice().(*BothWebAndMobileType_JsInsertAllPagesExcept).JsInsertAllPagesExcept
+			vOpts := append(opts,
+				db.WithValidateField("java_script_choice"),
+				db.WithValidateField("js_insert_all_pages_except"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *BothWebAndMobileType_JsInsertionRules:
+		if fv, exists := v.FldValidators["java_script_choice.js_insertion_rules"]; exists {
+			val := m.GetJavaScriptChoice().(*BothWebAndMobileType_JsInsertionRules).JsInsertionRules
+			vOpts := append(opts,
+				db.WithValidateField("java_script_choice"),
+				db.WithValidateField("js_insertion_rules"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	if fv, exists := v.FldValidators["mobile"]; exists {
+		vOpts := append(opts, db.WithValidateField("mobile"))
+		if err := fv(ctx, m.GetMobile(), vOpts...); err != nil {
+			return err
+		}
+	}
+
+	if fv, exists := v.FldValidators["mobile_sdk_choice"]; exists {
+		val := m.GetMobileSdkChoice()
+		vOpts := append(opts,
+			db.WithValidateField("mobile_sdk_choice"),
+		)
+		if err := fv(ctx, val, vOpts...); err != nil {
+			return err
+		}
+	}
+
+	switch m.GetMobileSdkChoice().(type) {
+	case *BothWebAndMobileType_DisableMobileSdk:
+		if fv, exists := v.FldValidators["mobile_sdk_choice.disable_mobile_sdk"]; exists {
+			val := m.GetMobileSdkChoice().(*BothWebAndMobileType_DisableMobileSdk).DisableMobileSdk
+			vOpts := append(opts,
+				db.WithValidateField("mobile_sdk_choice"),
+				db.WithValidateField("disable_mobile_sdk"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *BothWebAndMobileType_MobileSdkConfig:
+		if fv, exists := v.FldValidators["mobile_sdk_choice.mobile_sdk_config"]; exists {
+			val := m.GetMobileSdkChoice().(*BothWebAndMobileType_MobileSdkConfig).MobileSdkConfig
+			vOpts := append(opts,
+				db.WithValidateField("mobile_sdk_choice"),
+				db.WithValidateField("mobile_sdk_config"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	if fv, exists := v.FldValidators["web"]; exists {
+		vOpts := append(opts, db.WithValidateField("web"))
+		if err := fv(ctx, m.GetWeb(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultBothWebAndMobileTypeValidator = func() *ValidateBothWebAndMobileType {
+	v := &ValidateBothWebAndMobileType{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+	vrhJavaScriptChoice := v.JavaScriptChoiceValidationRuleHandler
+	rulesJavaScriptChoice := map[string]string{
+		"ves.io.schema.rules.message.required_oneof": "true",
+	}
+	vFn, err = vrhJavaScriptChoice(rulesJavaScriptChoice)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for BothWebAndMobileType.java_script_choice: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["java_script_choice"] = vFn
+	vrhMobileSdkChoice := v.MobileSdkChoiceValidationRuleHandler
+	rulesMobileSdkChoice := map[string]string{
+		"ves.io.schema.rules.message.required_oneof": "true",
+	}
+	vFn, err = vrhMobileSdkChoice(rulesMobileSdkChoice)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for BothWebAndMobileType.mobile_sdk_choice: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["mobile_sdk_choice"] = vFn
+
+	vrhWeb := v.WebValidationRuleHandler
+	rulesWeb := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhWeb(rulesWeb)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for BothWebAndMobileType.web: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["web"] = vFn
+
+	vrhMobile := v.MobileValidationRuleHandler
+	rulesMobile := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhMobile(rulesMobile)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for BothWebAndMobileType.mobile: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["mobile"] = vFn
+	v.FldValidators["java_script_choice.js_insert_all_pages_except"] = ShapeJavaScriptInsertAllWithExceptionsTypeValidator().Validate
+	v.FldValidators["java_script_choice.js_insertion_rules"] = ShapeJavaScriptInsertTypeValidator().Validate
+	v.FldValidators["mobile_sdk_choice.mobile_sdk_config"] = BotAdvancedMobileSDKConfigTypeValidator().Validate
+
+	return v
+}()
+
+func BothWebAndMobileTypeValidator() db.Validator {
+	return DefaultBothWebAndMobileTypeValidator
 }
 
 // augmented methods on protoc/std generated struct
@@ -2780,6 +3353,169 @@ var DefaultMalwareProtectionRuleValidator = func() *ValidateMalwareProtectionRul
 
 func MalwareProtectionRuleValidator() db.Validator {
 	return DefaultMalwareProtectionRuleValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *MobileOnlyType) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *MobileOnlyType) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *MobileOnlyType) DeepCopy() *MobileOnlyType {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &MobileOnlyType{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *MobileOnlyType) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *MobileOnlyType) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return MobileOnlyTypeValidator().Validate(ctx, m, opts...)
+}
+
+func (m *MobileOnlyType) GetDRefInfo() ([]db.DRefInfo, error) {
+	if m == nil {
+		return nil, nil
+	}
+
+	return m.GetMobileDRefInfo()
+}
+
+func (m *MobileOnlyType) GetMobileDRefInfo() ([]db.DRefInfo, error) {
+	vref := m.GetMobile()
+	if vref == nil {
+		return nil, nil
+	}
+	vdRef := db.NewDirectRefForView(vref)
+	vdRef.SetKind("bot_infrastructure.Object")
+	dri := db.DRefInfo{
+		RefdType:   "bot_infrastructure.Object",
+		RefdTenant: vref.Tenant,
+		RefdNS:     vref.Namespace,
+		RefdName:   vref.Name,
+		DRField:    "mobile",
+		Ref:        vdRef,
+	}
+	return []db.DRefInfo{dri}, nil
+}
+
+// GetMobileDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *MobileOnlyType) GetMobileDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "bot_infrastructure.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: bot_infrastructure")
+	}
+	vref := m.GetMobile()
+	if vref == nil {
+		return nil, nil
+	}
+	ref := &ves_io_schema.ObjectRefType{
+		Kind:      "bot_infrastructure.Object",
+		Tenant:    vref.Tenant,
+		Namespace: vref.Namespace,
+		Name:      vref.Name,
+	}
+	refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+	if err != nil {
+		return nil, errors.Wrap(err, "Getting referred entry")
+	}
+	if refdEnt != nil {
+		entries = append(entries, refdEnt)
+	}
+	return entries, nil
+}
+
+type ValidateMobileOnlyType struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateMobileOnlyType) MobileValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	reqdValidatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "MessageValidationRuleHandler for mobile")
+	}
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		if err := reqdValidatorFn(ctx, val, opts...); err != nil {
+			return err
+		}
+		if err := ves_io_schema_views.ObjectRefTypeValidator().Validate(ctx, val, opts...); err != nil {
+			return err
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateMobileOnlyType) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*MobileOnlyType)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *MobileOnlyType got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["mobile"]; exists {
+		vOpts := append(opts, db.WithValidateField("mobile"))
+		if err := fv(ctx, m.GetMobile(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultMobileOnlyTypeValidator = func() *ValidateMobileOnlyType {
+	v := &ValidateMobileOnlyType{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhMobile := v.MobileValidationRuleHandler
+	rulesMobile := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhMobile(rulesMobile)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for MobileOnlyType.mobile: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["mobile"] = vFn
+
+	return v
+}()
+
+func MobileOnlyTypeValidator() db.Validator {
+	return DefaultMobileOnlyTypeValidator
 }
 
 // augmented methods on protoc/std generated struct
@@ -5361,4 +6097,243 @@ var DefaultWebMobileTrafficTypeValidator = func() *ValidateWebMobileTrafficType 
 
 func WebMobileTrafficTypeValidator() db.Validator {
 	return DefaultWebMobileTrafficTypeValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *WebOnlyType) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *WebOnlyType) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *WebOnlyType) DeepCopy() *WebOnlyType {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &WebOnlyType{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *WebOnlyType) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *WebOnlyType) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return WebOnlyTypeValidator().Validate(ctx, m, opts...)
+}
+
+func (m *WebOnlyType) GetDRefInfo() ([]db.DRefInfo, error) {
+	if m == nil {
+		return nil, nil
+	}
+
+	return m.GetWebDRefInfo()
+}
+
+func (m *WebOnlyType) GetWebDRefInfo() ([]db.DRefInfo, error) {
+	vref := m.GetWeb()
+	if vref == nil {
+		return nil, nil
+	}
+	vdRef := db.NewDirectRefForView(vref)
+	vdRef.SetKind("bot_infrastructure.Object")
+	dri := db.DRefInfo{
+		RefdType:   "bot_infrastructure.Object",
+		RefdTenant: vref.Tenant,
+		RefdNS:     vref.Namespace,
+		RefdName:   vref.Name,
+		DRField:    "web",
+		Ref:        vdRef,
+	}
+	return []db.DRefInfo{dri}, nil
+}
+
+// GetWebDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *WebOnlyType) GetWebDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "bot_infrastructure.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: bot_infrastructure")
+	}
+	vref := m.GetWeb()
+	if vref == nil {
+		return nil, nil
+	}
+	ref := &ves_io_schema.ObjectRefType{
+		Kind:      "bot_infrastructure.Object",
+		Tenant:    vref.Tenant,
+		Namespace: vref.Namespace,
+		Name:      vref.Name,
+	}
+	refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+	if err != nil {
+		return nil, errors.Wrap(err, "Getting referred entry")
+	}
+	if refdEnt != nil {
+		entries = append(entries, refdEnt)
+	}
+	return entries, nil
+}
+
+type ValidateWebOnlyType struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateWebOnlyType) JavaScriptChoiceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for java_script_choice")
+	}
+	return validatorFn, nil
+}
+func (v *ValidateWebOnlyType) WebValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	reqdValidatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "MessageValidationRuleHandler for web")
+	}
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		if err := reqdValidatorFn(ctx, val, opts...); err != nil {
+			return err
+		}
+		if err := ves_io_schema_views.ObjectRefTypeValidator().Validate(ctx, val, opts...); err != nil {
+			return err
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateWebOnlyType) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*WebOnlyType)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *WebOnlyType got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+
+	if fv, exists := v.FldValidators["java_script_choice"]; exists {
+		val := m.GetJavaScriptChoice()
+		vOpts := append(opts,
+			db.WithValidateField("java_script_choice"),
+		)
+		if err := fv(ctx, val, vOpts...); err != nil {
+			return err
+		}
+	}
+
+	switch m.GetJavaScriptChoice().(type) {
+	case *WebOnlyType_DisableJsInsert:
+		if fv, exists := v.FldValidators["java_script_choice.disable_js_insert"]; exists {
+			val := m.GetJavaScriptChoice().(*WebOnlyType_DisableJsInsert).DisableJsInsert
+			vOpts := append(opts,
+				db.WithValidateField("java_script_choice"),
+				db.WithValidateField("disable_js_insert"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *WebOnlyType_JsInsertAllPages:
+		if fv, exists := v.FldValidators["java_script_choice.js_insert_all_pages"]; exists {
+			val := m.GetJavaScriptChoice().(*WebOnlyType_JsInsertAllPages).JsInsertAllPages
+			vOpts := append(opts,
+				db.WithValidateField("java_script_choice"),
+				db.WithValidateField("js_insert_all_pages"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *WebOnlyType_JsInsertAllPagesExcept:
+		if fv, exists := v.FldValidators["java_script_choice.js_insert_all_pages_except"]; exists {
+			val := m.GetJavaScriptChoice().(*WebOnlyType_JsInsertAllPagesExcept).JsInsertAllPagesExcept
+			vOpts := append(opts,
+				db.WithValidateField("java_script_choice"),
+				db.WithValidateField("js_insert_all_pages_except"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *WebOnlyType_JsInsertionRules:
+		if fv, exists := v.FldValidators["java_script_choice.js_insertion_rules"]; exists {
+			val := m.GetJavaScriptChoice().(*WebOnlyType_JsInsertionRules).JsInsertionRules
+			vOpts := append(opts,
+				db.WithValidateField("java_script_choice"),
+				db.WithValidateField("js_insertion_rules"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	if fv, exists := v.FldValidators["web"]; exists {
+		vOpts := append(opts, db.WithValidateField("web"))
+		if err := fv(ctx, m.GetWeb(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultWebOnlyTypeValidator = func() *ValidateWebOnlyType {
+	v := &ValidateWebOnlyType{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+	vrhJavaScriptChoice := v.JavaScriptChoiceValidationRuleHandler
+	rulesJavaScriptChoice := map[string]string{
+		"ves.io.schema.rules.message.required_oneof": "true",
+	}
+	vFn, err = vrhJavaScriptChoice(rulesJavaScriptChoice)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for WebOnlyType.java_script_choice: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["java_script_choice"] = vFn
+
+	vrhWeb := v.WebValidationRuleHandler
+	rulesWeb := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhWeb(rulesWeb)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for WebOnlyType.web: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["web"] = vFn
+	v.FldValidators["java_script_choice.js_insert_all_pages_except"] = ShapeJavaScriptInsertAllWithExceptionsTypeValidator().Validate
+	v.FldValidators["java_script_choice.js_insertion_rules"] = ShapeJavaScriptInsertTypeValidator().Validate
+
+	return v
+}()
+
+func WebOnlyTypeValidator() db.Validator {
+	return DefaultWebOnlyTypeValidator
 }

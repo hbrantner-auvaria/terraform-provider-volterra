@@ -6250,11 +6250,12 @@ var DefaultThirdPartyDiscoveryTypeValidator = func() *ValidateThirdPartyDiscover
 
 	vrhApplications := v.ApplicationsValidationRuleHandler
 	rulesApplications := map[string]string{
-		"ves.io.schema.rules.message.required":   "true",
-		"ves.io.schema.rules.repeated.max_items": "320",
-		"ves.io.schema.rules.repeated.min_items": "1",
-		"ves.io.schema.rules.repeated.unique":    "true",
-		"ves.io.schema.rules.string.ip_prefix":   "true",
+		"ves.io.schema.rules.message.required":                      "true",
+		"ves.io.schema.rules.repeated.items.string.max_len":         "64",
+		"ves.io.schema.rules.repeated.items.string.ves_object_name": "true",
+		"ves.io.schema.rules.repeated.max_items":                    "320",
+		"ves.io.schema.rules.repeated.min_items":                    "1",
+		"ves.io.schema.rules.repeated.unique":                       "true",
 	}
 	vFn, err = vrhApplications(rulesApplications)
 	if err != nil {
@@ -6265,11 +6266,11 @@ var DefaultThirdPartyDiscoveryTypeValidator = func() *ValidateThirdPartyDiscover
 
 	vrhSourceCidr := v.SourceCidrValidationRuleHandler
 	rulesSourceCidr := map[string]string{
-		"ves.io.schema.rules.message.required":   "true",
-		"ves.io.schema.rules.repeated.max_items": "5",
-		"ves.io.schema.rules.repeated.min_items": "1",
-		"ves.io.schema.rules.repeated.unique":    "true",
-		"ves.io.schema.rules.string.ip_prefix":   "true",
+		"ves.io.schema.rules.message.required":                "true",
+		"ves.io.schema.rules.repeated.items.string.ip_prefix": "true",
+		"ves.io.schema.rules.repeated.max_items":              "5",
+		"ves.io.schema.rules.repeated.min_items":              "1",
+		"ves.io.schema.rules.repeated.unique":                 "true",
 	}
 	vFn, err = vrhSourceCidr(rulesSourceCidr)
 	if err != nil {
@@ -6714,8 +6715,8 @@ var DefaultVirtualServerFilterValidator = func() *ValidateVirtualServerFilter {
 
 	vrhProtocols := v.ProtocolsValidationRuleHandler
 	rulesProtocols := map[string]string{
-		"ves.io.schema.rules.repeated.unique": "true",
-		"ves.io.schema.rules.string.in":       "[\"HTTPS\",\"HTTP\",\"TCP\"]",
+		"ves.io.schema.rules.repeated.items.string.in": "[\"HTTPS\",\"HTTP\",\"TCP\"]",
+		"ves.io.schema.rules.repeated.unique":          "true",
 	}
 	vFn, err = vrhProtocols(rulesProtocols)
 	if err != nil {
@@ -6728,7 +6729,6 @@ var DefaultVirtualServerFilterValidator = func() *ValidateVirtualServerFilter {
 	rulesPortRanges := map[string]string{
 		"ves.io.schema.rules.string.max_len":                "512",
 		"ves.io.schema.rules.string.max_ports":              "1024",
-		"ves.io.schema.rules.string.port_range_list":        "true",
 		"ves.io.schema.rules.string.unique_port_range_list": "true",
 	}
 	vFn, err = vrhPortRanges(rulesPortRanges)

@@ -110,7 +110,6 @@ var DefaultCreateSpecTypeValidator = func() *ValidateCreateSpecType {
 		"ves.io.schema.rules.message.required":     "true",
 		"ves.io.schema.rules.string.etld_plus_one": "true",
 		"ves.io.schema.rules.string.max_len":       "256",
-		"ves.io.schema.rules.string.not_empty":     "true",
 	}
 	vFn, err = vrhProtectedDomain(rulesProtectedDomain)
 	if err != nil {
@@ -220,7 +219,6 @@ var DefaultGetSpecTypeValidator = func() *ValidateGetSpecType {
 		"ves.io.schema.rules.message.required":     "true",
 		"ves.io.schema.rules.string.etld_plus_one": "true",
 		"ves.io.schema.rules.string.max_len":       "256",
-		"ves.io.schema.rules.string.not_empty":     "true",
 	}
 	vFn, err = vrhProtectedDomain(rulesProtectedDomain)
 	if err != nil {
@@ -330,7 +328,6 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 		"ves.io.schema.rules.message.required":     "true",
 		"ves.io.schema.rules.string.etld_plus_one": "true",
 		"ves.io.schema.rules.string.max_len":       "256",
-		"ves.io.schema.rules.string.not_empty":     "true",
 	}
 	vFn, err = vrhProtectedDomain(rulesProtectedDomain)
 	if err != nil {

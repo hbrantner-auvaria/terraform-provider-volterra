@@ -20,6 +20,7 @@ resource "volterra_secret_policy" "example" {
   name      = "acmecorp-web"
   namespace = "staging"
 }
+
 ```
 
 Argument Reference
@@ -136,4 +137,4 @@ The values of any other labels do not matter..
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured secret_policy.
+-	`id` - This is the id of the configured secret_policy.

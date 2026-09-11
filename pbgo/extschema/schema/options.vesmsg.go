@@ -233,6 +233,12 @@ func (v *ValidateKey) Validate(ctx context.Context, pm interface{}, opts ...db.V
 	if m == nil {
 		return nil
 	}
+	if fv, exists := v.FldValidators["exclude_empty"]; exists {
+		vOpts := append(opts, db.WithValidateField("exclude_empty"))
+		if err := fv(ctx, m.GetExcludeEmpty(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["field_path"]; exists {
 		vOpts := append(opts, db.WithValidateField("field_path"))
 		if err := fv(ctx, m.GetFieldPath(), vOpts...); err != nil {
@@ -491,6 +497,12 @@ func (v *ValidateMetricDef) Validate(ctx context.Context, pm interface{}, opts .
 	if fv, exists := v.FldValidators["name"]; exists {
 		vOpts := append(opts, db.WithValidateField("name"))
 		if err := fv(ctx, m.GetName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["subsystem"]; exists {
+		vOpts := append(opts, db.WithValidateField("subsystem"))
+		if err := fv(ctx, m.GetSubsystem(), vOpts...); err != nil {
 			return err
 		}
 	}

@@ -16,6 +16,8 @@ Example Usage
 -------------
 
 ```hcl
+
+
 resource "volterra_proxy" "example" {
 	name = "acmecorp-web"
 	namespace = "staging"
@@ -126,13 +128,12 @@ jwt {
 	
 // One of the arguments from this list "max_requests_per_connection no_request_limit_per_connection" must be set
 
-	max_requests_per_connection = "100"
-
+	no_request_limit_per_connection = true
 	
 
 // One of the arguments from this list "disable_path_normalize enable_path_normalize" can be set
 
-	enable_path_normalize = true
+	disable_path_normalize = true
 	
 
 request_cookies_to_add {
@@ -177,7 +178,8 @@ response_cookies_to_add {
 
 // One of the arguments from this list "add_expiry ignore_expiry" can be set
 
-	ignore_expiry = true
+	add_expiry = "add_expiry"
+
 	
 
 // One of the arguments from this list "add_httponly ignore_httponly" can be set
@@ -187,8 +189,7 @@ response_cookies_to_add {
 
 // One of the arguments from this list "ignore_max_age max_age_value" can be set
 
-	max_age_value = "max_age_value"
-
+	ignore_max_age = true
 	
 			name = "value"
 	
@@ -242,7 +243,12 @@ response_headers_to_remove = ["host"]
 
 // One of the arguments from this list "additional_domains enable_strict_sni_host_header_check" can be set
 
-	enable_strict_sni_host_header_check = true
+
+additional_domains {
+	
+domains = ["www.foo.com"]
+	
+}
 	
 }
 	
@@ -287,9 +293,13 @@ blindfold_secret_info_internal {
 // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
 
 
-wingman_secret_info {
+blindfold_secret_info {
 	
-			name = "ChargeBack-API-Key"
+			decryption_provider = "value"
+	
+			location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
+	
+			store_provider = "value"
 	
 }
 	
@@ -302,7 +312,7 @@ tls_config {
 	
 // One of the arguments from this list "custom_security default_security low_security medium_security" must be set
 
-	default_security = true
+	medium_security = true
 	
 }
 	
@@ -313,7 +323,17 @@ tls_config {
 }
 // One of the arguments from this list "active_forward_proxy_policies no_forward_proxy_policy" must be set
 
-	no_forward_proxy_policy = true
+
+active_forward_proxy_policies {
+	
+forward_proxy_policies {
+	name = "test1"
+	namespace = "staging"
+	tenant = "acmecorp"
+}
+		
+	
+}
 // One of the arguments from this list "do_not_advertise site_virtual_sites" must be set
 
 
@@ -354,6 +374,7 @@ site {
 
 	no_interception = true
 }
+
 ```
 
 Argument Reference
@@ -445,7 +466,7 @@ Advertise on a customer site and a given network..
 
 Advertise on a customer virtual site and a given network..
 
-`network` - (Required) By default VIP chosen as ip address of primary network interface in the network (`String`). Must be one of: `SITE_NETWORK_INSIDE_AND_OUTSIDE`, `SITE_NETWORK_INSIDE`, `SITE_NETWORK_OUTSIDE`, `SITE_NETWORK_SERVICE`, `SITE_NETWORK_OUTSIDE_WITH_INTERNET_VIP`, `SITE_NETWORK_INSIDE_AND_OUTSIDE_WITH_INTERNET_VIP`, `SITE_NETWORK_IP_FABRIC`. Note: Current provider behavior does not return a validation error for invalid values and may fall back to default `SITE_NETWORK_INSIDE_AND_OUTSIDE`.
+`network` - (Required) IP address of primary network interface in the network. Accepted values: `SITE_NETWORK_INSIDE`, `SITE_NETWORK_OUTSIDE`, `SITE_NETWORK_INSIDE_AND_OUTSIDE`. Note: Invalid values may currently fall back to default `SITE_NETWORK_INSIDE_AND_OUTSIDE` instead of returning a validation error (`String`).
 
 `virtual_site` - (Required) Reference to virtual site object. See [ref](#ref) below for details.
 
@@ -581,7 +602,7 @@ Advanced More options like header manipulation, compression etc..
 
 ###### One of the arguments from this list "additional_domains, enable_strict_sni_host_header_check" can be set
 
-`additional_domains`- (Optional) Wildcard names are supported in the suffix or prefix form. See [Strict Sni Host Header Check Choice Additional Domains ](#strict-sni-host-header-check-choice-additional-domains) below for details.(Deprecated)
+`additional_domains` - (Optional) Wildcard names are supported in the suffix or prefix form. See [Strict Sni Host Header Check Choice Additional Domains ](#strict-sni-host-header-check-choice-additional-domains) below for details.(Deprecated)
 
 `enable_strict_sni_host_header_check` - (Optional) Enable strict SNI and Host header check (`Bool`).(Deprecated)
 
@@ -653,7 +674,7 @@ Advanced More options like header manipulation, compression etc..
 
 ###### One of the arguments from this list "additional_domains, enable_strict_sni_host_header_check" can be set
 
-`additional_domains`- (Optional) Wildcard names are supported in the suffix or prefix form. See [Strict Sni Host Header Check Choice Additional Domains ](#strict-sni-host-header-check-choice-additional-domains) below for details.(Deprecated)
+`additional_domains` - (Optional) Wildcard names are supported in the suffix or prefix form. See [Strict Sni Host Header Check Choice Additional Domains ](#strict-sni-host-header-check-choice-additional-domains) below for details.(Deprecated)
 
 `enable_strict_sni_host_header_check` - (Optional) Enable strict SNI and Host header check (`Bool`).(Deprecated)
 
@@ -745,7 +766,7 @@ List of cookies to be modified from the HTTP response being sent towards downstr
 
 ###### One of the arguments from this list "ignore_max_age, max_age_value" can be set
 
-`ignore_max_age`- (Optional) Ignore max age attribute (`Bool`).(Deprecated)
+`ignore_max_age` - (Optional) Ignore max age attribute (`Bool`).(Deprecated)
 
 `max_age_value` - (Optional) Add max age attribute (`Int`).(Deprecated)
 
@@ -1007,7 +1028,7 @@ This is HTTP connect Proxy, Upstream connection will be determined based on HTTP
 
 ###### One of the arguments from this list "enable_http, enable_https" must be set
 
-`enable_http`- (Optional) HTTP connect transaction is in cleartext(unencrypted) (`Bool`).
+`enable_http` - (Optional) HTTP connect transaction is in cleartext(unencrypted) (`Bool`).
 
 `enable_https` - (Optional) HTTP connect transaction is in HTTPS. See [Http Https Choice Enable Https ](#http-https-choice-enable-https) below for details.(Deprecated)
 
@@ -1304,4 +1325,4 @@ X-Forwarded-Client-Cert header will be added with the configured fields.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured proxy.
+-	`id` - This is the id of the configured proxy.

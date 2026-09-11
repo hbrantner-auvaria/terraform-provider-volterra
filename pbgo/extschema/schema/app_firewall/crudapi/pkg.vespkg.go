@@ -26,6 +26,55 @@ func initializeEntryRegistry(mdr *svcfw.MDRegistry) {
 }
 
 func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
+	mdr.RPCDeprecatedRequestFieldsRegistry["ves.io.schema.app_firewall.crudapi.API.Create"] = []string{
+		"spec.gc_spec.detection_settings.default_violation_settings",
+		"spec.gc_spec.detection_settings.signature_selection_setting.high_medium_accuracy_signatures",
+		"spec.gc_spec.detection_settings.signature_selection_setting.high_medium_low_accuracy_signatures",
+		"spec.gc_spec.detection_settings.signature_selection_setting.only_high_accuracy_signatures",
+		"spec.gc_spec.detection_settings.violation_settings",
+	}
+	mdr.RPCDeprecatedResponseFieldsRegistry["ves.io.schema.app_firewall.crudapi.API.Create"] = []string{
+		"spec.gc_spec.detection_settings.default_violation_settings",
+		"spec.gc_spec.detection_settings.signature_selection_setting.high_medium_accuracy_signatures",
+		"spec.gc_spec.detection_settings.signature_selection_setting.high_medium_low_accuracy_signatures",
+		"spec.gc_spec.detection_settings.signature_selection_setting.only_high_accuracy_signatures",
+		"spec.gc_spec.detection_settings.violation_settings",
+	}
+	mdr.RPCDeprecatedResponseFieldsRegistry["ves.io.schema.app_firewall.crudapi.API.Get"] = []string{
+		"spec.gc_spec.detection_settings.default_violation_settings",
+		"spec.gc_spec.detection_settings.signature_selection_setting.high_medium_accuracy_signatures",
+		"spec.gc_spec.detection_settings.signature_selection_setting.high_medium_low_accuracy_signatures",
+		"spec.gc_spec.detection_settings.signature_selection_setting.only_high_accuracy_signatures",
+		"spec.gc_spec.detection_settings.violation_settings",
+	}
+	mdr.RPCDeprecatedResponseFieldsRegistry["ves.io.schema.app_firewall.crudapi.API.List"] = []string{
+		"items.#.spec.gc_spec.detection_settings.default_violation_settings",
+		"items.#.spec.gc_spec.detection_settings.signature_selection_setting.high_medium_accuracy_signatures",
+		"items.#.spec.gc_spec.detection_settings.signature_selection_setting.high_medium_low_accuracy_signatures",
+		"items.#.spec.gc_spec.detection_settings.signature_selection_setting.only_high_accuracy_signatures",
+		"items.#.spec.gc_spec.detection_settings.violation_settings",
+	}
+	mdr.RPCDeprecatedResponseFieldsRegistry["ves.io.schema.app_firewall.crudapi.API.ListStream"] = []string{
+		"items.#.spec.gc_spec.detection_settings.default_violation_settings",
+		"items.#.spec.gc_spec.detection_settings.signature_selection_setting.high_medium_accuracy_signatures",
+		"items.#.spec.gc_spec.detection_settings.signature_selection_setting.high_medium_low_accuracy_signatures",
+		"items.#.spec.gc_spec.detection_settings.signature_selection_setting.only_high_accuracy_signatures",
+		"items.#.spec.gc_spec.detection_settings.violation_settings",
+	}
+	mdr.RPCDeprecatedRequestFieldsRegistry["ves.io.schema.app_firewall.crudapi.API.Replace"] = []string{
+		"spec.gc_spec.detection_settings.default_violation_settings",
+		"spec.gc_spec.detection_settings.signature_selection_setting.high_medium_accuracy_signatures",
+		"spec.gc_spec.detection_settings.signature_selection_setting.high_medium_low_accuracy_signatures",
+		"spec.gc_spec.detection_settings.signature_selection_setting.only_high_accuracy_signatures",
+		"spec.gc_spec.detection_settings.violation_settings",
+	}
+	mdr.RPCDeprecatedResponseFieldsRegistry["ves.io.schema.app_firewall.crudapi.API.Replace"] = []string{
+		"spec.gc_spec.detection_settings.default_violation_settings",
+		"spec.gc_spec.detection_settings.signature_selection_setting.high_medium_accuracy_signatures",
+		"spec.gc_spec.detection_settings.signature_selection_setting.high_medium_low_accuracy_signatures",
+		"spec.gc_spec.detection_settings.signature_selection_setting.only_high_accuracy_signatures",
+		"spec.gc_spec.detection_settings.violation_settings",
+	}
 }
 
 func initializeAPIGwServiceSlugsRegistry(sm map[string]string) {

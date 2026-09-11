@@ -1671,18 +1671,25 @@ var APISwaggerJSON string = `{
             "description": "Get public_ip will get the object from the storage backend for namespace metadata.namespace",
             "title": "Get public_ip",
             "x-displayname": "Get Public IP",
-            "x-ves-displayorder": "1,2",
+            "x-ves-displayorder": "1,6,2",
             "x-ves-proto-message": "ves.io.schema.public_ip.GetSpecType",
             "properties": {
                 "ip": {
                     "type": "string",
-                    "description": " IP address for this object\n\nExample: - \"10.1.1.1\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.ip: true\n",
-                    "x-displayname": "IP address",
+                    "description": " IPv4 address for this object. An empty string indicates no IPv4 address is configured.\n\nExample: - \"10.1.1.1\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.ip: true\n",
+                    "x-displayname": "IPv4 address",
                     "x-ves-example": "10.1.1.1",
-                    "x-ves-required": "true",
                     "x-ves-validation-rules": {
-                        "ves.io.schema.rules.message.required": "true",
                         "ves.io.schema.rules.string.ip": "true"
+                    }
+                },
+                "ipv6": {
+                    "type": "string",
+                    "description": " IPv6 address for this object. An empty string indicates no IPv6 address is configured.\n\nExample: - \"2001:db8::1\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.ipv6: true\n",
+                    "x-displayname": "IPv6 Address",
+                    "x-ves-example": "2001:db8::1",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.string.ipv6": "true"
                     }
                 },
                 "virtual_sites": {

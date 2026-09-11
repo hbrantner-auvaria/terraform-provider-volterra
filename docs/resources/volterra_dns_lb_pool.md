@@ -23,11 +23,7 @@ resource "volterra_dns_lb_pool" "example" {
 
   // One of the arguments from this list "a_pool aaaa_pool cname_pool mx_pool srv_pool" must be set
 
-  a_pool {
-    // One of the arguments from this list "disable_health_check health_check" must be set
-
-    disable_health_check = true
-
+  aaaa_pool {
     max_answers = "1"
 
     members {
@@ -45,8 +41,9 @@ resource "volterra_dns_lb_pool" "example" {
 
   // One of the arguments from this list "ttl use_rrset_ttl" must be set
 
-  use_rrset_ttl = true
+  ttl = "3600"
 }
+
 ```
 
 Argument Reference
@@ -227,4 +224,4 @@ x-required.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured dns_lb_pool.
+-	`id` - This is the id of the configured dns_lb_pool.

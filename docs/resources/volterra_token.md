@@ -49,4 +49,4 @@ Argument Reference
 Attribute Reference
 -------------------
 
--   `id` - This is the id of the configured token.
+-	`id` - This is the id of the configured token.

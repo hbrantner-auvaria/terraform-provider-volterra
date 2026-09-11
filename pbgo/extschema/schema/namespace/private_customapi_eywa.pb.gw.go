@@ -28,40 +28,6 @@ var _ status.Status
 var _ = runtime.String
 var _ = utilities.NewDoubleArray
 
-func request_CustomPrivateAPI_RemoveNamespaceFinalizer_0(ctx context.Context, marshaler runtime.Marshaler, client CustomPrivateAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq RemoveNamespaceFinalizerReq
-	var metadata runtime.ServerMetadata
-
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
-	msg, err := client.RemoveNamespaceFinalizer(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-
-}
-
-func local_request_CustomPrivateAPI_RemoveNamespaceFinalizer_0(ctx context.Context, marshaler runtime.Marshaler, server CustomPrivateAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq RemoveNamespaceFinalizerReq
-	var metadata runtime.ServerMetadata
-
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
-	msg, err := server.RemoveNamespaceFinalizer(ctx, &protoReq)
-	return msg, metadata, err
-
-}
-
 func request_CustomPrivateAPI_RemoveNamespaceFinalizerRestricted_0(ctx context.Context, marshaler runtime.Marshaler, client CustomPrivateAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq RemoveNamespaceFinalizerRestrictedReq
 	var metadata runtime.ServerMetadata
@@ -177,26 +143,6 @@ func local_request_CustomPrivateAPI_NamespaceStatus_0(ctx context.Context, marsh
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 func RegisterCustomPrivateAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, server CustomPrivateAPIServer) error {
 
-	mux.Handle("PUT", pattern_CustomPrivateAPI_RemoveNamespaceFinalizer_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := local_request_CustomPrivateAPI_RemoveNamespaceFinalizer_0(rctx, inboundMarshaler, server, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, md)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_CustomPrivateAPI_RemoveNamespaceFinalizer_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
 	mux.Handle("PUT", pattern_CustomPrivateAPI_RemoveNamespaceFinalizerRestricted_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -278,26 +224,6 @@ func RegisterCustomPrivateAPIHandler(ctx context.Context, mux *runtime.ServeMux,
 // "CustomPrivateAPIClient" to call the correct interceptors.
 func RegisterCustomPrivateAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, client CustomPrivateAPIClient) error {
 
-	mux.Handle("PUT", pattern_CustomPrivateAPI_RemoveNamespaceFinalizer_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := request_CustomPrivateAPI_RemoveNamespaceFinalizer_0(rctx, inboundMarshaler, client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, md)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_CustomPrivateAPI_RemoveNamespaceFinalizer_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
 	mux.Handle("PUT", pattern_CustomPrivateAPI_RemoveNamespaceFinalizerRestricted_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -342,16 +268,12 @@ func RegisterCustomPrivateAPIHandlerClient(ctx context.Context, mux *runtime.Ser
 }
 
 var (
-	pattern_CustomPrivateAPI_RemoveNamespaceFinalizer_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"private", "custom", "namespace", "remove_finalizer"}, "", runtime.AssumeColonVerbOpt(false)))
-
 	pattern_CustomPrivateAPI_RemoveNamespaceFinalizerRestricted_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4, 2, 5}, []string{"ves.io.schema", "introspect", "restricted", "write", "namespace", "remove_finalizer"}, "", runtime.AssumeColonVerbOpt(false)))
 
 	pattern_CustomPrivateAPI_NamespaceStatus_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"ves.io.schema", "introspect", "read", "tenant", "namespace", "status"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (
-	forward_CustomPrivateAPI_RemoveNamespaceFinalizer_0 = runtime.ForwardResponseMessage
-
 	forward_CustomPrivateAPI_RemoveNamespaceFinalizerRestricted_0 = runtime.ForwardResponseMessage
 
 	forward_CustomPrivateAPI_NamespaceStatus_0 = runtime.ForwardResponseMessage

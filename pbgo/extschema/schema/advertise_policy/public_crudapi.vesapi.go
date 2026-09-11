@@ -2264,6 +2264,7 @@ var APISwaggerJSON string = `{
             "description": "advertise_policy object controls how and where a service represented by a given virtual_host object is advertised to consumers.",
             "title": "Create advertise policy",
             "x-displayname": "Create Advertise Policy",
+            "x-ves-oneof-field-address_type": "[\"dualstack\",\"ipv4\",\"ipv6\"]",
             "x-ves-oneof-field-port_choice": "[\"port\",\"port_ranges\"]",
             "x-ves-proto-message": "ves.io.schema.advertise_policy.CreateSpecType",
             "properties": {
@@ -2275,6 +2276,21 @@ var APISwaggerJSON string = `{
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.string.ip": "true"
                     }
+                },
+                "dualstack": {
+                    "description": "Exclusive with [ipv4 ipv6]\n Advertise on both IPv4 and IPv6 simultaneously.",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Dual Stack"
+                },
+                "ipv4": {
+                    "description": "Exclusive with [dualstack ipv6]\n Advertise on IPv4 only.",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "IPv4"
+                },
+                "ipv6": {
+                    "description": "Exclusive with [dualstack ipv4]\n Advertise on IPv6 only.",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "IPv6"
                 },
                 "port": {
                     "type": "integer",
@@ -2461,6 +2477,7 @@ var APISwaggerJSON string = `{
             "description": "Get advertise_policy read a given object from storage backend for metadata.namespace",
             "title": "Get advertise policy",
             "x-displayname": "Get Advertise Policy",
+            "x-ves-oneof-field-address_type": "[\"dualstack\",\"ipv4\",\"ipv6\"]",
             "x-ves-oneof-field-port_choice": "[\"port\",\"port_ranges\"]",
             "x-ves-proto-message": "ves.io.schema.advertise_policy.GetSpecType",
             "properties": {
@@ -2472,6 +2489,21 @@ var APISwaggerJSON string = `{
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.string.ip": "true"
                     }
+                },
+                "dualstack": {
+                    "description": "Exclusive with [ipv4 ipv6]\n Advertise on both IPv4 and IPv6 simultaneously.",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Dual Stack"
+                },
+                "ipv4": {
+                    "description": "Exclusive with [dualstack ipv6]\n Advertise on IPv4 only.",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "IPv4"
+                },
+                "ipv6": {
+                    "description": "Exclusive with [dualstack ipv4]\n Advertise on IPv6 only.",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "IPv6"
                 },
                 "port": {
                     "type": "integer",
@@ -2710,6 +2742,7 @@ var APISwaggerJSON string = `{
             "description": "advertise_policy object controls how and where a service represented by a given virtual_host object is advertised to consumers.",
             "title": "Replace advertise policy",
             "x-displayname": "Replace Advertise Policy",
+            "x-ves-oneof-field-address_type": "[\"dualstack\",\"ipv4\",\"ipv6\"]",
             "x-ves-oneof-field-port_choice": "[\"port\",\"port_ranges\"]",
             "x-ves-proto-message": "ves.io.schema.advertise_policy.ReplaceSpecType",
             "properties": {
@@ -2721,6 +2754,21 @@ var APISwaggerJSON string = `{
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.string.ip": "true"
                     }
+                },
+                "dualstack": {
+                    "description": "Exclusive with [ipv4 ipv6]\n Advertise on both IPv4 and IPv6 simultaneously.",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Dual Stack"
+                },
+                "ipv4": {
+                    "description": "Exclusive with [dualstack ipv6]\n Advertise on IPv4 only.",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "IPv4"
+                },
+                "ipv6": {
+                    "description": "Exclusive with [dualstack ipv4]\n Advertise on IPv6 only.",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "IPv6"
                 },
                 "port": {
                     "type": "integer",
@@ -4015,7 +4063,7 @@ var APISwaggerJSON string = `{
         },
         "schemaVirtualNetworkType": {
             "type": "string",
-            "description": "Different types of virtual networks understood by the system\n\nVirtual-network of type VIRTUAL_NETWORK_SITE_LOCAL provides connectivity to public (outside) network.\nThis is an insecure network and is connected to public internet via NAT Gateways/firwalls\nVirtual-network of this type is local to every site. Two virtual networks of this type on different\nsites are neither related nor connected.\n\nConstraints:\nThere can be atmost one virtual network of this type in a given site.\nThis network type is supported on CE sites. This network is created automatically and present on all sites\nVirtual-network of type VIRTUAL_NETWORK_SITE_LOCAL_INSIDE is a private network inside site.\nIt is a secure network and is not connected to public network.\nVirtual-network of this type is local to every site. Two virtual networks of this type on different\nsites are neither related nor connected.\n\nConstraints:\nThere can be atmost one virtual network of this type in a given site.\nThis network type is supported on CE sites. This network is created during provisioning of site\nUser defined per-site virtual network. Scope of this virtual network is limited to the site.\nThis is not yet supported\nVirtual-network of type VIRTUAL_NETWORK_PUBLIC directly conects to the public internet.\nVirtual-network of this type is local to every site. Two virtual networks of this type on different sites are neither related nor connected.\n\nConstraints:\nThere can be atmost one virtual network of this type in a given site.\nThis network type is supported on RE sites only\nIt is an internally created by the system. They must not be created by user\nVirtual Neworks with global scope across different sites in F5XC domain.\nAn example global virtual-network called \"AIN Network\" is created for every tenant.\nfor volterra fabric\n\nConstraints:\nIt is currently only supported as internally created by the system.\nvK8s service network for a given tenant. Used to advertise a virtual host only to vk8s pods for that tenant\nConstraints:\nIt is an internally created by the system. Must not be created by user\nVER internal network for the site. It can only be used for virtual hosts with SMA_PROXY type proxy\nConstraints:\nIt is an internally created by the system. Must not be created by user\nVirtual-network of type VIRTUAL_NETWORK_SITE_LOCAL_INSIDE_OUTSIDE represents both\nVIRTUAL_NETWORK_SITE_LOCAL and VIRTUAL_NETWORK_SITE_LOCAL_INSIDE\n\nConstraints:\nThis network type is only meaningful in an advertise policy\nWhen virtual-network of type VIRTUAL_NETWORK_IP_AUTO is selected for\nan endpoint, VER will try to determine the network based on the provided\nIP address\n\nConstraints:\nThis network type is only meaningful in an endpoint\n\nVoltADN Private Network is used on volterra RE(s) to connect to customer private networks\nThis network is created by opening a support ticket\n\nThis network is per site srv6 network\nVER IP Fabric network for the site.\nThis Virtual network type is used for exposing virtual host on IP Fabric network on the VER site or\nfor endpoint in IP Fabric network\nConstraints:\nIt is an internally created by the system. Must not be created by user\nNetwork internally created for a segment\nConstraints:\nIt is an internally created by the system. Must not be created by user\nVirtual-network of type VIRTUAL_NETWORK_MANAGEMENT is used for management purposes",
+            "description": "Different types of virtual networks understood by the system\n\nVirtual-network of type VIRTUAL_NETWORK_SITE_LOCAL provides connectivity to public (outside) network.\nThis is an insecure network and is connected to public internet via NAT Gateways/firwalls\nVirtual-network of this type is local to every site. Two virtual networks of this type on different\nsites are neither related nor connected.\n\nConstraints:\nThere can be atmost one virtual network of this type in a given site.\nThis network type is supported on CE sites. This network is created automatically and present on all sites\nVirtual-network of type VIRTUAL_NETWORK_SITE_LOCAL_INSIDE is a private network inside site.\nIt is a secure network and is not connected to public network.\nVirtual-network of this type is local to every site. Two virtual networks of this type on different\nsites are neither related nor connected.\n\nConstraints:\nThere can be atmost one virtual network of this type in a given site.\nThis network type is supported on CE sites. This network is created during provisioning of site\nUser defined per-site virtual network. Scope of this virtual network is limited to the site.\nThis is not yet supported\nVirtual-network of type VIRTUAL_NETWORK_PUBLIC directly conects to the public internet.\nVirtual-network of this type is local to every site. Two virtual networks of this type on different sites are neither related nor connected.\n\nConstraints:\nThere can be atmost one virtual network of this type in a given site.\nThis network type is supported on RE sites only\nIt is an internally created by the system. They must not be created by user\nVirtual Neworks with global scope across different sites in F5XC domain.\nAn example global virtual-network called \"AIN Network\" is created for every tenant.\nfor volterra fabric\n\nConstraints:\nIt is currently only supported as internally created by the system.\nvK8s service network for a given tenant. Used to advertise a virtual host only to vk8s pods for that tenant\nConstraints:\nIt is an internally created by the system. Must not be created by user\nVER internal network for the site. It can only be used for virtual hosts with SMA_PROXY type proxy\nConstraints:\nIt is an internally created by the system. Must not be created by user\nVirtual-network of type VIRTUAL_NETWORK_SITE_LOCAL_INSIDE_OUTSIDE represents both\nVIRTUAL_NETWORK_SITE_LOCAL and VIRTUAL_NETWORK_SITE_LOCAL_INSIDE\n\nConstraints:\nThis network type is only meaningful in an advertise policy\nWhen virtual-network of type VIRTUAL_NETWORK_IP_AUTO is selected for\nan endpoint, VER will try to determine the network based on the provided\nIP address\n\nConstraints:\nThis network type is only meaningful in an endpoint\n\nVoltADN Private Network is used on volterra RE(s) to connect to customer private networks\nThis network is created by opening a support ticket\n\nThis network is per site srv6 network\nVER IP Fabric network for the site.\nThis Virtual network type is used for exposing virtual host on IP Fabric network on the VER site or\nfor endpoint in IP Fabric network\nConstraints:\nIt is an internally created by the system. Must not be created by user\nVirtual-network of type VIRTUAL_NETWORK_SEGMENT for segment interface\nVirtual-network of type VIRTUAL_NETWORK_MANAGEMENT is used for management purposes",
             "title": "VirtualNetworkType",
             "enum": [
                 "VIRTUAL_NETWORK_SITE_LOCAL",

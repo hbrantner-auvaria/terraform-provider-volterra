@@ -74,6 +74,7 @@ resource "volterra_waf_exclusion_policy" "example" {
     }
   }
 }
+
 ```
 
 Argument Reference
@@ -202,4 +203,4 @@ Common attributes for the rule including name and description..
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured waf_exclusion_policy.
+-	`id` - This is the id of the configured waf_exclusion_policy.

@@ -14,6 +14,7 @@ import (
 func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.vs_profiles.address_translation.snatpool.SpecType"] = SpecTypeValidator()
 	vr["ves.io.schema.vs_profiles.address_translation.snatpool.Object"] = ObjectValidator()
+	vr["ves.io.schema.vs_profiles.address_translation.snatpool.StatusObject"] = StatusObjectValidator()
 	vr["ves.io.schema.vs_profiles.address_translation.snatpool.CreateRequest"] = CreateRequestValidator()
 	vr["ves.io.schema.vs_profiles.address_translation.snatpool.CreateResponse"] = CreateResponseValidator()
 	vr["ves.io.schema.vs_profiles.address_translation.snatpool.DeleteRequest"] = DeleteRequestValidator()
@@ -35,6 +36,10 @@ func initializeEntryRegistry(mdr *svcfw.MDRegistry) {
 	mdr.EntryStoreMap["ves.io.schema.vs_profiles.address_translation.snatpool.Object"] = store.InMemory
 	mdr.EntryRegistry["ves.io.schema.vs_profiles.address_translation.snatpool.Object"] = reflect.TypeOf(&DBObject{})
 	mdr.EntryIndexers["ves.io.schema.vs_profiles.address_translation.snatpool.Object"] = GetObjectIndexers
+	mdr.EntryFactory["ves.io.schema.vs_profiles.address_translation.snatpool.StatusObject"] = NewEntryStatusObject
+	mdr.EntryStoreMap["ves.io.schema.vs_profiles.address_translation.snatpool.StatusObject"] = store.InMemory
+	mdr.EntryRegistry["ves.io.schema.vs_profiles.address_translation.snatpool.StatusObject"] = reflect.TypeOf(&DBStatusObject{})
+	mdr.EntryIndexers["ves.io.schema.vs_profiles.address_translation.snatpool.StatusObject"] = GetStatusObjectIndexers
 }
 
 func initializeRPCRegistry(mdr *svcfw.MDRegistry) {

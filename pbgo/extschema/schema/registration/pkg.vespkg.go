@@ -44,6 +44,7 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.registration.CreateSpecType"] = CreateSpecTypeValidator()
 	vr["ves.io.schema.registration.GetSpecType"] = GetSpecTypeValidator()
 	vr["ves.io.schema.registration.GlobalSpecType"] = GlobalSpecTypeValidator()
+	vr["ves.io.schema.registration.Hugepage"] = HugepageValidator()
 	vr["ves.io.schema.registration.Infra"] = InfraValidator()
 	vr["ves.io.schema.registration.Interface"] = InterfaceValidator()
 	vr["ves.io.schema.registration.InternetProxy"] = InternetProxyValidator()

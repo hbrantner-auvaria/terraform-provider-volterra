@@ -1880,6 +1880,49 @@ func ResourceAzureVnetSiteInstanceResourceV1() *schema.Resource {
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
 
+																					"dual_stack": {
+
+																						Type:     schema.TypeList,
+																						MaxItems: 1,
+																						Optional: true,
+																						Elem: &schema.Resource{
+																							Schema: map[string]*schema.Schema{
+
+																								"ipv4": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"addr": {
+																												Type:     schema.TypeString,
+																												Optional: true,
+																											},
+																										},
+																									},
+																								},
+
+																								"ipv6": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"addr": {
+																												Type:     schema.TypeString,
+																												Optional: true,
+																											},
+																										},
+																									},
+																								},
+																							},
+																						},
+																					},
+
 																					"ipv4": {
 
 																						Type:     schema.TypeList,
@@ -2153,6 +2196,49 @@ func ResourceAzureVnetSiteInstanceResourceV1() *schema.Resource {
 																			Optional: true,
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
+
+																					"dual_stack": {
+
+																						Type:     schema.TypeList,
+																						MaxItems: 1,
+																						Optional: true,
+																						Elem: &schema.Resource{
+																							Schema: map[string]*schema.Schema{
+
+																								"ipv4": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"addr": {
+																												Type:     schema.TypeString,
+																												Optional: true,
+																											},
+																										},
+																									},
+																								},
+
+																								"ipv6": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"addr": {
+																												Type:     schema.TypeString,
+																												Optional: true,
+																											},
+																										},
+																									},
+																								},
+																							},
+																						},
+																					},
 
 																					"ipv4": {
 
@@ -3548,6 +3634,49 @@ func ResourceAzureVnetSiteInstanceResourceV1() *schema.Resource {
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
 
+																					"dual_stack": {
+
+																						Type:     schema.TypeList,
+																						MaxItems: 1,
+																						Optional: true,
+																						Elem: &schema.Resource{
+																							Schema: map[string]*schema.Schema{
+
+																								"ipv4": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"addr": {
+																												Type:     schema.TypeString,
+																												Optional: true,
+																											},
+																										},
+																									},
+																								},
+
+																								"ipv6": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"addr": {
+																												Type:     schema.TypeString,
+																												Optional: true,
+																											},
+																										},
+																									},
+																								},
+																							},
+																						},
+																					},
+
 																					"ipv4": {
 
 																						Type:     schema.TypeList,
@@ -3967,6 +4096,49 @@ func ResourceAzureVnetSiteInstanceResourceV1() *schema.Resource {
 																			Optional: true,
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
+
+																					"dual_stack": {
+
+																						Type:     schema.TypeList,
+																						MaxItems: 1,
+																						Optional: true,
+																						Elem: &schema.Resource{
+																							Schema: map[string]*schema.Schema{
+
+																								"ipv4": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"addr": {
+																												Type:     schema.TypeString,
+																												Optional: true,
+																											},
+																										},
+																									},
+																								},
+
+																								"ipv6": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"addr": {
+																												Type:     schema.TypeString,
+																												Optional: true,
+																											},
+																										},
+																									},
+																								},
+																							},
+																						},
+																					},
 
 																					"ipv4": {
 
@@ -5382,6 +5554,49 @@ func ResourceAzureVnetSiteInstanceResourceV1() *schema.Resource {
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
 
+																					"dual_stack": {
+
+																						Type:     schema.TypeList,
+																						MaxItems: 1,
+																						Optional: true,
+																						Elem: &schema.Resource{
+																							Schema: map[string]*schema.Schema{
+
+																								"ipv4": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"addr": {
+																												Type:     schema.TypeString,
+																												Optional: true,
+																											},
+																										},
+																									},
+																								},
+
+																								"ipv6": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"addr": {
+																												Type:     schema.TypeString,
+																												Optional: true,
+																											},
+																										},
+																									},
+																								},
+																							},
+																						},
+																					},
+
 																					"ipv4": {
 
 																						Type:     schema.TypeList,
@@ -6422,6 +6637,49 @@ func ResourceAzureVnetSiteInstanceResourceV1() *schema.Resource {
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
 
+																					"dual_stack": {
+
+																						Type:     schema.TypeList,
+																						MaxItems: 1,
+																						Optional: true,
+																						Elem: &schema.Resource{
+																							Schema: map[string]*schema.Schema{
+
+																								"ipv4": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"addr": {
+																												Type:     schema.TypeString,
+																												Optional: true,
+																											},
+																										},
+																									},
+																								},
+
+																								"ipv6": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"addr": {
+																												Type:     schema.TypeString,
+																												Optional: true,
+																											},
+																										},
+																									},
+																								},
+																							},
+																						},
+																					},
+
 																					"ipv4": {
 
 																						Type:     schema.TypeList,
@@ -6684,6 +6942,29 @@ func ResourceAzureVnetSiteInstanceResourceV1() *schema.Resource {
 									},
 								},
 							},
+						},
+					},
+				},
+			},
+
+			"waf_signatures": {
+
+				Type:     schema.TypeList,
+				MaxItems: 1,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+
+						"automatic": {
+
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+
+						"manual": {
+
+							Type:     schema.TypeBool,
+							Optional: true,
 						},
 					},
 				},

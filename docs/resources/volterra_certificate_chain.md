@@ -21,6 +21,7 @@ resource "volterra_certificate_chain" "example" {
   namespace       = "staging"
   certificate_url = ["value"]
 }
+
 ```
 
 Argument Reference
@@ -47,4 +48,4 @@ Argument Reference
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured certificate_chain.
+-	`id` - This is the id of the configured certificate_chain.

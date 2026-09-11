@@ -14,6 +14,7 @@ import (
 func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.vs_profiles.ssl.ssl_client_profile.SpecType"] = SpecTypeValidator()
 	vr["ves.io.schema.vs_profiles.ssl.ssl_client_profile.Object"] = ObjectValidator()
+	vr["ves.io.schema.vs_profiles.ssl.ssl_client_profile.StatusObject"] = StatusObjectValidator()
 	vr["ves.io.schema.vs_profiles.ssl.ssl_client_profile.CreateRequest"] = CreateRequestValidator()
 	vr["ves.io.schema.vs_profiles.ssl.ssl_client_profile.CreateResponse"] = CreateResponseValidator()
 	vr["ves.io.schema.vs_profiles.ssl.ssl_client_profile.DeleteRequest"] = DeleteRequestValidator()
@@ -24,6 +25,7 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.vs_profiles.ssl.ssl_client_profile.ListResponseItem"] = ListResponseItemValidator()
 	vr["ves.io.schema.vs_profiles.ssl.ssl_client_profile.ReplaceRequest"] = ReplaceRequestValidator()
 	vr["ves.io.schema.vs_profiles.ssl.ssl_client_profile.ReplaceResponse"] = ReplaceResponseValidator()
+	vr["ves.io.schema.vs_profiles.ssl.ssl_client_profile.CertificateList"] = CertificateListValidator()
 	vr["ves.io.schema.vs_profiles.ssl.ssl_client_profile.CreateSpecType"] = CreateSpecTypeValidator()
 	vr["ves.io.schema.vs_profiles.ssl.ssl_client_profile.GetSpecType"] = GetSpecTypeValidator()
 	vr["ves.io.schema.vs_profiles.ssl.ssl_client_profile.GlobalSpecType"] = GlobalSpecTypeValidator()
@@ -35,6 +37,10 @@ func initializeEntryRegistry(mdr *svcfw.MDRegistry) {
 	mdr.EntryStoreMap["ves.io.schema.vs_profiles.ssl.ssl_client_profile.Object"] = store.InMemory
 	mdr.EntryRegistry["ves.io.schema.vs_profiles.ssl.ssl_client_profile.Object"] = reflect.TypeOf(&DBObject{})
 	mdr.EntryIndexers["ves.io.schema.vs_profiles.ssl.ssl_client_profile.Object"] = GetObjectIndexers
+	mdr.EntryFactory["ves.io.schema.vs_profiles.ssl.ssl_client_profile.StatusObject"] = NewEntryStatusObject
+	mdr.EntryStoreMap["ves.io.schema.vs_profiles.ssl.ssl_client_profile.StatusObject"] = store.InMemory
+	mdr.EntryRegistry["ves.io.schema.vs_profiles.ssl.ssl_client_profile.StatusObject"] = reflect.TypeOf(&DBStatusObject{})
+	mdr.EntryIndexers["ves.io.schema.vs_profiles.ssl.ssl_client_profile.StatusObject"] = GetStatusObjectIndexers
 }
 
 func initializeRPCRegistry(mdr *svcfw.MDRegistry) {

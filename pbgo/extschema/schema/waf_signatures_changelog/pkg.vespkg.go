@@ -22,6 +22,14 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.waf_signatures_changelog.ReleaseSignatures"] = ReleaseSignaturesValidator()
 	vr["ves.io.schema.waf_signatures_changelog.ReleasedSignaturesReq"] = ReleasedSignaturesReqValidator()
 	vr["ves.io.schema.waf_signatures_changelog.ReleasedSignaturesRsp"] = ReleasedSignaturesRspValidator()
+	vr["ves.io.schema.waf_signatures_changelog.GetLatestVersionResponse"] = GetLatestVersionResponseValidator()
+	vr["ves.io.schema.waf_signatures_changelog.ListAttackSignaturesRequest"] = ListAttackSignaturesRequestValidator()
+	vr["ves.io.schema.waf_signatures_changelog.ListAttackSignaturesResponse"] = ListAttackSignaturesResponseValidator()
+	vr["ves.io.schema.waf_signatures_changelog.ListBotSignaturesRequest"] = ListBotSignaturesRequestValidator()
+	vr["ves.io.schema.waf_signatures_changelog.ListBotSignaturesResponse"] = ListBotSignaturesResponseValidator()
+	vr["ves.io.schema.waf_signatures_changelog.ListThreatCampaignRequest"] = ListThreatCampaignRequestValidator()
+	vr["ves.io.schema.waf_signatures_changelog.ListThreatCampaignsResponse"] = ListThreatCampaignsResponseValidator()
+	vr["ves.io.schema.waf_signatures_changelog.BotSignature"] = BotSignatureValidator()
 	vr["ves.io.schema.waf_signatures_changelog.CreateSpecType"] = CreateSpecTypeValidator()
 	vr["ves.io.schema.waf_signatures_changelog.GetSpecType"] = GetSpecTypeValidator()
 	vr["ves.io.schema.waf_signatures_changelog.GlobalSpecType"] = GlobalSpecTypeValidator()
@@ -46,6 +54,7 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 func initializeAPIGwServiceSlugsRegistry(sm map[string]string) {
 	sm["ves.io.schema.waf_signatures_changelog.SignatureCustomApi"] = "ml/data"
 	sm["ves.io.schema.waf_signatures_changelog.WafSignatureChangelogCustomApi"] = "config"
+	sm["ves.io.schema.waf_signatures_changelog.WafSignaturesAPI"] = "waf"
 }
 
 func initializeP0PolicyRegistry(sm map[string]svcfw.P0PolicyInfo) {
@@ -89,6 +98,21 @@ func initializeCRUDServiceRegistry(mdr *svcfw.MDRegistry, isExternal bool) {
 		mdr.SvcGwRegisterHandlers["ves.io.schema.waf_signatures_changelog.WafSignatureChangelogCustomApi"] = RegisterGwWafSignatureChangelogCustomApiHandler
 		customCSR.ServerRegistry["ves.io.schema.waf_signatures_changelog.WafSignatureChangelogCustomApi"] = func(svc svcfw.Service) server.APIHandler {
 			return NewWafSignatureChangelogCustomApiServer(svc)
+		}
+	}()
+	customCSR = mdr.PubCustomServiceRegistry
+	func() {
+		// set swagger jsons for our and external schemas
+		customCSR.SwaggerRegistry["ves.io.schema.waf_signatures_changelog.Object"] = WafSignaturesAPISwaggerJSON
+		customCSR.GrpcClientRegistry["ves.io.schema.waf_signatures_changelog.WafSignaturesAPI"] = NewWafSignaturesAPIGrpcClient
+		customCSR.RestClientRegistry["ves.io.schema.waf_signatures_changelog.WafSignaturesAPI"] = NewWafSignaturesAPIRestClient
+		if isExternal {
+			return
+		}
+		mdr.SvcRegisterHandlers["ves.io.schema.waf_signatures_changelog.WafSignaturesAPI"] = RegisterWafSignaturesAPIServer
+		mdr.SvcGwRegisterHandlers["ves.io.schema.waf_signatures_changelog.WafSignaturesAPI"] = RegisterGwWafSignaturesAPIHandler
+		customCSR.ServerRegistry["ves.io.schema.waf_signatures_changelog.WafSignaturesAPI"] = func(svc svcfw.Service) server.APIHandler {
+			return NewWafSignaturesAPIServer(svc)
 		}
 	}()
 }

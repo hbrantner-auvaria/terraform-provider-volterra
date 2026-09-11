@@ -1142,7 +1142,7 @@ var CustomAPISwaggerJSON string = `{
                 },
                 "group_by": {
                     "type": "array",
-                    "description": " Aggregate data by labels specified in the group_by field\n\nValidation Rules:\n  ves.io.schema.rules.enum.defined_only: true\n  ves.io.schema.rules.repeated.max_items: 20\n",
+                    "description": " Aggregate data by labels specified in the group_by field\n\nValidation Rules:\n  ves.io.schema.rules.repeated.items.enum.defined_only: true\n  ves.io.schema.rules.repeated.max_items: 20\n",
                     "title": "Group by",
                     "maxItems": 20,
                     "items": {
@@ -1150,7 +1150,7 @@ var CustomAPISwaggerJSON string = `{
                     },
                     "x-displayname": "Group By",
                     "x-ves-validation-rules": {
-                        "ves.io.schema.rules.enum.defined_only": "true",
+                        "ves.io.schema.rules.repeated.items.enum.defined_only": "true",
                         "ves.io.schema.rules.repeated.max_items": "20"
                     }
                 },

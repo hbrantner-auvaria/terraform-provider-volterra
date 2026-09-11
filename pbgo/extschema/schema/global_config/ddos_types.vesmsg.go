@@ -2244,11 +2244,11 @@ var DefaultValidDomainsListConfigValidator = func() *ValidateValidDomainsListCon
 
 	vrhDomains := v.DomainsValidationRuleHandler
 	rulesDomains := map[string]string{
-		"ves.io.schema.rules.repeated.max_items": "10240",
-		"ves.io.schema.rules.repeated.unique":    "true",
-		"ves.io.schema.rules.string.hostname":    "true",
-		"ves.io.schema.rules.string.max_len":     "256",
-		"ves.io.schema.rules.string.min_len":     "1",
+		"ves.io.schema.rules.repeated.items.string.hostname": "true",
+		"ves.io.schema.rules.repeated.items.string.max_len":  "256",
+		"ves.io.schema.rules.repeated.items.string.min_len":  "1",
+		"ves.io.schema.rules.repeated.max_items":             "10240",
+		"ves.io.schema.rules.repeated.unique":                "true",
 	}
 	vFn, err = vrhDomains(rulesDomains)
 	if err != nil {

@@ -50,8 +50,12 @@ func FlattenActiveServicePoliciesTcp(x *ves_io_schema_views_tcp_loadbalancer.Ser
 func DriftDetectionTcpLoadbalancer(d *schema.ResourceData, resp vesapi.GetObjectResponse) {
 	spec := resp.GetObjSpec().(*ves_io_schema_views_tcp_loadbalancer.SpecType)
 	d.Set("advertise_custom", FlattenAdvertiseCustom(spec.GcSpec.GetAdvertiseCustom()))
+	d.Set("advertise_dualstack_on_public", FlattenAdvertiseOnPublic(spec.GcSpec.GetAdvertiseDualstackOnPublic()))
 	d.Set("advertise_on_public", FlattenAdvertiseOnPublic(spec.GcSpec.GetAdvertiseOnPublic()))
+	d.Set("advertise_on_public_default_dualstack_vip", isEmpty(spec.GcSpec.GetAdvertiseOnPublicDefaultDualstackVip()))
+	d.Set("advertise_on_public_default_ipv6_vip", isEmpty(spec.GcSpec.GetAdvertiseOnPublicDefaultIpv6Vip()))
 	d.Set("advertise_on_public_default_vip", isEmpty(spec.GcSpec.GetAdvertiseOnPublicDefaultVip()))
+	d.Set("advertise_v6_on_public", FlattenAdvertiseOnPublic(spec.GcSpec.GetAdvertiseV6OnPublic()))
 	d.Set("do_not_advertise", isEmpty(spec.GcSpec.GetDoNotAdvertise()))
 	d.Set("do_not_retract_cluster", isEmpty(spec.GcSpec.GetDoNotRetractCluster()))
 	d.Set("retract_cluster", isEmpty(spec.GcSpec.GetRetractCluster()))

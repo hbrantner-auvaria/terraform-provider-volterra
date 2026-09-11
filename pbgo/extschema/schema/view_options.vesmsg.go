@@ -2425,6 +2425,89 @@ func MapOptionsValidator() db.Validator {
 
 // augmented methods on protoc/std generated struct
 
+func (m *MatchCondition) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *MatchCondition) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *MatchCondition) DeepCopy() *MatchCondition {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &MatchCondition{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *MatchCondition) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *MatchCondition) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return MatchConditionValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateMatchCondition struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateMatchCondition) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*MatchCondition)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *MatchCondition got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["match_type"]; exists {
+		vOpts := append(opts, db.WithValidateField("match_type"))
+		if err := fv(ctx, m.GetMatchType(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["values"]; exists {
+		vOpts := append(opts, db.WithValidateField("values"))
+		for idx, item := range m.GetValues() {
+			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
+			if err := fv(ctx, item, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultMatchConditionValidator = func() *ValidateMatchCondition {
+	v := &ValidateMatchCondition{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func MatchConditionValidator() db.Validator {
+	return DefaultMatchConditionValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *MatchPath) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
@@ -2504,6 +2587,86 @@ var DefaultMatchPathValidator = func() *ValidateMatchPath {
 
 func MatchPathValidator() db.Validator {
 	return DefaultMatchPathValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *ProgressiveDisclosure) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *ProgressiveDisclosure) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *ProgressiveDisclosure) DeepCopy() *ProgressiveDisclosure {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &ProgressiveDisclosure{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *ProgressiveDisclosure) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *ProgressiveDisclosure) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return ProgressiveDisclosureValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateProgressiveDisclosure struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateProgressiveDisclosure) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*ProgressiveDisclosure)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *ProgressiveDisclosure got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["field_name"]; exists {
+		vOpts := append(opts, db.WithValidateField("field_name"))
+		if err := fv(ctx, m.GetFieldName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["match_condition"]; exists {
+		vOpts := append(opts, db.WithValidateField("match_condition"))
+		if err := fv(ctx, m.GetMatchCondition(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultProgressiveDisclosureValidator = func() *ValidateProgressiveDisclosure {
+	v := &ValidateProgressiveDisclosure{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func ProgressiveDisclosureValidator() db.Validator {
+	return DefaultProgressiveDisclosureValidator
 }
 
 // augmented methods on protoc/std generated struct

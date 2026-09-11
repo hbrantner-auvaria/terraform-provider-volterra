@@ -433,6 +433,12 @@ func (v *ValidateCreateSpecType) Validate(ctx context.Context, pm interface{}, o
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["extended_analytics"]; exists {
+		vOpts := append(opts, db.WithValidateField("extended_analytics"))
+		if err := fv(ctx, m.GetExtendedAnalytics(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["fast_open"]; exists {
 		vOpts := append(opts, db.WithValidateField("fast_open"))
 		if err := fv(ctx, m.GetFastOpen(), vOpts...); err != nil {
@@ -1618,6 +1624,12 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 	if fv, exists := v.FldValidators["enhanced_loss_recovery"]; exists {
 		vOpts := append(opts, db.WithValidateField("enhanced_loss_recovery"))
 		if err := fv(ctx, m.GetEnhancedLossRecovery(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["extended_analytics"]; exists {
+		vOpts := append(opts, db.WithValidateField("extended_analytics"))
+		if err := fv(ctx, m.GetExtendedAnalytics(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -2809,6 +2821,12 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["extended_analytics"]; exists {
+		vOpts := append(opts, db.WithValidateField("extended_analytics"))
+		if err := fv(ctx, m.GetExtendedAnalytics(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["fast_open"]; exists {
 		vOpts := append(opts, db.WithValidateField("fast_open"))
 		if err := fv(ctx, m.GetFastOpen(), vOpts...); err != nil {
@@ -3997,6 +4015,12 @@ func (v *ValidateReplaceSpecType) Validate(ctx context.Context, pm interface{}, 
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["extended_analytics"]; exists {
+		vOpts := append(opts, db.WithValidateField("extended_analytics"))
+		if err := fv(ctx, m.GetExtendedAnalytics(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["fast_open"]; exists {
 		vOpts := append(opts, db.WithValidateField("fast_open"))
 		if err := fv(ctx, m.GetFastOpen(), vOpts...); err != nil {
@@ -4796,6 +4820,7 @@ func (m *CreateSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool
 	m.EarlyRetransmit = f.GetEarlyRetransmit()
 	m.Ecn = f.GetEcn()
 	m.EnhancedLossRecovery = f.GetEnhancedLossRecovery()
+	m.ExtendedAnalytics = f.GetExtendedAnalytics()
 	m.FastOpen = f.GetFastOpen()
 	m.FastOpenCookieExpiration = f.GetFastOpenCookieExpiration()
 	m.FinWait_2Timeout = f.GetFinWait_2Timeout()
@@ -4895,6 +4920,7 @@ func (m *CreateSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) 
 	f.EarlyRetransmit = m1.EarlyRetransmit
 	f.Ecn = m1.Ecn
 	f.EnhancedLossRecovery = m1.EnhancedLossRecovery
+	f.ExtendedAnalytics = m1.ExtendedAnalytics
 	f.FastOpen = m1.FastOpen
 	f.FastOpenCookieExpiration = m1.FastOpenCookieExpiration
 	f.FinWait_2Timeout = m1.FinWait_2Timeout
@@ -4991,6 +5017,7 @@ func (m *GetSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	m.EarlyRetransmit = f.GetEarlyRetransmit()
 	m.Ecn = f.GetEcn()
 	m.EnhancedLossRecovery = f.GetEnhancedLossRecovery()
+	m.ExtendedAnalytics = f.GetExtendedAnalytics()
 	m.FastOpen = f.GetFastOpen()
 	m.FastOpenCookieExpiration = f.GetFastOpenCookieExpiration()
 	m.FinWait_2Timeout = f.GetFinWait_2Timeout()
@@ -5090,6 +5117,7 @@ func (m *GetSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	f.EarlyRetransmit = m1.EarlyRetransmit
 	f.Ecn = m1.Ecn
 	f.EnhancedLossRecovery = m1.EnhancedLossRecovery
+	f.ExtendedAnalytics = m1.ExtendedAnalytics
 	f.FastOpen = m1.FastOpen
 	f.FastOpenCookieExpiration = m1.FastOpenCookieExpiration
 	f.FinWait_2Timeout = m1.FinWait_2Timeout
@@ -5186,6 +5214,7 @@ func (m *ReplaceSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy boo
 	m.EarlyRetransmit = f.GetEarlyRetransmit()
 	m.Ecn = f.GetEcn()
 	m.EnhancedLossRecovery = f.GetEnhancedLossRecovery()
+	m.ExtendedAnalytics = f.GetExtendedAnalytics()
 	m.FastOpen = f.GetFastOpen()
 	m.FastOpenCookieExpiration = f.GetFastOpenCookieExpiration()
 	m.FinWait_2Timeout = f.GetFinWait_2Timeout()
@@ -5285,6 +5314,7 @@ func (m *ReplaceSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool)
 	f.EarlyRetransmit = m1.EarlyRetransmit
 	f.Ecn = m1.Ecn
 	f.EnhancedLossRecovery = m1.EnhancedLossRecovery
+	f.ExtendedAnalytics = m1.ExtendedAnalytics
 	f.FastOpen = m1.FastOpen
 	f.FastOpenCookieExpiration = m1.FastOpenCookieExpiration
 	f.FinWait_2Timeout = m1.FinWait_2Timeout

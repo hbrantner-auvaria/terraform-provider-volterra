@@ -20,9 +20,9 @@ resource "volterra_tcp_loadbalancer" "example" {
   name      = "acmecorp-web"
   namespace = "staging"
 
-  // One of the arguments from this list "advertise_custom advertise_on_public advertise_on_public_default_vip do_not_advertise" must be set
+  // One of the arguments from this list "advertise_custom advertise_dualstack_on_public advertise_on_public advertise_on_public_default_dualstack_vip advertise_on_public_default_ipv6_vip advertise_on_public_default_vip advertise_v6_on_public do_not_advertise" must be set
 
-  advertise_on_public {
+  advertise_v6_on_public {
     public_ip {
       name      = "test1"
       namespace = "staging"
@@ -43,26 +43,34 @@ resource "volterra_tcp_loadbalancer" "example" {
   tls_tcp {
     // One of the arguments from this list "tls_cert_params tls_parameters" must be set
 
-    tls_cert_params {
-      certificates {
-        name      = "test1"
-        namespace = "staging"
-        tenant    = "acmecorp"
-      }
-
+    tls_parameters {
       // One of the arguments from this list "no_mtls use_mtls" must be set
 
       no_mtls = true
+
+      tls_certificates {
+        certificate_url = "value"
+
+        description = "Certificate used in production environment"
+
+        // One of the arguments from this list "custom_hash_algorithms disable_ocsp_stapling use_system_defaults" can be set
+
+        use_system_defaults {}
+        private_key {
+
+
+          // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
+
+          wingman_secret_info {
+            name = "ChargeBack-API-Key"
+          }
+        }
+      }
+
       tls_config {
         // One of the arguments from this list "custom_security default_security low_security medium_security" must be set
 
-        custom_security {
-          cipher_suites = ["TLS_AES_128_GCM_SHA256"]
-
-          max_version = "max_version"
-
-          min_version = "min_version"
-        }
+        default_security = true
       }
     }
   }
@@ -73,12 +81,13 @@ resource "volterra_tcp_loadbalancer" "example" {
 
   // One of the arguments from this list "active_service_policies no_service_policies service_policies_from_namespace" must be set
 
-  no_service_policies = true
+  service_policies_from_namespace = true
 
   // One of the arguments from this list "default_lb_with_sni no_sni sni" must be set
 
   no_sni = true
 }
+
 ```
 
 Argument Reference
@@ -100,13 +109,21 @@ Argument Reference
 
 ### Spec Argument Reference
 
-###### One of the arguments from this list "advertise_custom, advertise_on_public, advertise_on_public_default_vip, do_not_advertise" must be set
+###### One of the arguments from this list "advertise_custom, advertise_dualstack_on_public, advertise_on_public, advertise_on_public_default_dualstack_vip, advertise_on_public_default_ipv6_vip, advertise_on_public_default_vip, advertise_v6_on_public, do_not_advertise" must be set
 
 `advertise_custom` - (Optional) Advertise this VIP on specific sites. See [Advertise Choice Advertise Custom ](#advertise-choice-advertise-custom) below for details.
 
-`advertise_on_public` - (Optional) Advertise this load balancer on public network. See [Advertise Choice Advertise On Public ](#advertise-choice-advertise-on-public) below for details.
+`advertise_dualstack_on_public` - (Optional) Advertise this Dualstack load balancer address on public network. See [Advertise Choice Advertise Dualstack On Public ](#advertise-choice-advertise-dualstack-on-public) below for details.(Deprecated)
 
-`advertise_on_public_default_vip` - (Optional) Advertise this load balancer on public network with default VIP (`Bool`).
+`advertise_on_public` - (Optional) Advertise this load balancer on specified IPv4 on public network. See [Advertise Choice Advertise On Public ](#advertise-choice-advertise-on-public) below for details.
+
+`advertise_on_public_default_dualstack_vip` - (Optional) Advertise this load balancer on public network with default Dualstack VIP (`Bool`).(Deprecated)
+
+`advertise_on_public_default_ipv6_vip` - (Optional) Advertise this load balancer on public network with default IPv6 VIP (`Bool`).(Deprecated)
+
+`advertise_on_public_default_vip` - (Optional) Advertise this load balancer on public network with default IPv4 VIP (`Bool`).
+
+`advertise_v6_on_public` - (Optional) Advertise this IPv6 load balancer address on public network. See [Advertise Choice Advertise V6 On Public ](#advertise-choice-advertise-v6-on-public) below for details.(Deprecated)
 
 `do_not_advertise` - (Optional) Do not advertise this load balancer (`Bool`).
 
@@ -186,9 +203,21 @@ Advertise this VIP on specific sites.
 
 `advertise_where` - (Required) Where should this load balancer be available. See [Advertise Custom Advertise Where ](#advertise-custom-advertise-where) below for details.
 
+### Advertise Choice Advertise Dualstack On Public
+
+Advertise this Dualstack load balancer address on public network.
+
+`public_ip` - (Required) Dedicated Public IP, which is allocated by F5 Distributed Cloud on request, is used as a VIP.. See [ref](#ref) below for details.
+
 ### Advertise Choice Advertise On Public
 
-Advertise this load balancer on public network.
+Advertise this load balancer on specified IPv4 on public network.
+
+`public_ip` - (Required) Dedicated Public IP, which is allocated by F5 Distributed Cloud on request, is used as a VIP.. See [ref](#ref) below for details.
+
+### Advertise Choice Advertise V6 On Public
+
+Advertise this IPv6 load balancer address on public network.
 
 `public_ip` - (Required) Dedicated Public IP, which is allocated by F5 Distributed Cloud on request, is used as a VIP.. See [ref](#ref) below for details.
 
@@ -196,9 +225,13 @@ Advertise this load balancer on public network.
 
 Where should this load balancer be available.
 
-###### One of the arguments from this list "advertise_on_public, cloud_edge_segment, segment, site, site_segment, virtual_network, virtual_site, virtual_site_segment, virtual_site_with_vip, vk8s_service" must be set
+###### One of the arguments from this list "advertise_dualstack_on_public, advertise_on_public, advertise_v6_on_public, cloud_edge_segment, segment, site, site_segment, virtual_network, virtual_site, virtual_site_segment, virtual_site_with_vip, vk8s_service" must be set
+
+`advertise_dualstack_on_public` - (Optional) Advertise this load balancer with Dualstack VIP on public network. See [Choice Advertise Dualstack On Public ](#choice-advertise-dualstack-on-public) below for details.
 
 `advertise_on_public` - (Optional) Advertise this load balancer on public network. See [Choice Advertise On Public ](#choice-advertise-on-public) below for details.
+
+`advertise_v6_on_public` - (Optional) Advertise this load balancer with IPv6 VIP on public network. See [Choice Advertise V6 On Public ](#choice-advertise-v6-on-public) below for details.
 
 `site` - (Optional) Advertise on a customer site and a given network.. See [Choice Site ](#choice-site) below for details.
 
@@ -222,9 +255,21 @@ Where should this load balancer be available.
 
 `use_default_port` - (Optional) Inherit the Load Balancer's Listen Port. (`Bool`).
 
+### Choice Advertise Dualstack On Public
+
+Advertise this load balancer with Dualstack VIP on public network.
+
+`public_ip` - (Required) Dedicated Public IP, which is allocated by F5 Distributed Cloud on request, is used as a VIP.. See [ref](#ref) below for details.
+
 ### Choice Advertise On Public
 
 Advertise this load balancer on public network.
+
+`public_ip` - (Required) Dedicated Public IP, which is allocated by F5 Distributed Cloud on request, is used as a VIP.. See [ref](#ref) below for details.
+
+### Choice Advertise V6 On Public
+
+Advertise this load balancer with IPv6 VIP on public network.
 
 `public_ip` - (Required) Dedicated Public IP, which is allocated by F5 Distributed Cloud on request, is used as a VIP.. See [ref](#ref) below for details.
 
@@ -488,6 +533,8 @@ Configuration of TLS settings such as min/max TLS version and ciphersuites.
 
 TLS Private Key data in unencrypted PEM format including the PEM headers. The data may be optionally secured using BlindFold. TLS key has to match the accompanying certificate..
 
+
+
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 
 `blindfold_secret_info` - (Optional) Blindfold Secret is used for the secrets managed by F5XC Secret Management Service. See [Secret Info Oneof Blindfold Secret Info ](#secret-info-oneof-blindfold-secret-info) below for details.
@@ -593,5 +640,5 @@ X-Forwarded-Client-Cert header will be added with the configured fields.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured tcp_loadbalancer.
-*   `cname` - This is the hostname of the configured tcp_loadbalancer.
+-	`id` - This is the id of the configured tcp_loadbalancer.
+-	`cname` - This is the hostname of the configured tcp_loadbalancer.

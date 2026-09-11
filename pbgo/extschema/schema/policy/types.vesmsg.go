@@ -2537,6 +2537,15 @@ func (v *ValidateBotAdvancedEndpointMatcherType) Validate(ctx context.Context, p
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["headers"]; exists {
+		vOpts := append(opts, db.WithValidateField("headers"))
+		for idx, item := range m.GetHeaders() {
+			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
+			if err := fv(ctx, item, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
 	if fv, exists := v.FldValidators["http_methods"]; exists {
 		vOpts := append(opts, db.WithValidateField("http_methods"))
 		if err := fv(ctx, m.GetHttpMethods(), vOpts...); err != nil {
@@ -2546,6 +2555,12 @@ func (v *ValidateBotAdvancedEndpointMatcherType) Validate(ctx context.Context, p
 	if fv, exists := v.FldValidators["path"]; exists {
 		vOpts := append(opts, db.WithValidateField("path"))
 		if err := fv(ctx, m.GetPath(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["query"]; exists {
+		vOpts := append(opts, db.WithValidateField("query"))
+		if err := fv(ctx, m.GetQuery(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -2576,12 +2591,434 @@ var DefaultBotAdvancedEndpointMatcherTypeValidator = func() *ValidateBotAdvanced
 	v.FldValidators["http_methods"] = vFn
 	v.FldValidators["domain"] = BotAdvancedDomainOperatorValidator().Validate
 	v.FldValidators["path"] = BotAdvancedPathOperatorValidator().Validate
+	v.FldValidators["headers"] = BotAdvancedHeaderOperatorValidator().Validate
+	v.FldValidators["query"] = BotAdvancedQueryOperatorValidator().Validate
 
 	return v
 }()
 
 func BotAdvancedEndpointMatcherTypeValidator() db.Validator {
 	return DefaultBotAdvancedEndpointMatcherTypeValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *BotAdvancedHeaderOperator) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *BotAdvancedHeaderOperator) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *BotAdvancedHeaderOperator) DeepCopy() *BotAdvancedHeaderOperator {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &BotAdvancedHeaderOperator{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *BotAdvancedHeaderOperator) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *BotAdvancedHeaderOperator) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return BotAdvancedHeaderOperatorValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateBotAdvancedHeaderOperator struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateBotAdvancedHeaderOperator) HeaderOperatorChoiceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for header_operator_choice")
+	}
+	return validatorFn, nil
+}
+func (v *ValidateBotAdvancedHeaderOperator) NameValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for name")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateBotAdvancedHeaderOperator) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*BotAdvancedHeaderOperator)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *BotAdvancedHeaderOperator got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+
+	if fv, exists := v.FldValidators["header_operator_choice"]; exists {
+		val := m.GetHeaderOperatorChoice()
+		vOpts := append(opts,
+			db.WithValidateField("header_operator_choice"),
+		)
+		if err := fv(ctx, val, vOpts...); err != nil {
+			return err
+		}
+	}
+
+	switch m.GetHeaderOperatorChoice().(type) {
+	case *BotAdvancedHeaderOperator_AllHeader:
+		if fv, exists := v.FldValidators["header_operator_choice.all_header"]; exists {
+			val := m.GetHeaderOperatorChoice().(*BotAdvancedHeaderOperator_AllHeader).AllHeader
+			vOpts := append(opts,
+				db.WithValidateField("header_operator_choice"),
+				db.WithValidateField("all_header"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *BotAdvancedHeaderOperator_HeaderOr:
+		if fv, exists := v.FldValidators["header_operator_choice.header_or"]; exists {
+			val := m.GetHeaderOperatorChoice().(*BotAdvancedHeaderOperator_HeaderOr).HeaderOr
+			vOpts := append(opts,
+				db.WithValidateField("header_operator_choice"),
+				db.WithValidateField("header_or"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *BotAdvancedHeaderOperator_HeaderAnd:
+		if fv, exists := v.FldValidators["header_operator_choice.header_and"]; exists {
+			val := m.GetHeaderOperatorChoice().(*BotAdvancedHeaderOperator_HeaderAnd).HeaderAnd
+			vOpts := append(opts,
+				db.WithValidateField("header_operator_choice"),
+				db.WithValidateField("header_and"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *BotAdvancedHeaderOperator_HeaderNone:
+		if fv, exists := v.FldValidators["header_operator_choice.header_none"]; exists {
+			val := m.GetHeaderOperatorChoice().(*BotAdvancedHeaderOperator_HeaderNone).HeaderNone
+			vOpts := append(opts,
+				db.WithValidateField("header_operator_choice"),
+				db.WithValidateField("header_none"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *BotAdvancedHeaderOperator_NotPresentHeader:
+		if fv, exists := v.FldValidators["header_operator_choice.not_present_header"]; exists {
+			val := m.GetHeaderOperatorChoice().(*BotAdvancedHeaderOperator_NotPresentHeader).NotPresentHeader
+			vOpts := append(opts,
+				db.WithValidateField("header_operator_choice"),
+				db.WithValidateField("not_present_header"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	if fv, exists := v.FldValidators["name"]; exists {
+		vOpts := append(opts, db.WithValidateField("name"))
+		if err := fv(ctx, m.GetName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultBotAdvancedHeaderOperatorValidator = func() *ValidateBotAdvancedHeaderOperator {
+	v := &ValidateBotAdvancedHeaderOperator{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+	vrhHeaderOperatorChoice := v.HeaderOperatorChoiceValidationRuleHandler
+	rulesHeaderOperatorChoice := map[string]string{
+		"ves.io.schema.rules.message.required_oneof": "true",
+	}
+	vFn, err = vrhHeaderOperatorChoice(rulesHeaderOperatorChoice)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for BotAdvancedHeaderOperator.header_operator_choice: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["header_operator_choice"] = vFn
+
+	vrhName := v.NameValidationRuleHandler
+	rulesName := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhName(rulesName)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for BotAdvancedHeaderOperator.name: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["name"] = vFn
+	v.FldValidators["header_operator_choice.header_or"] = BotAdvancedMatcherValidator().Validate
+	v.FldValidators["header_operator_choice.header_and"] = BotAdvancedMatcherValidator().Validate
+	v.FldValidators["header_operator_choice.header_none"] = BotAdvancedMatcherValidator().Validate
+
+	return v
+}()
+
+func BotAdvancedHeaderOperatorValidator() db.Validator {
+	return DefaultBotAdvancedHeaderOperatorValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *BotAdvancedMatcher) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *BotAdvancedMatcher) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *BotAdvancedMatcher) DeepCopy() *BotAdvancedMatcher {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &BotAdvancedMatcher{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *BotAdvancedMatcher) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *BotAdvancedMatcher) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return BotAdvancedMatcherValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateBotAdvancedMatcher struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateBotAdvancedMatcher) MatchersValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepMessageItemRules(rules)
+	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Message ValidationRuleHandler for matchers")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []*BotAdvancedMatcherType, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+			if err := BotAdvancedMatcherTypeValidator().Validate(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for matchers")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]*BotAdvancedMatcherType)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []*BotAdvancedMatcherType, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
+			if err != nil {
+				return errors.Wrapf(err, "Converting %v to JSON", elem)
+			}
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated matchers")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items matchers")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateBotAdvancedMatcher) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*BotAdvancedMatcher)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *BotAdvancedMatcher got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["matchers"]; exists {
+		vOpts := append(opts, db.WithValidateField("matchers"))
+		if err := fv(ctx, m.GetMatchers(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultBotAdvancedMatcherValidator = func() *ValidateBotAdvancedMatcher {
+	v := &ValidateBotAdvancedMatcher{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhMatchers := v.MatchersValidationRuleHandler
+	rulesMatchers := map[string]string{
+		"ves.io.schema.rules.repeated.unique": "true",
+	}
+	vFn, err = vrhMatchers(rulesMatchers)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for BotAdvancedMatcher.matchers: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["matchers"] = vFn
+
+	return v
+}()
+
+func BotAdvancedMatcherValidator() db.Validator {
+	return DefaultBotAdvancedMatcherValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *BotAdvancedMatcherType) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *BotAdvancedMatcherType) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *BotAdvancedMatcherType) DeepCopy() *BotAdvancedMatcherType {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &BotAdvancedMatcherType{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *BotAdvancedMatcherType) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *BotAdvancedMatcherType) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return BotAdvancedMatcherTypeValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateBotAdvancedMatcherType struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateBotAdvancedMatcherType) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*BotAdvancedMatcherType)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *BotAdvancedMatcherType got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["case_insensitive"]; exists {
+		vOpts := append(opts, db.WithValidateField("case_insensitive"))
+		if err := fv(ctx, m.GetCaseInsensitive(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["negation"]; exists {
+		vOpts := append(opts, db.WithValidateField("negation"))
+		if err := fv(ctx, m.GetNegation(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["operator"]; exists {
+		vOpts := append(opts, db.WithValidateField("operator"))
+		if err := fv(ctx, m.GetOperator(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["value"]; exists {
+		vOpts := append(opts, db.WithValidateField("value"))
+		if err := fv(ctx, m.GetValue(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultBotAdvancedMatcherTypeValidator = func() *ValidateBotAdvancedMatcherType {
+	v := &ValidateBotAdvancedMatcherType{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func BotAdvancedMatcherTypeValidator() db.Validator {
+	return DefaultBotAdvancedMatcherTypeValidator
 }
 
 // augmented methods on protoc/std generated struct
@@ -2931,6 +3368,392 @@ var DefaultBotAdvancedPathOperatorValidator = func() *ValidateBotAdvancedPathOpe
 
 func BotAdvancedPathOperatorValidator() db.Validator {
 	return DefaultBotAdvancedPathOperatorValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *BotAdvancedQueryOperator) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *BotAdvancedQueryOperator) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *BotAdvancedQueryOperator) DeepCopy() *BotAdvancedQueryOperator {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &BotAdvancedQueryOperator{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *BotAdvancedQueryOperator) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *BotAdvancedQueryOperator) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return BotAdvancedQueryOperatorValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateBotAdvancedQueryOperator struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateBotAdvancedQueryOperator) QueryOperatorChoiceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for query_operator_choice")
+	}
+	return validatorFn, nil
+}
+
+func (v *ValidateBotAdvancedQueryOperator) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*BotAdvancedQueryOperator)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *BotAdvancedQueryOperator got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+
+	if fv, exists := v.FldValidators["query_operator_choice"]; exists {
+		val := m.GetQueryOperatorChoice()
+		vOpts := append(opts,
+			db.WithValidateField("query_operator_choice"),
+		)
+		if err := fv(ctx, val, vOpts...); err != nil {
+			return err
+		}
+	}
+
+	switch m.GetQueryOperatorChoice().(type) {
+	case *BotAdvancedQueryOperator_AllQuery:
+		if fv, exists := v.FldValidators["query_operator_choice.all_query"]; exists {
+			val := m.GetQueryOperatorChoice().(*BotAdvancedQueryOperator_AllQuery).AllQuery
+			vOpts := append(opts,
+				db.WithValidateField("query_operator_choice"),
+				db.WithValidateField("all_query"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *BotAdvancedQueryOperator_QueryOr:
+		if fv, exists := v.FldValidators["query_operator_choice.query_or"]; exists {
+			val := m.GetQueryOperatorChoice().(*BotAdvancedQueryOperator_QueryOr).QueryOr
+			vOpts := append(opts,
+				db.WithValidateField("query_operator_choice"),
+				db.WithValidateField("query_or"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *BotAdvancedQueryOperator_QueryAnd:
+		if fv, exists := v.FldValidators["query_operator_choice.query_and"]; exists {
+			val := m.GetQueryOperatorChoice().(*BotAdvancedQueryOperator_QueryAnd).QueryAnd
+			vOpts := append(opts,
+				db.WithValidateField("query_operator_choice"),
+				db.WithValidateField("query_and"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *BotAdvancedQueryOperator_QueryNone:
+		if fv, exists := v.FldValidators["query_operator_choice.query_none"]; exists {
+			val := m.GetQueryOperatorChoice().(*BotAdvancedQueryOperator_QueryNone).QueryNone
+			vOpts := append(opts,
+				db.WithValidateField("query_operator_choice"),
+				db.WithValidateField("query_none"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultBotAdvancedQueryOperatorValidator = func() *ValidateBotAdvancedQueryOperator {
+	v := &ValidateBotAdvancedQueryOperator{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+	vrhQueryOperatorChoice := v.QueryOperatorChoiceValidationRuleHandler
+	rulesQueryOperatorChoice := map[string]string{
+		"ves.io.schema.rules.message.required_oneof": "true",
+	}
+	vFn, err = vrhQueryOperatorChoice(rulesQueryOperatorChoice)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for BotAdvancedQueryOperator.query_operator_choice: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["query_operator_choice"] = vFn
+	v.FldValidators["query_operator_choice.query_or"] = BotAdvancedMatcherValidator().Validate
+	v.FldValidators["query_operator_choice.query_and"] = BotAdvancedMatcherValidator().Validate
+	v.FldValidators["query_operator_choice.query_none"] = BotAdvancedMatcherValidator().Validate
+
+	return v
+}()
+
+func BotAdvancedQueryOperatorValidator() db.Validator {
+	return DefaultBotAdvancedQueryOperatorValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *BotDefenseRequestLegIdentifier) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *BotDefenseRequestLegIdentifier) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *BotDefenseRequestLegIdentifier) DeepCopy() *BotDefenseRequestLegIdentifier {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &BotDefenseRequestLegIdentifier{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *BotDefenseRequestLegIdentifier) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *BotDefenseRequestLegIdentifier) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return BotDefenseRequestLegIdentifierValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateBotDefenseRequestLegIdentifier struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateBotDefenseRequestLegIdentifier) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*BotDefenseRequestLegIdentifier)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *BotDefenseRequestLegIdentifier got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+
+	switch m.GetBotRequestLegChoice().(type) {
+	case *BotDefenseRequestLegIdentifier_FirstLeg:
+		if fv, exists := v.FldValidators["bot_request_leg_choice.first_leg"]; exists {
+			val := m.GetBotRequestLegChoice().(*BotDefenseRequestLegIdentifier_FirstLeg).FirstLeg
+			vOpts := append(opts,
+				db.WithValidateField("bot_request_leg_choice"),
+				db.WithValidateField("first_leg"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *BotDefenseRequestLegIdentifier_SecondLeg:
+		if fv, exists := v.FldValidators["bot_request_leg_choice.second_leg"]; exists {
+			val := m.GetBotRequestLegChoice().(*BotDefenseRequestLegIdentifier_SecondLeg).SecondLeg
+			vOpts := append(opts,
+				db.WithValidateField("bot_request_leg_choice"),
+				db.WithValidateField("second_leg"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultBotDefenseRequestLegIdentifierValidator = func() *ValidateBotDefenseRequestLegIdentifier {
+	v := &ValidateBotDefenseRequestLegIdentifier{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func BotDefenseRequestLegIdentifierValidator() db.Validator {
+	return DefaultBotDefenseRequestLegIdentifierValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *BotFullSiteAction) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *BotFullSiteAction) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *BotFullSiteAction) DeepCopy() *BotFullSiteAction {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &BotFullSiteAction{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *BotFullSiteAction) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *BotFullSiteAction) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return BotFullSiteActionValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateBotFullSiteAction struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateBotFullSiteAction) RiskScoreActionValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepMessageItemRules(rules)
+	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Message ValidationRuleHandler for risk_score_action")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []*RiskScoreAction, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+			if err := RiskScoreActionValidator().Validate(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for risk_score_action")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]*RiskScoreAction)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []*RiskScoreAction, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
+			if err != nil {
+				return errors.Wrapf(err, "Converting %v to JSON", elem)
+			}
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated risk_score_action")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items risk_score_action")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateBotFullSiteAction) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*BotFullSiteAction)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *BotFullSiteAction got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["risk_score_action"]; exists {
+		vOpts := append(opts, db.WithValidateField("risk_score_action"))
+		if err := fv(ctx, m.GetRiskScoreAction(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultBotFullSiteActionValidator = func() *ValidateBotFullSiteAction {
+	v := &ValidateBotFullSiteAction{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhRiskScoreAction := v.RiskScoreActionValidationRuleHandler
+	rulesRiskScoreAction := map[string]string{
+		"ves.io.schema.rules.repeated.max_items": "16",
+		"ves.io.schema.rules.repeated.unique":    "true",
+	}
+	vFn, err = vrhRiskScoreAction(rulesRiskScoreAction)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for BotFullSiteAction.risk_score_action: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["risk_score_action"] = vFn
+
+	return v
+}()
+
+func BotFullSiteActionValidator() db.Validator {
+	return DefaultBotFullSiteActionValidator
 }
 
 // augmented methods on protoc/std generated struct
@@ -6622,7 +7445,6 @@ var DefaultMaskingConfigValidator = func() *ValidateMaskingConfig {
 		"ves.io.schema.rules.repeated.items.string.not_empty": "true",
 		"ves.io.schema.rules.repeated.max_items":              "16",
 		"ves.io.schema.rules.repeated.unique":                 "true",
-		"ves.io.schema.rules.string.json_path":                "true",
 	}
 	vFn, err = vrhFields(rulesFields)
 	if err != nil {
@@ -7094,6 +7916,121 @@ var DefaultMatcherTypeBasicValidator = func() *ValidateMatcherTypeBasic {
 
 func MatcherTypeBasicValidator() db.Validator {
 	return DefaultMatcherTypeBasicValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *MitigationAction) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *MitigationAction) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *MitigationAction) DeepCopy() *MitigationAction {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &MitigationAction{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *MitigationAction) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *MitigationAction) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return MitigationActionValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateMitigationAction struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateMitigationAction) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*MitigationAction)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *MitigationAction got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+
+	switch m.GetActionType().(type) {
+	case *MitigationAction_None:
+		if fv, exists := v.FldValidators["action_type.none"]; exists {
+			val := m.GetActionType().(*MitigationAction_None).None
+			vOpts := append(opts,
+				db.WithValidateField("action_type"),
+				db.WithValidateField("none"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *MitigationAction_Monitor:
+		if fv, exists := v.FldValidators["action_type.monitor"]; exists {
+			val := m.GetActionType().(*MitigationAction_Monitor).Monitor
+			vOpts := append(opts,
+				db.WithValidateField("action_type"),
+				db.WithValidateField("monitor"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *MitigationAction_Block:
+		if fv, exists := v.FldValidators["action_type.block"]; exists {
+			val := m.GetActionType().(*MitigationAction_Block).Block
+			vOpts := append(opts,
+				db.WithValidateField("action_type"),
+				db.WithValidateField("block"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *MitigationAction_Challenge:
+		if fv, exists := v.FldValidators["action_type.challenge"]; exists {
+			val := m.GetActionType().(*MitigationAction_Challenge).Challenge
+			vOpts := append(opts,
+				db.WithValidateField("action_type"),
+				db.WithValidateField("challenge"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultMitigationActionValidator = func() *ValidateMitigationAction {
+	v := &ValidateMitigationAction{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func MitigationActionValidator() db.Validator {
+	return DefaultMitigationActionValidator
 }
 
 // augmented methods on protoc/std generated struct
@@ -8086,9 +9023,9 @@ var DefaultOriginServerSubsetRuleValidator = func() *ValidateOriginServerSubsetR
 
 	vrhReNameList := v.ReNameListValidationRuleHandler
 	rulesReNameList := map[string]string{
-		"ves.io.schema.rules.repeated.max_items": "32",
-		"ves.io.schema.rules.repeated.unique":    "true",
-		"ves.io.schema.rules.string.max_len":     "64",
+		"ves.io.schema.rules.repeated.items.string.max_len": "64",
+		"ves.io.schema.rules.repeated.max_items":            "32",
+		"ves.io.schema.rules.repeated.unique":               "true",
 	}
 	vFn, err = vrhReNameList(rulesReNameList)
 	if err != nil {
@@ -10385,6 +11322,145 @@ var DefaultRequestMatcherValidator = func() *ValidateRequestMatcher {
 
 func RequestMatcherValidator() db.Validator {
 	return DefaultRequestMatcherValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *RiskScoreAction) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *RiskScoreAction) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *RiskScoreAction) DeepCopy() *RiskScoreAction {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &RiskScoreAction{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *RiskScoreAction) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *RiskScoreAction) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return RiskScoreActionValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateRiskScoreAction struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateRiskScoreAction) RiskAssessmentValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	var conv db.EnumConvFn
+	conv = func(v interface{}) int32 {
+		i := v.(RiskAssessment)
+		return int32(i)
+	}
+	// RiskAssessment_name is generated in .pb.go
+	validatorFn, err := db.NewEnumValidationRuleHandler(rules, RiskAssessment_name, conv)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for risk_assessment")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateRiskScoreAction) MitigationActionValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	reqdValidatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "MessageValidationRuleHandler for mitigation_action")
+	}
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		if err := reqdValidatorFn(ctx, val, opts...); err != nil {
+			return err
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateRiskScoreAction) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*RiskScoreAction)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *RiskScoreAction got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["mitigation_action"]; exists {
+		vOpts := append(opts, db.WithValidateField("mitigation_action"))
+		if err := fv(ctx, m.GetMitigationAction(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["risk_assessment"]; exists {
+		vOpts := append(opts, db.WithValidateField("risk_assessment"))
+		if err := fv(ctx, m.GetRiskAssessment(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultRiskScoreActionValidator = func() *ValidateRiskScoreAction {
+	v := &ValidateRiskScoreAction{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhRiskAssessment := v.RiskAssessmentValidationRuleHandler
+	rulesRiskAssessment := map[string]string{
+		"ves.io.schema.rules.enum.not_in":      "0",
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhRiskAssessment(rulesRiskAssessment)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for RiskScoreAction.risk_assessment: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["risk_assessment"] = vFn
+
+	vrhMitigationAction := v.MitigationActionValidationRuleHandler
+	rulesMitigationAction := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhMitigationAction(rulesMitigationAction)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for RiskScoreAction.mitigation_action: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["mitigation_action"] = vFn
+
+	return v
+}()
+
+func RiskScoreActionValidator() db.Validator {
+	return DefaultRiskScoreActionValidator
 }
 
 // augmented methods on protoc/std generated struct

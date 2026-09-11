@@ -3538,7 +3538,7 @@ var CustomAPISwaggerJSON string = `{
         },
         "schemaAddonServiceAccess": {
             "type": "string",
-            "description": "x-displayName: \"Addon Service Access\"\nState of access into service\n\n - AS_AC_NONE: x-displayName: \"None\"\ndefault state\nThis can mean that addon service is not subscribed or is in pending subscription.\n - AS_AC_ALLOWED: x-displayName: \"Allow\"\naccess is allowed\n - AS_AC_PBAC_DENY: x-displayName: \"PBAC Deny\"\nAddon service is not allowed as part of current plan\n - AS_AC_PBAC_DENY_UPGRADE_PLAN: x-displayName: \"PBAC Deny - Upgrade plan\"\nAddon service is not allowed as part of current plan. To enable it, user is requested to uprade the plan\n - AS_AC_PBAC_DENY_CONTACT_SALES: x-displayName: \"PBAC Deny - Contact Sales\"\nAddon service is not allowed as part of current plan. To enable or to find out more, user is requested to contact sales\n - AS_AC_PBAC_DENY_AS_AC_EOL: x-displayName: \"PBAC Deny - End of  Life\"\nAddon service is not allowed as part of current plan as it is discontinued. User is requested to contact sales discuss alternatives",
+            "description": "x-displayName: \"Addon Service Access\"\nState of access into service\n\n - AS_AC_NONE: x-displayName: \"None\"\ndefault state\nThis can mean that addon service is not subscribed or is in pending subscription.\n - AS_AC_ALLOWED: x-displayName: \"Allow\"\naccess is allowed\n - AS_AC_PBAC_DENY: x-displayName: \"PBAC Deny\"\nAddon service is not allowed as part of current plan\n - AS_AC_PBAC_DENY_UPGRADE_PLAN: x-displayName: \"PBAC Deny - Upgrade plan\"\nAddon service is not allowed as part of current plan. To enable it, user is requested to uprade the plan\n - AS_AC_PBAC_DENY_CONTACT_SALES: x-displayName: \"PBAC Deny - Contact Sales\"\nAddon service is not allowed as part of current plan. To enable or to find out more, user is requested to contact sales\n - AS_AC_PBAC_DENY_AS_AC_EOL: x-displayName: \"PBAC Deny - End of Life\"\nAddon service is not allowed as part of current plan as it is discontinued. User is requested to contact sales discuss alternatives\n - AS_AC_UNAVAILABLE: x-displayName: \"Unavailable\"\nAddon service is not available as part of current plan",
             "title": "AddonServiceAccess",
             "enum": [
                 "AS_AC_NONE",
@@ -3546,7 +3546,8 @@ var CustomAPISwaggerJSON string = `{
                 "AS_AC_PBAC_DENY",
                 "AS_AC_PBAC_DENY_UPGRADE_PLAN",
                 "AS_AC_PBAC_DENY_CONTACT_SALES",
-                "AS_AC_PBAC_DENY_AS_AC_EOL"
+                "AS_AC_PBAC_DENY_AS_AC_EOL",
+                "AS_AC_UNAVAILABLE"
             ],
             "default": "AS_AC_NONE"
         },
@@ -4079,13 +4080,14 @@ var CustomAPISwaggerJSON string = `{
         },
         "schemaTileAccessState": {
             "type": "string",
-            "description": "x-displayName: \"Tile Access State\"\nState of access to Primary navigation tile.\n\n - TILE_AC_NONE: x-displayName: \"None\"\ndefault state\n - TILE_AC_ALLOWED: x-displayName: \"Allowed\"\naccess is allowed\n - TILE_AC_UPGRADE_PLAN: x-displayName: \"Upgrade Plan\"\nRequire plan upgrade.\n - TILE_AC_NOT_SUBSCRIBED: x-displayName: \"Not Subscribed\"\nRequired Addon Service is not subscribed.",
+            "description": "x-displayName: \"Tile Access State\"\nState of access to Primary navigation tile.\n\n - TILE_AC_NONE: x-displayName: \"None\"\ndefault state\n - TILE_AC_ALLOWED: x-displayName: \"Allowed\"\naccess is allowed\n - TILE_AC_UPGRADE_PLAN: x-displayName: \"Upgrade Plan\"\nRequire plan upgrade.\n - TILE_AC_NOT_SUBSCRIBED: x-displayName: \"Not Subscribed\"\nRequired Addon Service is not subscribed.\n - TILE_AC_UNAVAILABLE: x-displayName: \"Unavailable\"\nRequired addon service is not available as part of current plan",
             "title": "TileAccessState",
             "enum": [
                 "TILE_AC_NONE",
                 "TILE_AC_ALLOWED",
                 "TILE_AC_UPGRADE_PLAN",
-                "TILE_AC_NOT_SUBSCRIBED"
+                "TILE_AC_NOT_SUBSCRIBED",
+                "TILE_AC_UNAVAILABLE"
             ],
             "default": "TILE_AC_NONE"
         },

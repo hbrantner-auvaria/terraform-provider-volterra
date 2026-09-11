@@ -1611,6 +1611,11 @@ func (m *UpstreamCertificateParamsType) GetDRefInfo() ([]db.DRefInfo, error) {
 	} else {
 		drInfos = append(drInfos, fdrInfos...)
 	}
+	if fdrInfos, err := m.GetServerValidationChoiceDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetServerValidationChoiceDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
 	if fdrInfos, err := m.GetValidationParamsDRefInfo(); err != nil {
 		return nil, errors.Wrap(err, "GetValidationParamsDRefInfo() FAILED")
 	} else {
@@ -1660,6 +1665,31 @@ func (m *UpstreamCertificateParamsType) GetCertificatesDBEntries(ctx context.Con
 		}
 	}
 	return entries, nil
+}
+
+// GetDRefInfo for the field's type
+func (m *UpstreamCertificateParamsType) GetServerValidationChoiceDRefInfo() ([]db.DRefInfo, error) {
+	if m.GetServerValidationChoice() == nil {
+		return nil, nil
+	}
+	switch m.GetServerValidationChoice().(type) {
+	case *UpstreamCertificateParamsType_SkipServerVerification:
+		return nil, nil
+	case *UpstreamCertificateParamsType_VolterraTrustedCa:
+		return nil, nil
+	case *UpstreamCertificateParamsType_TlsValidationParams:
+		drInfos, err := m.GetTlsValidationParams().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetTlsValidationParams().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "tls_validation_params." + dri.DRField
+		}
+		return drInfos, err
+	default:
+		return nil, nil
+	}
 }
 
 // GetDRefInfo for the field's type
@@ -1806,6 +1836,42 @@ func (v *ValidateUpstreamCertificateParamsType) Validate(ctx context.Context, pm
 			return err
 		}
 	}
+
+	switch m.GetServerValidationChoice().(type) {
+	case *UpstreamCertificateParamsType_SkipServerVerification:
+		if fv, exists := v.FldValidators["server_validation_choice.skip_server_verification"]; exists {
+			val := m.GetServerValidationChoice().(*UpstreamCertificateParamsType_SkipServerVerification).SkipServerVerification
+			vOpts := append(opts,
+				db.WithValidateField("server_validation_choice"),
+				db.WithValidateField("skip_server_verification"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *UpstreamCertificateParamsType_VolterraTrustedCa:
+		if fv, exists := v.FldValidators["server_validation_choice.volterra_trusted_ca"]; exists {
+			val := m.GetServerValidationChoice().(*UpstreamCertificateParamsType_VolterraTrustedCa).VolterraTrustedCa
+			vOpts := append(opts,
+				db.WithValidateField("server_validation_choice"),
+				db.WithValidateField("volterra_trusted_ca"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *UpstreamCertificateParamsType_TlsValidationParams:
+		if fv, exists := v.FldValidators["server_validation_choice.tls_validation_params"]; exists {
+			val := m.GetServerValidationChoice().(*UpstreamCertificateParamsType_TlsValidationParams).TlsValidationParams
+			vOpts := append(opts,
+				db.WithValidateField("server_validation_choice"),
+				db.WithValidateField("tls_validation_params"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
 	if fv, exists := v.FldValidators["validation_params"]; exists {
 		vOpts := append(opts, db.WithValidateField("validation_params"))
 		if err := fv(ctx, m.GetValidationParams(), vOpts...); err != nil {
@@ -1850,6 +1916,7 @@ var DefaultUpstreamCertificateParamsTypeValidator = func() *ValidateUpstreamCert
 		panic(errMsg)
 	}
 	v.FldValidators["cipher_suites"] = vFn
+	v.FldValidators["server_validation_choice.tls_validation_params"] = TlsValidationParamsTypeValidator().Validate
 	v.FldValidators["validation_params"] = TlsValidationParamsTypeValidator().Validate
 
 	return v

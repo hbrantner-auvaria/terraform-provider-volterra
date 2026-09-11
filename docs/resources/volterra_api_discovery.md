@@ -20,6 +20,7 @@ resource "volterra_api_discovery" "example" {
   name      = "acmecorp-web"
   namespace = "staging"
 }
+
 ```
 
 Argument Reference
@@ -152,4 +153,4 @@ Define rules to include or exclude endpoints by path, domain, or header. Rules r
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured api_discovery.
+-	`id` - This is the id of the configured api_discovery.

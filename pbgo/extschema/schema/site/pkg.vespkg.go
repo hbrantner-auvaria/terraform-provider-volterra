@@ -81,6 +81,7 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.site.AzureHubSpokeVnetPeeringStatusInfo"] = AzureHubSpokeVnetPeeringStatusInfoValidator()
 	vr["ves.io.schema.site.AzureVNetToVnetPeeringStatus"] = AzureVNetToVnetPeeringStatusValidator()
 	vr["ves.io.schema.site.AzureVnetPeeringStateType"] = AzureVnetPeeringStateTypeValidator()
+	vr["ves.io.schema.site.BfdPeerStatusType"] = BfdPeerStatusTypeValidator()
 	vr["ves.io.schema.site.Bios"] = BiosValidator()
 	vr["ves.io.schema.site.Board"] = BoardValidator()
 	vr["ves.io.schema.site.BondMembersType"] = BondMembersTypeValidator()
@@ -146,6 +147,7 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.site.VirtualNetworkDnsServerConfigurationType"] = VirtualNetworkDnsServerConfigurationTypeValidator()
 	vr["ves.io.schema.site.VnetGatewayStatusType"] = VnetGatewayStatusTypeValidator()
 	vr["ves.io.schema.site.VolterraSoftwareStatus"] = VolterraSoftwareStatusValidator()
+	vr["ves.io.schema.site.WAFSignaturesStatus"] = WAFSignaturesStatusValidator()
 }
 
 func initializeEntryRegistry(mdr *svcfw.MDRegistry) {

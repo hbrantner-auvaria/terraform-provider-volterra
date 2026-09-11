@@ -2024,7 +2024,7 @@ var DefaultAWSOrchestratedInterfaceValidator = func() *ValidateAWSOrchestratedIn
 
 	vrhMtu := v.MtuValidationRuleHandler
 	rulesMtu := map[string]string{
-		"ves.io.schema.rules.uint32.ranges": "0,512-16384",
+		"ves.io.schema.rules.uint32.ranges": "0,512-8000",
 	}
 	vFn, err = vrhMtu(rulesMtu)
 	if err != nil {
@@ -3223,24 +3223,6 @@ type ValidateEnableVIPAutomationType struct {
 	FldValidators map[string]db.ValidatorFunc
 }
 
-func (v *ValidateEnableVIPAutomationType) DnsConnectorRefValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
-	reqdValidatorFn, err := db.NewMessageValidationRuleHandler(rules)
-	if err != nil {
-		return nil, errors.Wrap(err, "MessageValidationRuleHandler for dns_connector_ref")
-	}
-	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
-		if err := reqdValidatorFn(ctx, val, opts...); err != nil {
-			return err
-		}
-		if err := ves_io_schema_views.ObjectRefTypeValidator().Validate(ctx, val, opts...); err != nil {
-			return err
-		}
-		return nil
-	}
-
-	return validatorFn, nil
-}
-
 func (v *ValidateEnableVIPAutomationType) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
 	m, ok := pm.(*EnableVIPAutomationType)
 	if !ok {
@@ -3266,24 +3248,7 @@ func (v *ValidateEnableVIPAutomationType) Validate(ctx context.Context, pm inter
 // Well-known symbol for default validator implementation
 var DefaultEnableVIPAutomationTypeValidator = func() *ValidateEnableVIPAutomationType {
 	v := &ValidateEnableVIPAutomationType{FldValidators: map[string]db.ValidatorFunc{}}
-	var (
-		err error
-		vFn db.ValidatorFunc
-	)
-	_, _ = err, vFn
-	vFnMap := map[string]db.ValidatorFunc{}
-	_ = vFnMap
-
-	vrhDnsConnectorRef := v.DnsConnectorRefValidationRuleHandler
-	rulesDnsConnectorRef := map[string]string{
-		"ves.io.schema.rules.message.required": "true",
-	}
-	vFn, err = vrhDnsConnectorRef(rulesDnsConnectorRef)
-	if err != nil {
-		errMsg := fmt.Sprintf("ValidationRuleHandler for EnableVIPAutomationType.dns_connector_ref: %s", err)
-		panic(errMsg)
-	}
-	v.FldValidators["dns_connector_ref"] = vFn
+	v.FldValidators["dns_connector_ref"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 
 	return v
 }()

@@ -947,7 +947,8 @@ var DefaultHttpHealthCheckValidator = func() *ValidateHttpHealthCheck {
 	v.FldValidators["virtual_host_choice"] = vFn
 	vrhVirtualHostChoiceVirtualHost := v.VirtualHostChoiceVirtualHostValidationRuleHandler
 	rulesVirtualHostChoiceVirtualHost := map[string]string{
-		"ves.io.schema.rules.string.max_len": "2048",
+		"ves.io.schema.rules.string.hostname": "true",
+		"ves.io.schema.rules.string.max_len":  "2048",
 	}
 	vFnMap["virtual_host_choice.virtual_host"], err = vrhVirtualHostChoiceVirtualHost(rulesVirtualHostChoiceVirtualHost)
 	if err != nil {

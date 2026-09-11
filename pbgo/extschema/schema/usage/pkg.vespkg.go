@@ -7,25 +7,11 @@ import (
 	"reflect"
 
 	"gopkg.volterra.us/stdlib/db"
-	"gopkg.volterra.us/stdlib/server"
 	"gopkg.volterra.us/stdlib/store"
 	"gopkg.volterra.us/stdlib/svcfw"
 )
 
 func initializeValidatorRegistry(vr map[string]db.Validator) {
-	vr["ves.io.schema.usage.HourlyItem"] = HourlyItemValidator()
-	vr["ves.io.schema.usage.ListHourlyUsageDetailsReq"] = ListHourlyUsageDetailsReqValidator()
-	vr["ves.io.schema.usage.ListHourlyUsageDetailsResp"] = ListHourlyUsageDetailsRespValidator()
-	vr["ves.io.schema.usage.ListUsageDetailsReq"] = ListUsageDetailsReqValidator()
-	vr["ves.io.schema.usage.ListUsageDetailsResp"] = ListUsageDetailsRespValidator()
-	vr["ves.io.schema.usage.UsageItem"] = UsageItemValidator()
-	vr["ves.io.schema.usage.CalculatedUsageItem"] = CalculatedUsageItemValidator()
-	vr["ves.io.schema.usage.Coupon"] = CouponValidator()
-	vr["ves.io.schema.usage.ListCurrentUsageReq"] = ListCurrentUsageReqValidator()
-	vr["ves.io.schema.usage.ListCurrentUsageResp"] = ListCurrentUsageRespValidator()
-	vr["ves.io.schema.usage.ListMonthlyUsageReq"] = ListMonthlyUsageReqValidator()
-	vr["ves.io.schema.usage.ListMonthlyUsageResp"] = ListMonthlyUsageRespValidator()
-	vr["ves.io.schema.usage.MonthlyUsageType"] = MonthlyUsageTypeValidator()
 	vr["ves.io.schema.usage.SpecType"] = SpecTypeValidator()
 	vr["ves.io.schema.usage.Object"] = ObjectValidator()
 	vr["ves.io.schema.usage.StatusObject"] = StatusObjectValidator()
@@ -50,8 +36,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 }
 
 func initializeAPIGwServiceSlugsRegistry(sm map[string]string) {
-	sm["ves.io.schema.usage.CustomAggregatedUsageAPI"] = "web"
-	sm["ves.io.schema.usage.CustomCalculatedUsageAPI"] = "web"
 }
 
 func initializeP0PolicyRegistry(sm map[string]svcfw.P0PolicyInfo) {
@@ -63,36 +47,6 @@ func initializeCRUDServiceRegistry(mdr *svcfw.MDRegistry, isExternal bool) {
 		customCSR *svcfw.CustomServiceRegistry
 	)
 	_, _ = csr, customCSR
-	customCSR = mdr.PubCustomServiceRegistry
-	func() {
-		// set swagger jsons for our and external schemas
-		customCSR.SwaggerRegistry["ves.io.schema.usage.Object"] = CustomAggregatedUsageAPISwaggerJSON
-		customCSR.GrpcClientRegistry["ves.io.schema.usage.CustomAggregatedUsageAPI"] = NewCustomAggregatedUsageAPIGrpcClient
-		customCSR.RestClientRegistry["ves.io.schema.usage.CustomAggregatedUsageAPI"] = NewCustomAggregatedUsageAPIRestClient
-		if isExternal {
-			return
-		}
-		mdr.SvcRegisterHandlers["ves.io.schema.usage.CustomAggregatedUsageAPI"] = RegisterCustomAggregatedUsageAPIServer
-		mdr.SvcGwRegisterHandlers["ves.io.schema.usage.CustomAggregatedUsageAPI"] = RegisterGwCustomAggregatedUsageAPIHandler
-		customCSR.ServerRegistry["ves.io.schema.usage.CustomAggregatedUsageAPI"] = func(svc svcfw.Service) server.APIHandler {
-			return NewCustomAggregatedUsageAPIServer(svc)
-		}
-	}()
-	customCSR = mdr.PubCustomServiceRegistry
-	func() {
-		// set swagger jsons for our and external schemas
-		customCSR.SwaggerRegistry["ves.io.schema.usage.Object"] = CustomCalculatedUsageAPISwaggerJSON
-		customCSR.GrpcClientRegistry["ves.io.schema.usage.CustomCalculatedUsageAPI"] = NewCustomCalculatedUsageAPIGrpcClient
-		customCSR.RestClientRegistry["ves.io.schema.usage.CustomCalculatedUsageAPI"] = NewCustomCalculatedUsageAPIRestClient
-		if isExternal {
-			return
-		}
-		mdr.SvcRegisterHandlers["ves.io.schema.usage.CustomCalculatedUsageAPI"] = RegisterCustomCalculatedUsageAPIServer
-		mdr.SvcGwRegisterHandlers["ves.io.schema.usage.CustomCalculatedUsageAPI"] = RegisterGwCustomCalculatedUsageAPIHandler
-		customCSR.ServerRegistry["ves.io.schema.usage.CustomCalculatedUsageAPI"] = func(svc svcfw.Service) server.APIHandler {
-			return NewCustomCalculatedUsageAPIServer(svc)
-		}
-	}()
 }
 
 func InitializeMDRegistry(mdr *svcfw.MDRegistry, isExternal bool) {

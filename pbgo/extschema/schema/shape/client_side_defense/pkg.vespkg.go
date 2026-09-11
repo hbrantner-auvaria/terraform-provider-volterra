@@ -10,6 +10,8 @@ import (
 )
 
 func initializeValidatorRegistry(vr map[string]db.Validator) {
+	vr["ves.io.schema.shape.client_side_defense.InitializeClientSideDefenseRequest"] = InitializeClientSideDefenseRequestValidator()
+	vr["ves.io.schema.shape.client_side_defense.InitializeClientSideDefenseResponse"] = InitializeClientSideDefenseResponseValidator()
 	vr["ves.io.schema.shape.client_side_defense.AffectedUsersReportCriteria"] = AffectedUsersReportCriteriaValidator()
 	vr["ves.io.schema.shape.client_side_defense.ApprovalStatusCounts"] = ApprovalStatusCountsValidator()
 	vr["ves.io.schema.shape.client_side_defense.BehaviorMetrics"] = BehaviorMetricsValidator()
@@ -134,6 +136,21 @@ func initializeCRUDServiceRegistry(mdr *svcfw.MDRegistry, isExternal bool) {
 		customCSR *svcfw.CustomServiceRegistry
 	)
 	_, _ = csr, customCSR
+	customCSR = mdr.PvtCustomServiceRegistry
+	func() {
+		// set swagger jsons for our and external schemas
+		customCSR.SwaggerRegistry["ves.io.schema.shape.client_side_defense.Object"] = CustomPrivateAPISwaggerJSON
+		customCSR.GrpcClientRegistry["ves.io.schema.shape.client_side_defense.CustomPrivateAPI"] = NewCustomPrivateAPIGrpcClient
+		customCSR.RestClientRegistry["ves.io.schema.shape.client_side_defense.CustomPrivateAPI"] = NewCustomPrivateAPIRestClient
+		if isExternal {
+			return
+		}
+		mdr.SvcRegisterHandlers["ves.io.schema.shape.client_side_defense.CustomPrivateAPI"] = RegisterCustomPrivateAPIServer
+		mdr.SvcGwRegisterHandlers["ves.io.schema.shape.client_side_defense.CustomPrivateAPI"] = RegisterGwCustomPrivateAPIHandler
+		customCSR.ServerRegistry["ves.io.schema.shape.client_side_defense.CustomPrivateAPI"] = func(svc svcfw.Service) server.APIHandler {
+			return NewCustomPrivateAPIServer(svc)
+		}
+	}()
 	customCSR = mdr.PubCustomServiceRegistry
 	func() {
 		// set swagger jsons for our and external schemas

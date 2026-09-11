@@ -45,12 +45,6 @@ func resourceVolterraVirtualSite() *schema.Resource {
 				Optional: true,
 			},
 
-			"fail_if_referred": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-
 			"labels": {
 				Type:     schema.TypeMap,
 				Optional: true,
@@ -191,6 +185,7 @@ func resourceVolterraVirtualSiteCreate(d *schema.ResourceData, meta interface{})
 		return fmt.Errorf("error creating VirtualSite: %s", err)
 	}
 	d.SetId(createVirtualSiteResp.GetObjSystemMetadata().GetUid())
+
 	return resourceVolterraVirtualSiteRead(d, meta)
 }
 
@@ -297,7 +292,6 @@ func resourceVolterraVirtualSiteDelete(d *schema.ResourceData, meta interface{})
 	client := meta.(*APIClient)
 	name := d.Get("name").(string)
 	namespace := d.Get("namespace").(string)
-	failIfReferred := d.Get("fail_if_referred").(bool)
 
 	_, err := client.GetObject(context.Background(), ves_io_schema_virtual_site.ObjectType, namespace, name)
 	if err != nil {
@@ -309,12 +303,9 @@ func resourceVolterraVirtualSiteDelete(d *schema.ResourceData, meta interface{})
 		return fmt.Errorf("Error finding Volterra VirtualSite before deleting %q: %s", d.Id(), err)
 	}
 
-	log.Printf("[DEBUG] Deleting Volterra VirtualSite obj with name %+v in namespace %+v failifReferred %+v", name, namespace, failIfReferred)
-	var opts []vesapi.CallOpt
-	if failIfReferred {
-		opts = []vesapi.CallOpt{
-			vesapi.WithFailIfReferred(),
-		}
+	log.Printf("[DEBUG] Deleting Volterra VirtualSite obj with name %+v in namespace %+v", name, namespace)
+	opts := []vesapi.CallOpt{
+		vesapi.WithFailIfReferred(),
 	}
 
 	err = client.DeleteObject(context.Background(), ves_io_schema_virtual_site.ObjectType, namespace, name, opts...)

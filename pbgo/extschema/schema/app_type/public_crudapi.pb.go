@@ -7,12 +7,12 @@
 // App Type object defines a application profile type from an advanced monitoring/security point of view.
 // An App type is a set of (micro) services that interact with one another and function as an application.
 // Services can be made members of a particular AppType set by adding label ves.io/app_type=app_type.metadata.name to services.
-// App type object is the profile for one such application label. One can define various AI/ML features that can
+// App type object is the profile for one such application label. One can define various advanced security features that can
 // be enabled for a given application in this object. All services in a given namespace that are labeled with
 // same ves.io/app_type label are assumed to be a single application. In a different namespace as two different
 // instances of same application.
 // app_type object is recommended per tenant and present only in shared namespace.
-// This way AI/ML modeled developed for a given application can be shared across namespaces or deployments.
+// This way advanced security modeled developed for a given application can be shared across namespaces or deployments.
 // app_setting object can be used to enable a app_type monitoring profile in a given namespace.
 
 package app_type

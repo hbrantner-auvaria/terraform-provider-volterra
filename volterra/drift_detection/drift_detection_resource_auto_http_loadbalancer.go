@@ -152,19 +152,21 @@ func FlattenAdvertiseWhere(x []*ves_io_schema_views.WhereType) []interface{} {
 	rslt := make([]interface{}, 0)
 	for _, val := range x {
 		mapValue := map[string]interface{}{
-			"advertise_on_public":   FlattenAdvertiseOnPublic(val.GetAdvertiseOnPublic()),
-			"cloud_edge_segment":    FlattenCloudEdgeSegment(val.GetCloudEdgeSegment()),
-			"segment":               FlattenWhSegment(val.GetSegment()),
-			"site":                  FlattenSite(val.GetSite()),
-			"site_segment":          FlattenSiteSegment(val.GetSiteSegment()),
-			"virtual_network":       FlattenVirtualNetwork(val.GetVirtualNetwork()),
-			"virtual_site":          FlattenVirtualSite(val.GetVirtualSite()),
-			"virtual_site_with_vip": FlattenVirtualSiteWithVip(val.GetVirtualSiteWithVip()),
-			"virtual_site_segment":  FlattenVirtualSiteSegment(val.GetVirtualSiteSegment()),
-			"vk8s_service":          FlattenVk8s(val.GetVk8SService()),
-			"port":                  val.GetPort(),
-			"port_ranges":           val.GetPortRanges(),
-			"use_default_port":      isEmpty(val.GetUseDefaultPort()),
+			"advertise_dualstack_on_public": FlattenAdvertiseOnPublic(val.GetAdvertiseDualstackOnPublic()),
+			"advertise_on_public":           FlattenAdvertiseOnPublic(val.GetAdvertiseOnPublic()),
+			"advertise_v6_on_public":        FlattenAdvertiseOnPublic(val.GetAdvertiseV6OnPublic()),
+			"cloud_edge_segment":            FlattenCloudEdgeSegment(val.GetCloudEdgeSegment()),
+			"segment":                       FlattenWhSegment(val.GetSegment()),
+			"site":                          FlattenSite(val.GetSite()),
+			"site_segment":                  FlattenSiteSegment(val.GetSiteSegment()),
+			"virtual_network":               FlattenVirtualNetwork(val.GetVirtualNetwork()),
+			"virtual_site":                  FlattenVirtualSite(val.GetVirtualSite()),
+			"virtual_site_with_vip":         FlattenVirtualSiteWithVip(val.GetVirtualSiteWithVip()),
+			"virtual_site_segment":          FlattenVirtualSiteSegment(val.GetVirtualSiteSegment()),
+			"vk8s_service":                  FlattenVk8s(val.GetVk8SService()),
+			"port":                          val.GetPort(),
+			"port_ranges":                   val.GetPortRanges(),
+			"use_default_port":              isEmpty(val.GetUseDefaultPort()),
 		}
 		rslt = append(rslt, mapValue)
 	}
@@ -4224,9 +4226,17 @@ func DriftDetectionSpec(d *schema.ResourceData, resp vesapi.GetObjectResponse) {
 
 	d.Set("advertise_custom", FlattenAdvertiseCustom(spec.GcSpec.GetAdvertiseCustom()))
 
+	d.Set("advertise_dualstack_on_public", FlattenAdvertiseOnPublic(spec.GcSpec.GetAdvertiseDualstackOnPublic()))
+
 	d.Set("advertise_on_public", FlattenAdvertiseOnPublic(spec.GcSpec.GetAdvertiseOnPublic()))
 
+	d.Set("advertise_on_public_default_dualstack_vip", isEmpty(spec.GcSpec.GetAdvertiseOnPublicDefaultDualstackVip()))
+
+	d.Set("advertise_on_public_default_ipv6_vip", isEmpty(spec.GcSpec.GetAdvertiseOnPublicDefaultIpv6Vip()))
+
 	d.Set("advertise_on_public_default_vip", isEmpty(spec.GcSpec.GetAdvertiseOnPublicDefaultVip()))
+
+	d.Set("advertise_v6_on_public", FlattenAdvertiseOnPublic(spec.GcSpec.GetAdvertiseV6OnPublic()))
 
 	d.Set("do_not_advertise", isEmpty(spec.GcSpec.GetDoNotAdvertise()))
 

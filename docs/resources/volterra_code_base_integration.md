@@ -20,6 +20,7 @@ resource "volterra_code_base_integration" "example" {
   name      = "acmecorp-web"
   namespace = "staging"
 }
+
 ```
 
 Argument Reference
@@ -310,4 +311,4 @@ x-displayName: "GitLab Enterprise Integration".
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured code_base_integration.
+-	`id` - This is the id of the configured code_base_integration.

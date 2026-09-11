@@ -2265,8 +2265,14 @@ var APISwaggerJSON string = `{
             "title": "Create healthcheck",
             "x-displayname": "Create Health Check",
             "x-ves-oneof-field-health_check": "[\"http_health_check\",\"tcp_health_check\",\"udp_icmp_health_check\"]",
+            "x-ves-oneof-field-jitter_choice": "[\"default_jitter\",\"jitter_percent\"]",
             "x-ves-proto-message": "ves.io.schema.healthcheck.CreateSpecType",
             "properties": {
+                "default_jitter": {
+                    "description": "Exclusive with [jitter_percent]\n Use the default jitter value of 30 percent of the health check interval.",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Default Jitter"
+                },
                 "healthy_threshold": {
                     "type": "integer",
                     "description": " Number of successful responses before declaring healthy. In other words, this is\n the number of healthy health checks required before a host is marked\n healthy. Note that during startup, only a single successful health check is\n required to mark a host healthy.\n\nExample: - \"2\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.uint32.gte: 1\n  ves.io.schema.rules.uint32.lte: 16\n",
@@ -2300,9 +2306,9 @@ var APISwaggerJSON string = `{
                 },
                 "jitter_percent": {
                     "type": "integer",
-                    "description": " Add a random amount of time as a percent value to the interval between successive healthcheck requests.\n\nExample: - \"25\"-\n\nValidation Rules:\n  ves.io.schema.rules.uint32.ranges: 0,10-50\n",
+                    "description": "Exclusive with [default_jitter]\n Specify a custom jitter value as a percentage of the health check interval.\n Valid values are 0 (to disable jitter) and 10 to 50.\n\nExample: - \"25\"-\n\nValidation Rules:\n  ves.io.schema.rules.uint32.ranges: 0,10-50\n",
                     "format": "int64",
-                    "x-displayname": "Jitter Percent",
+                    "x-displayname": "Custom Jitter Percent",
                     "x-ves-example": "25",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.uint32.ranges": "0,10-50"
@@ -2574,8 +2580,14 @@ var APISwaggerJSON string = `{
             "title": "Get healthcheck",
             "x-displayname": "Get Health Check",
             "x-ves-oneof-field-health_check": "[\"http_health_check\",\"tcp_health_check\",\"udp_icmp_health_check\"]",
+            "x-ves-oneof-field-jitter_choice": "[\"default_jitter\",\"jitter_percent\"]",
             "x-ves-proto-message": "ves.io.schema.healthcheck.GetSpecType",
             "properties": {
+                "default_jitter": {
+                    "description": "Exclusive with [jitter_percent]\n Use the default jitter value of 30 percent of the health check interval.",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Default Jitter"
+                },
                 "healthy_threshold": {
                     "type": "integer",
                     "description": " Number of successful responses before declaring healthy. In other words, this is\n the number of healthy health checks required before a host is marked\n healthy. Note that during startup, only a single successful health check is\n required to mark a host healthy.\n\nExample: - \"2\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.uint32.gte: 1\n  ves.io.schema.rules.uint32.lte: 16\n",
@@ -2609,9 +2621,9 @@ var APISwaggerJSON string = `{
                 },
                 "jitter_percent": {
                     "type": "integer",
-                    "description": " Add a random amount of time as a percent value to the interval between successive healthcheck requests.\n\nExample: - \"25\"-\n\nValidation Rules:\n  ves.io.schema.rules.uint32.ranges: 0,10-50\n",
+                    "description": "Exclusive with [default_jitter]\n Specify a custom jitter value as a percentage of the health check interval.\n Valid values are 0 (to disable jitter) and 10 to 50.\n\nExample: - \"25\"-\n\nValidation Rules:\n  ves.io.schema.rules.uint32.ranges: 0,10-50\n",
                     "format": "int64",
-                    "x-displayname": "Jitter Percent",
+                    "x-displayname": "Custom Jitter Percent",
                     "x-ves-example": "25",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.uint32.ranges": "0,10-50"
@@ -2920,8 +2932,14 @@ var APISwaggerJSON string = `{
             "title": "replace healthcheck",
             "x-displayname": "Replace Health Check",
             "x-ves-oneof-field-health_check": "[\"http_health_check\",\"tcp_health_check\",\"udp_icmp_health_check\"]",
+            "x-ves-oneof-field-jitter_choice": "[\"default_jitter\",\"jitter_percent\"]",
             "x-ves-proto-message": "ves.io.schema.healthcheck.ReplaceSpecType",
             "properties": {
+                "default_jitter": {
+                    "description": "Exclusive with [jitter_percent]\n Use the default jitter value of 30 percent of the health check interval.",
+                    "$ref": "#/definitions/ioschemaEmpty",
+                    "x-displayname": "Default Jitter"
+                },
                 "healthy_threshold": {
                     "type": "integer",
                     "description": " Number of successful responses before declaring healthy. In other words, this is\n the number of healthy health checks required before a host is marked\n healthy. Note that during startup, only a single successful health check is\n required to mark a host healthy.\n\nExample: - \"2\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.uint32.gte: 1\n  ves.io.schema.rules.uint32.lte: 16\n",
@@ -2955,9 +2973,9 @@ var APISwaggerJSON string = `{
                 },
                 "jitter_percent": {
                     "type": "integer",
-                    "description": " Add a random amount of time as a percent value to the interval between successive healthcheck requests.\n\nExample: - \"25\"-\n\nValidation Rules:\n  ves.io.schema.rules.uint32.ranges: 0,10-50\n",
+                    "description": "Exclusive with [default_jitter]\n Specify a custom jitter value as a percentage of the health check interval.\n Valid values are 0 (to disable jitter) and 10 to 50.\n\nExample: - \"25\"-\n\nValidation Rules:\n  ves.io.schema.rules.uint32.ranges: 0,10-50\n",
                     "format": "int64",
-                    "x-displayname": "Jitter Percent",
+                    "x-displayname": "Custom Jitter Percent",
                     "x-ves-example": "25",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.uint32.ranges": "0,10-50"

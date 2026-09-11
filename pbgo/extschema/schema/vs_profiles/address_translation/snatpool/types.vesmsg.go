@@ -163,10 +163,10 @@ var DefaultCreateSpecTypeValidator = func() *ValidateCreateSpecType {
 
 	vrhMembers := v.MembersValidationRuleHandler
 	rulesMembers := map[string]string{
-		"ves.io.schema.rules.message.required":   "true",
-		"ves.io.schema.rules.repeated.max_items": "32",
-		"ves.io.schema.rules.repeated.min_items": "1",
-		"ves.io.schema.rules.string.ip":          "true",
+		"ves.io.schema.rules.message.required":         "true",
+		"ves.io.schema.rules.repeated.items.string.ip": "true",
+		"ves.io.schema.rules.repeated.max_items":       "32",
+		"ves.io.schema.rules.repeated.min_items":       "1",
 	}
 	vFn, err = vrhMembers(rulesMembers)
 	if err != nil {
@@ -323,10 +323,10 @@ var DefaultGetSpecTypeValidator = func() *ValidateGetSpecType {
 
 	vrhMembers := v.MembersValidationRuleHandler
 	rulesMembers := map[string]string{
-		"ves.io.schema.rules.message.required":   "true",
-		"ves.io.schema.rules.repeated.max_items": "32",
-		"ves.io.schema.rules.repeated.min_items": "1",
-		"ves.io.schema.rules.string.ip":          "true",
+		"ves.io.schema.rules.message.required":         "true",
+		"ves.io.schema.rules.repeated.items.string.ip": "true",
+		"ves.io.schema.rules.repeated.max_items":       "32",
+		"ves.io.schema.rules.repeated.min_items":       "1",
 	}
 	vFn, err = vrhMembers(rulesMembers)
 	if err != nil {
@@ -483,10 +483,10 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 
 	vrhMembers := v.MembersValidationRuleHandler
 	rulesMembers := map[string]string{
-		"ves.io.schema.rules.message.required":   "true",
-		"ves.io.schema.rules.repeated.max_items": "32",
-		"ves.io.schema.rules.repeated.min_items": "1",
-		"ves.io.schema.rules.string.ip":          "true",
+		"ves.io.schema.rules.message.required":         "true",
+		"ves.io.schema.rules.repeated.items.string.ip": "true",
+		"ves.io.schema.rules.repeated.max_items":       "32",
+		"ves.io.schema.rules.repeated.min_items":       "1",
 	}
 	vFn, err = vrhMembers(rulesMembers)
 	if err != nil {
@@ -643,10 +643,10 @@ var DefaultReplaceSpecTypeValidator = func() *ValidateReplaceSpecType {
 
 	vrhMembers := v.MembersValidationRuleHandler
 	rulesMembers := map[string]string{
-		"ves.io.schema.rules.message.required":   "true",
-		"ves.io.schema.rules.repeated.max_items": "32",
-		"ves.io.schema.rules.repeated.min_items": "1",
-		"ves.io.schema.rules.string.ip":          "true",
+		"ves.io.schema.rules.message.required":         "true",
+		"ves.io.schema.rules.repeated.items.string.ip": "true",
+		"ves.io.schema.rules.repeated.max_items":       "32",
+		"ves.io.schema.rules.repeated.min_items":       "1",
 	}
 	vFn, err = vrhMembers(rulesMembers)
 	if err != nil {

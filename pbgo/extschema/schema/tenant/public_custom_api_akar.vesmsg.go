@@ -168,6 +168,12 @@ func (v *ValidateSummaryResponse) Validate(ctx context.Context, pm interface{}, 
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["vip_v6"]; exists {
+		vOpts := append(opts, db.WithValidateField("vip_v6"))
+		if err := fv(ctx, m.GetVipV6(), vOpts...); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 

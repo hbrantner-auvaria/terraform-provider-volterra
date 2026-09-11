@@ -20,6 +20,7 @@ resource "volterra_nginx_service_discovery" "example" {
   name      = "acmecorp-web"
   namespace = "staging"
 }
+
 ```
 
 Argument Reference
@@ -88,4 +89,4 @@ x-displayName: "NGINX Instance".
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured nginx_service_discovery.
+-	`id` - This is the id of the configured nginx_service_discovery.

@@ -24,9 +24,7 @@ resource "volterra_bgp_routing_policy" "example" {
     action {
       // One of the arguments from this list "allow as_path community deny local_preference metric" can be set
 
-      community {
-        community = ["[65535:65281, 65535:65284]"]
-      }
+      deny = true
     }
 
     match {
@@ -44,6 +42,7 @@ resource "volterra_bgp_routing_policy" "example" {
     }
   }
 }
+
 ```
 
 Argument Reference
@@ -160,4 +159,4 @@ Select a prefix or group of prefix.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured bgp_routing_policy.
+-	`id` - This is the id of the configured bgp_routing_policy.

@@ -2779,20 +2779,28 @@ var APISwaggerJSON string = `{
             "properties": {
                 "ip": {
                     "type": "string",
-                    "description": " IP address for this object\n\nExample: - \"10.1.1.1\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.ip: true\n",
+                    "description": " IPv4 address for this object. An empty string indicates no IPv4 address is configured.\n\nExample: - \"10.1.1.1\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.ip: true\n",
                     "title": "ip_address",
-                    "x-displayname": "IP address",
+                    "x-displayname": "IPv4 address",
                     "x-ves-example": "10.1.1.1",
-                    "x-ves-required": "true",
                     "x-ves-validation-rules": {
-                        "ves.io.schema.rules.message.required": "true",
                         "ves.io.schema.rules.string.ip": "true"
+                    }
+                },
+                "ipv6": {
+                    "type": "string",
+                    "description": " IPv6 address for this object. An empty string indicates no IPv6 address is configured.\n\nExample: - \"2001:db8::1\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.ipv6: true\n",
+                    "title": "IPv6 address",
+                    "x-displayname": "IPv6 Address",
+                    "x-ves-example": "2001:db8::1",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.string.ipv6": "true"
                     }
                 },
                 "virtual_sites": {
                     "type": "array",
                     "description": " Reference to virtual_site where this pubic IP will be available.\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 1\n",
-                    "title": "virtual_sites",
+                    "title": "virtual_site",
                     "maxItems": 1,
                     "items": {
                         "$ref": "#/definitions/schemaObjectRefType"

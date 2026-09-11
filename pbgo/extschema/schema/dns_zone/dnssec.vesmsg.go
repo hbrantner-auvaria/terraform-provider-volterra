@@ -24,6 +24,116 @@ var (
 
 // augmented methods on protoc/std generated struct
 
+func (m *CryptoKey) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *CryptoKey) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *CryptoKey) DeepCopy() *CryptoKey {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &CryptoKey{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *CryptoKey) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *CryptoKey) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return CryptoKeyValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateCryptoKey struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateCryptoKey) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*CryptoKey)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *CryptoKey got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["active"]; exists {
+		vOpts := append(opts, db.WithValidateField("active"))
+		if err := fv(ctx, m.GetActive(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["algorithm"]; exists {
+		vOpts := append(opts, db.WithValidateField("algorithm"))
+		if err := fv(ctx, m.GetAlgorithm(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["dnskey"]; exists {
+		vOpts := append(opts, db.WithValidateField("dnskey"))
+		if err := fv(ctx, m.GetDnskey(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["key_id"]; exists {
+		vOpts := append(opts, db.WithValidateField("key_id"))
+		if err := fv(ctx, m.GetKeyId(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["key_type"]; exists {
+		vOpts := append(opts, db.WithValidateField("key_type"))
+		if err := fv(ctx, m.GetKeyType(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["published"]; exists {
+		vOpts := append(opts, db.WithValidateField("published"))
+		if err := fv(ctx, m.GetPublished(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["type"]; exists {
+		vOpts := append(opts, db.WithValidateField("type"))
+		if err := fv(ctx, m.GetType(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultCryptoKeyValidator = func() *ValidateCryptoKey {
+	v := &ValidateCryptoKey{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func CryptoKeyValidator() db.Validator {
+	return DefaultCryptoKeyValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *DNSSECMode) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }

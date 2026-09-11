@@ -403,9 +403,9 @@ var DefaultCustomGroupByValidator = func() *ValidateCustomGroupBy {
 
 	vrhLabels := v.LabelsValidationRuleHandler
 	rulesLabels := map[string]string{
-		"ves.io.schema.rules.repeated.max_items": "5",
-		"ves.io.schema.rules.repeated.unique":    "true",
-		"ves.io.schema.rules.string.pattern":     "^[a-zA-Z_][a-zA-Z0-9_]*$",
+		"ves.io.schema.rules.repeated.items.string.pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$",
+		"ves.io.schema.rules.repeated.max_items":            "5",
+		"ves.io.schema.rules.repeated.unique":               "true",
 	}
 	vFn, err = vrhLabels(rulesLabels)
 	if err != nil {

@@ -37,10 +37,10 @@ resource "volterra_vs_pool" "example" {
 
     // One of the arguments from this list "private public" must be set
 
-    public {
-      // One of the arguments from this list "all_re regional_re" can be set
+    private {
+      // One of the arguments from this list "site virtual_ce_sites virtual_network" can be set
 
-      all_re {
+      virtual_network {
         // One of the arguments from this list "custom_ip dns" can be set
 
         dns {
@@ -49,9 +49,11 @@ resource "volterra_vs_pool" "example" {
           refresh_interval = "20"
         }
 
-        // One of the arguments from this list "f5_global_network" can be set
-
-        f5_global_network = true
+        segment_network {
+          name      = "test1"
+          namespace = "staging"
+          tenant    = "acmecorp"
+        }
       }
     }
     name = "name"
@@ -63,6 +65,7 @@ resource "volterra_vs_pool" "example" {
     }
   }
 }
+
 ```
 
 Argument Reference
@@ -443,4 +446,4 @@ x-displayName: "Segment".
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured vs_pool.
+-	`id` - This is the id of the configured vs_pool.

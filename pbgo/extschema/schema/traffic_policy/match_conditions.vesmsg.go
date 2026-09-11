@@ -6777,10 +6777,10 @@ var DefaultIPProtocolMatchValidator = func() *ValidateIPProtocolMatch {
 
 	vrhIpProtocols := v.IpProtocolsValidationRuleHandler
 	rulesIpProtocols := map[string]string{
-		"ves.io.schema.rules.message.required": "true",
-		"ves.io.schema.rules.repeated.unique":  "true",
-		"ves.io.schema.rules.string.in":        "[\"TCP\",\"UDP\"]",
-		"ves.io.schema.rules.string.max_len":   "3",
+		"ves.io.schema.rules.message.required":              "true",
+		"ves.io.schema.rules.repeated.items.string.in":      "[\"TCP\",\"UDP\"]",
+		"ves.io.schema.rules.repeated.items.string.max_len": "3",
+		"ves.io.schema.rules.repeated.unique":               "true",
 	}
 	vFn, err = vrhIpProtocols(rulesIpProtocols)
 	if err != nil {

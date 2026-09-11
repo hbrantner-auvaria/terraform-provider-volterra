@@ -66,6 +66,24 @@ func resourceVolterraAdvertisePolicy() *schema.Resource {
 				Optional: true,
 			},
 
+			"dualstack": {
+
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
+
+			"ipv4": {
+
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
+
+			"ipv6": {
+
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
+
 			"port": {
 
 				Type:     schema.TypeInt,
@@ -812,6 +830,46 @@ func resourceVolterraAdvertisePolicyCreate(d *schema.ResourceData, meta interfac
 
 		createSpec.Address =
 			v.(string)
+
+	}
+
+	//address_type
+
+	addressTypeTypeFound := false
+
+	if v, ok := d.GetOk("dualstack"); ok && !addressTypeTypeFound {
+
+		addressTypeTypeFound = true
+
+		if v.(bool) {
+			addressTypeInt := &ves_io_schema_advertise_policy.CreateSpecType_Dualstack{}
+			addressTypeInt.Dualstack = &ves_io_schema.Empty{}
+			createSpec.AddressType = addressTypeInt
+		}
+
+	}
+
+	if v, ok := d.GetOk("ipv4"); ok && !addressTypeTypeFound {
+
+		addressTypeTypeFound = true
+
+		if v.(bool) {
+			addressTypeInt := &ves_io_schema_advertise_policy.CreateSpecType_Ipv4{}
+			addressTypeInt.Ipv4 = &ves_io_schema.Empty{}
+			createSpec.AddressType = addressTypeInt
+		}
+
+	}
+
+	if v, ok := d.GetOk("ipv6"); ok && !addressTypeTypeFound {
+
+		addressTypeTypeFound = true
+
+		if v.(bool) {
+			addressTypeInt := &ves_io_schema_advertise_policy.CreateSpecType_Ipv6{}
+			addressTypeInt.Ipv6 = &ves_io_schema.Empty{}
+			createSpec.AddressType = addressTypeInt
+		}
 
 	}
 
@@ -1789,6 +1847,44 @@ func resourceVolterraAdvertisePolicyUpdate(d *schema.ResourceData, meta interfac
 
 		updateSpec.Address =
 			v.(string)
+
+	}
+
+	addressTypeTypeFound := false
+
+	if v, ok := d.GetOk("dualstack"); ok && !addressTypeTypeFound {
+
+		addressTypeTypeFound = true
+
+		if v.(bool) {
+			addressTypeInt := &ves_io_schema_advertise_policy.ReplaceSpecType_Dualstack{}
+			addressTypeInt.Dualstack = &ves_io_schema.Empty{}
+			updateSpec.AddressType = addressTypeInt
+		}
+
+	}
+
+	if v, ok := d.GetOk("ipv4"); ok && !addressTypeTypeFound {
+
+		addressTypeTypeFound = true
+
+		if v.(bool) {
+			addressTypeInt := &ves_io_schema_advertise_policy.ReplaceSpecType_Ipv4{}
+			addressTypeInt.Ipv4 = &ves_io_schema.Empty{}
+			updateSpec.AddressType = addressTypeInt
+		}
+
+	}
+
+	if v, ok := d.GetOk("ipv6"); ok && !addressTypeTypeFound {
+
+		addressTypeTypeFound = true
+
+		if v.(bool) {
+			addressTypeInt := &ves_io_schema_advertise_policy.ReplaceSpecType_Ipv6{}
+			addressTypeInt.Ipv6 = &ves_io_schema.Empty{}
+			updateSpec.AddressType = addressTypeInt
+		}
 
 	}
 

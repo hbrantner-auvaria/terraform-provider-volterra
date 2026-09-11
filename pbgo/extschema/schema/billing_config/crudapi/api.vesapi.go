@@ -2567,22 +2567,65 @@ var APISwaggerJSON string = `{
         }
     },
     "definitions": {
-        "billing_configGlobalSpecType": {
+        "addon_serviceEntitlementConfig": {
             "type": "object",
-            "description": "GlobalSpecType for the billing config object",
-            "title": "Global Spec Type",
-            "x-displayname": "Global Spec Type",
-            "x-ves-proto-message": "ves.io.schema.billing_config.GlobalSpecType",
+            "description": "x-displayName: \"Entitlement Config\"\nEntitlementConfig represents data such as service usage type, quota mapping required for entitlement feature",
+            "title": "EntitlementConfig",
             "properties": {
-                "service_usage_types": {
+                "entitlement_features": {
                     "type": "object",
-                    "description": " Map of addon_service and service usage types\n\nExample: - \"{f5xc-securemesh-advanced{tier: ADVANCED,billing_doc_link: \u003curl\u003e,usage_types: {F5-V-O-ADN-MSH-PBVIP: {name: Anycast Public Virtual IP, unit: hour}F5-V-O-ADN-MSH-RLIM: {name: Rate Limiting enabled on App Connect Load balancers on Regional Edge (good requests to origin), unit: requests}}}}\"-\n\nValidation Rules:\n  ves.io.schema.rules.map.keys.string.pattern: ^[a-z](?:[a-z0-9]*-)?[a-z0-9]+(?:-[a-z0-9]+)*$\n",
-                    "title": "Service Usage Types",
-                    "x-displayname": "Service Usage Types",
-                    "x-ves-example": "{f5xc-securemesh-advanced: {tier: ADVANCED,billing_doc_link: \u003curl\u003e,usage_types: {F5-V-O-ADN-MSH-PBVIP: {name: Anycast Public Virtual IP, unit: hour}F5-V-O-ADN-MSH-RLIM: {name: Rate Limiting enabled on App Connect Load balancers on Regional Edge (good requests to origin), unit: requests}}}}",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.map.keys.string.pattern": "^[a-z](?:[a-z0-9]*-)?[a-z0-9]+(?:-[a-z0-9]+)*$"
-                    }
+                    "description": "x-displayName: \"Entitlement Features\"\nx-example: \"{re_public_loadbalancer_in_qty: {usage_type: public-loadbalancer-usage, quota_mapping: {object_limits: {http_loadbalancer.public: {operator: EQUAL}}}}, dns_loadbalancer_in_qty: {usage_type: dns-loadbalancer-usage, quota_mapping: {object_limits: {dns_loadbalancer.public: {operator: EQUAL}}}}}\"\nMap of entitlement feature name and feature details",
+                    "title": "EntitlementFeatures"
+                }
+            }
+        },
+        "addon_serviceEntitlementFeatureDetails": {
+            "type": "object",
+            "description": "x-displayName: \"Entitlement Feature Details\"\nEntitlementFeatureDetails holds the details required for entitlement ingestion",
+            "title": "EntitlementFeatureDetails",
+            "properties": {
+                "quota_mapping": {
+                    "description": "x-displayName: \"Quota Mapping\"\nx-example: \"{object_limits: {http_loadbalancer.public: {operator: EQUAL}}}\"\nQuotaMapping holds the quota details for the entitlement feature",
+                    "title": "Quota Mapping",
+                    "$ref": "#/definitions/addon_serviceQuotaMapping"
+                },
+                "usage_type": {
+                    "type": "string",
+                    "description": "x-displayName: \"Usage Type\"\nx-example: \"public-loadbalancer-usage\"\nUsageType represents the name of the telemetry config usage metric",
+                    "title": "Usage Type"
+                }
+            }
+        },
+        "addon_serviceFormula": {
+            "type": "object",
+            "description": "x-displayName: \"Formula\"\nFormula holds the operator details for the entitlement feature",
+            "title": "Formula",
+            "properties": {
+                "operator": {
+                    "description": "x-displayName: \"Operator\"\nOperator for the quota mapping",
+                    "title": "Operator",
+                    "$ref": "#/definitions/addon_serviceOperator"
+                }
+            }
+        },
+        "addon_serviceOperator": {
+            "type": "string",
+            "description": "x-displayName: \"Equal\"\nEQUAL",
+            "title": "- EQUAL: EQUAL",
+            "enum": [
+                "EQUAL"
+            ],
+            "default": "EQUAL"
+        },
+        "addon_serviceQuotaMapping": {
+            "type": "object",
+            "description": "x-displayName: \"Quota Mapping\"\nQuotaMapping holds the quota mapping details for the usage type",
+            "title": "QuotaMapping",
+            "properties": {
+                "object_limits": {
+                    "type": "object",
+                    "description": "x-displayName: \"Object Limits\"\nx-example: \"{http_loadbalancer.public: {operator: EQUAL}}\"\nObjectLimits holds the object limits for the entitlement feature",
+                    "title": "Object Limits"
                 }
             }
         },
@@ -2595,7 +2638,7 @@ var APISwaggerJSON string = `{
             "properties": {
                 "gc_spec": {
                     "title": "gc_spec",
-                    "$ref": "#/definitions/billing_configGlobalSpecType",
+                    "$ref": "#/definitions/schemabilling_configGlobalSpecType",
                     "x-displayname": "GC Spec"
                 }
             }
@@ -2776,6 +2819,45 @@ var APISwaggerJSON string = `{
                 },
                 "system_metadata": {
                     "$ref": "#/definitions/schemaSystemObjectMetaType"
+                }
+            }
+        },
+        "ioschemaServiceUsageType": {
+            "type": "object",
+            "description": "x-displayName: \"Service Usage Type\"\nx-example: \"{tier: ADVANCED,billing_doc_link: \u003curl\u003e,usage_types: {F5-V-O-ADN-MSH-PBVIP: {name: Anycast Public Virtual IP, unit: hour}F5-V-O-ADN-MSH-RLIM: {name: Rate Limiting enabled on App Connect Load balancers on Regional Edge (good requests to origin), unit: requests}}}\"\nServiceUsageType object",
+            "title": "Service Usage Type",
+            "properties": {
+                "billing_doc_link": {
+                    "type": "string",
+                    "description": "x-displayName: \"Billing Doc Link\"\nx-example: \"\u003cbilling_doc_url\u003e\"\nBillingDocLink for the UsageType",
+                    "title": "Billing Doc Link"
+                },
+                "tier": {
+                    "description": "x-displayName: \"Tier\"\nx-example: \"ADVANCED\"\nTier of the addon service",
+                    "title": "Tier",
+                    "$ref": "#/definitions/schemaAddonServiceTierType"
+                },
+                "usage_types": {
+                    "type": "object",
+                    "description": "x-displayName: \"Usage Types\"\nx-example: \"{F5-V-O-ADN-MSH-PBVIP: {name: Anycast Public Virtual IP, unit: hour},F5-V-O-ADN-MSH-RLIM: {name: Rate Limiting enabled on App Connect Load balancers on Regional Edge (good requests to origin), unit: requests}}\nMap of SKU ID and UsageType",
+                    "title": "Usage Types"
+                }
+            }
+        },
+        "ioschemaUsageType": {
+            "type": "object",
+            "description": "x-displayName: \"Usage Type\"\nUsageType object",
+            "title": "UsageType",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "x-displayName: \"Name\"\nx-example: \"Anycast Public Virtual IP\"\nName of the UsageType",
+                    "title": "Name"
+                },
+                "unit": {
+                    "type": "string",
+                    "description": "x-displayName: \"Unit\"\nx-example: \"hour\"\nUnit of the UsageType",
+                    "title": "Unit"
                 }
             }
         },
@@ -2995,28 +3077,6 @@ var APISwaggerJSON string = `{
                 }
             }
         },
-        "schemaServiceUsageType": {
-            "type": "object",
-            "description": "x-displayName: \"Service Usage Type\"\nx-example: \"{tier: ADVANCED,billing_doc_link: \u003curl\u003e,usage_types: {F5-V-O-ADN-MSH-PBVIP: {name: Anycast Public Virtual IP, unit: hour}F5-V-O-ADN-MSH-RLIM: {name: Rate Limiting enabled on App Connect Load balancers on Regional Edge (good requests to origin), unit: requests}}}\"\nServiceUsageType object",
-            "title": "Service Usage Type",
-            "properties": {
-                "billing_doc_link": {
-                    "type": "string",
-                    "description": "x-displayName: \"Billing Doc Link\"\nx-example: \"\u003cbilling_doc_url\u003e\"\nBillingDocLink for the UsageType",
-                    "title": "Billing Doc Link"
-                },
-                "tier": {
-                    "description": "x-displayName: \"Tier\"\nx-example: \"ADVANCED\"\nTier of the addon service",
-                    "title": "Tier",
-                    "$ref": "#/definitions/schemaAddonServiceTierType"
-                },
-                "usage_types": {
-                    "type": "object",
-                    "description": "x-displayName: \"Usage Types\"\nx-example: \"{F5-V-O-ADN-MSH-PBVIP: {name: Anycast Public Virtual IP, unit: hour},F5-V-O-ADN-MSH-RLIM: {name: Rate Limiting enabled on App Connect Load balancers on Regional Edge (good requests to origin), unit: requests}}\nMap of SKU ID and UsageType",
-                    "title": "Usage Types"
-                }
-            }
-        },
         "schemaStatusType": {
             "type": "object",
             "description": "Status is a return value for calls that don't return other objects.",
@@ -3204,23 +3264,6 @@ var APISwaggerJSON string = `{
                 }
             }
         },
-        "schemaUsageType": {
-            "type": "object",
-            "description": "x-displayName: \"Usage Type\"\nUsageType object",
-            "title": "UsageType",
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "description": "x-displayName: \"Name\"\nx-example: \"Anycast Public Virtual IP\"\nName of the UsageType",
-                    "title": "Name"
-                },
-                "unit": {
-                    "type": "string",
-                    "description": "x-displayName: \"Unit\"\nx-example: \"hour\"\nUnit of the UsageType",
-                    "title": "Unit"
-                }
-            }
-        },
         "schemaViewRefType": {
             "type": "object",
             "description": "ViewRefType represents a reference to a view",
@@ -3255,6 +3298,32 @@ var APISwaggerJSON string = `{
                     "title": "uid",
                     "x-displayname": "UID",
                     "x-ves-example": "f3744323-1adf-4aaa-a5dc-0707c1d1bd82"
+                }
+            }
+        },
+        "schemabilling_configGlobalSpecType": {
+            "type": "object",
+            "description": "GlobalSpecType for the billing config object",
+            "title": "Global Spec Type",
+            "x-displayname": "Global Spec Type",
+            "x-ves-proto-message": "ves.io.schema.billing_config.GlobalSpecType",
+            "properties": {
+                "entitlement_configs": {
+                    "type": "object",
+                    "description": " Map of addon_service name and entitlement configs\n\nExample: - \"{f5xc-udp-lb-standard{entitlement_features: {re_public_loadbalancer_in_qty: {usage_type: public-loadbalancer-usage, quota_mapping: {object_limits: {http_loadbalancer.public: {operator: EQUAL}}}}, dns_loadbalancer_in_qty: {usage_type: dns-loadbalancer-usage, quota_mapping: {object_limits: {dns_loadbalancer.public: {operator: EQUAL}}}}}}}\"-",
+                    "title": "Entitlement Configs",
+                    "x-displayname": "Entitlement Configs",
+                    "x-ves-example": "{f5xc-udp-lb-standard: {entitlement_features: {re_public_loadbalancer_in_qty: {usage_type: public-loadbalancer-usage, quota_mapping: {object_limits: {http_loadbalancer.public: {operator: EQUAL}}}}, dns_loadbalancer_in_qty: {usage_type: dns-loadbalancer-usage, quota_mapping: {object_limits: {dns_loadbalancer.public: {operator: EQUAL}}}}}}}"
+                },
+                "service_usage_types": {
+                    "type": "object",
+                    "description": " Map of addon_service and service usage types\n\nExample: - \"{f5xc-securemesh-advanced{tier: ADVANCED,billing_doc_link: \u003curl\u003e,usage_types: {F5-V-O-ADN-MSH-PBVIP: {name: Anycast Public Virtual IP, unit: hour}F5-V-O-ADN-MSH-RLIM: {name: Rate Limiting enabled on App Connect Load balancers on Regional Edge (good requests to origin), unit: requests}}}}\"-\n\nValidation Rules:\n  ves.io.schema.rules.map.keys.string.pattern: ^[a-z](?:[a-z0-9]*-)?[a-z0-9]+(?:-[a-z0-9]+)*$\n",
+                    "title": "Service Usage Types",
+                    "x-displayname": "Service Usage Types",
+                    "x-ves-example": "{f5xc-securemesh-advanced: {tier: ADVANCED,billing_doc_link: \u003curl\u003e,usage_types: {F5-V-O-ADN-MSH-PBVIP: {name: Anycast Public Virtual IP, unit: hour}F5-V-O-ADN-MSH-RLIM: {name: Rate Limiting enabled on App Connect Load balancers on Regional Edge (good requests to origin), unit: requests}}}}",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.map.keys.string.pattern": "^[a-z](?:[a-z0-9]*-)?[a-z0-9]+(?:-[a-z0-9]+)*$"
+                    }
                 }
             }
         }

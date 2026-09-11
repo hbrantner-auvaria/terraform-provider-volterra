@@ -2929,7 +2929,7 @@ var APISwaggerJSON string = `{
                 },
                 "domain_denylist": {
                     "type": "array",
-                    "description": " List of domains to be denied by configuration object\n\nExample: - \"www.f5.com\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 30\n  ves.io.schema.rules.repeated.unique: true\n  ves.io.schema.rules.string.etld_plus_one: true\n",
+                    "description": " List of domains to be denied by configuration object\n\nExample: - \"www.f5.com\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.items.string.etld_plus_one: true\n  ves.io.schema.rules.repeated.max_items: 30\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "Domain Deny List",
                     "maxItems": 30,
                     "items": {
@@ -2940,9 +2940,9 @@ var APISwaggerJSON string = `{
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.repeated.items.string.etld_plus_one": "true",
                         "ves.io.schema.rules.repeated.max_items": "30",
-                        "ves.io.schema.rules.repeated.unique": "true",
-                        "ves.io.schema.rules.string.etld_plus_one": "true"
+                        "ves.io.schema.rules.repeated.unique": "true"
                     }
                 },
                 "protocol_inspection": {

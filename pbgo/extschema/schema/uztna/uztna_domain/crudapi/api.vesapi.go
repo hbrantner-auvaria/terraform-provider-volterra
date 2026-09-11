@@ -2894,6 +2894,23 @@ var APISwaggerJSON string = `{
                 }
             }
         },
+        "schemaDualStackAddressType": {
+            "type": "object",
+            "description": "x-displayName: \"Dualstack Address\"\nDualStackAddressType represents both IPv4 and IPv6 together.",
+            "title": "Dualstack IPv4 and IPv6 Address",
+            "properties": {
+                "ipv4": {
+                    "description": "x-displayName: \"IPv4 Address\"\nIPv4 Address",
+                    "title": "IPv4 Address",
+                    "$ref": "#/definitions/schemaIpv4AddressType"
+                },
+                "ipv6": {
+                    "description": "x-displayName: \"IPv6 Address\"\nIPv6 Address",
+                    "title": "IPv6 Address",
+                    "$ref": "#/definitions/schemaIpv6AddressType"
+                }
+            }
+        },
         "schemaEmpty": {
             "type": "object",
             "description": "This can be used for messages where no values are needed",
@@ -2945,6 +2962,11 @@ var APISwaggerJSON string = `{
             "description": "x-displayName: \"IP Address\"\nIP Address used to specify an IPv4 or IPv6 address",
             "title": "IP Address",
             "properties": {
+                "dual_stack": {
+                    "description": "x-displayName: \"Dual-stack Address\"\nBoth IPv4 and IPv6 addresses are specified together",
+                    "title": "Dual-stack Address (IPv4 + IPv6)",
+                    "$ref": "#/definitions/schemaDualStackAddressType"
+                },
                 "ipv4": {
                     "description": "x-displayName: \"IPv4 Address\"\nIPv4 Address",
                     "title": "IPv4 Address",

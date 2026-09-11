@@ -42,6 +42,14 @@ func (c *ThreatCampaignAPIGrpcClient) doRPCGetThreatCampaignById(ctx context.Con
 	rsp, err := c.grpcClient.GetThreatCampaignById(ctx, req, opts...)
 	return rsp, err
 }
+func (c *ThreatCampaignAPIGrpcClient) doRPCGetThreats(ctx context.Context, yamlReq string, opts ...grpc.CallOption) (proto.Message, error) {
+	req := &ThreatsRequest{}
+	if err := codec.FromYAML(yamlReq, req); err != nil {
+		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.app_security.ThreatsRequest", yamlReq)
+	}
+	rsp, err := c.grpcClient.GetThreats(ctx, req, opts...)
+	return rsp, err
+}
 
 func (c *ThreatCampaignAPIGrpcClient) DoRPC(ctx context.Context, rpc string, opts ...server.CustomCallOpt) (proto.Message, error) {
 	rpcFn, exists := c.rpcFns[rpc]
@@ -74,6 +82,7 @@ func NewThreatCampaignAPIGrpcClient(cc *grpc.ClientConn) server.CustomClient {
 	}
 	rpcFns := make(map[string]func(context.Context, string, ...grpc.CallOption) (proto.Message, error))
 	rpcFns["GetThreatCampaignById"] = ccl.doRPCGetThreatCampaignById
+	rpcFns["GetThreats"] = ccl.doRPCGetThreats
 	ccl.rpcFns = rpcFns
 	return ccl
 }
@@ -167,6 +176,91 @@ func (c *ThreatCampaignAPIRestClient) doRPCGetThreatCampaignById(ctx context.Con
 	}
 	return pbRsp, nil
 }
+func (c *ThreatCampaignAPIRestClient) doRPCGetThreats(ctx context.Context, callOpts *server.CustomCallOpts) (proto.Message, error) {
+	if callOpts.URI == "" {
+		return nil, fmt.Errorf("Error, URI should be specified, got empty")
+	}
+	url := fmt.Sprintf("%s%s", c.baseURL, callOpts.URI)
+
+	yamlReq := callOpts.YAMLReq
+	req := &ThreatsRequest{}
+	if err := codec.FromYAML(yamlReq, req); err != nil {
+		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.app_security.ThreatsRequest: %s", yamlReq, err)
+	}
+
+	var hReq *http.Request
+	hm := strings.ToLower(callOpts.HTTPMethod)
+	switch hm {
+	case "post", "put":
+		jsn, err := codec.ToJSON(req, codec.ToWithUseProtoFieldName())
+		if err != nil {
+			return nil, errors.Wrap(err, "Custom RestClient converting YAML to JSON")
+		}
+		var op string
+		if hm == "post" {
+			op = http.MethodPost
+		} else {
+			op = http.MethodPut
+		}
+		newReq, err := http.NewRequest(op, url, bytes.NewBuffer([]byte(jsn)))
+		if err != nil {
+			return nil, errors.Wrapf(err, "Creating new HTTP %s request for custom API", op)
+		}
+		hReq = newReq
+	case "get":
+		newReq, err := http.NewRequest(http.MethodGet, url, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "Creating new HTTP GET request for custom API")
+		}
+		hReq = newReq
+		q := hReq.URL.Query()
+		_ = q
+		q.Add("cursor", fmt.Sprintf("%v", req.Cursor))
+		for _, item := range req.ReportFields {
+			q.Add("report_fields", fmt.Sprintf("%v", item))
+		}
+		q.Add("threats_filter", fmt.Sprintf("%v", req.ThreatsFilter))
+
+		hReq.URL.RawQuery += q.Encode()
+	case "delete":
+		newReq, err := http.NewRequest(http.MethodDelete, url, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "Creating new HTTP DELETE request for custom API")
+		}
+		hReq = newReq
+	default:
+		return nil, fmt.Errorf("Error, invalid/empty HTTPMethod(%s) specified, should be POST|DELETE|GET", callOpts.HTTPMethod)
+	}
+	hReq = hReq.WithContext(ctx)
+	hReq.Header.Set("Content-Type", "application/json")
+	client.AddHdrsToReq(callOpts.Headers, hReq)
+
+	rsp, err := c.client.Do(hReq)
+	if err != nil {
+		return nil, errors.Wrap(err, "Custom API RestClient")
+	}
+	defer rsp.Body.Close()
+
+	// checking whether the status code is a successful status code (2xx series)
+	if rsp.StatusCode < 200 || rsp.StatusCode > 299 {
+		body, err := io.ReadAll(rsp.Body)
+		return nil, fmt.Errorf("Unsuccessful custom API %s on %s, status code %d, body %s, err %s", callOpts.HTTPMethod, callOpts.URI, rsp.StatusCode, body, err)
+	}
+
+	body, err := io.ReadAll(rsp.Body)
+	if err != nil {
+		return nil, errors.Wrap(err, "Custom API RestClient read body")
+	}
+	pbRsp := &ThreatsResponse{}
+	if err := codec.FromJSON(string(body), pbRsp); err != nil {
+		return nil, errors.Wrapf(err, "JSON Response %s is not of type *ves.io.schema.app_security.ThreatsResponse", body)
+	}
+	if callOpts.OutCallResponse != nil {
+		callOpts.OutCallResponse.ProtoMsg = pbRsp
+		callOpts.OutCallResponse.JSON = string(body)
+	}
+	return pbRsp, nil
+}
 
 func (c *ThreatCampaignAPIRestClient) DoRPC(ctx context.Context, rpc string, opts ...server.CustomCallOpt) (proto.Message, error) {
 	rpcFn, exists := c.rpcFns[rpc]
@@ -193,6 +287,7 @@ func NewThreatCampaignAPIRestClient(baseURL string, hc http.Client) server.Custo
 
 	rpcFns := make(map[string]func(context.Context, *server.CustomCallOpts) (proto.Message, error))
 	rpcFns["GetThreatCampaignById"] = ccl.doRPCGetThreatCampaignById
+	rpcFns["GetThreats"] = ccl.doRPCGetThreats
 	ccl.rpcFns = rpcFns
 	return ccl
 }
@@ -207,6 +302,10 @@ type threatCampaignAPIInprocClient struct {
 func (c *threatCampaignAPIInprocClient) GetThreatCampaignById(ctx context.Context, in *ThreatCampaignRequest, opts ...grpc.CallOption) (*ThreatCampaign, error) {
 	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.app_security.ThreatCampaignAPI.GetThreatCampaignById")
 	return c.ThreatCampaignAPIServer.GetThreatCampaignById(ctx, in)
+}
+func (c *threatCampaignAPIInprocClient) GetThreats(ctx context.Context, in *ThreatsRequest, opts ...grpc.CallOption) (*ThreatsResponse, error) {
+	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.app_security.ThreatCampaignAPI.GetThreats")
+	return c.ThreatCampaignAPIServer.GetThreats(ctx, in)
 }
 
 func NewThreatCampaignAPIInprocClient(svc svcfw.Service) ThreatCampaignAPIClient {
@@ -275,6 +374,54 @@ func (s *threatCampaignAPISrv) GetThreatCampaignById(ctx context.Context, in *Th
 		return rsp, server.GRPCStatusFromError(server.MaybePublicRestError(ctx, err)).Err()
 	}
 	bodyFields = append(bodyFields, svcfw.GenAuditRspBodyFields(ctx, s.svc, "ves.io.schema.app_security.ThreatCampaign", rsp)...)
+
+	return rsp, nil
+}
+func (s *threatCampaignAPISrv) GetThreats(ctx context.Context, in *ThreatsRequest) (*ThreatsResponse, error) {
+	ah := s.svc.GetAPIHandler("ves.io.schema.app_security.ThreatCampaignAPI")
+	cah, ok := ah.(ThreatCampaignAPIServer)
+	if !ok {
+		return nil, fmt.Errorf("ah %v is not of type *ThreatCampaignAPIServer", ah)
+	}
+
+	var (
+		rsp *ThreatsResponse
+		err error
+	)
+
+	bodyFields := svcfw.GenAuditReqBodyFields(ctx, s.svc, "ves.io.schema.app_security.ThreatsRequest", in)
+	defer func() {
+		if len(bodyFields) > 0 {
+			server.ExtendAPIAudit(ctx, svcfw.PublicAPIBodyLog.Uid, bodyFields)
+		}
+		userMsg := "The 'ThreatCampaignAPI.GetThreats' operation on 'app_security'"
+		if err == nil {
+			userMsg += " was successfully performed."
+		} else {
+			userMsg += " failed to be performed."
+		}
+		server.AddUserMsgToAPIAudit(ctx, userMsg)
+	}()
+
+	if err := svcfw.FillOneofDefaultChoice(ctx, s.svc, in); err != nil {
+		err = server.MaybePublicRestError(ctx, errors.Wrapf(err, "Filling oneof default choice"))
+		return nil, server.GRPCStatusFromError(err).Err()
+	}
+
+	if s.svc.Config().EnableAPIValidation {
+		if rvFn := s.svc.GetRPCValidator("ves.io.schema.app_security.ThreatCampaignAPI.GetThreats"); rvFn != nil {
+			if verr := rvFn(ctx, in); verr != nil {
+				err = server.MaybePublicRestError(ctx, errors.Wrapf(verr, "Validating Request"))
+				return nil, server.GRPCStatusFromError(err).Err()
+			}
+		}
+	}
+
+	rsp, err = cah.GetThreats(ctx, in)
+	if err != nil {
+		return rsp, server.GRPCStatusFromError(server.MaybePublicRestError(ctx, err)).Err()
+	}
+	bodyFields = append(bodyFields, svcfw.GenAuditRspBodyFields(ctx, s.svc, "ves.io.schema.app_security.ThreatsResponse", rsp)...)
 
 	return rsp, nil
 }
@@ -381,12 +528,124 @@ var ThreatCampaignAPISwaggerJSON string = `{
                 },
                 "x-ves-proto-rpc": "ves.io.schema.app_security.ThreatCampaignAPI.GetThreatCampaignById"
             },
-            "x-displayname": "Application Security WAF Exclusion APIs",
+            "x-displayname": "Application Security Threats APIs",
+            "x-ves-proto-service": "ves.io.schema.app_security.ThreatCampaignAPI",
+            "x-ves-proto-service-type": "CUSTOM_PUBLIC"
+        },
+        "/public/threats": {
+            "post": {
+                "summary": "Get Threats",
+                "description": "Returns a list of threats tracked by F5 XC Threat Intelligence. A threat is a rollup of articles.\nAn article originates from a public web page or blog post discussing a cybersecurity threat campaign,\nthreat actor (or both combined). The public source is fed through a content pipeline to extract\nthreat intelligence information that could be valuable.",
+                "operationId": "ves.io.schema.app_security.ThreatCampaignAPI.GetThreats",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/app_securityThreatsResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Returned when operation is not authorized",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "Returned when there is no permission to access resource",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Returned when resource is not found",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Returned when operation on resource is conflicting with current value",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "429": {
+                        "description": "Returned when operation has been rejected as it is happening too frequently",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Returned when server encountered an error in processing API",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "503": {
+                        "description": "Returned when service is unavailable temporarily",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "504": {
+                        "description": "Returned when server timed out processing request",
+                        "schema": {
+                            "format": "string"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/app_securityThreatsRequest"
+                        }
+                    }
+                ],
+                "tags": [
+                    "ThreatCampaignAPI"
+                ],
+                "externalDocs": {
+                    "description": "Examples of this operation",
+                    "url": "https://docs.cloud.f5.com/docs-v2/platform/reference/api-ref/ves-io-schema-app_security-threatcampaignapi-getthreats"
+                },
+                "x-ves-proto-rpc": "ves.io.schema.app_security.ThreatCampaignAPI.GetThreats"
+            },
+            "x-displayname": "Application Security Threats APIs",
             "x-ves-proto-service": "ves.io.schema.app_security.ThreatCampaignAPI",
             "x-ves-proto-service-type": "CUSTOM_PUBLIC"
         }
     },
     "definitions": {
+        "app_securityCVEIDList": {
+            "type": "object",
+            "description": "A list of CVE IDs",
+            "title": "CVEIDList",
+            "x-displayname": "CVE ID List",
+            "x-ves-proto-message": "ves.io.schema.app_security.CVEIDList",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "description": " A list of CVE IDs\n\nExample: - \"CVE-2021-44228\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 16\n  ves.io.schema.rules.repeated.min_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "title": "ids",
+                    "minItems": 1,
+                    "maxItems": 16,
+                    "items": {
+                        "type": "string"
+                    },
+                    "x-displayname": "IDs",
+                    "x-ves-example": "CVE-2021-44228",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.repeated.max_items": "16",
+                        "ves.io.schema.rules.repeated.min_items": "1",
+                        "ves.io.schema.rules.repeated.unique": "true"
+                    }
+                }
+            }
+        },
         "app_securityThreatCampaign": {
             "type": "object",
             "description": "Threat Campaign object representing the created threat campaign.",
@@ -496,6 +755,79 @@ var ThreatCampaignAPISwaggerJSON string = `{
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true"
                     }
+                }
+            }
+        },
+        "app_securityThreatsRequest": {
+            "type": "object",
+            "description": "Returns threats associated with the given CVE IDs, which can be supplied explicitly or\nderived from a WAF security event.",
+            "title": "ThreatsRequest",
+            "x-displayname": "ThreatsRequest",
+            "x-ves-oneof-field-threats_filter": "[\"cve_ids\",\"primary_tag\",\"waf_sec_event_id\"]",
+            "x-ves-proto-message": "ves.io.schema.app_security.ThreatsRequest",
+            "properties": {
+                "cursor": {
+                    "type": "string",
+                    "description": " Opaque pagination cursor returned from previous response\n\nExample: - \"eyJpZCI6ICJjbnBjNTg0ODg1LWU4YjAtNDQ5ZC05YjA4LWFhYjA4ZDEyZDYifQ==\"-",
+                    "title": "Cursor",
+                    "x-displayname": "Cursor",
+                    "x-ves-example": "eyJpZCI6ICJjbnBjNTg0ODg1LWU4YjAtNDQ5ZC05YjA4LWFhYjA4ZDEyZDYifQ=="
+                },
+                "cve_ids": {
+                    "description": "Exclusive with [primary_tag waf_sec_event_id]\n A list of CVE IDs used to filter threats\n\nExample: - \"CVE-2021-44228\"-",
+                    "title": "CVEIDs",
+                    "$ref": "#/definitions/app_securityCVEIDList",
+                    "x-displayname": "CVE IDs",
+                    "x-ves-example": "CVE-2021-44228"
+                },
+                "primary_tag": {
+                    "type": "string",
+                    "description": "Exclusive with [cve_ids waf_sec_event_id]\n Primary tag to filter threats. A primary tag is a high level categorization of a threat,\n such as an associated threat actor, malware family or CVE.\n\nExample: - \"APT42\"-",
+                    "title": "Primary Tag",
+                    "x-displayname": "Primary Tag",
+                    "x-ves-example": "APT42"
+                },
+                "report_fields": {
+                    "type": "array",
+                    "description": " Optional list of fields to include in threat representation\n\nExample: - \"['title', 'severity', 'summary']\"-",
+                    "title": "Report Fields",
+                    "items": {
+                        "type": "string"
+                    },
+                    "x-displayname": "Report Fields",
+                    "x-ves-example": "['title', 'severity', 'summary']"
+                },
+                "waf_sec_event_id": {
+                    "type": "string",
+                    "description": "Exclusive with [cve_ids primary_tag]\n WAF Security Event ID to get associated threats information\n\nExample: - \"550e8400-e29b-41d4-a716-446655440000\"-",
+                    "title": "WAFSecEventID",
+                    "x-displayname": "WAF Security Event ID",
+                    "x-ves-example": "550e8400-e29b-41d4-a716-446655440000"
+                }
+            }
+        },
+        "app_securityThreatsResponse": {
+            "type": "object",
+            "description": "Returns a list of threats tracked by F5 XC Threat Intelligence that match the query.",
+            "title": "ThreatsResponse",
+            "x-displayname": "ThreatsResponse",
+            "x-ves-proto-message": "ves.io.schema.app_security.ThreatsResponse",
+            "properties": {
+                "next_cursor": {
+                    "type": "string",
+                    "description": " Opaque cursor for fetching next page\n\nExample: - \"eyJpZCI6ICJjbnBjNTg0ODg1LWU4YjAtNDQ5ZC05YjA4LWFhYjA4ZDEyZDYifQ==\"-",
+                    "title": "Next Cursor",
+                    "x-displayname": "Next Cursor",
+                    "x-ves-example": "eyJpZCI6ICJjbnBjNTg0ODg1LWU4YjAtNDQ5ZC05YjA4LWFhYjA4ZDEyZDYifQ=="
+                },
+                "threats": {
+                    "type": "array",
+                    "description": " A list of threats that match the query.",
+                    "title": "threats",
+                    "items": {
+                        "type": "string"
+                    },
+                    "x-displayname": "Threats"
                 }
             }
         }

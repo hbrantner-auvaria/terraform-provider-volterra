@@ -84,6 +84,54 @@ func resourceVolterraBgp() *schema.Resource {
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 
+									"dual_stack": {
+
+										Type:       schema.TypeList,
+										MaxItems:   1,
+										Optional:   true,
+										Deprecated: "This field is deprecated and will be removed in future release.",
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"ipv4": {
+
+													Type:       schema.TypeList,
+													MaxItems:   1,
+													Optional:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
+													Elem: &schema.Resource{
+														Schema: map[string]*schema.Schema{
+
+															"addr": {
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+														},
+													},
+												},
+
+												"ipv6": {
+
+													Type:       schema.TypeList,
+													MaxItems:   1,
+													Optional:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
+													Elem: &schema.Resource{
+														Schema: map[string]*schema.Schema{
+
+															"addr": {
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+
 									"ipv4": {
 
 										Type:       schema.TypeList,
@@ -1081,6 +1129,59 @@ func resourceVolterraBgpCreate(d *schema.ResourceData, meta interface{}) error {
 							bgpRouterIdMapStrToI := set.(map[string]interface{})
 
 							verTypeFound := false
+
+							if v, ok := bgpRouterIdMapStrToI["dual_stack"]; ok && !isIntfNil(v) && !verTypeFound {
+
+								verTypeFound = true
+								verInt := &ves_io_schema.IpAddressType_DualStack{}
+								verInt.DualStack = &ves_io_schema.DualStackAddressType{}
+								bgpRouterId.Ver = verInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["ipv4"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											ipv4 := &ves_io_schema.Ipv4AddressType{}
+											verInt.DualStack.Ipv4 = ipv4
+											for _, set := range sl {
+												if set != nil {
+													ipv4MapStrToI := set.(map[string]interface{})
+
+													if w, ok := ipv4MapStrToI["addr"]; ok && !isIntfNil(w) {
+														ipv4.Addr = w.(string)
+													}
+
+												}
+											}
+
+										}
+
+										if v, ok := cs["ipv6"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											ipv6 := &ves_io_schema.Ipv6AddressType{}
+											verInt.DualStack.Ipv6 = ipv6
+											for _, set := range sl {
+												if set != nil {
+													ipv6MapStrToI := set.(map[string]interface{})
+
+													if w, ok := ipv6MapStrToI["addr"]; ok && !isIntfNil(w) {
+														ipv6.Addr = w.(string)
+													}
+
+												}
+											}
+
+										}
+
+									}
+								}
+
+							}
 
 							if v, ok := bgpRouterIdMapStrToI["ipv4"]; ok && !isIntfNil(v) && !verTypeFound {
 
@@ -2613,6 +2714,59 @@ func resourceVolterraBgpUpdate(d *schema.ResourceData, meta interface{}) error {
 							bgpRouterIdMapStrToI := set.(map[string]interface{})
 
 							verTypeFound := false
+
+							if v, ok := bgpRouterIdMapStrToI["dual_stack"]; ok && !isIntfNil(v) && !verTypeFound {
+
+								verTypeFound = true
+								verInt := &ves_io_schema.IpAddressType_DualStack{}
+								verInt.DualStack = &ves_io_schema.DualStackAddressType{}
+								bgpRouterId.Ver = verInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["ipv4"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											ipv4 := &ves_io_schema.Ipv4AddressType{}
+											verInt.DualStack.Ipv4 = ipv4
+											for _, set := range sl {
+												if set != nil {
+													ipv4MapStrToI := set.(map[string]interface{})
+
+													if w, ok := ipv4MapStrToI["addr"]; ok && !isIntfNil(w) {
+														ipv4.Addr = w.(string)
+													}
+
+												}
+											}
+
+										}
+
+										if v, ok := cs["ipv6"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											ipv6 := &ves_io_schema.Ipv6AddressType{}
+											verInt.DualStack.Ipv6 = ipv6
+											for _, set := range sl {
+												if set != nil {
+													ipv6MapStrToI := set.(map[string]interface{})
+
+													if w, ok := ipv6MapStrToI["addr"]; ok && !isIntfNil(w) {
+														ipv6.Addr = w.(string)
+													}
+
+												}
+											}
+
+										}
+
+									}
+								}
+
+							}
 
 							if v, ok := bgpRouterIdMapStrToI["ipv4"]; ok && !isIntfNil(v) && !verTypeFound {
 

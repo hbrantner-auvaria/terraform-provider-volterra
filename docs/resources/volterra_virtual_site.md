@@ -26,6 +26,7 @@ resource "volterra_virtual_site" "example" {
 
   site_type = ["site_type"]
 }
+
 ```
 
 Argument Reference
@@ -45,8 +46,6 @@ Argument Reference
 
 `namespace` - (Optional) Must be a DNS_LABEL format. For a namespace object itself, namespace value will be "" (`String`).
 
-`fail_if_referred` - (Optional) Controls whether deletion is restricted when the resource is referenced by other objects. The default is `true`. When set to `false`, deletion proceeds even if references are present (`Bool`).
-
 ### Spec Argument Reference
 
 `site_selector` - (Required) Label selector for virtual-site. See [Site Selector ](#site-selector) below for details.
@@ -62,4 +61,4 @@ Label selector for virtual-site.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured virtual_site.
+-	`id` - This is the id of the configured virtual_site.

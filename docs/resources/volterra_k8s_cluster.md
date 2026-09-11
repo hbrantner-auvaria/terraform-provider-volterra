@@ -22,45 +22,7 @@ resource "volterra_k8s_cluster" "example" {
 
   // One of the arguments from this list "cluster_wide_app_list no_cluster_wide_apps" must be set
 
-  cluster_wide_app_list {
-    cluster_wide_apps {
-      // One of the arguments from this list "argo_cd dashboard metrics_server prometheus" must be set
-
-      argo_cd {
-        generated_yaml = "value"
-
-        local_domain {
-          local_domain = "example.com"
-
-          password {
-            blindfold_secret_info_internal {
-              decryption_provider = "value"
-
-              location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
-
-              store_provider = "value"
-            }
-
-            secret_encoding_type = "secret_encoding_type"
-
-            // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
-
-            blindfold_secret_info {
-              decryption_provider = "value"
-
-              location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
-
-              store_provider = "value"
-            }
-          }
-
-          // One of the arguments from this list "default_port port" must be set
-
-          port = "443"
-        }
-      }
-    }
-  }
+  no_cluster_wide_apps = true
 
   // One of the arguments from this list "use_custom_cluster_role_bindings use_default_cluster_role_bindings" must be set
 
@@ -76,7 +38,7 @@ resource "volterra_k8s_cluster" "example" {
 
   // One of the arguments from this list "global_access_enable no_global_access" must be set
 
-  no_global_access = true
+  global_access_enable = true
 
   // One of the arguments from this list "insecure_registry_list no_insecure_registries" must be set
 
@@ -92,12 +54,19 @@ resource "volterra_k8s_cluster" "example" {
 
   // One of the arguments from this list "use_custom_psp_list use_default_psp" must be set
 
-  use_default_psp = true
+  use_custom_psp_list {
+    pod_security_policies {
+      name      = "test1"
+      namespace = "staging"
+      tenant    = "acmecorp"
+    }
+  }
 
   // One of the arguments from this list "vk8s_namespace_access_deny vk8s_namespace_access_permit" must be set
 
-  vk8s_namespace_access_deny = true
+  vk8s_namespace_access_permit = true
 }
+
 ```
 
 Argument Reference
@@ -358,4 +327,4 @@ Secret is given as bootstrap secret in F5XC Security Sidecar.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured k8s_cluster.
+-	`id` - This is the id of the configured k8s_cluster.

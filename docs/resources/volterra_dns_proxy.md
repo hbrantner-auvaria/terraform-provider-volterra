@@ -29,7 +29,7 @@ resource "volterra_dns_proxy" "example" {
   ddos_profile {
     // One of the arguments from this list "disable_ddos_mitigation enable_ddos_mitigation" can be set
 
-    disable_ddos_mitigation = true
+    enable_ddos_mitigation = true
   }
 
   origin_servers {
@@ -63,7 +63,7 @@ resource "volterra_dns_proxy" "example" {
       public_ip {
         // One of the arguments from this list "ip ipv6" must be set
 
-        ipv6 = "2001::1"
+        ip = "8.8.8.8"
       }
 
       // One of the arguments from this list "no_preference site_preferences" can be set
@@ -74,6 +74,7 @@ resource "volterra_dns_proxy" "example" {
 
   transport_type = ["transport_type"]
 }
+
 ```
 
 Argument Reference
@@ -151,13 +152,21 @@ Origin Servers for DNS Proxy.
 
 Proxy Advertisement choice.
 
-###### One of the arguments from this list "advertise_custom, advertise_on_public, advertise_on_public_default_vip, do_not_advertise" must be set
+###### One of the arguments from this list "advertise_custom, advertise_dualstack_on_public, advertise_on_public, advertise_on_public_default_dualstack_vip, advertise_on_public_default_ipv6_vip, advertise_on_public_default_vip, advertise_v6_on_public, do_not_advertise" must be set
 
 `advertise_custom` - (Optional) Advertise this load balancer on specific sites. See [Advertise Choice Advertise Custom ](#advertise-choice-advertise-custom) below for details.
 
-`advertise_on_public` - (Optional) Advertise this proxy on public network. See [Advertise Choice Advertise On Public ](#advertise-choice-advertise-on-public) below for details.
+`advertise_dualstack_on_public` - (Optional) Advertise this Dualstack load balancer address on public network. See [Advertise Choice Advertise Dualstack On Public ](#advertise-choice-advertise-dualstack-on-public) below for details.
+
+`advertise_on_public` - (Optional) Advertise this IPv4 proxy address on public network. See [Advertise Choice Advertise On Public ](#advertise-choice-advertise-on-public) below for details.
+
+`advertise_on_public_default_dualstack_vip` - (Optional) Advertise this proxy on public network with default Dualstack VIP (`Bool`).
+
+`advertise_on_public_default_ipv6_vip` - (Optional) Advertise this proxy on public network with default IPv6 VIP (`Bool`).
 
 `advertise_on_public_default_vip` - (Optional) Advertise this load balancer on public network with default VIP (`Bool`).
+
+`advertise_v6_on_public` - (Optional) Advertise this IPv6 proxy address on public network. See [Advertise Choice Advertise V6 On Public ](#advertise-choice-advertise-v6-on-public) below for details.
 
 `do_not_advertise` - (Optional) Do not advertise this proxy (`Bool`).
 
@@ -167,15 +176,35 @@ Advertise this load balancer on specific sites.
 
 `advertise_where` - (Required) Where should this load balancer be available. See [Advertise Custom Advertise Where ](#advertise-custom-advertise-where) below for details.
 
-### Advertise Choice Advertise On Public
+### Advertise Choice Advertise Dualstack On Public
 
-Advertise this proxy on public network.
+Advertise this Dualstack load balancer address on public network.
 
 `public_ip` - (Required) Dedicated Public IP, which is allocated by F5 Distributed Cloud on request, is used as a VIP.. See [ref](#ref) below for details.
+
+### Advertise Choice Advertise On Public
+
+Advertise this IPv4 proxy address on public network.
+
+`public_ip` - (Required) Dedicated Public IP, which is allocated by F5 Distributed Cloud on request, is used as a VIP.. See [ref](#ref) below for details.
+
+### Advertise Choice Advertise On Public Default Dualstack Vip
+
+Advertise this proxy on public network with default Dualstack VIP.
+
+### Advertise Choice Advertise On Public Default Ipv6 Vip
+
+Advertise this proxy on public network with default IPv6 VIP.
 
 ### Advertise Choice Advertise On Public Default Vip
 
 Advertise this load balancer on public network with default VIP.
+
+### Advertise Choice Advertise V6 On Public
+
+Advertise this IPv6 proxy address on public network.
+
+`public_ip` - (Required) Dedicated Public IP, which is allocated by F5 Distributed Cloud on request, is used as a VIP.. See [ref](#ref) below for details.
 
 ### Advertise Choice Do Not Advertise
 
@@ -185,9 +214,13 @@ Do not advertise this proxy.
 
 Where should this load balancer be available.
 
-###### One of the arguments from this list "advertise_on_public, cloud_edge_segment, segment, site, site_segment, virtual_network, virtual_site, virtual_site_segment, virtual_site_with_vip, vk8s_service" must be set
+###### One of the arguments from this list "advertise_dualstack_on_public, advertise_on_public, advertise_v6_on_public, cloud_edge_segment, segment, site, site_segment, virtual_network, virtual_site, virtual_site_segment, virtual_site_with_vip, vk8s_service" must be set
+
+`advertise_dualstack_on_public` - (Optional) Advertise this load balancer with Dualstack VIP on public network. See [Choice Advertise Dualstack On Public ](#choice-advertise-dualstack-on-public) below for details.
 
 `advertise_on_public` - (Optional) Advertise this load balancer on public network. See [Choice Advertise On Public ](#choice-advertise-on-public) below for details.
+
+`advertise_v6_on_public` - (Optional) Advertise this load balancer with IPv6 VIP on public network. See [Choice Advertise V6 On Public ](#choice-advertise-v6-on-public) below for details.
 
 `site` - (Optional) Advertise on a customer site and a given network.. See [Choice Site ](#choice-site) below for details.
 
@@ -215,9 +248,21 @@ Where should this load balancer be available.
 
 x-displayName: "Disable".
 
+### Choice Advertise Dualstack On Public
+
+Advertise this load balancer with Dualstack VIP on public network.
+
+`public_ip` - (Required) Dedicated Public IP, which is allocated by F5 Distributed Cloud on request, is used as a VIP.. See [ref](#ref) below for details.
+
 ### Choice Advertise On Public
 
 Advertise this load balancer on public network.
+
+`public_ip` - (Required) Dedicated Public IP, which is allocated by F5 Distributed Cloud on request, is used as a VIP.. See [ref](#ref) below for details.
+
+### Choice Advertise V6 On Public
+
+Advertise this load balancer with IPv6 VIP on public network.
 
 `public_ip` - (Required) Dedicated Public IP, which is allocated by F5 Distributed Cloud on request, is used as a VIP.. See [ref](#ref) below for details.
 
@@ -271,7 +316,7 @@ Specify origin server with public IP.
 
 ###### One of the arguments from this list "ip, ipv6" must be set
 
-`ip`- (Optional) Public IPV4 address (`String`).
+`ip` - (Optional) Public IPV4 address (`String`).
 
 `ipv6` - (Optional) Public IPV6 address (`String`).
 
@@ -530,4 +575,4 @@ Use the default VIP, system allocated or configured in the virtual network.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured dns_proxy.
+-	`id` - This is the id of the configured dns_proxy.

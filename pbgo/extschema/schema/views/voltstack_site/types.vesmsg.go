@@ -1004,6 +1004,12 @@ func (v *ValidateCreateSpecType) Validate(ctx context.Context, pm interface{}, o
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["waf_signatures"]; exists {
+		vOpts := append(opts, db.WithValidateField("waf_signatures"))
+		if err := fv(ctx, m.GetWafSignatures(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["worker_nodes"]; exists {
 		vOpts := append(opts, db.WithValidateField("worker_nodes"))
 		if err := fv(ctx, m.GetWorkerNodes(), vOpts...); err != nil {
@@ -2178,6 +2184,12 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 	if fv, exists := v.FldValidators["volterra_software_version"]; exists {
 		vOpts := append(opts, db.WithValidateField("volterra_software_version"))
 		if err := fv(ctx, m.GetVolterraSoftwareVersion(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["waf_signatures"]; exists {
+		vOpts := append(opts, db.WithValidateField("waf_signatures"))
+		if err := fv(ctx, m.GetWafSignatures(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -3895,6 +3907,12 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["waf_signatures"]; exists {
+		vOpts := append(opts, db.WithValidateField("waf_signatures"))
+		if err := fv(ctx, m.GetWafSignatures(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["worker_nodes"]; exists {
 		vOpts := append(opts, db.WithValidateField("worker_nodes"))
 		if err := fv(ctx, m.GetWorkerNodes(), vOpts...); err != nil {
@@ -5556,6 +5574,12 @@ func (v *ValidateReplaceSpecType) Validate(ctx context.Context, pm interface{}, 
 	if fv, exists := v.FldValidators["volterra_certified_hw"]; exists {
 		vOpts := append(opts, db.WithValidateField("volterra_certified_hw"))
 		if err := fv(ctx, m.GetVolterraCertifiedHw(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["waf_signatures"]; exists {
+		vOpts := append(opts, db.WithValidateField("waf_signatures"))
+		if err := fv(ctx, m.GetWafSignatures(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -8603,6 +8627,7 @@ func (m *CreateSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool
 	m.GetUsbPolicyChoiceFromGlobalSpecType(f)
 	m.GetVmChoiceFromGlobalSpecType(f)
 	m.VolterraCertifiedHw = f.GetVolterraCertifiedHw()
+	m.WafSignatures = f.GetWafSignatures()
 	m.WorkerNodes = f.GetWorkerNodes()
 }
 
@@ -8642,6 +8667,7 @@ func (m *CreateSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) 
 	m1.SetUsbPolicyChoiceToGlobalSpecType(f)
 	m1.SetVmChoiceToGlobalSpecType(f)
 	f.VolterraCertifiedHw = m1.VolterraCertifiedHw
+	f.WafSignatures = m1.WafSignatures
 	f.WorkerNodes = m1.WorkerNodes
 }
 
@@ -9076,6 +9102,7 @@ func (m *GetSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	m.GetVmChoiceFromGlobalSpecType(f)
 	m.VolterraCertifiedHw = f.GetVolterraCertifiedHw()
 	m.VolterraSoftwareVersion = f.GetVolterraSoftwareVersion()
+	m.WafSignatures = f.GetWafSignatures()
 	m.WorkerNodes = f.GetWorkerNodes()
 }
 
@@ -9116,6 +9143,7 @@ func (m *GetSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	m1.SetVmChoiceToGlobalSpecType(f)
 	f.VolterraCertifiedHw = m1.VolterraCertifiedHw
 	f.VolterraSoftwareVersion = m1.VolterraSoftwareVersion
+	f.WafSignatures = m1.WafSignatures
 	f.WorkerNodes = m1.WorkerNodes
 }
 
@@ -9549,6 +9577,7 @@ func (m *ReplaceSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy boo
 	m.GetUsbPolicyChoiceFromGlobalSpecType(f)
 	m.GetVmChoiceFromGlobalSpecType(f)
 	m.VolterraCertifiedHw = f.GetVolterraCertifiedHw()
+	m.WafSignatures = f.GetWafSignatures()
 	m.WorkerNodes = f.GetWorkerNodes()
 }
 
@@ -9588,6 +9617,7 @@ func (m *ReplaceSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool)
 	m1.SetUsbPolicyChoiceToGlobalSpecType(f)
 	m1.SetVmChoiceToGlobalSpecType(f)
 	f.VolterraCertifiedHw = m1.VolterraCertifiedHw
+	f.WafSignatures = m1.WafSignatures
 	f.WorkerNodes = m1.WorkerNodes
 }
 

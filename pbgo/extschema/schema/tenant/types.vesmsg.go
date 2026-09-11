@@ -723,6 +723,14 @@ func (v *ValidateGlobalSpecType) OriginValidationRuleHandler(rules map[string]st
 
 	return validatorFn, nil
 }
+func (v *ValidateGlobalSpecType) PublicVipV6ValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for public_vip_v6")
+	}
+
+	return validatorFn, nil
+}
 
 func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
 	m, ok := pm.(*GlobalSpecType)
@@ -830,6 +838,12 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 	if fv, exists := v.FldValidators["public_vip"]; exists {
 		vOpts := append(opts, db.WithValidateField("public_vip"))
 		if err := fv(ctx, m.GetPublicVip(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["public_vip_v6"]; exists {
+		vOpts := append(opts, db.WithValidateField("public_vip_v6"))
+		if err := fv(ctx, m.GetPublicVipV6(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -1005,6 +1019,17 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 		panic(errMsg)
 	}
 	v.FldValidators["origin"] = vFn
+
+	vrhPublicVipV6 := v.PublicVipV6ValidationRuleHandler
+	rulesPublicVipV6 := map[string]string{
+		"ves.io.schema.rules.string.ipv6": "true",
+	}
+	vFn, err = vrhPublicVipV6(rulesPublicVipV6)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for GlobalSpecType.public_vip_v6: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["public_vip_v6"] = vFn
 	v.FldValidators["k8s_server_sub_cas"] = SubCAValidator().Validate
 	v.FldValidators["proxy_root_cas"] = CAValidator().Validate
 	v.FldValidators["shape_shared_instance_auth_key"] = ves_io_schema.SecretTypeValidator().Validate

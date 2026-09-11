@@ -283,7 +283,8 @@ var DefaultAiRiskBasedBlockingValidator = func() *ValidateAiRiskBasedBlocking {
 
 	vrhHighRiskAction := v.HighRiskActionValidationRuleHandler
 	rulesHighRiskAction := map[string]string{
-		"ves.io.schema.rules.message.required": "true",
+		"ves.io.schema.rules.enum.defined_only": "true",
+		"ves.io.schema.rules.message.required":  "true",
 	}
 	vFn, err = vrhHighRiskAction(rulesHighRiskAction)
 	if err != nil {
@@ -294,7 +295,8 @@ var DefaultAiRiskBasedBlockingValidator = func() *ValidateAiRiskBasedBlocking {
 
 	vrhMediumRiskAction := v.MediumRiskActionValidationRuleHandler
 	rulesMediumRiskAction := map[string]string{
-		"ves.io.schema.rules.message.required": "true",
+		"ves.io.schema.rules.enum.defined_only": "true",
+		"ves.io.schema.rules.message.required":  "true",
 	}
 	vFn, err = vrhMediumRiskAction(rulesMediumRiskAction)
 	if err != nil {
@@ -305,7 +307,8 @@ var DefaultAiRiskBasedBlockingValidator = func() *ValidateAiRiskBasedBlocking {
 
 	vrhLowRiskAction := v.LowRiskActionValidationRuleHandler
 	rulesLowRiskAction := map[string]string{
-		"ves.io.schema.rules.message.required": "true",
+		"ves.io.schema.rules.enum.defined_only": "true",
+		"ves.io.schema.rules.message.required":  "true",
 	}
 	vFn, err = vrhLowRiskAction(rulesLowRiskAction)
 	if err != nil {
@@ -1656,6 +1659,17 @@ func (v *ValidateCreateSpecType) Validate(ctx context.Context, pm interface{}, o
 				return err
 			}
 		}
+	case *CreateSpecType_AiEnhancements:
+		if fv, exists := v.FldValidators["enhance_with_ai_choice.ai_enhancements"]; exists {
+			val := m.GetEnhanceWithAiChoice().(*CreateSpecType_AiEnhancements).AiEnhancements
+			vOpts := append(opts,
+				db.WithValidateField("enhance_with_ai_choice"),
+				db.WithValidateField("ai_enhancements"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 	return nil
 }
@@ -1746,6 +1760,7 @@ var DefaultCreateSpecTypeValidator = func() *ValidateCreateSpecType {
 	v.FldValidators["detection_setting_choice.detection_settings"] = DetectionSettingValidator().Validate
 	v.FldValidators["detection_setting_choice.ai_risk_based_blocking"] = AiRiskBasedBlockingValidator().Validate
 	v.FldValidators["enhance_with_ai_choice.enable_ai_enhancements"] = AIEnhancementsConfigValidator().Validate
+	v.FldValidators["enhance_with_ai_choice.ai_enhancements"] = AiRiskBasedBlockingValidator().Validate
 
 	return v
 }()
@@ -2725,6 +2740,17 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 				return err
 			}
 		}
+	case *GetSpecType_AiEnhancements:
+		if fv, exists := v.FldValidators["enhance_with_ai_choice.ai_enhancements"]; exists {
+			val := m.GetEnhanceWithAiChoice().(*GetSpecType_AiEnhancements).AiEnhancements
+			vOpts := append(opts,
+				db.WithValidateField("enhance_with_ai_choice"),
+				db.WithValidateField("ai_enhancements"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 	return nil
 }
@@ -2815,6 +2841,7 @@ var DefaultGetSpecTypeValidator = func() *ValidateGetSpecType {
 	v.FldValidators["detection_setting_choice.detection_settings"] = DetectionSettingValidator().Validate
 	v.FldValidators["detection_setting_choice.ai_risk_based_blocking"] = AiRiskBasedBlockingValidator().Validate
 	v.FldValidators["enhance_with_ai_choice.enable_ai_enhancements"] = AIEnhancementsConfigValidator().Validate
+	v.FldValidators["enhance_with_ai_choice.ai_enhancements"] = AiRiskBasedBlockingValidator().Validate
 
 	return v
 }()
@@ -3204,6 +3231,17 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 				return err
 			}
 		}
+	case *GlobalSpecType_AiEnhancements:
+		if fv, exists := v.FldValidators["enhance_with_ai_choice.ai_enhancements"]; exists {
+			val := m.GetEnhanceWithAiChoice().(*GlobalSpecType_AiEnhancements).AiEnhancements
+			vOpts := append(opts,
+				db.WithValidateField("enhance_with_ai_choice"),
+				db.WithValidateField("ai_enhancements"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 	return nil
 }
@@ -3294,6 +3332,7 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 	v.FldValidators["detection_setting_choice.detection_settings"] = DetectionSettingValidator().Validate
 	v.FldValidators["detection_setting_choice.ai_risk_based_blocking"] = AiRiskBasedBlockingValidator().Validate
 	v.FldValidators["enhance_with_ai_choice.enable_ai_enhancements"] = AIEnhancementsConfigValidator().Validate
+	v.FldValidators["enhance_with_ai_choice.ai_enhancements"] = AiRiskBasedBlockingValidator().Validate
 
 	return v
 }()
@@ -3683,6 +3722,17 @@ func (v *ValidateReplaceSpecType) Validate(ctx context.Context, pm interface{}, 
 				return err
 			}
 		}
+	case *ReplaceSpecType_AiEnhancements:
+		if fv, exists := v.FldValidators["enhance_with_ai_choice.ai_enhancements"]; exists {
+			val := m.GetEnhanceWithAiChoice().(*ReplaceSpecType_AiEnhancements).AiEnhancements
+			vOpts := append(opts,
+				db.WithValidateField("enhance_with_ai_choice"),
+				db.WithValidateField("ai_enhancements"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 	return nil
 }
@@ -3773,12 +3823,182 @@ var DefaultReplaceSpecTypeValidator = func() *ValidateReplaceSpecType {
 	v.FldValidators["detection_setting_choice.detection_settings"] = DetectionSettingValidator().Validate
 	v.FldValidators["detection_setting_choice.ai_risk_based_blocking"] = AiRiskBasedBlockingValidator().Validate
 	v.FldValidators["enhance_with_ai_choice.enable_ai_enhancements"] = AIEnhancementsConfigValidator().Validate
+	v.FldValidators["enhance_with_ai_choice.ai_enhancements"] = AiRiskBasedBlockingValidator().Validate
 
 	return v
 }()
 
 func ReplaceSpecTypeValidator() db.Validator {
 	return DefaultReplaceSpecTypeValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *SignatureProtectionSetting) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *SignatureProtectionSetting) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *SignatureProtectionSetting) DeepCopy() *SignatureProtectionSetting {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &SignatureProtectionSetting{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *SignatureProtectionSetting) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *SignatureProtectionSetting) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return SignatureProtectionSettingValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateSignatureProtectionSetting struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateSignatureProtectionSetting) HighAccuracyActionValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	var conv db.EnumConvFn
+	conv = func(v interface{}) int32 {
+		i := v.(SignatureAction)
+		return int32(i)
+	}
+	// SignatureAction_name is generated in .pb.go
+	validatorFn, err := db.NewEnumValidationRuleHandler(rules, SignatureAction_name, conv)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for high_accuracy_action")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateSignatureProtectionSetting) MediumAccuracyActionValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	var conv db.EnumConvFn
+	conv = func(v interface{}) int32 {
+		i := v.(SignatureAction)
+		return int32(i)
+	}
+	// SignatureAction_name is generated in .pb.go
+	validatorFn, err := db.NewEnumValidationRuleHandler(rules, SignatureAction_name, conv)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for medium_accuracy_action")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateSignatureProtectionSetting) LowAccuracyActionValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	var conv db.EnumConvFn
+	conv = func(v interface{}) int32 {
+		i := v.(SignatureAction)
+		return int32(i)
+	}
+	// SignatureAction_name is generated in .pb.go
+	validatorFn, err := db.NewEnumValidationRuleHandler(rules, SignatureAction_name, conv)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for low_accuracy_action")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateSignatureProtectionSetting) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*SignatureProtectionSetting)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *SignatureProtectionSetting got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["high_accuracy_action"]; exists {
+		vOpts := append(opts, db.WithValidateField("high_accuracy_action"))
+		if err := fv(ctx, m.GetHighAccuracyAction(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["low_accuracy_action"]; exists {
+		vOpts := append(opts, db.WithValidateField("low_accuracy_action"))
+		if err := fv(ctx, m.GetLowAccuracyAction(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["medium_accuracy_action"]; exists {
+		vOpts := append(opts, db.WithValidateField("medium_accuracy_action"))
+		if err := fv(ctx, m.GetMediumAccuracyAction(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultSignatureProtectionSettingValidator = func() *ValidateSignatureProtectionSetting {
+	v := &ValidateSignatureProtectionSetting{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhHighAccuracyAction := v.HighAccuracyActionValidationRuleHandler
+	rulesHighAccuracyAction := map[string]string{
+		"ves.io.schema.rules.enum.defined_only": "true",
+	}
+	vFn, err = vrhHighAccuracyAction(rulesHighAccuracyAction)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for SignatureProtectionSetting.high_accuracy_action: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["high_accuracy_action"] = vFn
+
+	vrhMediumAccuracyAction := v.MediumAccuracyActionValidationRuleHandler
+	rulesMediumAccuracyAction := map[string]string{
+		"ves.io.schema.rules.enum.defined_only": "true",
+	}
+	vFn, err = vrhMediumAccuracyAction(rulesMediumAccuracyAction)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for SignatureProtectionSetting.medium_accuracy_action: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["medium_accuracy_action"] = vFn
+
+	vrhLowAccuracyAction := v.LowAccuracyActionValidationRuleHandler
+	rulesLowAccuracyAction := map[string]string{
+		"ves.io.schema.rules.enum.defined_only": "true",
+	}
+	vFn, err = vrhLowAccuracyAction(rulesLowAccuracyAction)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for SignatureProtectionSetting.low_accuracy_action: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["low_accuracy_action"] = vFn
+
+	return v
+}()
+
+func SignatureProtectionSettingValidator() db.Validator {
+	return DefaultSignatureProtectionSettingValidator
 }
 
 // augmented methods on protoc/std generated struct
@@ -3886,6 +4106,31 @@ func (v *ValidateSignatureSelectionSetting) Validate(ctx context.Context, pm int
 		}
 	}
 
+	switch m.GetSignatureProtectionChoice().(type) {
+	case *SignatureSelectionSetting_DefaultSignatureSetting:
+		if fv, exists := v.FldValidators["signature_protection_choice.default_signature_setting"]; exists {
+			val := m.GetSignatureProtectionChoice().(*SignatureSelectionSetting_DefaultSignatureSetting).DefaultSignatureSetting
+			vOpts := append(opts,
+				db.WithValidateField("signature_protection_choice"),
+				db.WithValidateField("default_signature_setting"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *SignatureSelectionSetting_SignatureSettingsByAccuracy:
+		if fv, exists := v.FldValidators["signature_protection_choice.signature_settings_by_accuracy"]; exists {
+			val := m.GetSignatureProtectionChoice().(*SignatureSelectionSetting_SignatureSettingsByAccuracy).SignatureSettingsByAccuracy
+			vOpts := append(opts,
+				db.WithValidateField("signature_protection_choice"),
+				db.WithValidateField("signature_settings_by_accuracy"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+
 	if fv, exists := v.FldValidators["signature_selection_by_accuracy"]; exists {
 		val := m.GetSignatureSelectionByAccuracy()
 		vOpts := append(opts,
@@ -3965,6 +4210,7 @@ var DefaultSignatureSelectionSettingValidator = func() *ValidateSignatureSelecti
 	}
 	v.FldValidators["signature_selection_by_accuracy"] = vFn
 	v.FldValidators["attack_type_setting.attack_type_settings"] = AttackTypeSettingsValidator().Validate
+	v.FldValidators["signature_protection_choice.signature_settings_by_accuracy"] = SignatureProtectionSettingValidator().Validate
 
 	return v
 }()
@@ -4702,6 +4948,9 @@ func (r *CreateSpecType) SetEnhanceWithAiChoiceToGlobalSpecType(o *GlobalSpecTyp
 	case nil:
 		o.EnhanceWithAiChoice = nil
 
+	case *CreateSpecType_AiEnhancements:
+		o.EnhanceWithAiChoice = &GlobalSpecType_AiEnhancements{AiEnhancements: of.AiEnhancements}
+
 	case *CreateSpecType_DisableAiEnhancements:
 		o.EnhanceWithAiChoice = &GlobalSpecType_DisableAiEnhancements{DisableAiEnhancements: of.DisableAiEnhancements}
 
@@ -4718,6 +4967,9 @@ func (r *CreateSpecType) GetEnhanceWithAiChoiceFromGlobalSpecType(o *GlobalSpecT
 	switch of := o.EnhanceWithAiChoice.(type) {
 	case nil:
 		r.EnhanceWithAiChoice = nil
+
+	case *GlobalSpecType_AiEnhancements:
+		r.EnhanceWithAiChoice = &CreateSpecType_AiEnhancements{AiEnhancements: of.AiEnhancements}
 
 	case *GlobalSpecType_DisableAiEnhancements:
 		r.EnhanceWithAiChoice = &CreateSpecType_DisableAiEnhancements{DisableAiEnhancements: of.DisableAiEnhancements}
@@ -5010,6 +5262,9 @@ func (r *GetSpecType) SetEnhanceWithAiChoiceToGlobalSpecType(o *GlobalSpecType) 
 	case nil:
 		o.EnhanceWithAiChoice = nil
 
+	case *GetSpecType_AiEnhancements:
+		o.EnhanceWithAiChoice = &GlobalSpecType_AiEnhancements{AiEnhancements: of.AiEnhancements}
+
 	case *GetSpecType_DisableAiEnhancements:
 		o.EnhanceWithAiChoice = &GlobalSpecType_DisableAiEnhancements{DisableAiEnhancements: of.DisableAiEnhancements}
 
@@ -5026,6 +5281,9 @@ func (r *GetSpecType) GetEnhanceWithAiChoiceFromGlobalSpecType(o *GlobalSpecType
 	switch of := o.EnhanceWithAiChoice.(type) {
 	case nil:
 		r.EnhanceWithAiChoice = nil
+
+	case *GlobalSpecType_AiEnhancements:
+		r.EnhanceWithAiChoice = &GetSpecType_AiEnhancements{AiEnhancements: of.AiEnhancements}
 
 	case *GlobalSpecType_DisableAiEnhancements:
 		r.EnhanceWithAiChoice = &GetSpecType_DisableAiEnhancements{DisableAiEnhancements: of.DisableAiEnhancements}
@@ -5318,6 +5576,9 @@ func (r *ReplaceSpecType) SetEnhanceWithAiChoiceToGlobalSpecType(o *GlobalSpecTy
 	case nil:
 		o.EnhanceWithAiChoice = nil
 
+	case *ReplaceSpecType_AiEnhancements:
+		o.EnhanceWithAiChoice = &GlobalSpecType_AiEnhancements{AiEnhancements: of.AiEnhancements}
+
 	case *ReplaceSpecType_DisableAiEnhancements:
 		o.EnhanceWithAiChoice = &GlobalSpecType_DisableAiEnhancements{DisableAiEnhancements: of.DisableAiEnhancements}
 
@@ -5334,6 +5595,9 @@ func (r *ReplaceSpecType) GetEnhanceWithAiChoiceFromGlobalSpecType(o *GlobalSpec
 	switch of := o.EnhanceWithAiChoice.(type) {
 	case nil:
 		r.EnhanceWithAiChoice = nil
+
+	case *GlobalSpecType_AiEnhancements:
+		r.EnhanceWithAiChoice = &ReplaceSpecType_AiEnhancements{AiEnhancements: of.AiEnhancements}
 
 	case *GlobalSpecType_DisableAiEnhancements:
 		r.EnhanceWithAiChoice = &ReplaceSpecType_DisableAiEnhancements{DisableAiEnhancements: of.DisableAiEnhancements}

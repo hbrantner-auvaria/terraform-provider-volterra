@@ -45,6 +45,7 @@ resource "volterra_container_registry" "example" {
   registry  = ["quay.io"]
   user_name = ["joe"]
 }
+
 ```
 
 Argument Reference
@@ -143,4 +144,4 @@ Secret is given as bootstrap secret in F5XC Security Sidecar.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured container_registry.
+-	`id` - This is the id of the configured container_registry.

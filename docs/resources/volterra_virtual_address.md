@@ -41,6 +41,7 @@ resource "volterra_virtual_address" "example" {
     state_enabled {}
   }
 }
+
 ```
 
 Argument Reference
@@ -251,4 +252,4 @@ Advertise on vK8s Service Network on RE..
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured virtual_address.
+-	`id` - This is the id of the configured virtual_address.

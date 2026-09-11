@@ -22,8 +22,9 @@ resource "volterra_api_definition" "example" {
 
   // One of the arguments from this list "mixed_schema_origin strict_schema_origin" must be set
 
-  strict_schema_origin = true
+  mixed_schema_origin = true
 }
+
 ```
 
 Argument Reference
@@ -86,4 +87,4 @@ List of Non-API Endpoints..
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured api_definition.
+-	`id` - This is the id of the configured api_definition.

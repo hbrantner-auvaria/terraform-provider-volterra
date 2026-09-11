@@ -51,6 +51,7 @@ func initializeEntryRegistry(mdr *svcfw.MDRegistry) {
 func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 	mdr.RPCHiddenInternalFieldsRegistry["ves.io.schema.cluster.API.Create"] = []string{
 		"spec.header_transformation_type",
+		"spec.tls_parameters.cert_params.tls_validation_params.use_volterra_trusted_ca_url",
 		"spec.tls_parameters.cert_params.validation_params.use_volterra_trusted_ca_url",
 		"spec.tls_parameters.common_params.tls_certificates.#.private_key.blindfold_secret_info_internal",
 		"spec.tls_parameters.common_params.tls_certificates.#.private_key.secret_encoding_type",
@@ -62,6 +63,7 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 	mdr.RPCConfidentialRequestRegistry["ves.io.schema.cluster.API.Create"] = "ves.io.schema.cluster.CreateRequest"
 	mdr.RPCHiddenInternalFieldsRegistry["ves.io.schema.cluster.API.Replace"] = []string{
 		"spec.header_transformation_type",
+		"spec.tls_parameters.cert_params.tls_validation_params.use_volterra_trusted_ca_url",
 		"spec.tls_parameters.cert_params.validation_params.use_volterra_trusted_ca_url",
 		"spec.tls_parameters.common_params.tls_certificates.#.private_key.blindfold_secret_info_internal",
 		"spec.tls_parameters.common_params.tls_certificates.#.private_key.secret_encoding_type",

@@ -78,7 +78,75 @@ func resourceVolterraUdpLoadbalancer() *schema.Resource {
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 
+									"advertise_dualstack_on_public": {
+
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"public_ip": {
+													Type:     schema.TypeList,
+													MaxItems: 1,
+													Required: true,
+													Elem: &schema.Resource{
+														Schema: map[string]*schema.Schema{
+
+															"name": {
+																Type:     schema.TypeString,
+																Optional: true,
+															},
+															"namespace": {
+																Type:     schema.TypeString,
+																Optional: true,
+															},
+															"tenant": {
+																Type:     schema.TypeString,
+																Optional: true,
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+
 									"advertise_on_public": {
+
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"public_ip": {
+													Type:     schema.TypeList,
+													MaxItems: 1,
+													Required: true,
+													Elem: &schema.Resource{
+														Schema: map[string]*schema.Schema{
+
+															"name": {
+																Type:     schema.TypeString,
+																Optional: true,
+															},
+															"namespace": {
+																Type:     schema.TypeString,
+																Optional: true,
+															},
+															"tenant": {
+																Type:     schema.TypeString,
+																Optional: true,
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+
+									"advertise_v6_on_public": {
 
 										Type:     schema.TypeList,
 										MaxItems: 1,
@@ -635,6 +703,45 @@ func resourceVolterraUdpLoadbalancer() *schema.Resource {
 				},
 			},
 
+			"advertise_dualstack_on_public": {
+
+				Type:       schema.TypeList,
+				MaxItems:   1,
+				Optional:   true,
+				Deprecated: "This field is deprecated and will be removed in future release.",
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+
+						"public_ip": {
+							Type:       schema.TypeList,
+							MaxItems:   1,
+							Required:   true,
+							Deprecated: "This field is deprecated and will be removed in future release.",
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"name": {
+										Type:       schema.TypeString,
+										Optional:   true,
+										Deprecated: "This field is deprecated and will be removed in future release.",
+									},
+									"namespace": {
+										Type:       schema.TypeString,
+										Optional:   true,
+										Deprecated: "This field is deprecated and will be removed in future release.",
+									},
+									"tenant": {
+										Type:       schema.TypeString,
+										Optional:   true,
+										Deprecated: "This field is deprecated and will be removed in future release.",
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+
 			"advertise_on_public": {
 
 				Type:     schema.TypeList,
@@ -669,10 +776,63 @@ func resourceVolterraUdpLoadbalancer() *schema.Resource {
 				},
 			},
 
+			"advertise_on_public_default_dualstack_vip": {
+
+				Type:       schema.TypeBool,
+				Optional:   true,
+				Deprecated: "This field is deprecated and will be removed in future release.",
+			},
+
+			"advertise_on_public_default_ipv6_vip": {
+
+				Type:       schema.TypeBool,
+				Optional:   true,
+				Deprecated: "This field is deprecated and will be removed in future release.",
+			},
+
 			"advertise_on_public_default_vip": {
 
 				Type:     schema.TypeBool,
 				Optional: true,
+			},
+
+			"advertise_v6_on_public": {
+
+				Type:       schema.TypeList,
+				MaxItems:   1,
+				Optional:   true,
+				Deprecated: "This field is deprecated and will be removed in future release.",
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+
+						"public_ip": {
+							Type:       schema.TypeList,
+							MaxItems:   1,
+							Required:   true,
+							Deprecated: "This field is deprecated and will be removed in future release.",
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"name": {
+										Type:       schema.TypeString,
+										Optional:   true,
+										Deprecated: "This field is deprecated and will be removed in future release.",
+									},
+									"namespace": {
+										Type:       schema.TypeString,
+										Optional:   true,
+										Deprecated: "This field is deprecated and will be removed in future release.",
+									},
+									"tenant": {
+										Type:       schema.TypeString,
+										Optional:   true,
+										Deprecated: "This field is deprecated and will be removed in future release.",
+									},
+								},
+							},
+						},
+					},
+				},
 			},
 
 			"do_not_advertise": {
@@ -965,6 +1125,47 @@ func resourceVolterraUdpLoadbalancerCreate(d *schema.ResourceData, meta interfac
 
 							choiceTypeFound := false
 
+							if v, ok := advertiseWhereMapStrToI["advertise_dualstack_on_public"]; ok && !isIntfNil(v) && !choiceTypeFound {
+
+								choiceTypeFound = true
+								choiceInt := &ves_io_schema_views.WhereType_AdvertiseDualstackOnPublic{}
+								choiceInt.AdvertiseDualstackOnPublic = &ves_io_schema_views.AdvertisePublic{}
+								advertiseWhere[i].Choice = choiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											publicIpInt := &ves_io_schema_views.ObjectRefType{}
+											choiceInt.AdvertiseDualstackOnPublic.PublicIp = publicIpInt
+
+											for _, set := range sl {
+												if set != nil {
+													piMapToStrVal := set.(map[string]interface{})
+													if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+														publicIpInt.Name = val.(string)
+													}
+													if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+														publicIpInt.Namespace = val.(string)
+													}
+
+													if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+														publicIpInt.Tenant = val.(string)
+													}
+												}
+											}
+
+										}
+
+									}
+								}
+
+							}
+
 							if v, ok := advertiseWhereMapStrToI["advertise_on_public"]; ok && !isIntfNil(v) && !choiceTypeFound {
 
 								choiceTypeFound = true
@@ -982,6 +1183,47 @@ func resourceVolterraUdpLoadbalancerCreate(d *schema.ResourceData, meta interfac
 											sl := v.([]interface{})
 											publicIpInt := &ves_io_schema_views.ObjectRefType{}
 											choiceInt.AdvertiseOnPublic.PublicIp = publicIpInt
+
+											for _, set := range sl {
+												if set != nil {
+													piMapToStrVal := set.(map[string]interface{})
+													if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+														publicIpInt.Name = val.(string)
+													}
+													if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+														publicIpInt.Namespace = val.(string)
+													}
+
+													if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+														publicIpInt.Tenant = val.(string)
+													}
+												}
+											}
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := advertiseWhereMapStrToI["advertise_v6_on_public"]; ok && !isIntfNil(v) && !choiceTypeFound {
+
+								choiceTypeFound = true
+								choiceInt := &ves_io_schema_views.WhereType_AdvertiseV6OnPublic{}
+								choiceInt.AdvertiseV6OnPublic = &ves_io_schema_views.AdvertisePublic{}
+								advertiseWhere[i].Choice = choiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											publicIpInt := &ves_io_schema_views.ObjectRefType{}
+											choiceInt.AdvertiseV6OnPublic.PublicIp = publicIpInt
 
 											for _, set := range sl {
 												if set != nil {
@@ -1551,6 +1793,47 @@ func resourceVolterraUdpLoadbalancerCreate(d *schema.ResourceData, meta interfac
 
 	}
 
+	if v, ok := d.GetOk("advertise_dualstack_on_public"); ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
+
+		advertiseChoiceTypeFound = true
+		advertiseChoiceInt := &ves_io_schema_views_udp_loadbalancer.CreateSpecType_AdvertiseDualstackOnPublic{}
+		advertiseChoiceInt.AdvertiseDualstackOnPublic = &ves_io_schema_views.AdvertisePublic{}
+		createSpec.AdvertiseChoice = advertiseChoiceInt
+
+		sl := v.([]interface{})
+		for _, set := range sl {
+			if set != nil {
+				cs := set.(map[string]interface{})
+
+				if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					publicIpInt := &ves_io_schema_views.ObjectRefType{}
+					advertiseChoiceInt.AdvertiseDualstackOnPublic.PublicIp = publicIpInt
+
+					for _, set := range sl {
+						if set != nil {
+							piMapToStrVal := set.(map[string]interface{})
+							if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+								publicIpInt.Name = val.(string)
+							}
+							if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								publicIpInt.Namespace = val.(string)
+							}
+
+							if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								publicIpInt.Tenant = val.(string)
+							}
+						}
+					}
+
+				}
+
+			}
+		}
+
+	}
+
 	if v, ok := d.GetOk("advertise_on_public"); ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
 
 		advertiseChoiceTypeFound = true
@@ -1592,6 +1875,30 @@ func resourceVolterraUdpLoadbalancerCreate(d *schema.ResourceData, meta interfac
 
 	}
 
+	if v, ok := d.GetOk("advertise_on_public_default_dualstack_vip"); ok && !advertiseChoiceTypeFound {
+
+		advertiseChoiceTypeFound = true
+
+		if v.(bool) {
+			advertiseChoiceInt := &ves_io_schema_views_udp_loadbalancer.CreateSpecType_AdvertiseOnPublicDefaultDualstackVip{}
+			advertiseChoiceInt.AdvertiseOnPublicDefaultDualstackVip = &ves_io_schema.Empty{}
+			createSpec.AdvertiseChoice = advertiseChoiceInt
+		}
+
+	}
+
+	if v, ok := d.GetOk("advertise_on_public_default_ipv6_vip"); ok && !advertiseChoiceTypeFound {
+
+		advertiseChoiceTypeFound = true
+
+		if v.(bool) {
+			advertiseChoiceInt := &ves_io_schema_views_udp_loadbalancer.CreateSpecType_AdvertiseOnPublicDefaultIpv6Vip{}
+			advertiseChoiceInt.AdvertiseOnPublicDefaultIpv6Vip = &ves_io_schema.Empty{}
+			createSpec.AdvertiseChoice = advertiseChoiceInt
+		}
+
+	}
+
 	if v, ok := d.GetOk("advertise_on_public_default_vip"); ok && !advertiseChoiceTypeFound {
 
 		advertiseChoiceTypeFound = true
@@ -1600,6 +1907,47 @@ func resourceVolterraUdpLoadbalancerCreate(d *schema.ResourceData, meta interfac
 			advertiseChoiceInt := &ves_io_schema_views_udp_loadbalancer.CreateSpecType_AdvertiseOnPublicDefaultVip{}
 			advertiseChoiceInt.AdvertiseOnPublicDefaultVip = &ves_io_schema.Empty{}
 			createSpec.AdvertiseChoice = advertiseChoiceInt
+		}
+
+	}
+
+	if v, ok := d.GetOk("advertise_v6_on_public"); ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
+
+		advertiseChoiceTypeFound = true
+		advertiseChoiceInt := &ves_io_schema_views_udp_loadbalancer.CreateSpecType_AdvertiseV6OnPublic{}
+		advertiseChoiceInt.AdvertiseV6OnPublic = &ves_io_schema_views.AdvertisePublic{}
+		createSpec.AdvertiseChoice = advertiseChoiceInt
+
+		sl := v.([]interface{})
+		for _, set := range sl {
+			if set != nil {
+				cs := set.(map[string]interface{})
+
+				if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					publicIpInt := &ves_io_schema_views.ObjectRefType{}
+					advertiseChoiceInt.AdvertiseV6OnPublic.PublicIp = publicIpInt
+
+					for _, set := range sl {
+						if set != nil {
+							piMapToStrVal := set.(map[string]interface{})
+							if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+								publicIpInt.Name = val.(string)
+							}
+							if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								publicIpInt.Namespace = val.(string)
+							}
+
+							if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								publicIpInt.Tenant = val.(string)
+							}
+						}
+					}
+
+				}
+
+			}
 		}
 
 	}
@@ -2081,6 +2429,47 @@ func resourceVolterraUdpLoadbalancerUpdate(d *schema.ResourceData, meta interfac
 
 							choiceTypeFound := false
 
+							if v, ok := advertiseWhereMapStrToI["advertise_dualstack_on_public"]; ok && !isIntfNil(v) && !choiceTypeFound {
+
+								choiceTypeFound = true
+								choiceInt := &ves_io_schema_views.WhereType_AdvertiseDualstackOnPublic{}
+								choiceInt.AdvertiseDualstackOnPublic = &ves_io_schema_views.AdvertisePublic{}
+								advertiseWhere[i].Choice = choiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											publicIpInt := &ves_io_schema_views.ObjectRefType{}
+											choiceInt.AdvertiseDualstackOnPublic.PublicIp = publicIpInt
+
+											for _, set := range sl {
+												if set != nil {
+													piMapToStrVal := set.(map[string]interface{})
+													if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+														publicIpInt.Name = val.(string)
+													}
+													if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+														publicIpInt.Namespace = val.(string)
+													}
+
+													if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+														publicIpInt.Tenant = val.(string)
+													}
+												}
+											}
+
+										}
+
+									}
+								}
+
+							}
+
 							if v, ok := advertiseWhereMapStrToI["advertise_on_public"]; ok && !isIntfNil(v) && !choiceTypeFound {
 
 								choiceTypeFound = true
@@ -2098,6 +2487,47 @@ func resourceVolterraUdpLoadbalancerUpdate(d *schema.ResourceData, meta interfac
 											sl := v.([]interface{})
 											publicIpInt := &ves_io_schema_views.ObjectRefType{}
 											choiceInt.AdvertiseOnPublic.PublicIp = publicIpInt
+
+											for _, set := range sl {
+												if set != nil {
+													piMapToStrVal := set.(map[string]interface{})
+													if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+														publicIpInt.Name = val.(string)
+													}
+													if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+														publicIpInt.Namespace = val.(string)
+													}
+
+													if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+														publicIpInt.Tenant = val.(string)
+													}
+												}
+											}
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := advertiseWhereMapStrToI["advertise_v6_on_public"]; ok && !isIntfNil(v) && !choiceTypeFound {
+
+								choiceTypeFound = true
+								choiceInt := &ves_io_schema_views.WhereType_AdvertiseV6OnPublic{}
+								choiceInt.AdvertiseV6OnPublic = &ves_io_schema_views.AdvertisePublic{}
+								advertiseWhere[i].Choice = choiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											publicIpInt := &ves_io_schema_views.ObjectRefType{}
+											choiceInt.AdvertiseV6OnPublic.PublicIp = publicIpInt
 
 											for _, set := range sl {
 												if set != nil {
@@ -2667,6 +3097,47 @@ func resourceVolterraUdpLoadbalancerUpdate(d *schema.ResourceData, meta interfac
 
 	}
 
+	if v, ok := d.GetOk("advertise_dualstack_on_public"); ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
+
+		advertiseChoiceTypeFound = true
+		advertiseChoiceInt := &ves_io_schema_views_udp_loadbalancer.ReplaceSpecType_AdvertiseDualstackOnPublic{}
+		advertiseChoiceInt.AdvertiseDualstackOnPublic = &ves_io_schema_views.AdvertisePublic{}
+		updateSpec.AdvertiseChoice = advertiseChoiceInt
+
+		sl := v.([]interface{})
+		for _, set := range sl {
+			if set != nil {
+				cs := set.(map[string]interface{})
+
+				if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					publicIpInt := &ves_io_schema_views.ObjectRefType{}
+					advertiseChoiceInt.AdvertiseDualstackOnPublic.PublicIp = publicIpInt
+
+					for _, set := range sl {
+						if set != nil {
+							piMapToStrVal := set.(map[string]interface{})
+							if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+								publicIpInt.Name = val.(string)
+							}
+							if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								publicIpInt.Namespace = val.(string)
+							}
+
+							if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								publicIpInt.Tenant = val.(string)
+							}
+						}
+					}
+
+				}
+
+			}
+		}
+
+	}
+
 	if v, ok := d.GetOk("advertise_on_public"); ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
 
 		advertiseChoiceTypeFound = true
@@ -2708,6 +3179,30 @@ func resourceVolterraUdpLoadbalancerUpdate(d *schema.ResourceData, meta interfac
 
 	}
 
+	if v, ok := d.GetOk("advertise_on_public_default_dualstack_vip"); ok && !advertiseChoiceTypeFound {
+
+		advertiseChoiceTypeFound = true
+
+		if v.(bool) {
+			advertiseChoiceInt := &ves_io_schema_views_udp_loadbalancer.ReplaceSpecType_AdvertiseOnPublicDefaultDualstackVip{}
+			advertiseChoiceInt.AdvertiseOnPublicDefaultDualstackVip = &ves_io_schema.Empty{}
+			updateSpec.AdvertiseChoice = advertiseChoiceInt
+		}
+
+	}
+
+	if v, ok := d.GetOk("advertise_on_public_default_ipv6_vip"); ok && !advertiseChoiceTypeFound {
+
+		advertiseChoiceTypeFound = true
+
+		if v.(bool) {
+			advertiseChoiceInt := &ves_io_schema_views_udp_loadbalancer.ReplaceSpecType_AdvertiseOnPublicDefaultIpv6Vip{}
+			advertiseChoiceInt.AdvertiseOnPublicDefaultIpv6Vip = &ves_io_schema.Empty{}
+			updateSpec.AdvertiseChoice = advertiseChoiceInt
+		}
+
+	}
+
 	if v, ok := d.GetOk("advertise_on_public_default_vip"); ok && !advertiseChoiceTypeFound {
 
 		advertiseChoiceTypeFound = true
@@ -2716,6 +3211,47 @@ func resourceVolterraUdpLoadbalancerUpdate(d *schema.ResourceData, meta interfac
 			advertiseChoiceInt := &ves_io_schema_views_udp_loadbalancer.ReplaceSpecType_AdvertiseOnPublicDefaultVip{}
 			advertiseChoiceInt.AdvertiseOnPublicDefaultVip = &ves_io_schema.Empty{}
 			updateSpec.AdvertiseChoice = advertiseChoiceInt
+		}
+
+	}
+
+	if v, ok := d.GetOk("advertise_v6_on_public"); ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
+
+		advertiseChoiceTypeFound = true
+		advertiseChoiceInt := &ves_io_schema_views_udp_loadbalancer.ReplaceSpecType_AdvertiseV6OnPublic{}
+		advertiseChoiceInt.AdvertiseV6OnPublic = &ves_io_schema_views.AdvertisePublic{}
+		updateSpec.AdvertiseChoice = advertiseChoiceInt
+
+		sl := v.([]interface{})
+		for _, set := range sl {
+			if set != nil {
+				cs := set.(map[string]interface{})
+
+				if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					publicIpInt := &ves_io_schema_views.ObjectRefType{}
+					advertiseChoiceInt.AdvertiseV6OnPublic.PublicIp = publicIpInt
+
+					for _, set := range sl {
+						if set != nil {
+							piMapToStrVal := set.(map[string]interface{})
+							if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+								publicIpInt.Name = val.(string)
+							}
+							if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								publicIpInt.Namespace = val.(string)
+							}
+
+							if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								publicIpInt.Tenant = val.(string)
+							}
+						}
+					}
+
+				}
+
+			}
 		}
 
 	}

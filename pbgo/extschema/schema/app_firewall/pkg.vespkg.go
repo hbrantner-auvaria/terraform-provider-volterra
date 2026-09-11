@@ -46,6 +46,7 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.app_firewall.GetSpecType"] = GetSpecTypeValidator()
 	vr["ves.io.schema.app_firewall.GlobalSpecType"] = GlobalSpecTypeValidator()
 	vr["ves.io.schema.app_firewall.ReplaceSpecType"] = ReplaceSpecTypeValidator()
+	vr["ves.io.schema.app_firewall.SignatureProtectionSetting"] = SignatureProtectionSettingValidator()
 	vr["ves.io.schema.app_firewall.SignatureSelectionSetting"] = SignatureSelectionSettingValidator()
 	vr["ves.io.schema.app_firewall.SignaturesStagingSettings"] = SignaturesStagingSettingsValidator()
 	vr["ves.io.schema.app_firewall.ViolationConfigView"] = ViolationConfigViewValidator()
@@ -65,12 +66,59 @@ func initializeEntryRegistry(mdr *svcfw.MDRegistry) {
 }
 
 func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
+	mdr.RPCDeprecatedRequestFieldsRegistry["ves.io.schema.app_firewall.API.Create"] = []string{
+		"spec.detection_settings.default_violation_settings",
+		"spec.detection_settings.signature_selection_setting.high_medium_accuracy_signatures",
+		"spec.detection_settings.signature_selection_setting.high_medium_low_accuracy_signatures",
+		"spec.detection_settings.signature_selection_setting.only_high_accuracy_signatures",
+		"spec.detection_settings.violation_settings",
+	}
+	mdr.RPCDeprecatedResponseFieldsRegistry["ves.io.schema.app_firewall.API.Create"] = []string{
+		"spec.detection_settings.default_violation_settings",
+		"spec.detection_settings.signature_selection_setting.high_medium_accuracy_signatures",
+		"spec.detection_settings.signature_selection_setting.high_medium_low_accuracy_signatures",
+		"spec.detection_settings.signature_selection_setting.only_high_accuracy_signatures",
+		"spec.detection_settings.violation_settings",
+	}
 	mdr.RPCHiddenInternalFieldsRegistry["ves.io.schema.app_firewall.API.Create"] = []string{
+		"spec.ai_enhancements",
 		"spec.ai_risk_based_blocking",
 		"spec.detection_settings.configured_violations.#",
 		"spec.use_loadbalancer_setting",
 	}
+	mdr.RPCDeprecatedResponseFieldsRegistry["ves.io.schema.app_firewall.API.Get"] = []string{
+		"create_form.spec.detection_settings.default_violation_settings",
+		"create_form.spec.detection_settings.signature_selection_setting.high_medium_accuracy_signatures",
+		"create_form.spec.detection_settings.signature_selection_setting.high_medium_low_accuracy_signatures",
+		"create_form.spec.detection_settings.signature_selection_setting.only_high_accuracy_signatures",
+		"create_form.spec.detection_settings.violation_settings",
+		"replace_form.spec.detection_settings.default_violation_settings",
+		"replace_form.spec.detection_settings.signature_selection_setting.high_medium_accuracy_signatures",
+		"replace_form.spec.detection_settings.signature_selection_setting.high_medium_low_accuracy_signatures",
+		"replace_form.spec.detection_settings.signature_selection_setting.only_high_accuracy_signatures",
+		"replace_form.spec.detection_settings.violation_settings",
+		"spec.detection_settings.default_violation_settings",
+		"spec.detection_settings.signature_selection_setting.high_medium_accuracy_signatures",
+		"spec.detection_settings.signature_selection_setting.high_medium_low_accuracy_signatures",
+		"spec.detection_settings.signature_selection_setting.only_high_accuracy_signatures",
+		"spec.detection_settings.violation_settings",
+	}
+	mdr.RPCDeprecatedResponseFieldsRegistry["ves.io.schema.app_firewall.API.List"] = []string{
+		"items.#.get_spec.detection_settings.default_violation_settings",
+		"items.#.get_spec.detection_settings.signature_selection_setting.high_medium_accuracy_signatures",
+		"items.#.get_spec.detection_settings.signature_selection_setting.high_medium_low_accuracy_signatures",
+		"items.#.get_spec.detection_settings.signature_selection_setting.only_high_accuracy_signatures",
+		"items.#.get_spec.detection_settings.violation_settings",
+	}
+	mdr.RPCDeprecatedRequestFieldsRegistry["ves.io.schema.app_firewall.API.Replace"] = []string{
+		"spec.detection_settings.default_violation_settings",
+		"spec.detection_settings.signature_selection_setting.high_medium_accuracy_signatures",
+		"spec.detection_settings.signature_selection_setting.high_medium_low_accuracy_signatures",
+		"spec.detection_settings.signature_selection_setting.only_high_accuracy_signatures",
+		"spec.detection_settings.violation_settings",
+	}
 	mdr.RPCHiddenInternalFieldsRegistry["ves.io.schema.app_firewall.API.Replace"] = []string{
+		"spec.ai_enhancements",
 		"spec.ai_risk_based_blocking",
 		"spec.detection_settings.configured_violations.#",
 		"spec.use_loadbalancer_setting",

@@ -450,7 +450,7 @@ var WafSignatureChangelogCustomApiSwaggerJSON string = `{
         "/public/namespaces/{namespace}/virtual_hosts/{vh_name}/active_staged_signatures": {
             "get": {
                 "summary": "Active Staged Signatures",
-                "description": "API to get active Staged Signatures",
+                "description": "API to get active Staged Signatures\nDEPRECATED.",
                 "operationId": "ves.io.schema.waf_signatures_changelog.WafSignatureChangelogCustomApi.GetActiveStagedSignatures",
                 "responses": {
                     "200": {
@@ -533,6 +533,7 @@ var WafSignatureChangelogCustomApiSwaggerJSON string = `{
                     "description": "Examples of this operation",
                     "url": "https://docs.cloud.f5.com/docs-v2/platform/reference/api-ref/ves-io-schema-waf_signatures_changelog-wafsignaturechangelogcustomapi-getactivestagedsignatures"
                 },
+                "x-ves-deprecated": "This API is no longer supported",
                 "x-ves-proto-rpc": "ves.io.schema.waf_signatures_changelog.WafSignatureChangelogCustomApi.GetActiveStagedSignatures"
             },
             "x-displayname": "WAF Signature Changelog Custom API",
@@ -542,7 +543,7 @@ var WafSignatureChangelogCustomApiSwaggerJSON string = `{
         "/public/namespaces/{namespace}/virtual_hosts/{vh_name}/released_signatures": {
             "get": {
                 "summary": "Released Signatures",
-                "description": "API to get Released Signatures",
+                "description": "API to get Released Signatures\nDEPRECATED.",
                 "operationId": "ves.io.schema.waf_signatures_changelog.WafSignatureChangelogCustomApi.GetReleasedSignatures",
                 "responses": {
                     "200": {
@@ -625,6 +626,7 @@ var WafSignatureChangelogCustomApiSwaggerJSON string = `{
                     "description": "Examples of this operation",
                     "url": "https://docs.cloud.f5.com/docs-v2/platform/reference/api-ref/ves-io-schema-waf_signatures_changelog-wafsignaturechangelogcustomapi-getreleasedsignatures"
                 },
+                "x-ves-deprecated": "This API is no longer supported",
                 "x-ves-proto-rpc": "ves.io.schema.waf_signatures_changelog.WafSignatureChangelogCustomApi.GetReleasedSignatures"
             },
             "x-displayname": "WAF Signature Changelog Custom API",

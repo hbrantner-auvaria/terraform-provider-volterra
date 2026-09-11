@@ -20,8 +20,9 @@ import (
 	ves_io_schema_views "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/views"
 	ves_io_schema_views_origin_pool "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/views/origin_pool"
 
-	drift "github.com/volterraedge/terraform-provider-volterra/volterra/drift_detection"
 	statemigration "github.com/volterraedge/terraform-provider-volterra/volterra/state_migration"
+
+	drift "github.com/volterraedge/terraform-provider-volterra/volterra/drift_detection"
 )
 
 // resourceVolterraOriginPool is implementation of Volterra's OriginPool resources
@@ -31,6 +32,15 @@ func resourceVolterraOriginPool() *schema.Resource {
 		Read:   resourceVolterraOriginPoolRead,
 		Update: resourceVolterraOriginPoolUpdate,
 		Delete: resourceVolterraOriginPoolDelete,
+
+		SchemaVersion: 1,
+		StateUpgraders: []schema.StateUpgrader{
+			{
+				Type:    statemigration.ResourceOriginPoolInstanceResourceV1().CoreConfigSchema().ImpliedType(),
+				Upgrade: statemigration.ResourceOriginPoolInstanceStateUpgradeV1,
+				Version: 0,
+			},
+		},
 
 		Schema: map[string]*schema.Schema{
 
@@ -1726,14 +1736,6 @@ func resourceVolterraOriginPool() *schema.Resource {
 						},
 					},
 				},
-			},
-		},
-		SchemaVersion: 1,
-		StateUpgraders: []schema.StateUpgrader{
-			{
-				Type:    statemigration.ResourceOriginPoolInstanceResourceV1().CoreConfigSchema().ImpliedType(),
-				Upgrade: statemigration.ResourceOriginPoolInstanceStateUpgradeV1,
-				Version: 0,
 			},
 		},
 	}
@@ -4423,11 +4425,9 @@ func setOriginPoolFields(client *APIClient, d *schema.ResourceData, resp vesapi.
 	d.Set("disable", metadata.GetDisable())
 
 	d.Set("labels", metadata.GetLabels())
-
 	d.Set("name", metadata.GetName())
 
 	d.Set("namespace", metadata.GetNamespace())
-
 	drift.DriftDetectionSpec_OriginPool(d, resp)
 
 	return nil

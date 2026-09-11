@@ -2409,6 +2409,86 @@ func AzureVnetPeeringStateTypeValidator() db.Validator {
 
 // augmented methods on protoc/std generated struct
 
+func (m *BfdPeerStatusType) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *BfdPeerStatusType) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *BfdPeerStatusType) DeepCopy() *BfdPeerStatusType {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &BfdPeerStatusType{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *BfdPeerStatusType) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *BfdPeerStatusType) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return BfdPeerStatusTypeValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateBfdPeerStatusType struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateBfdPeerStatusType) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*BfdPeerStatusType)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *BfdPeerStatusType got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["state"]; exists {
+		vOpts := append(opts, db.WithValidateField("state"))
+		if err := fv(ctx, m.GetState(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["state_change_timestamp"]; exists {
+		vOpts := append(opts, db.WithValidateField("state_change_timestamp"))
+		if err := fv(ctx, m.GetStateChangeTimestamp(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultBfdPeerStatusTypeValidator = func() *ValidateBfdPeerStatusType {
+	v := &ValidateBfdPeerStatusType{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func BfdPeerStatusTypeValidator() db.Validator {
+	return DefaultBfdPeerStatusTypeValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *Bios) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
@@ -12172,6 +12252,12 @@ func (v *ValidateTunnelConnectionStatus) Validate(ctx context.Context, pm interf
 	if m == nil {
 		return nil
 	}
+	if fv, exists := v.FldValidators["bfd_status"]; exists {
+		vOpts := append(opts, db.WithValidateField("bfd_status"))
+		if err := fv(ctx, m.GetBfdStatus(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["bgp"]; exists {
 		vOpts := append(opts, db.WithValidateField("bgp"))
 		if err := fv(ctx, m.GetBgp(), vOpts...); err != nil {
@@ -13461,6 +13547,104 @@ var DefaultVolterraSoftwareStatusValidator = func() *ValidateVolterraSoftwareSta
 
 func VolterraSoftwareStatusValidator() db.Validator {
 	return DefaultVolterraSoftwareStatusValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *WAFSignaturesStatus) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *WAFSignaturesStatus) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *WAFSignaturesStatus) DeepCopy() *WAFSignaturesStatus {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &WAFSignaturesStatus{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *WAFSignaturesStatus) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *WAFSignaturesStatus) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return WAFSignaturesStatusValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateWAFSignaturesStatus struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateWAFSignaturesStatus) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*WAFSignaturesStatus)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *WAFSignaturesStatus got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["available_version"]; exists {
+		vOpts := append(opts, db.WithValidateField("available_version"))
+		if err := fv(ctx, m.GetAvailableVersion(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["deployed_version"]; exists {
+		vOpts := append(opts, db.WithValidateField("deployed_version"))
+		if err := fv(ctx, m.GetDeployedVersion(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["deployment_mode"]; exists {
+		vOpts := append(opts, db.WithValidateField("deployment_mode"))
+		if err := fv(ctx, m.GetDeploymentMode(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["deployment_state"]; exists {
+		vOpts := append(opts, db.WithValidateField("deployment_state"))
+		if err := fv(ctx, m.GetDeploymentState(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["modification_timestamp"]; exists {
+		vOpts := append(opts, db.WithValidateField("modification_timestamp"))
+		if err := fv(ctx, m.GetModificationTimestamp(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultWAFSignaturesStatusValidator = func() *ValidateWAFSignaturesStatus {
+	v := &ValidateWAFSignaturesStatus{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func WAFSignaturesStatusValidator() db.Validator {
+	return DefaultWAFSignaturesStatusValidator
 }
 
 func (m *CreateSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {

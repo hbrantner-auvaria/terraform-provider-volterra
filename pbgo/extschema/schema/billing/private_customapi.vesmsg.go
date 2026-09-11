@@ -792,11 +792,11 @@ var DefaultLoadBalancerMetricsRequestValidator = func() *ValidateLoadBalancerMet
 
 	vrhMetricSelector := v.MetricSelectorValidationRuleHandler
 	rulesMetricSelector := map[string]string{
-		"ves.io.schema.rules.message.required":   "true",
-		"ves.io.schema.rules.repeated.max_items": "5",
-		"ves.io.schema.rules.repeated.min_items": "1",
-		"ves.io.schema.rules.repeated.unique":    "true",
-		"ves.io.schema.rules.string.in":          "[\"good_requests\"]",
+		"ves.io.schema.rules.message.required":         "true",
+		"ves.io.schema.rules.repeated.items.string.in": "[\"good_requests\"]",
+		"ves.io.schema.rules.repeated.max_items":       "5",
+		"ves.io.schema.rules.repeated.min_items":       "1",
+		"ves.io.schema.rules.repeated.unique":          "true",
 	}
 	vFn, err = vrhMetricSelector(rulesMetricSelector)
 	if err != nil {
@@ -807,9 +807,9 @@ var DefaultLoadBalancerMetricsRequestValidator = func() *ValidateLoadBalancerMet
 
 	vrhGroupBy := v.GroupByValidationRuleHandler
 	rulesGroupBy := map[string]string{
-		"ves.io.schema.rules.repeated.max_items": "5",
-		"ves.io.schema.rules.repeated.unique":    "true",
-		"ves.io.schema.rules.string.in":          "[\"site\"]",
+		"ves.io.schema.rules.repeated.items.string.in": "[\"site\"]",
+		"ves.io.schema.rules.repeated.max_items":       "5",
+		"ves.io.schema.rules.repeated.unique":          "true",
 	}
 	vFn, err = vrhGroupBy(rulesGroupBy)
 	if err != nil {
@@ -1874,11 +1874,11 @@ var DefaultUsageCountRequestValidator = func() *ValidateUsageCountRequest {
 
 	vrhFieldSelector := v.FieldSelectorValidationRuleHandler
 	rulesFieldSelector := map[string]string{
-		"ves.io.schema.rules.message.required":   "true",
-		"ves.io.schema.rules.repeated.max_items": "32",
-		"ves.io.schema.rules.repeated.min_items": "1",
-		"ves.io.schema.rules.repeated.unique":    "true",
-		"ves.io.schema.rules.string.in":          "[\"app_setting\",\"dns_domain\",\"dns_load_balancer\",\"dns_load_balancer.health_check\",\"fast_acl\",\"http_loadbalancer\",\"http_loadbalancer.public\",\"http_loadbalancer.public.app_firewall\",\"k8s_cluster\",\"public_ip\",\"site\",\"tcp_loadbalancer\",\"tcp_loadbalancer.public\",\"token\",\"virtual_host\",\"virtual_k8s\",\"waf\",\"udp_loadbalancer\",\"udp_loadbalancer.public\"]",
+		"ves.io.schema.rules.message.required":         "true",
+		"ves.io.schema.rules.repeated.items.string.in": "[\"app_setting\",\"dns_domain\",\"dns_load_balancer\",\"dns_load_balancer.health_check\",\"fast_acl\",\"http_loadbalancer\",\"http_loadbalancer.public\",\"http_loadbalancer.public.app_firewall\",\"k8s_cluster\",\"public_ip\",\"site\",\"tcp_loadbalancer\",\"tcp_loadbalancer.public\",\"token\",\"virtual_host\",\"virtual_k8s\",\"waf\",\"udp_loadbalancer\",\"udp_loadbalancer.public\"]",
+		"ves.io.schema.rules.repeated.max_items":       "32",
+		"ves.io.schema.rules.repeated.min_items":       "1",
+		"ves.io.schema.rules.repeated.unique":          "true",
 	}
 	vFn, err = vrhFieldSelector(rulesFieldSelector)
 	if err != nil {

@@ -22,18 +22,13 @@ resource "volterra_site_mesh_group" "example" {
 
   // One of the arguments from this list "bfd_disabled bfd_enabled" must be set
 
-  bfd_enabled {
-    multiplier = "3"
-
-    receive_interval_milliseconds = "3000"
-
-    transmit_interval_milliseconds = "3000"
-  }
+  bfd_disabled = true
 
   // One of the arguments from this list "disable_re_fallback enable_re_fallback" must be set
 
-  disable_re_fallback = true
+  enable_re_fallback = true
 }
+
 ```
 
 Argument Reference
@@ -148,4 +143,4 @@ Mesh of data plane tunnels to the hub site/s.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured site_mesh_group.
+-	`id` - This is the id of the configured site_mesh_group.

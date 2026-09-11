@@ -2538,12 +2538,13 @@ var APISwaggerJSON string = `{
                 },
                 "virtual_host": {
                     "type": "string",
-                    "description": "Exclusive with [disable_virtual_host inherit_load_balancer_fqdn]\n Name of the virtual host to use for SNI.\n\nExample: - \"example.com\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.max_len: 2048\n",
+                    "description": "Exclusive with [disable_virtual_host inherit_load_balancer_fqdn]\n Name of the virtual host to use for SNI.\n\nExample: - \"example.com\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.hostname: true\n  ves.io.schema.rules.string.max_len: 2048\n",
                     "title": "Enable Virtual Host",
                     "maxLength": 2048,
                     "x-displayname": "Enable Virtual Host",
                     "x-ves-example": "example.com",
                     "x-ves-validation-rules": {
+                        "ves.io.schema.rules.string.hostname": "true",
                         "ves.io.schema.rules.string.max_len": "2048"
                     }
                 }

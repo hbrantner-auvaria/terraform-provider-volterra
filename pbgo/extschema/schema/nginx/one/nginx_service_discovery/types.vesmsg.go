@@ -1396,7 +1396,6 @@ var DefaultServerBlockFilterValidator = func() *ValidateServerBlockFilter {
 	rulesPortRanges := map[string]string{
 		"ves.io.schema.rules.string.max_len":                "512",
 		"ves.io.schema.rules.string.max_ports":              "1024",
-		"ves.io.schema.rules.string.port_range_list":        "true",
 		"ves.io.schema.rules.string.unique_port_range_list": "true",
 	}
 	vFn, err = vrhPortRanges(rulesPortRanges)

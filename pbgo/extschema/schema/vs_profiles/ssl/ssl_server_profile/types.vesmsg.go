@@ -26,6 +26,197 @@ var (
 
 // augmented methods on protoc/std generated struct
 
+func (m *CertificateList) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *CertificateList) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *CertificateList) DeepCopy() *CertificateList {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &CertificateList{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *CertificateList) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *CertificateList) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return CertificateListValidator().Validate(ctx, m, opts...)
+}
+
+func (m *CertificateList) GetDRefInfo() ([]db.DRefInfo, error) {
+	if m == nil {
+		return nil, nil
+	}
+
+	return m.GetCertificatesDRefInfo()
+}
+
+func (m *CertificateList) GetCertificatesDRefInfo() ([]db.DRefInfo, error) {
+	refs := m.GetCertificates()
+	if len(refs) == 0 {
+		return nil, nil
+	}
+	drInfos := make([]db.DRefInfo, 0, len(refs))
+	for i, ref := range refs {
+		if ref == nil {
+			return nil, fmt.Errorf("CertificateList.certificates[%d] has a nil value", i)
+		}
+		// resolve kind to type if needed at DBObject.GetDRefInfo()
+		drInfos = append(drInfos, db.DRefInfo{
+			RefdType:   "certificate.Object",
+			RefdUID:    ref.Uid,
+			RefdTenant: ref.Tenant,
+			RefdNS:     ref.Namespace,
+			RefdName:   ref.Name,
+			DRField:    "certificates",
+			Ref:        ref,
+		})
+	}
+	return drInfos, nil
+}
+
+// GetCertificatesDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *CertificateList) GetCertificatesDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "certificate.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: certificate")
+	}
+	for _, ref := range m.GetCertificates() {
+		refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+		if err != nil {
+			return nil, errors.Wrap(err, "Getting referred entry")
+		}
+		if refdEnt != nil {
+			entries = append(entries, refdEnt)
+		}
+	}
+	return entries, nil
+}
+
+type ValidateCertificateList struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateCertificateList) CertificatesValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepMessageItemRules(rules)
+	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Message ValidationRuleHandler for certificates")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []*ves_io_schema.ObjectRefType, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+			if err := ves_io_schema.ObjectRefTypeValidator().Validate(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for certificates")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]*ves_io_schema.ObjectRefType)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []*ves_io_schema.ObjectRefType, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
+			if err != nil {
+				return errors.Wrapf(err, "Converting %v to JSON", elem)
+			}
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated certificates")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items certificates")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateCertificateList) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*CertificateList)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *CertificateList got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["certificates"]; exists {
+		vOpts := append(opts, db.WithValidateField("certificates"))
+		if err := fv(ctx, m.GetCertificates(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultCertificateListValidator = func() *ValidateCertificateList {
+	v := &ValidateCertificateList{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhCertificates := v.CertificatesValidationRuleHandler
+	rulesCertificates := map[string]string{
+		"ves.io.schema.rules.repeated.max_items": "32",
+		"ves.io.schema.rules.repeated.unique":    "true",
+	}
+	vFn, err = vrhCertificates(rulesCertificates)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for CertificateList.certificates: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["certificates"] = vFn
+
+	return v
+}()
+
+func CertificateListValidator() db.Validator {
+	return DefaultCertificateListValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *CreateSpecType) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
@@ -66,7 +257,39 @@ func (m *CreateSpecType) GetDRefInfo() ([]db.DRefInfo, error) {
 		return nil, nil
 	}
 
-	return m.GetOcspDRefInfo()
+	var drInfos []db.DRefInfo
+	if fdrInfos, err := m.GetCertificatesChoiceDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetCertificatesChoiceDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetOcspDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetOcspDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	return drInfos, nil
+}
+
+// GetDRefInfo for the field's type
+func (m *CreateSpecType) GetCertificatesChoiceDRefInfo() ([]db.DRefInfo, error) {
+	if m.GetCertificatesChoice() == nil {
+		return nil, nil
+	}
+	switch m.GetCertificatesChoice().(type) {
+	case *CreateSpecType_Certificates:
+		drInfos, err := m.GetCertificates().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetCertificates().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "certificates." + dri.DRField
+		}
+		return drInfos, err
+	default:
+		return nil, nil
+	}
 }
 
 func (m *CreateSpecType) GetOcspDRefInfo() ([]db.DRefInfo, error) {
@@ -346,6 +569,20 @@ func (v *ValidateCreateSpecType) Validate(ctx context.Context, pm interface{}, o
 		vOpts := append(opts, db.WithValidateField("cache_timeout"))
 		if err := fv(ctx, m.GetCacheTimeout(), vOpts...); err != nil {
 			return err
+		}
+	}
+
+	switch m.GetCertificatesChoice().(type) {
+	case *CreateSpecType_Certificates:
+		if fv, exists := v.FldValidators["certificates_choice.certificates"]; exists {
+			val := m.GetCertificatesChoice().(*CreateSpecType_Certificates).Certificates
+			vOpts := append(opts,
+				db.WithValidateField("certificates_choice"),
+				db.WithValidateField("certificates"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -664,7 +901,6 @@ var DefaultCreateSpecTypeValidator = func() *ValidateCreateSpecType {
 
 	vrhOcsp := v.OcspValidationRuleHandler
 	rulesOcsp := map[string]string{
-		"ves.io.schema.rules.message.required":   "false",
 		"ves.io.schema.rules.repeated.max_items": "1",
 	}
 	vFn, err = vrhOcsp(rulesOcsp)
@@ -706,6 +942,7 @@ var DefaultCreateSpecTypeValidator = func() *ValidateCreateSpecType {
 		panic(errMsg)
 	}
 	v.FldValidators["user_spec"] = vFn
+	v.FldValidators["certificates_choice.certificates"] = CertificateListValidator().Validate
 
 	return v
 }()
@@ -756,7 +993,39 @@ func (m *GetSpecType) GetDRefInfo() ([]db.DRefInfo, error) {
 		return nil, nil
 	}
 
-	return m.GetOcspDRefInfo()
+	var drInfos []db.DRefInfo
+	if fdrInfos, err := m.GetCertificatesChoiceDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetCertificatesChoiceDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetOcspDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetOcspDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	return drInfos, nil
+}
+
+// GetDRefInfo for the field's type
+func (m *GetSpecType) GetCertificatesChoiceDRefInfo() ([]db.DRefInfo, error) {
+	if m.GetCertificatesChoice() == nil {
+		return nil, nil
+	}
+	switch m.GetCertificatesChoice().(type) {
+	case *GetSpecType_Certificates:
+		drInfos, err := m.GetCertificates().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetCertificates().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "certificates." + dri.DRField
+		}
+		return drInfos, err
+	default:
+		return nil, nil
+	}
 }
 
 func (m *GetSpecType) GetOcspDRefInfo() ([]db.DRefInfo, error) {
@@ -1036,6 +1305,20 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 		vOpts := append(opts, db.WithValidateField("cache_timeout"))
 		if err := fv(ctx, m.GetCacheTimeout(), vOpts...); err != nil {
 			return err
+		}
+	}
+
+	switch m.GetCertificatesChoice().(type) {
+	case *GetSpecType_Certificates:
+		if fv, exists := v.FldValidators["certificates_choice.certificates"]; exists {
+			val := m.GetCertificatesChoice().(*GetSpecType_Certificates).Certificates
+			vOpts := append(opts,
+				db.WithValidateField("certificates_choice"),
+				db.WithValidateField("certificates"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -1354,7 +1637,6 @@ var DefaultGetSpecTypeValidator = func() *ValidateGetSpecType {
 
 	vrhOcsp := v.OcspValidationRuleHandler
 	rulesOcsp := map[string]string{
-		"ves.io.schema.rules.message.required":   "false",
 		"ves.io.schema.rules.repeated.max_items": "1",
 	}
 	vFn, err = vrhOcsp(rulesOcsp)
@@ -1396,6 +1678,7 @@ var DefaultGetSpecTypeValidator = func() *ValidateGetSpecType {
 		panic(errMsg)
 	}
 	v.FldValidators["user_spec"] = vFn
+	v.FldValidators["certificates_choice.certificates"] = CertificateListValidator().Validate
 
 	return v
 }()
@@ -1446,7 +1729,39 @@ func (m *GlobalSpecType) GetDRefInfo() ([]db.DRefInfo, error) {
 		return nil, nil
 	}
 
-	return m.GetOcspDRefInfo()
+	var drInfos []db.DRefInfo
+	if fdrInfos, err := m.GetCertificatesChoiceDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetCertificatesChoiceDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetOcspDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetOcspDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	return drInfos, nil
+}
+
+// GetDRefInfo for the field's type
+func (m *GlobalSpecType) GetCertificatesChoiceDRefInfo() ([]db.DRefInfo, error) {
+	if m.GetCertificatesChoice() == nil {
+		return nil, nil
+	}
+	switch m.GetCertificatesChoice().(type) {
+	case *GlobalSpecType_Certificates:
+		drInfos, err := m.GetCertificates().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetCertificates().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "certificates." + dri.DRField
+		}
+		return drInfos, err
+	default:
+		return nil, nil
+	}
 }
 
 func (m *GlobalSpecType) GetOcspDRefInfo() ([]db.DRefInfo, error) {
@@ -1726,6 +2041,20 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 		vOpts := append(opts, db.WithValidateField("cache_timeout"))
 		if err := fv(ctx, m.GetCacheTimeout(), vOpts...); err != nil {
 			return err
+		}
+	}
+
+	switch m.GetCertificatesChoice().(type) {
+	case *GlobalSpecType_Certificates:
+		if fv, exists := v.FldValidators["certificates_choice.certificates"]; exists {
+			val := m.GetCertificatesChoice().(*GlobalSpecType_Certificates).Certificates
+			vOpts := append(opts,
+				db.WithValidateField("certificates_choice"),
+				db.WithValidateField("certificates"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -2098,7 +2427,6 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 
 	vrhOcsp := v.OcspValidationRuleHandler
 	rulesOcsp := map[string]string{
-		"ves.io.schema.rules.message.required":   "false",
 		"ves.io.schema.rules.repeated.max_items": "1",
 	}
 	vFn, err = vrhOcsp(rulesOcsp)
@@ -2140,6 +2468,7 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 		panic(errMsg)
 	}
 	v.FldValidators["user_spec"] = vFn
+	v.FldValidators["certificates_choice.certificates"] = CertificateListValidator().Validate
 
 	return v
 }()
@@ -2190,7 +2519,39 @@ func (m *ReplaceSpecType) GetDRefInfo() ([]db.DRefInfo, error) {
 		return nil, nil
 	}
 
-	return m.GetOcspDRefInfo()
+	var drInfos []db.DRefInfo
+	if fdrInfos, err := m.GetCertificatesChoiceDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetCertificatesChoiceDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	if fdrInfos, err := m.GetOcspDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetOcspDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
+	return drInfos, nil
+}
+
+// GetDRefInfo for the field's type
+func (m *ReplaceSpecType) GetCertificatesChoiceDRefInfo() ([]db.DRefInfo, error) {
+	if m.GetCertificatesChoice() == nil {
+		return nil, nil
+	}
+	switch m.GetCertificatesChoice().(type) {
+	case *ReplaceSpecType_Certificates:
+		drInfos, err := m.GetCertificates().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetCertificates().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "certificates." + dri.DRField
+		}
+		return drInfos, err
+	default:
+		return nil, nil
+	}
 }
 
 func (m *ReplaceSpecType) GetOcspDRefInfo() ([]db.DRefInfo, error) {
@@ -2470,6 +2831,20 @@ func (v *ValidateReplaceSpecType) Validate(ctx context.Context, pm interface{}, 
 		vOpts := append(opts, db.WithValidateField("cache_timeout"))
 		if err := fv(ctx, m.GetCacheTimeout(), vOpts...); err != nil {
 			return err
+		}
+	}
+
+	switch m.GetCertificatesChoice().(type) {
+	case *ReplaceSpecType_Certificates:
+		if fv, exists := v.FldValidators["certificates_choice.certificates"]; exists {
+			val := m.GetCertificatesChoice().(*ReplaceSpecType_Certificates).Certificates
+			vOpts := append(opts,
+				db.WithValidateField("certificates_choice"),
+				db.WithValidateField("certificates"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -2788,7 +3163,6 @@ var DefaultReplaceSpecTypeValidator = func() *ValidateReplaceSpecType {
 
 	vrhOcsp := v.OcspValidationRuleHandler
 	rulesOcsp := map[string]string{
-		"ves.io.schema.rules.message.required":   "false",
 		"ves.io.schema.rules.repeated.max_items": "1",
 	}
 	vFn, err = vrhOcsp(rulesOcsp)
@@ -2830,12 +3204,42 @@ var DefaultReplaceSpecTypeValidator = func() *ValidateReplaceSpecType {
 		panic(errMsg)
 	}
 	v.FldValidators["user_spec"] = vFn
+	v.FldValidators["certificates_choice.certificates"] = CertificateListValidator().Validate
 
 	return v
 }()
 
 func ReplaceSpecTypeValidator() db.Validator {
 	return DefaultReplaceSpecTypeValidator
+}
+
+// create setters in CreateSpecType from GlobalSpecType for oneof fields
+func (r *CreateSpecType) SetCertificatesChoiceToGlobalSpecType(o *GlobalSpecType) error {
+	switch of := r.CertificatesChoice.(type) {
+	case nil:
+		o.CertificatesChoice = nil
+
+	case *CreateSpecType_Certificates:
+		o.CertificatesChoice = &GlobalSpecType_Certificates{Certificates: of.Certificates}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+func (r *CreateSpecType) GetCertificatesChoiceFromGlobalSpecType(o *GlobalSpecType) error {
+	switch of := o.CertificatesChoice.(type) {
+	case nil:
+		r.CertificatesChoice = nil
+
+	case *GlobalSpecType_Certificates:
+		r.CertificatesChoice = &CreateSpecType_Certificates{Certificates: of.Certificates}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
 }
 
 // create setters in CreateSpecType from GlobalSpecType for oneof fields
@@ -2887,6 +3291,7 @@ func (m *CreateSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool
 	m.C3DCertLifespan = f.GetC3DCertLifespan()
 	m.CacheSize = f.GetCacheSize()
 	m.CacheTimeout = f.GetCacheTimeout()
+	m.GetCertificatesChoiceFromGlobalSpecType(f)
 	m.GetCipherConfigFromGlobalSpecType(f)
 	m.Data_0Rtt = f.GetData_0Rtt()
 	m.ExpireCertResponseControl = f.GetExpireCertResponseControl()
@@ -2947,6 +3352,7 @@ func (m *CreateSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) 
 	f.C3DCertLifespan = m1.C3DCertLifespan
 	f.CacheSize = m1.CacheSize
 	f.CacheTimeout = m1.CacheTimeout
+	m1.SetCertificatesChoiceToGlobalSpecType(f)
 	m1.SetCipherConfigToGlobalSpecType(f)
 	f.Data_0Rtt = m1.Data_0Rtt
 	f.ExpireCertResponseControl = m1.ExpireCertResponseControl
@@ -2988,6 +3394,35 @@ func (m *CreateSpecType) ToGlobalSpecType(f *GlobalSpecType) {
 
 func (m *CreateSpecType) ToGlobalSpecTypeWithoutDeepCopy(f *GlobalSpecType) {
 	m.toGlobalSpecType(f, false)
+}
+
+// create setters in GetSpecType from GlobalSpecType for oneof fields
+func (r *GetSpecType) SetCertificatesChoiceToGlobalSpecType(o *GlobalSpecType) error {
+	switch of := r.CertificatesChoice.(type) {
+	case nil:
+		o.CertificatesChoice = nil
+
+	case *GetSpecType_Certificates:
+		o.CertificatesChoice = &GlobalSpecType_Certificates{Certificates: of.Certificates}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+func (r *GetSpecType) GetCertificatesChoiceFromGlobalSpecType(o *GlobalSpecType) error {
+	switch of := o.CertificatesChoice.(type) {
+	case nil:
+		r.CertificatesChoice = nil
+
+	case *GlobalSpecType_Certificates:
+		r.CertificatesChoice = &GetSpecType_Certificates{Certificates: of.Certificates}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
 }
 
 // create setters in GetSpecType from GlobalSpecType for oneof fields
@@ -3039,6 +3474,7 @@ func (m *GetSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	m.C3DCertLifespan = f.GetC3DCertLifespan()
 	m.CacheSize = f.GetCacheSize()
 	m.CacheTimeout = f.GetCacheTimeout()
+	m.GetCertificatesChoiceFromGlobalSpecType(f)
 	m.GetCipherConfigFromGlobalSpecType(f)
 	m.Data_0Rtt = f.GetData_0Rtt()
 	m.ExpireCertResponseControl = f.GetExpireCertResponseControl()
@@ -3099,6 +3535,7 @@ func (m *GetSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	f.C3DCertLifespan = m1.C3DCertLifespan
 	f.CacheSize = m1.CacheSize
 	f.CacheTimeout = m1.CacheTimeout
+	m1.SetCertificatesChoiceToGlobalSpecType(f)
 	m1.SetCipherConfigToGlobalSpecType(f)
 	f.Data_0Rtt = m1.Data_0Rtt
 	f.ExpireCertResponseControl = m1.ExpireCertResponseControl
@@ -3140,6 +3577,35 @@ func (m *GetSpecType) ToGlobalSpecType(f *GlobalSpecType) {
 
 func (m *GetSpecType) ToGlobalSpecTypeWithoutDeepCopy(f *GlobalSpecType) {
 	m.toGlobalSpecType(f, false)
+}
+
+// create setters in ReplaceSpecType from GlobalSpecType for oneof fields
+func (r *ReplaceSpecType) SetCertificatesChoiceToGlobalSpecType(o *GlobalSpecType) error {
+	switch of := r.CertificatesChoice.(type) {
+	case nil:
+		o.CertificatesChoice = nil
+
+	case *ReplaceSpecType_Certificates:
+		o.CertificatesChoice = &GlobalSpecType_Certificates{Certificates: of.Certificates}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+func (r *ReplaceSpecType) GetCertificatesChoiceFromGlobalSpecType(o *GlobalSpecType) error {
+	switch of := o.CertificatesChoice.(type) {
+	case nil:
+		r.CertificatesChoice = nil
+
+	case *GlobalSpecType_Certificates:
+		r.CertificatesChoice = &ReplaceSpecType_Certificates{Certificates: of.Certificates}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
 }
 
 // create setters in ReplaceSpecType from GlobalSpecType for oneof fields
@@ -3191,6 +3657,7 @@ func (m *ReplaceSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy boo
 	m.C3DCertLifespan = f.GetC3DCertLifespan()
 	m.CacheSize = f.GetCacheSize()
 	m.CacheTimeout = f.GetCacheTimeout()
+	m.GetCertificatesChoiceFromGlobalSpecType(f)
 	m.GetCipherConfigFromGlobalSpecType(f)
 	m.Data_0Rtt = f.GetData_0Rtt()
 	m.ExpireCertResponseControl = f.GetExpireCertResponseControl()
@@ -3251,6 +3718,7 @@ func (m *ReplaceSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool)
 	f.C3DCertLifespan = m1.C3DCertLifespan
 	f.CacheSize = m1.CacheSize
 	f.CacheTimeout = m1.CacheTimeout
+	m1.SetCertificatesChoiceToGlobalSpecType(f)
 	m1.SetCipherConfigToGlobalSpecType(f)
 	f.Data_0Rtt = m1.Data_0Rtt
 	f.ExpireCertResponseControl = m1.ExpireCertResponseControl

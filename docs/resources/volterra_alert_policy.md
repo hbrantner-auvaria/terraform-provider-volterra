@@ -33,7 +33,9 @@ resource "volterra_alert_policy" "example" {
 
     // One of the arguments from this list "alertname alertname_regex any custom group severity" can be set
 
-    any = true
+    severity {
+      severities = ["severities"]
+    }
     notification_parameters {
       // One of the arguments from this list "custom default individual ves_io_group" must be set
 
@@ -47,6 +49,7 @@ resource "volterra_alert_policy" "example" {
     }
   }
 }
+
 ```
 
 Argument Reference
@@ -247,4 +250,4 @@ notification_config defined in the policy..
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured alert_policy.
+-	`id` - This is the id of the configured alert_policy.

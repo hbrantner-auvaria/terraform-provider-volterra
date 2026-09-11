@@ -17,7 +17,9 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.views.common_security.AppEndpointType"] = AppEndpointTypeValidator()
 	vr["ves.io.schema.views.common_security.BotAdvancedMobileSDKConfigType"] = BotAdvancedMobileSDKConfigTypeValidator()
 	vr["ves.io.schema.views.common_security.BotDefenseAdvancedPolicyType"] = BotDefenseAdvancedPolicyTypeValidator()
+	vr["ves.io.schema.views.common_security.BotDefenseAdvancedProtection"] = BotDefenseAdvancedProtectionValidator()
 	vr["ves.io.schema.views.common_security.BotDefenseAdvancedType"] = BotDefenseAdvancedTypeValidator()
+	vr["ves.io.schema.views.common_security.BothWebAndMobileType"] = BothWebAndMobileTypeValidator()
 	vr["ves.io.schema.views.common_security.CSDJavaScriptInsertAllWithExceptionsType"] = CSDJavaScriptInsertAllWithExceptionsTypeValidator()
 	vr["ves.io.schema.views.common_security.CSDJavaScriptInsertType"] = CSDJavaScriptInsertTypeValidator()
 	vr["ves.io.schema.views.common_security.CSDJavaScriptInsertionRule"] = CSDJavaScriptInsertionRuleValidator()
@@ -27,6 +29,7 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.views.common_security.DDoSMitigationRule"] = DDoSMitigationRuleValidator()
 	vr["ves.io.schema.views.common_security.MalwareProtectionPolicy"] = MalwareProtectionPolicyValidator()
 	vr["ves.io.schema.views.common_security.MalwareProtectionRule"] = MalwareProtectionRuleValidator()
+	vr["ves.io.schema.views.common_security.MobileOnlyType"] = MobileOnlyTypeValidator()
 	vr["ves.io.schema.views.common_security.MobileSDKConfigType"] = MobileSDKConfigTypeValidator()
 	vr["ves.io.schema.views.common_security.MobileTrafficIdentifierType"] = MobileTrafficIdentifierTypeValidator()
 	vr["ves.io.schema.views.common_security.ProtectedAppEndpointType"] = ProtectedAppEndpointTypeValidator()
@@ -41,6 +44,7 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.views.common_security.ShapeJavaScriptInsertType"] = ShapeJavaScriptInsertTypeValidator()
 	vr["ves.io.schema.views.common_security.ShapeJavaScriptInsertionRule"] = ShapeJavaScriptInsertionRuleValidator()
 	vr["ves.io.schema.views.common_security.WebMobileTrafficType"] = WebMobileTrafficTypeValidator()
+	vr["ves.io.schema.views.common_security.WebOnlyType"] = WebOnlyTypeValidator()
 }
 
 func initializeEntryRegistry(mdr *svcfw.MDRegistry) {

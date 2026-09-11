@@ -2604,6 +2604,34 @@ var APISwaggerJSON string = `{
                 }
             }
         },
+        "bot_defenseCosseBotInfraWithDeliveredVersion": {
+            "type": "object",
+            "description": "CoSSE Bot Infra Name with its delivered version",
+            "title": "CoSSE Bot Infrastructure with Delivered Version",
+            "x-displayname": "CoSSE Bot Infrastructure with Delivered version",
+            "x-ves-proto-message": "ves.io.schema.shape.bot_defense.CosseBotInfraWithDeliveredVersion",
+            "properties": {
+                "cosse_bot_infra_name": {
+                    "type": "string",
+                    "description": " The cosse cluster id delivered this policy\n\nExample: - \"cosse-cluster-1\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.min_len: 1\n  ves.io.schema.rules.string.ves_object_name: true\n",
+                    "title": "CoSSE Bot Infra Name",
+                    "minLength": 1,
+                    "x-displayname": "CoSSE Bot Infra name",
+                    "x-ves-example": "cosse-cluster-1",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.string.min_len": "1",
+                        "ves.io.schema.rules.string.ves_object_name": "true"
+                    }
+                },
+                "delivered_version": {
+                    "type": "string",
+                    "description": " The version of policy delivered to cluster\n The version format should be X.0\n\nExample: - \"1.0\"-",
+                    "title": "Delivered Version",
+                    "x-displayname": "Delivered Version",
+                    "x-ves-example": "1.0"
+                }
+            }
+        },
         "bot_defenseManualRoutingDetail": {
             "type": "object",
             "description": "Manual Routing value",
@@ -2790,6 +2818,18 @@ var APISwaggerJSON string = `{
                         "ves.io.schema.rules.string.max_len": "2048"
                     }
                 },
+                "cosse_bot_infras_with_delivered_version": {
+                    "type": "array",
+                    "description": " The list of CoSSE Bot Infra Name with its delivered policy version\n\nValidation Rules:\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "title": "CoSSE Bot Infrastructure with Delivered Version",
+                    "items": {
+                        "$ref": "#/definitions/bot_defenseCosseBotInfraWithDeliveredVersion"
+                    },
+                    "x-displayname": "CoSSE Bot Infrastructure with Delivered Policy Version",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.repeated.unique": "true"
+                    }
+                },
                 "latest_version": {
                     "type": "string",
                     "title": "The latest version number for this policy",
@@ -2816,6 +2856,14 @@ var APISwaggerJSON string = `{
                     "title": "Last Modified By",
                     "x-displayname": "Last Modified By",
                     "x-ves-example": "[Services] F5 or user@email.com"
+                },
+                "used_for_cosse": {
+                    "type": "boolean",
+                    "description": " Used for CoSSE Policy\n\nExample: - \"false\"-",
+                    "title": "Used for CoSSE Policy",
+                    "format": "boolean",
+                    "x-displayname": "Used for CoSSE Policy",
+                    "x-ves-example": "false"
                 }
             }
         },
