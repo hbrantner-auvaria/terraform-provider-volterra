@@ -22,7 +22,15 @@ resource "volterra_azure_vnet_site" "example" {
 
   // One of the arguments from this list "block_all_services blocked_services default_blocked_services" must be set
 
-  default_blocked_services = true
+  blocked_services {
+    blocked_sevice {
+      // One of the arguments from this list "dns ssh web_user_interface" can be set
+
+      ssh = true
+
+      network_type = "network_type"
+    }
+  }
 
   // One of the arguments from this list "azure_cred" must be set
 
@@ -34,8 +42,12 @@ resource "volterra_azure_vnet_site" "example" {
 
   // One of the arguments from this list "log_receiver logs_streaming_disabled" must be set
 
-  logs_streaming_disabled = true
-  machine_type            = ["Standard_D4s_v4"]
+  log_receiver {
+    name      = "test1"
+    namespace = "staging"
+    tenant    = "acmecorp"
+  }
+  machine_type = ["Standard_D4s_v4"]
 
   // One of the arguments from this list "alternate_region azure_region" must be set
 
@@ -44,11 +56,11 @@ resource "volterra_azure_vnet_site" "example" {
 
   // One of the arguments from this list "ingress_egress_gw ingress_egress_gw_ar ingress_gw ingress_gw_ar voltstack_cluster voltstack_cluster_ar" must be set
 
-  ingress_gw {
+  ingress_egress_gw {
     accelerated_networking {
       // One of the arguments from this list "disable enable" must be set
 
-      enable = true
+      disable = true
     }
 
     az_nodes {
@@ -56,7 +68,17 @@ resource "volterra_azure_vnet_site" "example" {
 
       disk_size = "80"
 
-      local_subnet {
+      inside_subnet {
+        // One of the arguments from this list "subnet subnet_param" must be set
+
+        subnet_param {
+          ipv4 = "10.1.2.0/24"
+
+          ipv6 = "1234:568:abcd:9100::/64"
+        }
+      }
+
+      outside_subnet {
         // One of the arguments from this list "subnet subnet_param" must be set
 
         subnet_param {
@@ -67,8 +89,41 @@ resource "volterra_azure_vnet_site" "example" {
       }
     }
 
-    azure_certified_hw = "azure-byol-voltmesh"
+    azure_certified_hw = "azure-byol-multi-nic-voltmesh"
 
+    // One of the arguments from this list "dc_cluster_group_inside_vn dc_cluster_group_outside_vn no_dc_cluster_group" must be set
+
+    no_dc_cluster_group = true
+
+    // One of the arguments from this list "active_forward_proxy_policies forward_proxy_allow_all no_forward_proxy" must be set
+
+    forward_proxy_allow_all = true
+
+    // One of the arguments from this list "global_network_list no_global_network" must be set
+
+    no_global_network = true
+
+    // One of the arguments from this list "hub not_hub" must be set
+
+    not_hub = true
+
+    // One of the arguments from this list "inside_static_routes no_inside_static_routes" must be set
+
+    no_inside_static_routes = true
+
+    // One of the arguments from this list "active_enhanced_firewall_policies active_network_policies no_network_policy" must be set
+
+    active_enhanced_firewall_policies {
+      enhanced_firewall_policies {
+        name      = "test1"
+        namespace = "staging"
+        tenant    = "acmecorp"
+      }
+    }
+
+    // One of the arguments from this list "no_outside_static_routes outside_static_routes" must be set
+
+    no_outside_static_routes = true
     performance_enhancement_mode {
       // One of the arguments from this list "perf_mode_l3_enhanced perf_mode_l7_enhanced" must be set
 
@@ -78,6 +133,10 @@ resource "volterra_azure_vnet_site" "example" {
         jumbo_disabled = true
       }
     }
+
+    // One of the arguments from this list "sm_connection_public_ip sm_connection_pvt_ip" must be set
+
+    sm_connection_pvt_ip = true
   }
   ssh_key = ["ssh-rsa AAAAB..."]
   vnet {
@@ -94,8 +153,9 @@ resource "volterra_azure_vnet_site" "example" {
 
   // One of the arguments from this list "no_worker_nodes nodes_per_az total_nodes" must be set
 
-  nodes_per_az = "2"
+  no_worker_nodes = true
 }
+
 ```
 
 Argument Reference
@@ -188,6 +248,8 @@ Argument Reference
 `tags` - (Optional) It helps to manage, identify, organize, search for, and filter resources in Azure console. (`String`).
 
 `vnet` - (Required) Choice of using existing VNet or create new VNet. See [Vnet ](#vnet) below for details.
+
+`waf_signatures` - (Optional) Select WAF Signatures Update Mode for the site. By default, new signatures will be applied manually.. See [Waf Signatures ](#waf-signatures) below for details.
 
 ###### One of the arguments from this list "no_worker_nodes, nodes_per_az, total_nodes" must be set
 
@@ -284,6 +346,16 @@ Choice of using existing VNet or create new VNet.
 `existing_vnet` - (Optional) Information about existing Vnet. See [Choice Existing Vnet ](#choice-existing-vnet) below for details.
 
 `new_vnet` - (Optional) Parameters for creating new Vnet. See [Choice New Vnet ](#choice-new-vnet) below for details.
+
+### Waf Signatures
+
+Select WAF Signatures Update Mode for the site. By default, new signatures will be applied manually..
+
+###### One of the arguments from this list "automatic, manual" can be set
+
+`automatic` - (Optional) New WAF signatures will be applied automatically as soon as they are released. (`Bool`).
+
+`manual` - (Optional) New WAF signatures will only be applied when an update is triggered manually. (`Bool`).
 
 ### Accelerated Networking Disable
 
@@ -525,6 +597,18 @@ List of route prefixes.
 
 This site is not a member of dc cluster group.
 
+### Dual Stack Ipv4
+
+IPv4 Address.
+
+`addr` - (Optional) IPv4 Address in string form with dot-decimal notation (`String`).
+
+### Dual Stack Ipv6
+
+IPv6 Address.
+
+`addr` - (Optional) e.g. '2001:db8:0:0:0:0:2:1' becomes '2001:db8::2:1' or '2001:db8:0:0:0:2:0:0' becomes '2001:db8::2::' (`String`).
+
 ### Enable Disable Choice Disable Interception
 
 Disable Interception.
@@ -751,7 +835,7 @@ disruption will be seen.
 
 ###### One of the arguments from this list "disable, enable" must be set
 
-`disable`- (Optional) infrastructure. (`Bool`).
+`disable` - (Optional) infrastructure. (`Bool`).
 
 `enable` - (Optional) improving networking performance (`Bool`).
 
@@ -785,7 +869,7 @@ disruption will be seen.
 
 ###### One of the arguments from this list "disable, enable" must be set
 
-`disable`- (Optional) infrastructure. (`Bool`).
+`disable` - (Optional) infrastructure. (`Bool`).
 
 `enable` - (Optional) improving networking performance (`Bool`).
 
@@ -815,7 +899,7 @@ disruption will be seen.
 
 ###### One of the arguments from this list "disable, enable" must be set
 
-`disable`- (Optional) infrastructure. (`Bool`).
+`disable` - (Optional) infrastructure. (`Bool`).
 
 `enable` - (Optional) improving networking performance (`Bool`).
 
@@ -933,7 +1017,9 @@ Firewall Policy is disabled for this site..
 
 Nexthop address when type is "Use-Configured".
 
-###### One of the arguments from this list "ipv4, ipv6" can be set
+###### One of the arguments from this list "dual_stack, ipv4, ipv6" can be set
+
+`dual_stack` - (Optional) Both IPv4 and IPv6 addresses are specified together. See [Ver Dual Stack ](#ver-dual-stack) below for details.
 
 `ipv4` - (Optional) IPv4 Address. See [Ver Ipv4 ](#ver-ipv4) below for details.
 
@@ -1158,6 +1244,14 @@ Vault Secret is used for the secrets managed by Hashicorp Vault.
 Secret is given as bootstrap secret in F5XC Security Sidecar.
 
 `name` - (Required) Name of the secret. (`String`).
+
+### Signatures Update Mode Choice Automatic
+
+New WAF signatures will be applied automatically as soon as they are released..
+
+### Signatures Update Mode Choice Manual
+
+New WAF signatures will only be applied when an update is triggered manually..
 
 ### Signing Cert Choice Custom Certificate
 
@@ -1571,6 +1665,14 @@ Disable Vega Upgrade Mode.
 
 When enabled, vega will inform RE to stop traffic to the specific node..
 
+### Ver Dual Stack
+
+Both IPv4 and IPv6 addresses are specified together.
+
+`ipv4` - (Optional) IPv4 Address. See [Dual Stack Ipv4 ](#dual-stack-ipv4) below for details.
+
+`ipv6` - (Optional) IPv6 Address. See [Dual Stack Ipv6 ](#dual-stack-ipv6) below for details.
+
 ### Ver Ipv4
 
 IPv4 Address.
@@ -1648,4 +1750,4 @@ Only Single AZ or Three AZ(s) nodes are supported currently..
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured azure_vnet_site.
+-	`id` - This is the id of the configured azure_vnet_site.

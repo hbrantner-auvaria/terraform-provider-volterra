@@ -64,6 +64,7 @@ resource "volterra_fast_acl" "example" {
     interface_services = true
   }
 }
+
 ```
 
 Argument Reference
@@ -111,7 +112,9 @@ Reference to protocol based policer object.
 
 List of IP addresses to match with destination.
 
-###### One of the arguments from this list "ipv4, ipv6" can be set
+###### One of the arguments from this list "dual_stack, ipv4, ipv6" can be set
+
+`dual_stack` - (Optional) Both IPv4 and IPv6 addresses are specified together. See [Ver Dual Stack ](#ver-dual-stack) below for details.
 
 `ipv4` - (Optional) IPv4 Address. See [Ver Ipv4 ](#ver-ipv4) below for details.
 
@@ -165,6 +168,18 @@ Regional Edge: Allowed.
 
 Regional Edge: Applies the configuration to VIP which has been assigned by default to tenant. Not applicable for shared VIP(s).
 
+### Dual Stack Ipv4
+
+IPv4 Address.
+
+`addr` - (Optional) IPv4 Address in string form with dot-decimal notation (`String`).
+
+### Dual Stack Ipv6
+
+IPv6 Address.
+
+`addr` - (Optional) e.g. '2001:db8:0:0:0:0:2:1' becomes '2001:db8::2:1' or '2001:db8:0:0:0:2:0:0' becomes '2001:db8::2::' (`String`).
+
 ### Fast Acl Rules Action
 
 Action to be applied if traffic matched rule (pass, deny or rate limit).
@@ -201,7 +216,7 @@ L4 port numbers to match.
 
 ### Legacy Acl Destination Type
 
-1.  Explicit IP and port.
+1.	Explicit IP and port.
 
 ###### One of the arguments from this list "all_services, destination_ip_address, interface_services, selected_vip_address, shared_vip_services, vhost, vip_services" can be set
 
@@ -279,7 +294,9 @@ tenant - (Optional) then tenant will hold the referred object's(e.g. route's) te
 
 List of IP addresses to match with destination.
 
-###### One of the arguments from this list "ipv4, ipv6" can be set
+###### One of the arguments from this list "dual_stack, ipv4, ipv6" can be set
+
+`dual_stack` - (Optional) Both IPv4 and IPv6 addresses are specified together. See [Ver Dual Stack ](#ver-dual-stack) below for details.
 
 `ipv4` - (Optional) IPv4 Address. See [Ver Ipv4 ](#ver-ipv4) below for details.
 
@@ -361,6 +378,14 @@ List of IP prefixes.
 
 `prefix` - (Optional) IP Address prefix in string format. String must contain both prefix and prefix-length (`String`).
 
+### Ver Dual Stack
+
+Both IPv4 and IPv6 addresses are specified together.
+
+`ipv4` - (Optional) IPv4 Address. See [Dual Stack Ipv4 ](#dual-stack-ipv4) below for details.
+
+`ipv6` - (Optional) IPv6 Address. See [Dual Stack Ipv6 ](#dual-stack-ipv6) below for details.
+
 ### Ver Ipv4
 
 IPv4 Address.
@@ -416,4 +441,4 @@ Indicates use of site local inside network.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured fast_acl.
+-	`id` - This is the id of the configured fast_acl.

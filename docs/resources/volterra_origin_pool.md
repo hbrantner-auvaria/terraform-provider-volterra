@@ -25,13 +25,27 @@ resource "volterra_origin_pool" "example" {
   origin_servers {
     // One of the arguments from this list "cbip_service consul_service custom_endpoint_object k8s_service private_ip private_name public_ip public_name vn_private_ip vn_private_name" must be set
 
-    vn_private_name {
-      dns_name = "value"
+    private_ip {
+      // One of the arguments from this list "inside_network outside_network segment" must be set
 
-      private_network {
-        name      = "test1"
-        namespace = "staging"
-        tenant    = "acmecorp"
+      inside_network = true
+
+      // One of the arguments from this list "ip ipv6" must be set
+
+      ip = "8.8.8.8"
+      site_locator {
+        // One of the arguments from this list "site virtual_site" must be set
+
+        site {
+          name      = "test1"
+          namespace = "staging"
+          tenant    = "acmecorp"
+        }
+      }
+      snat_pool {
+        // One of the arguments from this list "no_snat_pool snat_pool" can be set
+
+        no_snat_pool = true
       }
     }
 
@@ -48,6 +62,7 @@ resource "volterra_origin_pool" "example" {
 
   no_tls = true
 }
+
 ```
 
 Argument Reference
@@ -339,7 +354,7 @@ Specify origin server with public IP.
 
 ###### One of the arguments from this list "ip, ipv6" must be set
 
-`ip`- (Optional) Public IPV4 address (`String`).
+`ip` - (Optional) Public IPV4 address (`String`).
 
 `ipv6` - (Optional) Public IPV6 address (`String`).
 
@@ -848,4 +863,4 @@ TLS parameters such as min/max TLS version and ciphers.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured origin_pool.
+-	`id` - This is the id of the configured origin_pool.

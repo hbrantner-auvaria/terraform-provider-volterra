@@ -30,6 +30,7 @@ resource "volterra_data_type" "example" {
     }
   }
 }
+
 ```
 
 Argument Reference
@@ -136,4 +137,4 @@ Search for values that are exact match to at least one item of the list.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured data_type.
+-	`id` - This is the id of the configured data_type.

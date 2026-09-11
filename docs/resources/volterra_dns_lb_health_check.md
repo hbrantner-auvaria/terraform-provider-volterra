@@ -24,6 +24,7 @@ resource "volterra_dns_lb_health_check" "example" {
 
   icmp_health_check = true
 }
+
 ```
 
 Argument Reference
@@ -146,4 +147,4 @@ Inherit load balancer FQDN as the virtual host to use for SNI..
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured dns_lb_health_check.
+-	`id` - This is the id of the configured dns_lb_health_check.

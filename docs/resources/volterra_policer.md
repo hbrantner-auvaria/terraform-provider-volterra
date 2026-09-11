@@ -22,6 +22,7 @@ resource "volterra_policer" "example" {
   burst_size                 = ["10000"]
   committed_information_rate = ["10000"]
 }
+
 ```
 
 Argument Reference
@@ -54,4 +55,4 @@ Argument Reference
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured policer.
+-	`id` - This is the id of the configured policer.

@@ -20,6 +20,7 @@ resource "volterra_bot_infrastructure" "example" {
   name      = "acmecorp-web"
   namespace = "staging"
 }
+
 ```
 
 Argument Reference
@@ -57,9 +58,9 @@ Associates an F5 Cloud Hosted service node to the Bot Defense infrastructure.
 
 ###### One of the arguments from this list "production, testing" must be set
 
-`production` - (Required) Production Protect live production applications and services from automated attacks.. See [Type Choice Production ](#type-choice-production) below for details.
+`production` - (Optional) Production Protect live production applications and services from automated attacks.. See [Type Choice Production ](#type-choice-production) below for details.
 
-`testing` - (Required) Test Evaluate new features, settings, and system performance.. See [Type Choice Testing ](#type-choice-testing) below for details.
+`testing` - (Optional) Test Evaluate new features, settings, and system performance.. See [Type Choice Testing ](#type-choice-testing) below for details.
 
 ### Type Choice Production
 
@@ -78,4 +79,4 @@ Test Evaluate new features, settings, and system performance..
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured bot_infrastructure.
+-	`id` - This is the id of the configured bot_infrastructure.

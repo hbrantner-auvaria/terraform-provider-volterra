@@ -617,6 +617,28 @@ func (v *ValidateAddonServiceChoice) Validate(ctx context.Context, pm interface{
 				return err
 			}
 		}
+	case *AddonServiceChoice_F5XcBigipAccessStandard:
+		if fv, exists := v.FldValidators["choice.f5xc_bigip_access_standard"]; exists {
+			val := m.GetChoice().(*AddonServiceChoice_F5XcBigipAccessStandard).F5XcBigipAccessStandard
+			vOpts := append(opts,
+				db.WithValidateField("choice"),
+				db.WithValidateField("f5xc_bigip_access_standard"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *AddonServiceChoice_F5XcDeviceIntelligenceStandard:
+		if fv, exists := v.FldValidators["choice.f5xc_device_intelligence_standard"]; exists {
+			val := m.GetChoice().(*AddonServiceChoice_F5XcDeviceIntelligenceStandard).F5XcDeviceIntelligenceStandard
+			vOpts := append(opts,
+				db.WithValidateField("choice"),
+				db.WithValidateField("f5xc_device_intelligence_standard"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	case *AddonServiceChoice_F5XcNone:
 		if fv, exists := v.FldValidators["choice.f5xc_none"]; exists {
 			val := m.GetChoice().(*AddonServiceChoice_F5XcNone).F5XcNone

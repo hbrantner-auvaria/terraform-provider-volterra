@@ -14,6 +14,7 @@ import (
 func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.vs_profiles.services.fix_profile.SpecType"] = SpecTypeValidator()
 	vr["ves.io.schema.vs_profiles.services.fix_profile.Object"] = ObjectValidator()
+	vr["ves.io.schema.vs_profiles.services.fix_profile.StatusObject"] = StatusObjectValidator()
 	vr["ves.io.schema.vs_profiles.services.fix_profile.CreateRequest"] = CreateRequestValidator()
 	vr["ves.io.schema.vs_profiles.services.fix_profile.CreateResponse"] = CreateResponseValidator()
 	vr["ves.io.schema.vs_profiles.services.fix_profile.DeleteRequest"] = DeleteRequestValidator()
@@ -35,6 +36,10 @@ func initializeEntryRegistry(mdr *svcfw.MDRegistry) {
 	mdr.EntryStoreMap["ves.io.schema.vs_profiles.services.fix_profile.Object"] = store.InMemory
 	mdr.EntryRegistry["ves.io.schema.vs_profiles.services.fix_profile.Object"] = reflect.TypeOf(&DBObject{})
 	mdr.EntryIndexers["ves.io.schema.vs_profiles.services.fix_profile.Object"] = GetObjectIndexers
+	mdr.EntryFactory["ves.io.schema.vs_profiles.services.fix_profile.StatusObject"] = NewEntryStatusObject
+	mdr.EntryStoreMap["ves.io.schema.vs_profiles.services.fix_profile.StatusObject"] = store.InMemory
+	mdr.EntryRegistry["ves.io.schema.vs_profiles.services.fix_profile.StatusObject"] = reflect.TypeOf(&DBStatusObject{})
+	mdr.EntryIndexers["ves.io.schema.vs_profiles.services.fix_profile.StatusObject"] = GetStatusObjectIndexers
 }
 
 func initializeRPCRegistry(mdr *svcfw.MDRegistry) {

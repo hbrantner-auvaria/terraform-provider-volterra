@@ -22,16 +22,115 @@ resource "volterra_discovery" "example" {
 
   // One of the arguments from this list "cluster_id no_cluster_id" must be set
 
-  no_cluster_id = true
+  cluster_id = "cluster_id"
 
   // One of the arguments from this list "discovery_cbip discovery_consul discovery_k8s discovery_third_party" must be set
 
-  discovery_third_party {
-    applications = ["applications"]
+  discovery_consul {
+    access_info {
+      connection_info {
+        api_server = "api.acme.com:4430"
 
-    expiration_timestamp = "0001-01-01T00:00:00Z"
+        tls_info {
+          ca_certificate_url {
+            blindfold_secret_info_internal {
+              decryption_provider = "value"
 
-    source_cidr = ["1.1.1.0/24 or 2001:10/64"]
+              location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
+
+              store_provider = "value"
+            }
+
+            secret_encoding_type = "secret_encoding_type"
+
+            // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
+
+            wingman_secret_info {
+              name = "ChargeBack-API-Key"
+            }
+          }
+
+          certificate = "value"
+
+          certificate_url {
+            blindfold_secret_info_internal {
+              decryption_provider = "value"
+
+              location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
+
+              store_provider = "value"
+            }
+
+            secret_encoding_type = "secret_encoding_type"
+
+            // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
+
+            blindfold_secret_info {
+              decryption_provider = "value"
+
+              location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
+
+              store_provider = "value"
+            }
+          }
+
+          key_url {
+            blindfold_secret_info_internal {
+              decryption_provider = "value"
+
+              location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
+
+              store_provider = "value"
+            }
+
+            secret_encoding_type = "secret_encoding_type"
+
+            // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
+
+            wingman_secret_info {
+              name = "ChargeBack-API-Key"
+            }
+          }
+
+          server_name = "k8s.acme.com"
+
+          trusted_ca_url = "value"
+        }
+      }
+
+      http_basic_auth_info {
+        passwd_url {
+          blindfold_secret_info_internal {
+            decryption_provider = "value"
+
+            location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
+
+            store_provider = "value"
+          }
+
+          secret_encoding_type = "secret_encoding_type"
+
+          // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
+
+          wingman_secret_info {
+            name = "ChargeBack-API-Key"
+          }
+        }
+
+        user_name = "Joe"
+      }
+
+      scheme = "scheme"
+    }
+
+    // One of the arguments from this list "default_all namespace_mapping" can be set
+
+    default_all = true
+    publish_info {
+      // One of the arguments from this list "disable publish" must be set
+
+      disable = true
+    }
   }
   where {
     // One of the arguments from this list "site virtual_network virtual_site" must be set
@@ -45,6 +144,7 @@ resource "volterra_discovery" "example" {
     }
   }
 }
+
 ```
 
 Argument Reference
@@ -158,24 +258,6 @@ x-required.
 
 `trusted_ca` - (Optional) Select/Add a Root CA Certificate object to associate with this Origin Pool for verification of server's certificate. See [ref](#ref) below for details.
 
-### Cbip Clusters Cbip Devices
-
-List of Classic BIG-IP devices..
-
-`admin_credentials` - (Required) x-required. See [Cbip Devices Admin Credentials ](#cbip-devices-admin-credentials) below for details.(Deprecated)
-
-`cbip_certificate_authority` - (Required) x-required. See [Cbip Devices Cbip Certificate Authority ](#cbip-devices-cbip-certificate-authority) below for details.(Deprecated)
-
-`cbip_mgmt_ip` - (Required) IP Address of the Classic BIG-IP device. Hostname is not supported. (`String`).(Deprecated)
-
-###### One of the arguments from this list "default_all, namespace_mapping" can be set
-
-`default_all` - (Optional) If configuring in an App Namespace, discovered services across all BIG-IP partitions will be discovered in the current Namespace (`Bool`).(Deprecated)
-
-`namespace_mapping` - (Optional) Select the BIG-IP partitions from which services will be discovered. If configuring in Shared Configuration, services can be discovered in selected App Namespaces. If configuring in App Namespace services will be discovered in the current Namespace.. See [Namespace Mapping Choice Namespace Mapping ](#namespace-mapping-choice-namespace-mapping) below for details.(Deprecated)
-
-`virtual_server_filter` - (Optional) Filters to discover only required BIG-IP Virtual Servers. The Virtual Server will be discovered only if it matches all criteria specified below. A blank criteria will be treated as match all.. See [Cbip Devices Virtual Server Filter ](#cbip-devices-virtual-server-filter) below for details.(Deprecated)
-
 ### Cbip Clusters Ha Sync
 
 Not applicable for Standalone or Auto-Sync HA. Devices using Auto-Sync HA synchronization are not affected..
@@ -205,38 +287,6 @@ x-required.
 `port` - (Required) Management Port of the BIGIP HA cluster (`Int`).
 
 ### Cbip Clusters Virtual Server Filter
-
-Filters to discover only required BIG-IP Virtual Servers. The Virtual Server will be discovered only if it matches all criteria specified below. A blank criteria will be treated as match all..
-
-`description_regex` - (Optional) Regex to match Virtual Server description (`String`).
-
-`discover_disabled_virtual_servers` - (Optional) When checked, disabled virtual servers will be included (`Bool`).
-
-`name_regex` - (Optional) Regex to match Virtual Server name (`String`).
-
-`port_ranges` - (Optional) Maximum number of ports allowed is 1024. (`String`).
-
-`protocols` - (Optional) Filter by protocol(s) (`String`).(Deprecated)
-
-### Cbip Devices Admin Credentials
-
-x-required.
-
-`password` - (Required) Password used to log into an admin account on the BIG-IP device. See [Admin Credentials Password ](#admin-credentials-password) below for details.
-
-`username` - (Required) Username used to log into an admin account on the BIG-IP device (`String`).
-
-### Cbip Devices Cbip Certificate Authority
-
-x-required.
-
-###### One of the arguments from this list "skip_server_verification, trusted_ca" must be set
-
-`skip_server_verification` - (Optional) Skip origin server verification (`Bool`).
-
-`trusted_ca` - (Optional) Select/Add a Root CA Certificate object to associate with this Origin Pool for verification of server's certificate. See [ref](#ref) below for details.
-
-### Cbip Devices Virtual Server Filter
 
 Filters to discover only required BIG-IP Virtual Servers. The Virtual Server will be discovered only if it matches all criteria specified below. A blank criteria will be treated as match all..
 
@@ -309,8 +359,6 @@ are in an Active-Active or Active-Standby setup or even a standalone BIG-IP devi
 `admin_credentials` - (Required) x-required. See [Cbip Clusters Admin Credentials ](#cbip-clusters-admin-credentials) below for details.
 
 `cbip_certificate_authority` - (Required) x-required. See [Cbip Clusters Cbip Certificate Authority ](#cbip-clusters-cbip-certificate-authority) below for details.
-
-`cbip_devices` - (Required) List of Classic BIG-IP devices.. See [Cbip Clusters Cbip Devices ](#cbip-clusters-cbip-devices) below for details.(Deprecated)
 
 `cbip_mgmt_ips` - (Required) IP Addresses of BIG-IP devices. Hostname is not supported. (`String`).
 
@@ -733,4 +781,4 @@ The data may be optionally secured using BlindFold..
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured discovery.
+-	`id` - This is the id of the configured discovery.

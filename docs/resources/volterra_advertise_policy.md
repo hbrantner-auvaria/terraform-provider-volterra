@@ -24,6 +24,7 @@ resource "volterra_advertise_policy" "example" {
 
   port = "80"
 }
+
 ```
 
 Argument Reference
@@ -46,6 +47,14 @@ Argument Reference
 ### Spec Argument Reference
 
 `address` - (Optional) If inside_vip/outside_vip is not configured in the site object, system use interface ip in the respected networks. (`String`).
+
+###### One of the arguments from this list "dualstack, ipv4, ipv6" can be set
+
+`dualstack` - (Optional) Advertise on both IPv4 and IPv6 simultaneously. (`Bool`).
+
+`ipv4` - (Optional) Advertise on IPv4 only. (`Bool`).
+
+`ipv6` - (Optional) Advertise on IPv6 only. (`Bool`).
 
 ###### One of the arguments from this list "port, port_ranges" must be set
 
@@ -85,7 +94,7 @@ Optional. TLS parameters to use. If not specified, will take from Virtual Host c
 
 ### Where
 
-*   site Advertised on site local network in case of customer sites and Public network in case of regional sites.
+-	site Advertised on site local network in case of customer sites and Public network in case of regional sites.
 
 ###### One of the arguments from this list "site, virtual_network, virtual_site" must be set
 
@@ -302,4 +311,4 @@ Root CA Certificate.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured advertise_policy.
+-	`id` - This is the id of the configured advertise_policy.

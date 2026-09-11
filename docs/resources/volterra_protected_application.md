@@ -22,9 +22,10 @@ resource "volterra_protected_application" "example" {
 
   // One of the arguments from this list "adobe_commerce_connector big_ip_iapp cloudflare cloudfront custom_connector f5_big_ip not_applicable_connector salesforce_commerce_connector" must be set
 
-  not_applicable_connector = true
-  region                   = ["US"]
+  big_ip_iapp = true
+  region      = ["US"]
 }
+
 ```
 
 Argument Reference
@@ -859,4 +860,4 @@ Respond with a redirect.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured protected_application.
+-	`id` - This is the id of the configured protected_application.

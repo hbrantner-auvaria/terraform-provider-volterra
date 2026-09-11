@@ -136,6 +136,10 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 	mdr.RPCDeprecatedResponseFieldsRegistry["ves.io.schema.virtual_host.ApiepCustomAPI.GetAPIEndpointLearntSchema"] = []string{
 		"discovered_openapi_spec",
 	}
+	mdr.RPCDeprecatedResponseFieldsRegistry["ves.io.schema.virtual_host.ApiepCustomAPI.GetVulnerabilities"] = []string{
+		"vulnerabilities.#.evidence.evidence_type",
+		"vulnerabilities.#.evidence.samples.#",
+	}
 	mdr.RPCSubscriptionFieldsRegistry["ves.io.schema.virtual_host.API.Create"] = []svcfw.SubscriptionField{
 		{
 			FieldPath:     "ves.io.schema.virtual_host.CreateRequest.spec.api_spec.open_api_validation_choice.enable_open_api_validation",

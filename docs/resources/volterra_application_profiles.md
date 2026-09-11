@@ -23,9 +23,10 @@ resource "volterra_application_profiles" "example" {
   ddos_profile {
     // One of the arguments from this list "disable_ddos_mitigation enable_ddos_mitigation" can be set
 
-    enable_ddos_mitigation = true
+    disable_ddos_mitigation = true
   }
 }
+
 ```
 
 Argument Reference
@@ -80,6 +81,8 @@ On enabling this feature, a default DDoS profile is applied to the Proxy.
 ### Virtual Server
 
 Specifies configuration related to virtual server.
+
+`access_profile` - (Optional) Specifies an access policy that determines the authentication rules and access controls applied to user sessions for this virtual server.. See [ref](#ref) below for details.
 
 `address_translation` - (Optional) Specifies, when checked (enabled), that the system translates the address of the virtual server. When cleared (disabled), specifies that the system uses the address without translation. This option is useful when the system is load balancing devices that have the same IP address. The default is enabled.. See [Virtual Server Address Translation ](#virtual-server-address-translation) below for details.
 
@@ -474,4 +477,4 @@ x-displayName: "UDP".
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured application_profiles.
+-	`id` - This is the id of the configured application_profiles.

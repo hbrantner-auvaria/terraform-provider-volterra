@@ -458,6 +458,11 @@ func (m *CreateSpecType) GetDRefInfo() ([]db.DRefInfo, error) {
 	}
 
 	var drInfos []db.DRefInfo
+	if fdrInfos, err := m.GetAccessProfileDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetAccessProfileDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
 	if fdrInfos, err := m.GetClonePoolOptionsDRefInfo(); err != nil {
 		return nil, errors.Wrap(err, "GetClonePoolOptionsDRefInfo() FAILED")
 	} else {
@@ -514,6 +519,51 @@ func (m *CreateSpecType) GetDRefInfo() ([]db.DRefInfo, error) {
 		drInfos = append(drInfos, fdrInfos...)
 	}
 	return drInfos, nil
+}
+
+func (m *CreateSpecType) GetAccessProfileDRefInfo() ([]db.DRefInfo, error) {
+	vref := m.GetAccessProfile()
+	if vref == nil {
+		return nil, nil
+	}
+	vdRef := db.NewDirectRefForView(vref)
+	vdRef.SetKind("access_profile.Object")
+	dri := db.DRefInfo{
+		RefdType:   "access_profile.Object",
+		RefdTenant: vref.Tenant,
+		RefdNS:     vref.Namespace,
+		RefdName:   vref.Name,
+		DRField:    "access_profile",
+		Ref:        vdRef,
+	}
+	return []db.DRefInfo{dri}, nil
+}
+
+// GetAccessProfileDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *CreateSpecType) GetAccessProfileDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "access_profile.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: access_profile")
+	}
+	vref := m.GetAccessProfile()
+	if vref == nil {
+		return nil, nil
+	}
+	ref := &ves_io_schema.ObjectRefType{
+		Kind:      "access_profile.Object",
+		Tenant:    vref.Tenant,
+		Namespace: vref.Namespace,
+		Name:      vref.Name,
+	}
+	refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+	if err != nil {
+		return nil, errors.Wrap(err, "Getting referred entry")
+	}
+	if refdEnt != nil {
+		entries = append(entries, refdEnt)
+	}
+	return entries, nil
 }
 
 // GetDRefInfo for the field's type
@@ -1035,36 +1085,6 @@ func (m *CreateSpecType) GetVirtualServerTypeDRefInfo() ([]db.DRefInfo, error) {
 			dri.DRField = "https." + dri.DRField
 		}
 		return drInfos, err
-	case *CreateSpecType_Http:
-		drInfos, err := m.GetHttp().GetDRefInfo()
-		if err != nil {
-			return nil, errors.Wrap(err, "GetHttp().GetDRefInfo() FAILED")
-		}
-		for i := range drInfos {
-			dri := &drInfos[i]
-			dri.DRField = "http." + dri.DRField
-		}
-		return drInfos, err
-	case *CreateSpecType_Tcp:
-		drInfos, err := m.GetTcp().GetDRefInfo()
-		if err != nil {
-			return nil, errors.Wrap(err, "GetTcp().GetDRefInfo() FAILED")
-		}
-		for i := range drInfos {
-			dri := &drInfos[i]
-			dri.DRField = "tcp." + dri.DRField
-		}
-		return drInfos, err
-	case *CreateSpecType_Udp:
-		drInfos, err := m.GetUdp().GetDRefInfo()
-		if err != nil {
-			return nil, errors.Wrap(err, "GetUdp().GetDRefInfo() FAILED")
-		}
-		for i := range drInfos {
-			dri := &drInfos[i]
-			dri.DRField = "udp." + dri.DRField
-		}
-		return drInfos, err
 	case *CreateSpecType_Http3:
 		drInfos, err := m.GetHttp3().GetDRefInfo()
 		if err != nil {
@@ -1191,6 +1211,12 @@ func (v *ValidateCreateSpecType) Validate(ctx context.Context, pm interface{}, o
 	}
 	if m == nil {
 		return nil
+	}
+	if fv, exists := v.FldValidators["access_profile"]; exists {
+		vOpts := append(opts, db.WithValidateField("access_profile"))
+		if err := fv(ctx, m.GetAccessProfile(), vOpts...); err != nil {
+			return err
+		}
 	}
 	if fv, exists := v.FldValidators["auto_last_hop"]; exists {
 		vOpts := append(opts, db.WithValidateField("auto_last_hop"))
@@ -1439,39 +1465,6 @@ func (v *ValidateCreateSpecType) Validate(ctx context.Context, pm interface{}, o
 				return err
 			}
 		}
-	case *CreateSpecType_Http:
-		if fv, exists := v.FldValidators["virtual_server_type.http"]; exists {
-			val := m.GetVirtualServerType().(*CreateSpecType_Http).Http
-			vOpts := append(opts,
-				db.WithValidateField("virtual_server_type"),
-				db.WithValidateField("http"),
-			)
-			if err := fv(ctx, val, vOpts...); err != nil {
-				return err
-			}
-		}
-	case *CreateSpecType_Tcp:
-		if fv, exists := v.FldValidators["virtual_server_type.tcp"]; exists {
-			val := m.GetVirtualServerType().(*CreateSpecType_Tcp).Tcp
-			vOpts := append(opts,
-				db.WithValidateField("virtual_server_type"),
-				db.WithValidateField("tcp"),
-			)
-			if err := fv(ctx, val, vOpts...); err != nil {
-				return err
-			}
-		}
-	case *CreateSpecType_Udp:
-		if fv, exists := v.FldValidators["virtual_server_type.udp"]; exists {
-			val := m.GetVirtualServerType().(*CreateSpecType_Udp).Udp
-			vOpts := append(opts,
-				db.WithValidateField("virtual_server_type"),
-				db.WithValidateField("udp"),
-			)
-			if err := fv(ctx, val, vOpts...); err != nil {
-				return err
-			}
-		}
 	case *CreateSpecType_Http3:
 		if fv, exists := v.FldValidators["virtual_server_type.http3"]; exists {
 			val := m.GetVirtualServerType().(*CreateSpecType_Http3).Http3
@@ -1550,13 +1543,11 @@ var DefaultCreateSpecTypeValidator = func() *ValidateCreateSpecType {
 	v.FldValidators["request_logging_profile_choice.request_logging_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["statistics_profile_choice.statistics_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["virtual_server_type.https"] = HTTPServicesValidator().Validate
-	v.FldValidators["virtual_server_type.http"] = HTTPServicesValidator().Validate
-	v.FldValidators["virtual_server_type.tcp"] = TCPServicesValidator().Validate
-	v.FldValidators["virtual_server_type.udp"] = UDPServicesValidator().Validate
 	v.FldValidators["virtual_server_type.http3"] = HTTP3ServicesValidator().Validate
 	v.FldValidators["connection_limit_options"] = ConnectionLimitsTypeValidator().Validate
 	v.FldValidators["virtual_addresses"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["clone_pool_options"] = ClonePoolTypeValidator().Validate
+	v.FldValidators["access_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 
 	return v
 }()
@@ -1778,6 +1769,11 @@ func (m *GetSpecType) GetDRefInfo() ([]db.DRefInfo, error) {
 	}
 
 	var drInfos []db.DRefInfo
+	if fdrInfos, err := m.GetAccessProfileDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetAccessProfileDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
 	if fdrInfos, err := m.GetClonePoolOptionsDRefInfo(); err != nil {
 		return nil, errors.Wrap(err, "GetClonePoolOptionsDRefInfo() FAILED")
 	} else {
@@ -1834,6 +1830,51 @@ func (m *GetSpecType) GetDRefInfo() ([]db.DRefInfo, error) {
 		drInfos = append(drInfos, fdrInfos...)
 	}
 	return drInfos, nil
+}
+
+func (m *GetSpecType) GetAccessProfileDRefInfo() ([]db.DRefInfo, error) {
+	vref := m.GetAccessProfile()
+	if vref == nil {
+		return nil, nil
+	}
+	vdRef := db.NewDirectRefForView(vref)
+	vdRef.SetKind("access_profile.Object")
+	dri := db.DRefInfo{
+		RefdType:   "access_profile.Object",
+		RefdTenant: vref.Tenant,
+		RefdNS:     vref.Namespace,
+		RefdName:   vref.Name,
+		DRField:    "access_profile",
+		Ref:        vdRef,
+	}
+	return []db.DRefInfo{dri}, nil
+}
+
+// GetAccessProfileDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *GetSpecType) GetAccessProfileDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "access_profile.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: access_profile")
+	}
+	vref := m.GetAccessProfile()
+	if vref == nil {
+		return nil, nil
+	}
+	ref := &ves_io_schema.ObjectRefType{
+		Kind:      "access_profile.Object",
+		Tenant:    vref.Tenant,
+		Namespace: vref.Namespace,
+		Name:      vref.Name,
+	}
+	refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+	if err != nil {
+		return nil, errors.Wrap(err, "Getting referred entry")
+	}
+	if refdEnt != nil {
+		entries = append(entries, refdEnt)
+	}
+	return entries, nil
 }
 
 // GetDRefInfo for the field's type
@@ -2355,36 +2396,6 @@ func (m *GetSpecType) GetVirtualServerTypeDRefInfo() ([]db.DRefInfo, error) {
 			dri.DRField = "https." + dri.DRField
 		}
 		return drInfos, err
-	case *GetSpecType_Http:
-		drInfos, err := m.GetHttp().GetDRefInfo()
-		if err != nil {
-			return nil, errors.Wrap(err, "GetHttp().GetDRefInfo() FAILED")
-		}
-		for i := range drInfos {
-			dri := &drInfos[i]
-			dri.DRField = "http." + dri.DRField
-		}
-		return drInfos, err
-	case *GetSpecType_Tcp:
-		drInfos, err := m.GetTcp().GetDRefInfo()
-		if err != nil {
-			return nil, errors.Wrap(err, "GetTcp().GetDRefInfo() FAILED")
-		}
-		for i := range drInfos {
-			dri := &drInfos[i]
-			dri.DRField = "tcp." + dri.DRField
-		}
-		return drInfos, err
-	case *GetSpecType_Udp:
-		drInfos, err := m.GetUdp().GetDRefInfo()
-		if err != nil {
-			return nil, errors.Wrap(err, "GetUdp().GetDRefInfo() FAILED")
-		}
-		for i := range drInfos {
-			dri := &drInfos[i]
-			dri.DRField = "udp." + dri.DRField
-		}
-		return drInfos, err
 	case *GetSpecType_Http3:
 		drInfos, err := m.GetHttp3().GetDRefInfo()
 		if err != nil {
@@ -2511,6 +2522,12 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 	}
 	if m == nil {
 		return nil
+	}
+	if fv, exists := v.FldValidators["access_profile"]; exists {
+		vOpts := append(opts, db.WithValidateField("access_profile"))
+		if err := fv(ctx, m.GetAccessProfile(), vOpts...); err != nil {
+			return err
+		}
 	}
 	if fv, exists := v.FldValidators["auto_last_hop"]; exists {
 		vOpts := append(opts, db.WithValidateField("auto_last_hop"))
@@ -2759,39 +2776,6 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 				return err
 			}
 		}
-	case *GetSpecType_Http:
-		if fv, exists := v.FldValidators["virtual_server_type.http"]; exists {
-			val := m.GetVirtualServerType().(*GetSpecType_Http).Http
-			vOpts := append(opts,
-				db.WithValidateField("virtual_server_type"),
-				db.WithValidateField("http"),
-			)
-			if err := fv(ctx, val, vOpts...); err != nil {
-				return err
-			}
-		}
-	case *GetSpecType_Tcp:
-		if fv, exists := v.FldValidators["virtual_server_type.tcp"]; exists {
-			val := m.GetVirtualServerType().(*GetSpecType_Tcp).Tcp
-			vOpts := append(opts,
-				db.WithValidateField("virtual_server_type"),
-				db.WithValidateField("tcp"),
-			)
-			if err := fv(ctx, val, vOpts...); err != nil {
-				return err
-			}
-		}
-	case *GetSpecType_Udp:
-		if fv, exists := v.FldValidators["virtual_server_type.udp"]; exists {
-			val := m.GetVirtualServerType().(*GetSpecType_Udp).Udp
-			vOpts := append(opts,
-				db.WithValidateField("virtual_server_type"),
-				db.WithValidateField("udp"),
-			)
-			if err := fv(ctx, val, vOpts...); err != nil {
-				return err
-			}
-		}
 	case *GetSpecType_Http3:
 		if fv, exists := v.FldValidators["virtual_server_type.http3"]; exists {
 			val := m.GetVirtualServerType().(*GetSpecType_Http3).Http3
@@ -2870,13 +2854,11 @@ var DefaultGetSpecTypeValidator = func() *ValidateGetSpecType {
 	v.FldValidators["request_logging_profile_choice.request_logging_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["statistics_profile_choice.statistics_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["virtual_server_type.https"] = HTTPServicesValidator().Validate
-	v.FldValidators["virtual_server_type.http"] = HTTPServicesValidator().Validate
-	v.FldValidators["virtual_server_type.tcp"] = TCPServicesValidator().Validate
-	v.FldValidators["virtual_server_type.udp"] = UDPServicesValidator().Validate
 	v.FldValidators["virtual_server_type.http3"] = HTTP3ServicesValidator().Validate
 	v.FldValidators["connection_limit_options"] = ConnectionLimitsTypeValidator().Validate
 	v.FldValidators["virtual_addresses"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["clone_pool_options"] = ClonePoolTypeValidator().Validate
+	v.FldValidators["access_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 
 	return v
 }()
@@ -2928,6 +2910,11 @@ func (m *GlobalSpecType) GetDRefInfo() ([]db.DRefInfo, error) {
 	}
 
 	var drInfos []db.DRefInfo
+	if fdrInfos, err := m.GetAccessProfileDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetAccessProfileDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
 	if fdrInfos, err := m.GetClonePoolOptionsDRefInfo(); err != nil {
 		return nil, errors.Wrap(err, "GetClonePoolOptionsDRefInfo() FAILED")
 	} else {
@@ -2994,6 +2981,51 @@ func (m *GlobalSpecType) GetDRefInfo() ([]db.DRefInfo, error) {
 		drInfos = append(drInfos, fdrInfos...)
 	}
 	return drInfos, nil
+}
+
+func (m *GlobalSpecType) GetAccessProfileDRefInfo() ([]db.DRefInfo, error) {
+	vref := m.GetAccessProfile()
+	if vref == nil {
+		return nil, nil
+	}
+	vdRef := db.NewDirectRefForView(vref)
+	vdRef.SetKind("access_profile.Object")
+	dri := db.DRefInfo{
+		RefdType:   "access_profile.Object",
+		RefdTenant: vref.Tenant,
+		RefdNS:     vref.Namespace,
+		RefdName:   vref.Name,
+		DRField:    "access_profile",
+		Ref:        vdRef,
+	}
+	return []db.DRefInfo{dri}, nil
+}
+
+// GetAccessProfileDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *GlobalSpecType) GetAccessProfileDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "access_profile.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: access_profile")
+	}
+	vref := m.GetAccessProfile()
+	if vref == nil {
+		return nil, nil
+	}
+	ref := &ves_io_schema.ObjectRefType{
+		Kind:      "access_profile.Object",
+		Tenant:    vref.Tenant,
+		Namespace: vref.Namespace,
+		Name:      vref.Name,
+	}
+	refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+	if err != nil {
+		return nil, errors.Wrap(err, "Getting referred entry")
+	}
+	if refdEnt != nil {
+		entries = append(entries, refdEnt)
+	}
+	return entries, nil
 }
 
 // GetDRefInfo for the field's type
@@ -3583,36 +3615,6 @@ func (m *GlobalSpecType) GetVirtualServerTypeDRefInfo() ([]db.DRefInfo, error) {
 			dri.DRField = "https." + dri.DRField
 		}
 		return drInfos, err
-	case *GlobalSpecType_Http:
-		drInfos, err := m.GetHttp().GetDRefInfo()
-		if err != nil {
-			return nil, errors.Wrap(err, "GetHttp().GetDRefInfo() FAILED")
-		}
-		for i := range drInfos {
-			dri := &drInfos[i]
-			dri.DRField = "http." + dri.DRField
-		}
-		return drInfos, err
-	case *GlobalSpecType_Tcp:
-		drInfos, err := m.GetTcp().GetDRefInfo()
-		if err != nil {
-			return nil, errors.Wrap(err, "GetTcp().GetDRefInfo() FAILED")
-		}
-		for i := range drInfos {
-			dri := &drInfos[i]
-			dri.DRField = "tcp." + dri.DRField
-		}
-		return drInfos, err
-	case *GlobalSpecType_Udp:
-		drInfos, err := m.GetUdp().GetDRefInfo()
-		if err != nil {
-			return nil, errors.Wrap(err, "GetUdp().GetDRefInfo() FAILED")
-		}
-		for i := range drInfos {
-			dri := &drInfos[i]
-			dri.DRField = "udp." + dri.DRField
-		}
-		return drInfos, err
 	case *GlobalSpecType_Http3:
 		drInfos, err := m.GetHttp3().GetDRefInfo()
 		if err != nil {
@@ -3746,6 +3748,12 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 	}
 	if m == nil {
 		return nil
+	}
+	if fv, exists := v.FldValidators["access_profile"]; exists {
+		vOpts := append(opts, db.WithValidateField("access_profile"))
+		if err := fv(ctx, m.GetAccessProfile(), vOpts...); err != nil {
+			return err
+		}
 	}
 	if fv, exists := v.FldValidators["auto_last_hop"]; exists {
 		vOpts := append(opts, db.WithValidateField("auto_last_hop"))
@@ -4035,39 +4043,6 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 				return err
 			}
 		}
-	case *GlobalSpecType_Http:
-		if fv, exists := v.FldValidators["virtual_server_type.http"]; exists {
-			val := m.GetVirtualServerType().(*GlobalSpecType_Http).Http
-			vOpts := append(opts,
-				db.WithValidateField("virtual_server_type"),
-				db.WithValidateField("http"),
-			)
-			if err := fv(ctx, val, vOpts...); err != nil {
-				return err
-			}
-		}
-	case *GlobalSpecType_Tcp:
-		if fv, exists := v.FldValidators["virtual_server_type.tcp"]; exists {
-			val := m.GetVirtualServerType().(*GlobalSpecType_Tcp).Tcp
-			vOpts := append(opts,
-				db.WithValidateField("virtual_server_type"),
-				db.WithValidateField("tcp"),
-			)
-			if err := fv(ctx, val, vOpts...); err != nil {
-				return err
-			}
-		}
-	case *GlobalSpecType_Udp:
-		if fv, exists := v.FldValidators["virtual_server_type.udp"]; exists {
-			val := m.GetVirtualServerType().(*GlobalSpecType_Udp).Udp
-			vOpts := append(opts,
-				db.WithValidateField("virtual_server_type"),
-				db.WithValidateField("udp"),
-			)
-			if err := fv(ctx, val, vOpts...); err != nil {
-				return err
-			}
-		}
 	case *GlobalSpecType_Http3:
 		if fv, exists := v.FldValidators["virtual_server_type.http3"]; exists {
 			val := m.GetVirtualServerType().(*GlobalSpecType_Http3).Http3
@@ -4158,13 +4133,11 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 	v.FldValidators["request_logging_profile_choice.request_logging_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["statistics_profile_choice.statistics_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["virtual_server_type.https"] = HTTPServicesValidator().Validate
-	v.FldValidators["virtual_server_type.http"] = HTTPServicesValidator().Validate
-	v.FldValidators["virtual_server_type.tcp"] = TCPServicesValidator().Validate
-	v.FldValidators["virtual_server_type.udp"] = UDPServicesValidator().Validate
 	v.FldValidators["virtual_server_type.http3"] = HTTP3ServicesValidator().Validate
 	v.FldValidators["connection_limit_options"] = ConnectionLimitsTypeValidator().Validate
 	v.FldValidators["virtual_addresses"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["clone_pool_options"] = ClonePoolTypeValidator().Validate
+	v.FldValidators["access_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["view_internal"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 
 	return v
@@ -5244,6 +5217,8 @@ func (m *HTTPDefaultServerSelection) GetHttp2ServerProfileChoiceDRefInfo() ([]db
 			Ref:        vdRef,
 		}
 		return []db.DRefInfo{dri}, nil
+	case *HTTPDefaultServerSelection_Http2ServerProfileSameAsClient:
+		return nil, nil
 	default:
 		return nil, nil
 	}
@@ -5277,6 +5252,7 @@ func (m *HTTPDefaultServerSelection) GetHttp2ServerProfileChoiceDBEntries(ctx co
 		if refdEnt != nil {
 			entries = append(entries, refdEnt)
 		}
+	case *HTTPDefaultServerSelection_Http2ServerProfileSameAsClient:
 	}
 
 	return entries, nil
@@ -5599,6 +5575,17 @@ func (v *ValidateHTTPDefaultServerSelection) Validate(ctx context.Context, pm in
 			vOpts := append(opts,
 				db.WithValidateField("http2_server_profile_choice"),
 				db.WithValidateField("http2_server_profile"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *HTTPDefaultServerSelection_Http2ServerProfileSameAsClient:
+		if fv, exists := v.FldValidators["http2_server_profile_choice.http2_server_profile_same_as_client"]; exists {
+			val := m.GetHttp2ServerProfileChoice().(*HTTPDefaultServerSelection_Http2ServerProfileSameAsClient).Http2ServerProfileSameAsClient
+			vOpts := append(opts,
+				db.WithValidateField("http2_server_profile_choice"),
+				db.WithValidateField("http2_server_profile_same_as_client"),
 			)
 			if err := fv(ctx, val, vOpts...); err != nil {
 				return err
@@ -7038,6 +7025,11 @@ func (m *ReplaceSpecType) GetDRefInfo() ([]db.DRefInfo, error) {
 	}
 
 	var drInfos []db.DRefInfo
+	if fdrInfos, err := m.GetAccessProfileDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetAccessProfileDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
 	if fdrInfos, err := m.GetClonePoolOptionsDRefInfo(); err != nil {
 		return nil, errors.Wrap(err, "GetClonePoolOptionsDRefInfo() FAILED")
 	} else {
@@ -7094,6 +7086,51 @@ func (m *ReplaceSpecType) GetDRefInfo() ([]db.DRefInfo, error) {
 		drInfos = append(drInfos, fdrInfos...)
 	}
 	return drInfos, nil
+}
+
+func (m *ReplaceSpecType) GetAccessProfileDRefInfo() ([]db.DRefInfo, error) {
+	vref := m.GetAccessProfile()
+	if vref == nil {
+		return nil, nil
+	}
+	vdRef := db.NewDirectRefForView(vref)
+	vdRef.SetKind("access_profile.Object")
+	dri := db.DRefInfo{
+		RefdType:   "access_profile.Object",
+		RefdTenant: vref.Tenant,
+		RefdNS:     vref.Namespace,
+		RefdName:   vref.Name,
+		DRField:    "access_profile",
+		Ref:        vdRef,
+	}
+	return []db.DRefInfo{dri}, nil
+}
+
+// GetAccessProfileDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *ReplaceSpecType) GetAccessProfileDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "access_profile.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: access_profile")
+	}
+	vref := m.GetAccessProfile()
+	if vref == nil {
+		return nil, nil
+	}
+	ref := &ves_io_schema.ObjectRefType{
+		Kind:      "access_profile.Object",
+		Tenant:    vref.Tenant,
+		Namespace: vref.Namespace,
+		Name:      vref.Name,
+	}
+	refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+	if err != nil {
+		return nil, errors.Wrap(err, "Getting referred entry")
+	}
+	if refdEnt != nil {
+		entries = append(entries, refdEnt)
+	}
+	return entries, nil
 }
 
 // GetDRefInfo for the field's type
@@ -7615,36 +7652,6 @@ func (m *ReplaceSpecType) GetVirtualServerTypeDRefInfo() ([]db.DRefInfo, error) 
 			dri.DRField = "https." + dri.DRField
 		}
 		return drInfos, err
-	case *ReplaceSpecType_Http:
-		drInfos, err := m.GetHttp().GetDRefInfo()
-		if err != nil {
-			return nil, errors.Wrap(err, "GetHttp().GetDRefInfo() FAILED")
-		}
-		for i := range drInfos {
-			dri := &drInfos[i]
-			dri.DRField = "http." + dri.DRField
-		}
-		return drInfos, err
-	case *ReplaceSpecType_Tcp:
-		drInfos, err := m.GetTcp().GetDRefInfo()
-		if err != nil {
-			return nil, errors.Wrap(err, "GetTcp().GetDRefInfo() FAILED")
-		}
-		for i := range drInfos {
-			dri := &drInfos[i]
-			dri.DRField = "tcp." + dri.DRField
-		}
-		return drInfos, err
-	case *ReplaceSpecType_Udp:
-		drInfos, err := m.GetUdp().GetDRefInfo()
-		if err != nil {
-			return nil, errors.Wrap(err, "GetUdp().GetDRefInfo() FAILED")
-		}
-		for i := range drInfos {
-			dri := &drInfos[i]
-			dri.DRField = "udp." + dri.DRField
-		}
-		return drInfos, err
 	case *ReplaceSpecType_Http3:
 		drInfos, err := m.GetHttp3().GetDRefInfo()
 		if err != nil {
@@ -7771,6 +7778,12 @@ func (v *ValidateReplaceSpecType) Validate(ctx context.Context, pm interface{}, 
 	}
 	if m == nil {
 		return nil
+	}
+	if fv, exists := v.FldValidators["access_profile"]; exists {
+		vOpts := append(opts, db.WithValidateField("access_profile"))
+		if err := fv(ctx, m.GetAccessProfile(), vOpts...); err != nil {
+			return err
+		}
 	}
 	if fv, exists := v.FldValidators["auto_last_hop"]; exists {
 		vOpts := append(opts, db.WithValidateField("auto_last_hop"))
@@ -8019,39 +8032,6 @@ func (v *ValidateReplaceSpecType) Validate(ctx context.Context, pm interface{}, 
 				return err
 			}
 		}
-	case *ReplaceSpecType_Http:
-		if fv, exists := v.FldValidators["virtual_server_type.http"]; exists {
-			val := m.GetVirtualServerType().(*ReplaceSpecType_Http).Http
-			vOpts := append(opts,
-				db.WithValidateField("virtual_server_type"),
-				db.WithValidateField("http"),
-			)
-			if err := fv(ctx, val, vOpts...); err != nil {
-				return err
-			}
-		}
-	case *ReplaceSpecType_Tcp:
-		if fv, exists := v.FldValidators["virtual_server_type.tcp"]; exists {
-			val := m.GetVirtualServerType().(*ReplaceSpecType_Tcp).Tcp
-			vOpts := append(opts,
-				db.WithValidateField("virtual_server_type"),
-				db.WithValidateField("tcp"),
-			)
-			if err := fv(ctx, val, vOpts...); err != nil {
-				return err
-			}
-		}
-	case *ReplaceSpecType_Udp:
-		if fv, exists := v.FldValidators["virtual_server_type.udp"]; exists {
-			val := m.GetVirtualServerType().(*ReplaceSpecType_Udp).Udp
-			vOpts := append(opts,
-				db.WithValidateField("virtual_server_type"),
-				db.WithValidateField("udp"),
-			)
-			if err := fv(ctx, val, vOpts...); err != nil {
-				return err
-			}
-		}
 	case *ReplaceSpecType_Http3:
 		if fv, exists := v.FldValidators["virtual_server_type.http3"]; exists {
 			val := m.GetVirtualServerType().(*ReplaceSpecType_Http3).Http3
@@ -8130,13 +8110,11 @@ var DefaultReplaceSpecTypeValidator = func() *ValidateReplaceSpecType {
 	v.FldValidators["request_logging_profile_choice.request_logging_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["statistics_profile_choice.statistics_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["virtual_server_type.https"] = HTTPServicesValidator().Validate
-	v.FldValidators["virtual_server_type.http"] = HTTPServicesValidator().Validate
-	v.FldValidators["virtual_server_type.tcp"] = TCPServicesValidator().Validate
-	v.FldValidators["virtual_server_type.udp"] = UDPServicesValidator().Validate
 	v.FldValidators["virtual_server_type.http3"] = HTTP3ServicesValidator().Validate
 	v.FldValidators["connection_limit_options"] = ConnectionLimitsTypeValidator().Validate
 	v.FldValidators["virtual_addresses"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["clone_pool_options"] = ClonePoolTypeValidator().Validate
+	v.FldValidators["access_profile"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 
 	return v
 }()
@@ -10163,20 +10141,11 @@ func (r *CreateSpecType) SetVirtualServerTypeToGlobalSpecType(o *GlobalSpecType)
 	case nil:
 		o.VirtualServerType = nil
 
-	case *CreateSpecType_Http:
-		o.VirtualServerType = &GlobalSpecType_Http{Http: of.Http}
-
 	case *CreateSpecType_Http3:
 		o.VirtualServerType = &GlobalSpecType_Http3{Http3: of.Http3}
 
 	case *CreateSpecType_Https:
 		o.VirtualServerType = &GlobalSpecType_Https{Https: of.Https}
-
-	case *CreateSpecType_Tcp:
-		o.VirtualServerType = &GlobalSpecType_Tcp{Tcp: of.Tcp}
-
-	case *CreateSpecType_Udp:
-		o.VirtualServerType = &GlobalSpecType_Udp{Udp: of.Udp}
 
 	default:
 		return fmt.Errorf("Unknown oneof field %T", of)
@@ -10189,20 +10158,11 @@ func (r *CreateSpecType) GetVirtualServerTypeFromGlobalSpecType(o *GlobalSpecTyp
 	case nil:
 		r.VirtualServerType = nil
 
-	case *GlobalSpecType_Http:
-		r.VirtualServerType = &CreateSpecType_Http{Http: of.Http}
-
 	case *GlobalSpecType_Http3:
 		r.VirtualServerType = &CreateSpecType_Http3{Http3: of.Http3}
 
 	case *GlobalSpecType_Https:
 		r.VirtualServerType = &CreateSpecType_Https{Https: of.Https}
-
-	case *GlobalSpecType_Tcp:
-		r.VirtualServerType = &CreateSpecType_Tcp{Tcp: of.Tcp}
-
-	case *GlobalSpecType_Udp:
-		r.VirtualServerType = &CreateSpecType_Udp{Udp: of.Udp}
 
 	default:
 		return fmt.Errorf("Unknown oneof field %T", of)
@@ -10214,6 +10174,7 @@ func (m *CreateSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool
 	if f == nil {
 		return
 	}
+	m.AccessProfile = f.GetAccessProfile()
 	m.AutoLastHop = f.GetAutoLastHop()
 	m.ClonePoolOptions = f.GetClonePoolOptions()
 	m.ConnectionLimitOptions = f.GetConnectionLimitOptions()
@@ -10252,6 +10213,7 @@ func (m *CreateSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) 
 	}
 	_ = m1
 
+	f.AccessProfile = m1.AccessProfile
 	f.AutoLastHop = m1.AutoLastHop
 	f.ClonePoolOptions = m1.ClonePoolOptions
 	f.ConnectionLimitOptions = m1.ConnectionLimitOptions
@@ -10499,20 +10461,11 @@ func (r *GetSpecType) SetVirtualServerTypeToGlobalSpecType(o *GlobalSpecType) er
 	case nil:
 		o.VirtualServerType = nil
 
-	case *GetSpecType_Http:
-		o.VirtualServerType = &GlobalSpecType_Http{Http: of.Http}
-
 	case *GetSpecType_Http3:
 		o.VirtualServerType = &GlobalSpecType_Http3{Http3: of.Http3}
 
 	case *GetSpecType_Https:
 		o.VirtualServerType = &GlobalSpecType_Https{Https: of.Https}
-
-	case *GetSpecType_Tcp:
-		o.VirtualServerType = &GlobalSpecType_Tcp{Tcp: of.Tcp}
-
-	case *GetSpecType_Udp:
-		o.VirtualServerType = &GlobalSpecType_Udp{Udp: of.Udp}
 
 	default:
 		return fmt.Errorf("Unknown oneof field %T", of)
@@ -10525,20 +10478,11 @@ func (r *GetSpecType) GetVirtualServerTypeFromGlobalSpecType(o *GlobalSpecType) 
 	case nil:
 		r.VirtualServerType = nil
 
-	case *GlobalSpecType_Http:
-		r.VirtualServerType = &GetSpecType_Http{Http: of.Http}
-
 	case *GlobalSpecType_Http3:
 		r.VirtualServerType = &GetSpecType_Http3{Http3: of.Http3}
 
 	case *GlobalSpecType_Https:
 		r.VirtualServerType = &GetSpecType_Https{Https: of.Https}
-
-	case *GlobalSpecType_Tcp:
-		r.VirtualServerType = &GetSpecType_Tcp{Tcp: of.Tcp}
-
-	case *GlobalSpecType_Udp:
-		r.VirtualServerType = &GetSpecType_Udp{Udp: of.Udp}
 
 	default:
 		return fmt.Errorf("Unknown oneof field %T", of)
@@ -10550,6 +10494,7 @@ func (m *GetSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	if f == nil {
 		return
 	}
+	m.AccessProfile = f.GetAccessProfile()
 	m.AutoLastHop = f.GetAutoLastHop()
 	m.ClonePoolOptions = f.GetClonePoolOptions()
 	m.ConnectionLimitOptions = f.GetConnectionLimitOptions()
@@ -10588,6 +10533,7 @@ func (m *GetSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	}
 	_ = m1
 
+	f.AccessProfile = m1.AccessProfile
 	f.AutoLastHop = m1.AutoLastHop
 	f.ClonePoolOptions = m1.ClonePoolOptions
 	f.ConnectionLimitOptions = m1.ConnectionLimitOptions
@@ -10835,20 +10781,11 @@ func (r *ReplaceSpecType) SetVirtualServerTypeToGlobalSpecType(o *GlobalSpecType
 	case nil:
 		o.VirtualServerType = nil
 
-	case *ReplaceSpecType_Http:
-		o.VirtualServerType = &GlobalSpecType_Http{Http: of.Http}
-
 	case *ReplaceSpecType_Http3:
 		o.VirtualServerType = &GlobalSpecType_Http3{Http3: of.Http3}
 
 	case *ReplaceSpecType_Https:
 		o.VirtualServerType = &GlobalSpecType_Https{Https: of.Https}
-
-	case *ReplaceSpecType_Tcp:
-		o.VirtualServerType = &GlobalSpecType_Tcp{Tcp: of.Tcp}
-
-	case *ReplaceSpecType_Udp:
-		o.VirtualServerType = &GlobalSpecType_Udp{Udp: of.Udp}
 
 	default:
 		return fmt.Errorf("Unknown oneof field %T", of)
@@ -10861,20 +10798,11 @@ func (r *ReplaceSpecType) GetVirtualServerTypeFromGlobalSpecType(o *GlobalSpecTy
 	case nil:
 		r.VirtualServerType = nil
 
-	case *GlobalSpecType_Http:
-		r.VirtualServerType = &ReplaceSpecType_Http{Http: of.Http}
-
 	case *GlobalSpecType_Http3:
 		r.VirtualServerType = &ReplaceSpecType_Http3{Http3: of.Http3}
 
 	case *GlobalSpecType_Https:
 		r.VirtualServerType = &ReplaceSpecType_Https{Https: of.Https}
-
-	case *GlobalSpecType_Tcp:
-		r.VirtualServerType = &ReplaceSpecType_Tcp{Tcp: of.Tcp}
-
-	case *GlobalSpecType_Udp:
-		r.VirtualServerType = &ReplaceSpecType_Udp{Udp: of.Udp}
 
 	default:
 		return fmt.Errorf("Unknown oneof field %T", of)
@@ -10886,6 +10814,7 @@ func (m *ReplaceSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy boo
 	if f == nil {
 		return
 	}
+	m.AccessProfile = f.GetAccessProfile()
 	m.AutoLastHop = f.GetAutoLastHop()
 	m.ClonePoolOptions = f.GetClonePoolOptions()
 	m.ConnectionLimitOptions = f.GetConnectionLimitOptions()
@@ -10924,6 +10853,7 @@ func (m *ReplaceSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool)
 	}
 	_ = m1
 
+	f.AccessProfile = m1.AccessProfile
 	f.AutoLastHop = m1.AutoLastHop
 	f.ClonePoolOptions = m1.ClonePoolOptions
 	f.ConnectionLimitOptions = m1.ConnectionLimitOptions

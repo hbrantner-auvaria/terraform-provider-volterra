@@ -2735,13 +2735,13 @@ var APISwaggerJSON string = `{
                 },
                 "mtu": {
                     "type": "integer",
-                    "description": " Maximum packet size (Maximum Transfer Unit) of the interface\n When configured, mtu must be between 512 and 16384\n\nExample: - \"1450\"-\n\nValidation Rules:\n  ves.io.schema.rules.uint32.ranges: 0,512-16384\n",
+                    "description": " Maximum packet size (Maximum Transfer Unit) of the interface\n When configured, mtu must be between 512 and 8000\n\nExample: - \"1450\"-\n\nValidation Rules:\n  ves.io.schema.rules.uint32.ranges: 0,512-8000\n",
                     "title": "Maximum Packet Size (MTU)",
                     "format": "int64",
                     "x-displayname": "Maximum Packet Size (MTU)",
                     "x-ves-example": "1450",
                     "x-ves-validation-rules": {
-                        "ves.io.schema.rules.uint32.ranges": "0,512-16384"
+                        "ves.io.schema.rules.uint32.ranges": "0,512-8000"
                     }
                 },
                 "name": {
@@ -3625,7 +3625,7 @@ var APISwaggerJSON string = `{
             "properties": {
                 "dns_list": {
                     "type": "array",
-                    "description": " List of IPV6 Addresses acting as Dns servers\n\nExample: - \"2001::11\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 4\n  ves.io.schema.rules.repeated.min_items: 1\n  ves.io.schema.rules.repeated.unique: true\n  ves.io.schema.rules.string.ipv6: true\n",
+                    "description": " List of IPV6 Addresses acting as Dns servers\n\nExample: - \"2001::11\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.items.string.ipv6: true\n  ves.io.schema.rules.repeated.max_items: 4\n  ves.io.schema.rules.repeated.min_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "Dns List",
                     "minItems": 1,
                     "maxItems": 4,
@@ -3637,10 +3637,10 @@ var APISwaggerJSON string = `{
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.repeated.items.string.ipv6": "true",
                         "ves.io.schema.rules.repeated.max_items": "4",
                         "ves.io.schema.rules.repeated.min_items": "1",
-                        "ves.io.schema.rules.repeated.unique": "true",
-                        "ves.io.schema.rules.string.ipv6": "true"
+                        "ves.io.schema.rules.repeated.unique": "true"
                     }
                 }
             }

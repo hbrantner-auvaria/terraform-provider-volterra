@@ -3457,6 +3457,332 @@ func NetworkingInventoryResponseValidator() db.Validator {
 
 // augmented methods on protoc/std generated struct
 
+func (m *OIDCOAuthDiscoveryReq) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *OIDCOAuthDiscoveryReq) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *OIDCOAuthDiscoveryReq) DeepCopy() *OIDCOAuthDiscoveryReq {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &OIDCOAuthDiscoveryReq{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *OIDCOAuthDiscoveryReq) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *OIDCOAuthDiscoveryReq) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return OIDCOAuthDiscoveryReqValidator().Validate(ctx, m, opts...)
+}
+
+func (m *OIDCOAuthDiscoveryReq) GetDRefInfo() ([]db.DRefInfo, error) {
+	if m == nil {
+		return nil, nil
+	}
+
+	return m.GetTrustedCaDRefInfo()
+}
+
+func (m *OIDCOAuthDiscoveryReq) GetTrustedCaDRefInfo() ([]db.DRefInfo, error) {
+	vref := m.GetTrustedCa()
+	if vref == nil {
+		return nil, nil
+	}
+	vdRef := db.NewDirectRefForView(vref)
+	vdRef.SetKind("trusted_ca_list.Object")
+	dri := db.DRefInfo{
+		RefdType:   "trusted_ca_list.Object",
+		RefdTenant: vref.Tenant,
+		RefdNS:     vref.Namespace,
+		RefdName:   vref.Name,
+		DRField:    "trusted_ca",
+		Ref:        vdRef,
+	}
+	return []db.DRefInfo{dri}, nil
+}
+
+// GetTrustedCaDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *OIDCOAuthDiscoveryReq) GetTrustedCaDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "trusted_ca_list.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: trusted_ca_list")
+	}
+	vref := m.GetTrustedCa()
+	if vref == nil {
+		return nil, nil
+	}
+	ref := &ves_io_schema.ObjectRefType{
+		Kind:      "trusted_ca_list.Object",
+		Tenant:    vref.Tenant,
+		Namespace: vref.Namespace,
+		Name:      vref.Name,
+	}
+	refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+	if err != nil {
+		return nil, errors.Wrap(err, "Getting referred entry")
+	}
+	if refdEnt != nil {
+		entries = append(entries, refdEnt)
+	}
+	return entries, nil
+}
+
+type ValidateOIDCOAuthDiscoveryReq struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateOIDCOAuthDiscoveryReq) OpenidCfgUriValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for openid_cfg_uri")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateOIDCOAuthDiscoveryReq) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*OIDCOAuthDiscoveryReq)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *OIDCOAuthDiscoveryReq got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["namespace"]; exists {
+		vOpts := append(opts, db.WithValidateField("namespace"))
+		if err := fv(ctx, m.GetNamespace(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["openid_cfg_uri"]; exists {
+		vOpts := append(opts, db.WithValidateField("openid_cfg_uri"))
+		if err := fv(ctx, m.GetOpenidCfgUri(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["trusted_ca"]; exists {
+		vOpts := append(opts, db.WithValidateField("trusted_ca"))
+		if err := fv(ctx, m.GetTrustedCa(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultOIDCOAuthDiscoveryReqValidator = func() *ValidateOIDCOAuthDiscoveryReq {
+	v := &ValidateOIDCOAuthDiscoveryReq{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhOpenidCfgUri := v.OpenidCfgUriValidationRuleHandler
+	rulesOpenidCfgUri := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+		"ves.io.schema.rules.string.uri_ref":   "true",
+	}
+	vFn, err = vrhOpenidCfgUri(rulesOpenidCfgUri)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for OIDCOAuthDiscoveryReq.openid_cfg_uri: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["openid_cfg_uri"] = vFn
+	v.FldValidators["trusted_ca"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
+
+	return v
+}()
+
+func OIDCOAuthDiscoveryReqValidator() db.Validator {
+	return DefaultOIDCOAuthDiscoveryReqValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *OIDCOAuthDiscoveryResp) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *OIDCOAuthDiscoveryResp) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *OIDCOAuthDiscoveryResp) DeepCopy() *OIDCOAuthDiscoveryResp {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &OIDCOAuthDiscoveryResp{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *OIDCOAuthDiscoveryResp) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *OIDCOAuthDiscoveryResp) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return OIDCOAuthDiscoveryRespValidator().Validate(ctx, m, opts...)
+}
+
+func (m *OIDCOAuthDiscoveryResp) GetDRefInfo() ([]db.DRefInfo, error) {
+	if m == nil {
+		return nil, nil
+	}
+
+	return m.GetAutoJwtConfigNameDRefInfo()
+}
+
+func (m *OIDCOAuthDiscoveryResp) GetAutoJwtConfigNameDRefInfo() ([]db.DRefInfo, error) {
+	vref := m.GetAutoJwtConfigName()
+	if vref == nil {
+		return nil, nil
+	}
+	vdRef := db.NewDirectRefForView(vref)
+	vdRef.SetKind("oauth_jwt_config.Object")
+	dri := db.DRefInfo{
+		RefdType:   "oauth_jwt_config.Object",
+		RefdTenant: vref.Tenant,
+		RefdNS:     vref.Namespace,
+		RefdName:   vref.Name,
+		DRField:    "auto_jwt_config_name",
+		Ref:        vdRef,
+	}
+	return []db.DRefInfo{dri}, nil
+}
+
+// GetAutoJwtConfigNameDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *OIDCOAuthDiscoveryResp) GetAutoJwtConfigNameDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "oauth_jwt_config.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: oauth_jwt_config")
+	}
+	vref := m.GetAutoJwtConfigName()
+	if vref == nil {
+		return nil, nil
+	}
+	ref := &ves_io_schema.ObjectRefType{
+		Kind:      "oauth_jwt_config.Object",
+		Tenant:    vref.Tenant,
+		Namespace: vref.Namespace,
+		Name:      vref.Name,
+	}
+	refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+	if err != nil {
+		return nil, errors.Wrap(err, "Getting referred entry")
+	}
+	if refdEnt != nil {
+		entries = append(entries, refdEnt)
+	}
+	return entries, nil
+}
+
+type ValidateOIDCOAuthDiscoveryResp struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateOIDCOAuthDiscoveryResp) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*OIDCOAuthDiscoveryResp)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *OIDCOAuthDiscoveryResp got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["authentication_uri"]; exists {
+		vOpts := append(opts, db.WithValidateField("authentication_uri"))
+		if err := fv(ctx, m.GetAuthenticationUri(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["auto_jwt_config_name"]; exists {
+		vOpts := append(opts, db.WithValidateField("auto_jwt_config_name"))
+		if err := fv(ctx, m.GetAutoJwtConfigName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["introspect_uri"]; exists {
+		vOpts := append(opts, db.WithValidateField("introspect_uri"))
+		if err := fv(ctx, m.GetIntrospectUri(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["token_uri"]; exists {
+		vOpts := append(opts, db.WithValidateField("token_uri"))
+		if err := fv(ctx, m.GetTokenUri(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["token_validation_scope_uri"]; exists {
+		vOpts := append(opts, db.WithValidateField("token_validation_scope_uri"))
+		if err := fv(ctx, m.GetTokenValidationScopeUri(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["userinfo_request_uri"]; exists {
+		vOpts := append(opts, db.WithValidateField("userinfo_request_uri"))
+		if err := fv(ctx, m.GetUserinfoRequestUri(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultOIDCOAuthDiscoveryRespValidator = func() *ValidateOIDCOAuthDiscoveryResp {
+	v := &ValidateOIDCOAuthDiscoveryResp{FldValidators: map[string]db.ValidatorFunc{}}
+	v.FldValidators["auto_jwt_config_name"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
+
+	return v
+}()
+
+func OIDCOAuthDiscoveryRespValidator() db.Validator {
+	return DefaultOIDCOAuthDiscoveryRespValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *SetActiveAlertPoliciesRequest) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
@@ -5902,9 +6228,21 @@ func (v *ValidateVirtualServerInventoryResultType) Validate(ctx context.Context,
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["https_count"]; exists {
+		vOpts := append(opts, db.WithValidateField("https_count"))
+		if err := fv(ctx, m.GetHttpsCount(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["irules_count"]; exists {
 		vOpts := append(opts, db.WithValidateField("irules_count"))
 		if err := fv(ctx, m.GetIrulesCount(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["traffic_policy_count"]; exists {
+		vOpts := append(opts, db.WithValidateField("traffic_policy_count"))
+		if err := fv(ctx, m.GetTrafficPolicyCount(), vOpts...); err != nil {
 			return err
 		}
 	}

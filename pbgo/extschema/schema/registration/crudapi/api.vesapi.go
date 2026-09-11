@@ -2907,6 +2907,36 @@ var APISwaggerJSON string = `{
             "x-displayname": "Bond Mode",
             "x-ves-proto-enum": "ves.io.schema.registration.BondMode"
         },
+        "registrationHugepage": {
+            "type": "object",
+            "description": "Hugepage configurations for CE on K8S SMV2 sites",
+            "title": "Hugepage configurations",
+            "x-displayname": "Hugepage Configurations",
+            "x-ves-proto-message": "ves.io.schema.registration.Hugepage",
+            "properties": {
+                "free": {
+                    "type": "integer",
+                    "description": " Total number of free hugepages present",
+                    "title": "free hugepages",
+                    "format": "int32",
+                    "x-displayname": "Free Hugepages"
+                },
+                "page_size": {
+                    "type": "integer",
+                    "description": " Size of each hugepage",
+                    "title": "hugepage size",
+                    "format": "int32",
+                    "x-displayname": "Hugepage Size"
+                },
+                "total": {
+                    "type": "integer",
+                    "description": " Total number of hugepages present",
+                    "title": "total hugepages",
+                    "format": "int32",
+                    "x-displayname": "Total Hugepages"
+                }
+            }
+        },
         "registrationInfra": {
             "type": "object",
             "description": "InfraMetadata stores information about instance infrastructure",
@@ -2951,6 +2981,15 @@ var APISwaggerJSON string = `{
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true"
                     }
+                },
+                "hugepages": {
+                    "type": "array",
+                    "description": " Hugepage settings for CE on K8S SMV2 site",
+                    "title": "Hugepage settings",
+                    "items": {
+                        "$ref": "#/definitions/registrationHugepage"
+                    },
+                    "x-displayname": "Hugepage Settings"
                 },
                 "hw_info": {
                     "description": " HW information about node in the site",
@@ -3230,7 +3269,7 @@ var APISwaggerJSON string = `{
         },
         "registrationProvider": {
             "type": "string",
-            "description": "Infrastructure provider enum for registration. It describes where is instance running.\n\nProvider was not detected\nAWS cloud instance\nGoogle cloud instance\nAzure cloud instance\nVMWare VM\nKVM VM\nOther provider, which was not identified by system.\nF5XC HW device.\nIBM Cloud instance.\nKubernetes cluster in AWS\nKubernetes cluster in GCP\nKubernetes cluster in Azure\nKubernetes cluster in Vmware\nKubernetes cluster in VMware\nKubernetes cluster in Other provider\nKubernetes cluster in Volterra\nKubernetes cluster in IBM Cloud\nF5OS HW device.\nRSeries Device\nOCI Cloud Instance\nNutanix instance\nOpenStack Instance\nEquinix Instance\nOpenShift Virtualization Instance",
+            "description": "Infrastructure provider enum for registration. It describes where is instance running.\n\nProvider was not detected\nAWS cloud instance\nGoogle cloud instance\nAzure cloud instance\nVMWare VM\nKVM VM\nOther provider, which was not identified by system.\nF5XC HW device.\nIBM Cloud instance.\nKubernetes cluster in AWS\nKubernetes cluster in GCP\nKubernetes cluster in Azure\nKubernetes cluster in Vmware\nKubernetes cluster in VMware\nKubernetes cluster in Other provider\nKubernetes cluster in Volterra\nKubernetes cluster in IBM Cloud\nF5OS HW device.\nRSeries Device\nOCI Cloud Instance\nNutanix instance\nOpenStack Instance\nEquinix Instance\nOpenShift Virtualization Instance\nCE On Kubernetes Instance",
             "title": "Infrastructure provider",
             "enum": [
                 "UNKNOWN",
@@ -3257,7 +3296,8 @@ var APISwaggerJSON string = `{
                 "NUTANIX",
                 "OPENSTACK",
                 "EQUINIX",
-                "OPENSHIFT_VIRTUALIZATION"
+                "OPENSHIFT_VIRTUALIZATION",
+                "KUBERNETES"
             ],
             "default": "UNKNOWN",
             "x-displayname": "Infrastructure Provider",

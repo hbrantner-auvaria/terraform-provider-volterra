@@ -42,14 +42,6 @@ func (c *CustomPrivateAPIGrpcClient) doRPCNamespaceStatus(ctx context.Context, y
 	rsp, err := c.grpcClient.NamespaceStatus(ctx, req, opts...)
 	return rsp, err
 }
-func (c *CustomPrivateAPIGrpcClient) doRPCRemoveNamespaceFinalizer(ctx context.Context, yamlReq string, opts ...grpc.CallOption) (proto.Message, error) {
-	req := &RemoveNamespaceFinalizerReq{}
-	if err := codec.FromYAML(yamlReq, req); err != nil {
-		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.namespace.RemoveNamespaceFinalizerReq", yamlReq)
-	}
-	rsp, err := c.grpcClient.RemoveNamespaceFinalizer(ctx, req, opts...)
-	return rsp, err
-}
 func (c *CustomPrivateAPIGrpcClient) doRPCRemoveNamespaceFinalizerRestricted(ctx context.Context, yamlReq string, opts ...grpc.CallOption) (proto.Message, error) {
 	req := &RemoveNamespaceFinalizerRestrictedReq{}
 	if err := codec.FromYAML(yamlReq, req); err != nil {
@@ -90,7 +82,6 @@ func NewCustomPrivateAPIGrpcClient(cc *grpc.ClientConn) server.CustomClient {
 	}
 	rpcFns := make(map[string]func(context.Context, string, ...grpc.CallOption) (proto.Message, error))
 	rpcFns["NamespaceStatus"] = ccl.doRPCNamespaceStatus
-	rpcFns["RemoveNamespaceFinalizer"] = ccl.doRPCRemoveNamespaceFinalizer
 	rpcFns["RemoveNamespaceFinalizerRestricted"] = ccl.doRPCRemoveNamespaceFinalizerRestricted
 	ccl.rpcFns = rpcFns
 	return ccl
@@ -186,87 +177,6 @@ func (c *CustomPrivateAPIRestClient) doRPCNamespaceStatus(ctx context.Context, c
 	}
 	return pbRsp, nil
 }
-func (c *CustomPrivateAPIRestClient) doRPCRemoveNamespaceFinalizer(ctx context.Context, callOpts *server.CustomCallOpts) (proto.Message, error) {
-	if callOpts.URI == "" {
-		return nil, fmt.Errorf("Error, URI should be specified, got empty")
-	}
-	url := fmt.Sprintf("%s%s", c.baseURL, callOpts.URI)
-
-	yamlReq := callOpts.YAMLReq
-	req := &RemoveNamespaceFinalizerReq{}
-	if err := codec.FromYAML(yamlReq, req); err != nil {
-		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.namespace.RemoveNamespaceFinalizerReq: %s", yamlReq, err)
-	}
-
-	var hReq *http.Request
-	hm := strings.ToLower(callOpts.HTTPMethod)
-	switch hm {
-	case "post", "put":
-		jsn, err := codec.ToJSON(req, codec.ToWithUseProtoFieldName())
-		if err != nil {
-			return nil, errors.Wrap(err, "Custom RestClient converting YAML to JSON")
-		}
-		var op string
-		if hm == "post" {
-			op = http.MethodPost
-		} else {
-			op = http.MethodPut
-		}
-		newReq, err := http.NewRequest(op, url, bytes.NewBuffer([]byte(jsn)))
-		if err != nil {
-			return nil, errors.Wrapf(err, "Creating new HTTP %s request for custom API", op)
-		}
-		hReq = newReq
-	case "get":
-		newReq, err := http.NewRequest(http.MethodGet, url, nil)
-		if err != nil {
-			return nil, errors.Wrap(err, "Creating new HTTP GET request for custom API")
-		}
-		hReq = newReq
-		q := hReq.URL.Query()
-		_ = q
-		q.Add("namespace", fmt.Sprintf("%v", req.Namespace))
-
-		hReq.URL.RawQuery += q.Encode()
-	case "delete":
-		newReq, err := http.NewRequest(http.MethodDelete, url, nil)
-		if err != nil {
-			return nil, errors.Wrap(err, "Creating new HTTP DELETE request for custom API")
-		}
-		hReq = newReq
-	default:
-		return nil, fmt.Errorf("Error, invalid/empty HTTPMethod(%s) specified, should be POST|DELETE|GET", callOpts.HTTPMethod)
-	}
-	hReq = hReq.WithContext(ctx)
-	hReq.Header.Set("Content-Type", "application/json")
-	client.AddHdrsToReq(callOpts.Headers, hReq)
-
-	rsp, err := c.client.Do(hReq)
-	if err != nil {
-		return nil, errors.Wrap(err, "Custom API RestClient")
-	}
-	defer rsp.Body.Close()
-
-	// checking whether the status code is a successful status code (2xx series)
-	if rsp.StatusCode < 200 || rsp.StatusCode > 299 {
-		body, err := io.ReadAll(rsp.Body)
-		return nil, fmt.Errorf("Unsuccessful custom API %s on %s, status code %d, body %s, err %s", callOpts.HTTPMethod, callOpts.URI, rsp.StatusCode, body, err)
-	}
-
-	body, err := io.ReadAll(rsp.Body)
-	if err != nil {
-		return nil, errors.Wrap(err, "Custom API RestClient read body")
-	}
-	pbRsp := &RemoveNamespaceFinalizerResp{}
-	if err := codec.FromJSON(string(body), pbRsp); err != nil {
-		return nil, errors.Wrapf(err, "JSON Response %s is not of type *ves.io.schema.namespace.RemoveNamespaceFinalizerResp", body)
-	}
-	if callOpts.OutCallResponse != nil {
-		callOpts.OutCallResponse.ProtoMsg = pbRsp
-		callOpts.OutCallResponse.JSON = string(body)
-	}
-	return pbRsp, nil
-}
 func (c *CustomPrivateAPIRestClient) doRPCRemoveNamespaceFinalizerRestricted(ctx context.Context, callOpts *server.CustomCallOpts) (proto.Message, error) {
 	if callOpts.URI == "" {
 		return nil, fmt.Errorf("Error, URI should be specified, got empty")
@@ -306,6 +216,7 @@ func (c *CustomPrivateAPIRestClient) doRPCRemoveNamespaceFinalizerRestricted(ctx
 		hReq = newReq
 		q := hReq.URL.Query()
 		_ = q
+		q.Add("force_remove", fmt.Sprintf("%v", req.ForceRemove))
 		q.Add("namespace", fmt.Sprintf("%v", req.Namespace))
 		q.Add("service", fmt.Sprintf("%v", req.Service))
 		q.Add("tenant", fmt.Sprintf("%v", req.Tenant))
@@ -376,7 +287,6 @@ func NewCustomPrivateAPIRestClient(baseURL string, hc http.Client) server.Custom
 
 	rpcFns := make(map[string]func(context.Context, *server.CustomCallOpts) (proto.Message, error))
 	rpcFns["NamespaceStatus"] = ccl.doRPCNamespaceStatus
-	rpcFns["RemoveNamespaceFinalizer"] = ccl.doRPCRemoveNamespaceFinalizer
 	rpcFns["RemoveNamespaceFinalizerRestricted"] = ccl.doRPCRemoveNamespaceFinalizerRestricted
 	ccl.rpcFns = rpcFns
 	return ccl
@@ -392,10 +302,6 @@ type customPrivateAPIInprocClient struct {
 func (c *customPrivateAPIInprocClient) NamespaceStatus(ctx context.Context, in *NamespaceStatusRequest, opts ...grpc.CallOption) (*NamespaceStatusResponse, error) {
 	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.namespace.CustomPrivateAPI.NamespaceStatus")
 	return c.CustomPrivateAPIServer.NamespaceStatus(ctx, in)
-}
-func (c *customPrivateAPIInprocClient) RemoveNamespaceFinalizer(ctx context.Context, in *RemoveNamespaceFinalizerReq, opts ...grpc.CallOption) (*RemoveNamespaceFinalizerResp, error) {
-	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.namespace.CustomPrivateAPI.RemoveNamespaceFinalizer")
-	return c.CustomPrivateAPIServer.RemoveNamespaceFinalizer(ctx, in)
 }
 func (c *customPrivateAPIInprocClient) RemoveNamespaceFinalizerRestricted(ctx context.Context, in *RemoveNamespaceFinalizerRestrictedReq, opts ...grpc.CallOption) (*RemoveNamespaceFinalizerResp, error) {
 	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.namespace.CustomPrivateAPI.RemoveNamespaceFinalizerRestricted")
@@ -450,39 +356,6 @@ func (s *customPrivateAPISrv) NamespaceStatus(ctx context.Context, in *Namespace
 	}
 
 	rsp, err = cah.NamespaceStatus(ctx, in)
-	if err != nil {
-		return rsp, server.GRPCStatusFromError(server.MaybePublicRestError(ctx, err)).Err()
-	}
-
-	return rsp, nil
-}
-func (s *customPrivateAPISrv) RemoveNamespaceFinalizer(ctx context.Context, in *RemoveNamespaceFinalizerReq) (*RemoveNamespaceFinalizerResp, error) {
-	ah := s.svc.GetAPIHandler("ves.io.schema.namespace.CustomPrivateAPI")
-	cah, ok := ah.(CustomPrivateAPIServer)
-	if !ok {
-		return nil, fmt.Errorf("ah %v is not of type *CustomPrivateAPIServer", ah)
-	}
-
-	var (
-		rsp *RemoveNamespaceFinalizerResp
-		err error
-	)
-
-	if err := svcfw.FillOneofDefaultChoice(ctx, s.svc, in); err != nil {
-		err = server.MaybePublicRestError(ctx, errors.Wrapf(err, "Filling oneof default choice"))
-		return nil, server.GRPCStatusFromError(err).Err()
-	}
-
-	if s.svc.Config().EnableAPIValidation {
-		if rvFn := s.svc.GetRPCValidator("ves.io.schema.namespace.CustomPrivateAPI.RemoveNamespaceFinalizer"); rvFn != nil {
-			if verr := rvFn(ctx, in); verr != nil {
-				err = server.MaybePublicRestError(ctx, errors.Wrapf(verr, "Validating Request"))
-				return nil, server.GRPCStatusFromError(err).Err()
-			}
-		}
-	}
-
-	rsp, err = cah.RemoveNamespaceFinalizer(ctx, in)
 	if err != nil {
 		return rsp, server.GRPCStatusFromError(server.MaybePublicRestError(ctx, err)).Err()
 	}
@@ -546,91 +419,6 @@ var CustomPrivateAPISwaggerJSON string = `{
     ],
     "tags": [],
     "paths": {
-        "/private/custom/namespace/remove_finalizer": {
-            "put": {
-                "summary": "Remove Namespace Finalizer",
-                "description": "Remove caller service from the namespace pending finalizer list.",
-                "operationId": "ves.io.schema.namespace.CustomPrivateAPI.RemoveNamespaceFinalizer",
-                "responses": {
-                    "200": {
-                        "description": "A successful response.",
-                        "schema": {
-                            "$ref": "#/definitions/namespaceRemoveNamespaceFinalizerResp"
-                        }
-                    },
-                    "401": {
-                        "description": "Returned when operation is not authorized",
-                        "schema": {
-                            "format": "string"
-                        }
-                    },
-                    "403": {
-                        "description": "Returned when there is no permission to access resource",
-                        "schema": {
-                            "format": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Returned when resource is not found",
-                        "schema": {
-                            "format": "string"
-                        }
-                    },
-                    "409": {
-                        "description": "Returned when operation on resource is conflicting with current value",
-                        "schema": {
-                            "format": "string"
-                        }
-                    },
-                    "429": {
-                        "description": "Returned when operation has been rejected as it is happening too frequently",
-                        "schema": {
-                            "format": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Returned when server encountered an error in processing API",
-                        "schema": {
-                            "format": "string"
-                        }
-                    },
-                    "503": {
-                        "description": "Returned when service is unavailable temporarily",
-                        "schema": {
-                            "format": "string"
-                        }
-                    },
-                    "504": {
-                        "description": "Returned when server timed out processing request",
-                        "schema": {
-                            "format": "string"
-                        }
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/namespaceRemoveNamespaceFinalizerReq"
-                        }
-                    }
-                ],
-                "tags": [
-                    "CustomPrivateAPI"
-                ],
-                "externalDocs": {
-                    "description": "Examples of this operation",
-                    "url": "https://docs.cloud.f5.com/docs-v2/platform/reference/api-ref/ves-io-schema-namespace-customprivateapi-removenamespacefinalizer"
-                },
-                "x-ves-in-development": "true",
-                "x-ves-proto-rpc": "ves.io.schema.namespace.CustomPrivateAPI.RemoveNamespaceFinalizer"
-            },
-            "x-displayname": "Custom Private APIs",
-            "x-ves-proto-service": "ves.io.schema.namespace.CustomPrivateAPI",
-            "x-ves-proto-service-type": "CUSTOM_PRIVATE"
-        },
         "/ves.io.schema/introspect/read/tenant/{tenant}/namespace/{namespace}/status": {
             "get": {
                 "summary": "Namespace Status",
@@ -802,7 +590,6 @@ var CustomPrivateAPISwaggerJSON string = `{
                     "description": "Examples of this operation",
                     "url": "https://docs.cloud.f5.com/docs-v2/platform/reference/api-ref/ves-io-schema-namespace-customprivateapi-removenamespacefinalizerrestricted"
                 },
-                "x-ves-in-development": "true",
                 "x-ves-proto-rpc": "ves.io.schema.namespace.CustomPrivateAPI.RemoveNamespaceFinalizerRestricted"
             },
             "x-displayname": "Custom Private APIs",
@@ -974,24 +761,6 @@ var CustomPrivateAPISwaggerJSON string = `{
             "x-displayname": "",
             "x-ves-proto-enum": "ves.io.schema.namespace.RemoveFinalizerStatus"
         },
-        "namespaceRemoveNamespaceFinalizerReq": {
-            "type": "object",
-            "title": "RemoveNamespaceFinalizerReq",
-            "x-displayname": "Remove Namespace Finalizer Request",
-            "x-ves-proto-message": "ves.io.schema.namespace.RemoveNamespaceFinalizerReq",
-            "properties": {
-                "namespace": {
-                    "type": "string",
-                    "description": " it specifies the namespace for which pending finalizers list to be updated\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
-                    "title": "namespace",
-                    "x-displayname": "namespace",
-                    "x-ves-required": "true",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.message.required": "true"
-                    }
-                }
-            }
-        },
         "namespaceRemoveNamespaceFinalizerResp": {
             "type": "object",
             "title": "RemoveNamespaceFinalizerResp",
@@ -1018,6 +787,17 @@ var CustomPrivateAPISwaggerJSON string = `{
             "x-displayname": "Remove Namespace Finalizer Restricted Request",
             "x-ves-proto-message": "ves.io.schema.namespace.RemoveNamespaceFinalizerRestrictedReq",
             "properties": {
+                "force_remove": {
+                    "type": "boolean",
+                    "description": " Specifies whether the service should be forcefully removed from finalizers.\n This sets the status as \"Deleted\" in the status object Finalizer for the service, preventing Eywa from sending a delete request to the service.\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "title": "force_remove",
+                    "format": "boolean",
+                    "x-displayname": "Force Remove",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true"
+                    }
+                },
                 "namespace": {
                     "type": "string",
                     "description": " it specifies the namespace for which pending finalizers list to be updated\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",

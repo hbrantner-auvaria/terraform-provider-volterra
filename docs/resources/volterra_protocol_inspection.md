@@ -23,19 +23,16 @@ resource "volterra_protocol_inspection" "example" {
   enable_disable_compliance_checks {
     // One of the arguments from this list "disable_compliance_checks enable_compliance_checks" must be set
 
-    enable_compliance_checks {
-      name      = "test1"
-      namespace = "staging"
-      tenant    = "acmecorp"
-    }
+    disable_compliance_checks = true
   }
 
   enable_disable_signatures {
     // One of the arguments from this list "disable_signature enable_signature" must be set
 
-    disable_signature = true
+    enable_signature = true
   }
 }
+
 ```
 
 Argument Reference
@@ -108,4 +105,4 @@ x-displayName: "Enable".
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured protocol_inspection.
+-	`id` - This is the id of the configured protocol_inspection.

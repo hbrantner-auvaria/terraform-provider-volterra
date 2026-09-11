@@ -300,6 +300,7 @@ func resourceVolterraDiscovery() *schema.Resource {
 										},
 									},
 
+
 									"cbip_mgmt_ips": {
 										Type: schema.TypeList,
 
@@ -2727,6 +2728,7 @@ func resourceVolterraDiscoveryCreate(d *schema.ResourceData, meta interface{}) e
 								}
 
 							}
+
 
 							if w, ok := cbipClustersMapStrToI["cbip_mgmt_ips"]; ok && !isIntfNil(w) {
 								ls := make([]string, len(w.([]interface{})))
@@ -5670,6 +5672,7 @@ func resourceVolterraDiscoveryUpdate(d *schema.ResourceData, meta interface{}) e
 								}
 
 							}
+
 
 							if w, ok := cbipClustersMapStrToI["cbip_mgmt_ips"]; ok && !isIntfNil(w) {
 								ls := make([]string, len(w.([]interface{})))

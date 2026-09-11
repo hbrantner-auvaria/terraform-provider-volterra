@@ -26,6 +26,116 @@ var (
 
 // augmented methods on protoc/std generated struct
 
+func (m *ApiEndpointsStats) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *ApiEndpointsStats) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *ApiEndpointsStats) DeepCopy() *ApiEndpointsStats {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &ApiEndpointsStats{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *ApiEndpointsStats) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *ApiEndpointsStats) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return ApiEndpointsStatsValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateApiEndpointsStats struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateApiEndpointsStats) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*ApiEndpointsStats)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *ApiEndpointsStats got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["discovered"]; exists {
+		vOpts := append(opts, db.WithValidateField("discovered"))
+		if err := fv(ctx, m.GetDiscovered(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["inventory"]; exists {
+		vOpts := append(opts, db.WithValidateField("inventory"))
+		if err := fv(ctx, m.GetInventory(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["namespace"]; exists {
+		vOpts := append(opts, db.WithValidateField("namespace"))
+		if err := fv(ctx, m.GetNamespace(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["pii_detected"]; exists {
+		vOpts := append(opts, db.WithValidateField("pii_detected"))
+		if err := fv(ctx, m.GetPiiDetected(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["shadow"]; exists {
+		vOpts := append(opts, db.WithValidateField("shadow"))
+		if err := fv(ctx, m.GetShadow(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["total_endpoints"]; exists {
+		vOpts := append(opts, db.WithValidateField("total_endpoints"))
+		if err := fv(ctx, m.GetTotalEndpoints(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["virtual_host"]; exists {
+		vOpts := append(opts, db.WithValidateField("virtual_host"))
+		if err := fv(ctx, m.GetVirtualHost(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultApiEndpointsStatsValidator = func() *ValidateApiEndpointsStats {
+	v := &ValidateApiEndpointsStats{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func ApiEndpointsStatsValidator() db.Validator {
+	return DefaultApiEndpointsStatsValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *ApiEndpointsStatsAllNSReq) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
@@ -78,6 +188,12 @@ func (v *ValidateApiEndpointsStatsAllNSReq) Validate(ctx context.Context, pm int
 	if m == nil {
 		return nil
 	}
+	if fv, exists := v.FldValidators["include_per_vhost_stats"]; exists {
+		vOpts := append(opts, db.WithValidateField("include_per_vhost_stats"))
+		if err := fv(ctx, m.GetIncludePerVhostStats(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["namespace"]; exists {
 		vOpts := append(opts, db.WithValidateField("namespace"))
 		if err := fv(ctx, m.GetNamespace(), vOpts...); err != nil {
@@ -96,6 +212,83 @@ var DefaultApiEndpointsStatsAllNSReqValidator = func() *ValidateApiEndpointsStat
 
 func ApiEndpointsStatsAllNSReqValidator() db.Validator {
 	return DefaultApiEndpointsStatsAllNSReqValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *ApiEndpointsStatsList) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *ApiEndpointsStatsList) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *ApiEndpointsStatsList) DeepCopy() *ApiEndpointsStatsList {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &ApiEndpointsStatsList{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *ApiEndpointsStatsList) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *ApiEndpointsStatsList) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return ApiEndpointsStatsListValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateApiEndpointsStatsList struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateApiEndpointsStatsList) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*ApiEndpointsStatsList)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *ApiEndpointsStatsList got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["apiep_stats_list"]; exists {
+		vOpts := append(opts, db.WithValidateField("apiep_stats_list"))
+		for idx, item := range m.GetApiepStatsList() {
+			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
+			if err := fv(ctx, item, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultApiEndpointsStatsListValidator = func() *ValidateApiEndpointsStatsList {
+	v := &ValidateApiEndpointsStatsList{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func ApiEndpointsStatsListValidator() db.Validator {
+	return DefaultApiEndpointsStatsListValidator
 }
 
 // augmented methods on protoc/std generated struct
@@ -199,6 +392,12 @@ func (v *ValidateApiEndpointsStatsNSReq) Validate(ctx context.Context, pm interf
 	if m == nil {
 		return nil
 	}
+	if fv, exists := v.FldValidators["include_per_vhost_stats"]; exists {
+		vOpts := append(opts, db.WithValidateField("include_per_vhost_stats"))
+		if err := fv(ctx, m.GetIncludePerVhostStats(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["namespace"]; exists {
 		vOpts := append(opts, db.WithValidateField("namespace"))
 		if err := fv(ctx, m.GetNamespace(), vOpts...); err != nil {
@@ -236,8 +435,8 @@ var DefaultApiEndpointsStatsNSReqValidator = func() *ValidateApiEndpointsStatsNS
 
 	vrhVhostsTypesFilter := v.VhostsTypesFilterValidationRuleHandler
 	rulesVhostsTypesFilter := map[string]string{
-		"ves.io.schema.rules.enum.in":         "[1,6,7,8]",
-		"ves.io.schema.rules.repeated.unique": "true",
+		"ves.io.schema.rules.repeated.items.enum.in": "[1,6,7,8,11]",
+		"ves.io.schema.rules.repeated.unique":        "true",
 	}
 	vFn, err = vrhVhostsTypesFilter(rulesVhostsTypesFilter)
 	if err != nil {
@@ -307,6 +506,12 @@ func (v *ValidateApiEndpointsStatsNSRsp) Validate(ctx context.Context, pm interf
 	if m == nil {
 		return nil
 	}
+	if fv, exists := v.FldValidators["agg_apiep_stats"]; exists {
+		vOpts := append(opts, db.WithValidateField("agg_apiep_stats"))
+		if err := fv(ctx, m.GetAggApiepStats(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["discovered"]; exists {
 		vOpts := append(opts, db.WithValidateField("discovered"))
 		if err := fv(ctx, m.GetDiscovered(), vOpts...); err != nil {
@@ -317,6 +522,15 @@ func (v *ValidateApiEndpointsStatsNSRsp) Validate(ctx context.Context, pm interf
 		vOpts := append(opts, db.WithValidateField("inventory"))
 		if err := fv(ctx, m.GetInventory(), vOpts...); err != nil {
 			return err
+		}
+	}
+	if fv, exists := v.FldValidators["per_vhost_type_apiep_stats"]; exists {
+		vOpts := append(opts, db.WithValidateField("per_vhost_type_apiep_stats"))
+		for key, value := range m.GetPerVhostTypeApiepStats() {
+			vOpts := append(vOpts, db.WithValidateMapKey(key))
+			if err := fv(ctx, value, vOpts...); err != nil {
+				return err
+			}
 		}
 	}
 	if fv, exists := v.FldValidators["pii_detected"]; exists {

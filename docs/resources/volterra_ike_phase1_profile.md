@@ -27,15 +27,18 @@ resource "volterra_ike_phase1_profile" "example" {
 
   // One of the arguments from this list "ike_keylifetime_hours ike_keylifetime_minutes use_default_keylifetime" must be set
 
-  use_default_keylifetime = true
+  ike_keylifetime_minutes {
+    duration = "duration"
+  }
 
   // One of the arguments from this list "reauth_disabled reauth_timeout_days reauth_timeout_hours" must be set
 
-  reauth_timeout_days {
+  reauth_timeout_hours {
     duration = "duration"
   }
   prf = ["prf"]
 }
+
 ```
 
 Argument Reference
@@ -108,4 +111,4 @@ Set Reauthentication timeout in Hours.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured ike_phase1_profile.
+-	`id` - This is the id of the configured ike_phase1_profile.

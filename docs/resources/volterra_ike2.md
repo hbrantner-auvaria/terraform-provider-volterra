@@ -22,10 +22,9 @@ resource "volterra_ike2" "example" {
 
   // One of the arguments from this list "ike_keylifetime_hours ike_keylifetime_minutes use_default_keylifetime" must be set
 
-  ike_keylifetime_minutes {
-    duration = "duration"
-  }
+  use_default_keylifetime = true
 }
+
 ```
 
 Argument Reference
@@ -86,4 +85,4 @@ Choose the acceptable Diffie Hellman(DH) Group or Groups that you are willing to
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured ike2.
+-	`id` - This is the id of the configured ike2.

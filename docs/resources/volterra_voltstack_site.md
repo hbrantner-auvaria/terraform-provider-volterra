@@ -30,7 +30,7 @@ resource "volterra_voltstack_site" "example" {
 
   // One of the arguments from this list "disable_gpu enable_gpu enable_vgpu" must be set
 
-  disable_gpu = true
+  enable_gpu = true
 
   // One of the arguments from this list "k8s_cluster no_k8s_cluster" must be set
 
@@ -51,15 +51,7 @@ resource "volterra_voltstack_site" "example" {
 
   // One of the arguments from this list "default_sriov_interface sriov_interfaces" must be set
 
-  sriov_interfaces {
-    sriov_interface {
-      interface_name = "eth0"
-
-      number_of_vfio_vfs = "2"
-
-      number_of_vfs = "3"
-    }
-  }
+  default_sriov_interface = true
 
   // One of the arguments from this list "custom_storage_config default_storage_config" must be set
 
@@ -70,6 +62,7 @@ resource "volterra_voltstack_site" "example" {
   deny_all_usb          = true
   volterra_certified_hw = ["isv-8000-series-voltstack-combo"]
 }
+
 ```
 
 Argument Reference
@@ -181,6 +174,8 @@ Argument Reference
 
 `volterra_certified_hw` - (Required) Name for generic server certified hardware to form this App Stack site. (`String`).
 
+`waf_signatures` - (Optional) Select WAF Signatures Update Mode for the site. By default, new signatures will be applied manually.. See [Waf Signatures ](#waf-signatures) below for details.
+
 `worker_nodes` - (Optional) Names of worker nodes (`List of String`).
 
 ### Coordinates
@@ -250,6 +245,16 @@ F5XC Software Details.
 `default_sw_version` - (Optional) Will assign latest available F5XC Software Version (`Bool`).
 
 `volterra_software_version` - (Optional) Specify a F5XC Software Version to be used e.g. crt-20210329-1002. (`String`).
+
+### Waf Signatures
+
+Select WAF Signatures Update Mode for the site. By default, new signatures will be applied manually..
+
+###### One of the arguments from this list "automatic, manual" can be set
+
+`automatic` - (Optional) New WAF signatures will be applied automatically as soon as they are released. (`Bool`).
+
+`manual` - (Optional) New WAF signatures will only be applied when an update is triggered manually. (`Bool`).
 
 ### Address Choice Default Gateway
 
@@ -1191,7 +1196,7 @@ Networking configuration for dedicated interface is configured locally on site e
 
 `monitor_disabled` - (Optional) Link quality monitoring disabled on the interface. (`Bool`).
 
-`mtu` - (Optional) When configured, mtu must be between 512 and 16384 (`Int`).
+`mtu` - (Optional) When configured, mtu must be between 512 and 8000 (`Int`).
 
 ###### One of the arguments from this list "cluster, node" must be set
 
@@ -1213,7 +1218,7 @@ Fallback management interfaces can be made into dedicated management interface.
 
 `device` - (Required) Name of the device for which interface is configured (`String`).
 
-`mtu` - (Optional) When configured, mtu must be between 512 and 16384 (`Int`).
+`mtu` - (Optional) When configured, mtu must be between 512 and 8000 (`Int`).
 
 ###### One of the arguments from this list "cluster, node" must be set
 
@@ -1253,7 +1258,7 @@ Ethernet interface configuration..
 
 `monitor_disabled` - (Optional) Link quality monitoring disabled on the interface. (`Bool`).
 
-`mtu` - (Optional) When configured, mtu must be between 512 and 16384 (`Int`).
+`mtu` - (Optional) When configured, mtu must be between 512 and 8000 (`Int`).
 
 ###### One of the arguments from this list "inside_network, ip_fabric_network, segment_network, site_local_inside_network, site_local_network, srv6_network, storage_network" must be set
 
@@ -1327,7 +1332,7 @@ Loopback device..
 
 `static_ipv6_address` - (Optional) Interface IP is configured statically. See [Ipv6 Address Choice Static Ipv6 Address ](#ipv6-address-choice-static-ipv6-address) below for details.
 
-`mtu` - (Optional) When configured, mtu must be between 512 and 16384 (`Int`).
+`mtu` - (Optional) When configured, mtu must be between 512 and 8000 (`Int`).
 
 ###### One of the arguments from this list "ip_fabric_network, site_local_inside_network, site_local_network" must be set
 
@@ -1353,7 +1358,7 @@ Tunnel interface, Ipsec tunnels to other networking devices..
 
 `cloud_connect` - (Optional) The clould connect this network interface is connecting to incase of Cloud Sites. See [ref](#ref) below for details.(Deprecated)
 
-`mtu` - (Optional) When configured, mtu must be between 512 and 16384 (`Int`).
+`mtu` - (Optional) When configured, mtu must be between 512 and 8000 (`Int`).
 
 ###### One of the arguments from this list "inside_network, site_local_inside_network, site_local_network" must be set
 
@@ -2077,6 +2082,14 @@ Secret is given as bootstrap secret in F5XC Security Sidecar.
 
 `name` - (Required) Name of the secret. (`String`).
 
+### Signatures Update Mode Choice Automatic
+
+New WAF signatures will be applied automatically as soon as they are released..
+
+### Signatures Update Mode Choice Manual
+
+New WAF signatures will only be applied when an update is triggered manually..
+
 ### Signing Cert Choice Custom Certificate
 
 Certificates for generating intermediate certificate for TLS interception..
@@ -2429,7 +2442,7 @@ Configure storage interface for this App Stack site.
 
 `monitor_disabled` - (Optional) Link quality monitoring disabled on the interface. (`Bool`).
 
-`mtu` - (Optional) When configured, mtu must be between 512 and 16384 (`Int`).
+`mtu` - (Optional) When configured, mtu must be between 512 and 8000 (`Int`).
 
 ###### One of the arguments from this list "inside_network, ip_fabric_network, segment_network, site_local_inside_network, site_local_network, srv6_network, storage_network" must be set
 
@@ -2654,4 +2667,4 @@ Will assign latest available F5XC Software Version.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured voltstack_site.
+-	`id` - This is the id of the configured voltstack_site.

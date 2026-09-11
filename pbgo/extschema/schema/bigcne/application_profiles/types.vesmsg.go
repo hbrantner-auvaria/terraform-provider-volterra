@@ -5447,6 +5447,11 @@ func (m *VirtualServerType) GetDRefInfo() ([]db.DRefInfo, error) {
 	}
 
 	var drInfos []db.DRefInfo
+	if fdrInfos, err := m.GetAccessProfileDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetAccessProfileDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
 	if fdrInfos, err := m.GetClonePoolClientDRefInfo(); err != nil {
 		return nil, errors.Wrap(err, "GetClonePoolClientDRefInfo() FAILED")
 	} else {
@@ -5498,6 +5503,49 @@ func (m *VirtualServerType) GetDRefInfo() ([]db.DRefInfo, error) {
 		drInfos = append(drInfos, fdrInfos...)
 	}
 	return drInfos, nil
+}
+
+func (m *VirtualServerType) GetAccessProfileDRefInfo() ([]db.DRefInfo, error) {
+	refs := m.GetAccessProfile()
+	if len(refs) == 0 {
+		return nil, nil
+	}
+	drInfos := make([]db.DRefInfo, 0, len(refs))
+	for i, ref := range refs {
+		if ref == nil {
+			return nil, fmt.Errorf("VirtualServerType.access_profile[%d] has a nil value", i)
+		}
+		// resolve kind to type if needed at DBObject.GetDRefInfo()
+		drInfos = append(drInfos, db.DRefInfo{
+			RefdType:   "access_profile.Object",
+			RefdUID:    ref.Uid,
+			RefdTenant: ref.Tenant,
+			RefdNS:     ref.Namespace,
+			RefdName:   ref.Name,
+			DRField:    "access_profile",
+			Ref:        ref,
+		})
+	}
+	return drInfos, nil
+}
+
+// GetAccessProfileDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *VirtualServerType) GetAccessProfileDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "access_profile.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: access_profile")
+	}
+	for _, ref := range m.GetAccessProfile() {
+		refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+		if err != nil {
+			return nil, errors.Wrap(err, "Getting referred entry")
+		}
+		if refdEnt != nil {
+			entries = append(entries, refdEnt)
+		}
+	}
+	return entries, nil
 }
 
 func (m *VirtualServerType) GetClonePoolClientDRefInfo() ([]db.DRefInfo, error) {
@@ -6390,6 +6438,52 @@ func (v *ValidateVirtualServerType) StatisticsProfileValidationRuleHandler(rules
 
 	return validatorFn, nil
 }
+func (v *ValidateVirtualServerType) AccessProfileValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepMessageItemRules(rules)
+	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Message ValidationRuleHandler for access_profile")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []*ves_io_schema.ObjectRefType, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+			if err := ves_io_schema.ObjectRefTypeValidator().Validate(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for access_profile")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]*ves_io_schema.ObjectRefType)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []*ves_io_schema.ObjectRefType, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
+			if err != nil {
+				return errors.Wrapf(err, "Converting %v to JSON", elem)
+			}
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated access_profile")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items access_profile")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
 
 func (v *ValidateVirtualServerType) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
 	m, ok := pm.(*VirtualServerType)
@@ -6403,6 +6497,12 @@ func (v *ValidateVirtualServerType) Validate(ctx context.Context, pm interface{}
 	}
 	if m == nil {
 		return nil
+	}
+	if fv, exists := v.FldValidators["access_profile"]; exists {
+		vOpts := append(opts, db.WithValidateField("access_profile"))
+		if err := fv(ctx, m.GetAccessProfile(), vOpts...); err != nil {
+			return err
+		}
 	}
 	if fv, exists := v.FldValidators["address_translation"]; exists {
 		vOpts := append(opts, db.WithValidateField("address_translation"))
@@ -6739,6 +6839,18 @@ var DefaultVirtualServerTypeValidator = func() *ValidateVirtualServerType {
 		panic(errMsg)
 	}
 	v.FldValidators["statistics_profile"] = vFn
+
+	vrhAccessProfile := v.AccessProfileValidationRuleHandler
+	rulesAccessProfile := map[string]string{
+		"ves.io.schema.rules.repeated.max_items": "1",
+		"ves.io.schema.rules.repeated.unique":    "true",
+	}
+	vFn, err = vrhAccessProfile(rulesAccessProfile)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for VirtualServerType.access_profile: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["access_profile"] = vFn
 	v.FldValidators["virtual_server_type.http"] = HTTPProfileTypeValidator().Validate
 	v.FldValidators["virtual_server_type.https"] = HTTPProfileTypeValidator().Validate
 	v.FldValidators["virtual_server_type.tcp"] = TCPProfileTypeValidator().Validate

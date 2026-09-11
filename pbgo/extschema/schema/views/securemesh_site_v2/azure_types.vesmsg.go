@@ -1228,7 +1228,7 @@ var DefaultAzureOrchestratedInterfaceValidator = func() *ValidateAzureOrchestrat
 
 	vrhMtu := v.MtuValidationRuleHandler
 	rulesMtu := map[string]string{
-		"ves.io.schema.rules.uint32.ranges": "0,512-16384",
+		"ves.io.schema.rules.uint32.ranges": "0,512-8000",
 	}
 	vFn, err = vrhMtu(rulesMtu)
 	if err != nil {

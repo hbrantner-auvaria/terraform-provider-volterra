@@ -2186,7 +2186,7 @@ var APISwaggerJSON string = `{
             "properties": {
                 "community": {
                     "type": "array",
-                    "description": " An unordered set of RFC 1997 defined 4-byte community, first 16 bits being ASN and lower 16 bits being value\n\nExample: - \"[65535:65281, 65535:65284]\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 8\n  ves.io.schema.rules.repeated.min_items: 1\n  ves.io.schema.rules.repeated.unique: true\n  ves.io.schema.rules.string.pattern: ^[0-9]{1,5}:[0-9]{1,5}$\n",
+                    "description": " An unordered set of RFC 1997 defined 4-byte community, first 16 bits being ASN and lower 16 bits being value\n\nExample: - \"[65535:65281, 65535:65284]\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.items.string.pattern: ^[0-9]{1,5}:[0-9]{1,5}$\n  ves.io.schema.rules.repeated.max_items: 8\n  ves.io.schema.rules.repeated.min_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "community",
                     "minItems": 1,
                     "maxItems": 8,
@@ -2198,10 +2198,10 @@ var APISwaggerJSON string = `{
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.repeated.items.string.pattern": "^[0-9]{1,5}:[0-9]{1,5}$",
                         "ves.io.schema.rules.repeated.max_items": "8",
                         "ves.io.schema.rules.repeated.min_items": "1",
-                        "ves.io.schema.rules.repeated.unique": "true",
-                        "ves.io.schema.rules.string.pattern": "^[0-9]{1,5}:[0-9]{1,5}$"
+                        "ves.io.schema.rules.repeated.unique": "true"
                     }
                 }
             }

@@ -2576,6 +2576,29 @@ var APISwaggerJSON string = `{
         }
     },
     "definitions": {
+        "common_wafLiveSignaturesUpdate": {
+            "type": "object",
+            "description": "Select F5XC WAF Signatures update mode for the site. By default, new signatures will be applied manually.\nRefer to release notes for details about available Signatures update modes.",
+            "title": "Live Signatures Update",
+            "x-displayname": "WAF Signatures Update Mode",
+            "x-ves-displayorder": "1",
+            "x-ves-oneof-field-signatures_update_mode_choice": "[\"automatic\",\"manual\"]",
+            "x-ves-proto-message": "ves.io.schema.views.common_waf.LiveSignaturesUpdate",
+            "properties": {
+                "automatic": {
+                    "description": "Exclusive with [manual]\n New WAF signatures will be applied automatically as soon as they are released.",
+                    "title": "Automatic update mode",
+                    "$ref": "#/definitions/schemaEmpty",
+                    "x-displayname": "Automatic"
+                },
+                "manual": {
+                    "description": "Exclusive with [automatic]\n New WAF signatures will only be applied when an update is triggered manually.",
+                    "title": "Manual update mode",
+                    "$ref": "#/definitions/schemaEmpty",
+                    "x-displayname": "Manual"
+                }
+            }
+        },
         "crudapiObjectCreateReq": {
             "type": "object",
             "x-ves-proto-message": "ves.io.schema.views.securemesh_site_v2.crudapi.ObjectCreateReq",
@@ -2584,7 +2607,7 @@ var APISwaggerJSON string = `{
                     "$ref": "#/definitions/schemaObjectMetaType"
                 },
                 "spec": {
-                    "$ref": "#/definitions/securemesh_site_v2SpecType"
+                    "$ref": "#/definitions/viewssecuremesh_site_v2SpecType"
                 },
                 "system_metadata": {
                     "$ref": "#/definitions/schemaSystemObjectMetaType"
@@ -2605,7 +2628,7 @@ var APISwaggerJSON string = `{
                     "type": "string"
                 },
                 "spec": {
-                    "$ref": "#/definitions/securemesh_site_v2SpecType"
+                    "$ref": "#/definitions/viewssecuremesh_site_v2SpecType"
                 },
                 "system_metadata": {
                     "$ref": "#/definitions/schemaSystemObjectMetaType"
@@ -2641,7 +2664,7 @@ var APISwaggerJSON string = `{
                     "type": "string"
                 },
                 "spec": {
-                    "$ref": "#/definitions/securemesh_site_v2SpecType"
+                    "$ref": "#/definitions/viewssecuremesh_site_v2SpecType"
                 },
                 "status": {
                     "type": "array",
@@ -2703,7 +2726,7 @@ var APISwaggerJSON string = `{
                     "type": "string"
                 },
                 "spec": {
-                    "$ref": "#/definitions/securemesh_site_v2SpecType"
+                    "$ref": "#/definitions/viewssecuremesh_site_v2SpecType"
                 },
                 "status": {
                     "type": "array",
@@ -2733,7 +2756,7 @@ var APISwaggerJSON string = `{
                     "type": "string"
                 },
                 "spec": {
-                    "$ref": "#/definitions/securemesh_site_v2SpecType"
+                    "$ref": "#/definitions/viewssecuremesh_site_v2SpecType"
                 }
             }
         },
@@ -2748,7 +2771,7 @@ var APISwaggerJSON string = `{
                     "$ref": "#/definitions/schemaObjectMetaType"
                 },
                 "spec": {
-                    "$ref": "#/definitions/securemesh_site_v2SpecType"
+                    "$ref": "#/definitions/viewssecuremesh_site_v2SpecType"
                 },
                 "system_metadata": {
                     "$ref": "#/definitions/schemaSystemObjectMetaType"
@@ -2770,12 +2793,12 @@ var APISwaggerJSON string = `{
                     "x-displayname": "DNS"
                 },
                 "network_type": {
-                    "description": " Site Local VRF on which this service will be disabled\n\nValidation Rules:\n  ves.io.schema.rules.enum.in: [0,1,13]\n",
+                    "description": " Site Local VRF on which this service will be disabled\n\nValidation Rules:\n  ves.io.schema.rules.enum.in: [0,1,12,13]\n",
                     "title": "network_type",
                     "$ref": "#/definitions/schemaVirtualNetworkType",
                     "x-displayname": "Site Local VRF",
                     "x-ves-validation-rules": {
-                        "ves.io.schema.rules.enum.in": "[0,1,13]"
+                        "ves.io.schema.rules.enum.in": "[0,1,12,13]"
                     }
                 },
                 "ssh": {
@@ -2959,58 +2982,6 @@ var APISwaggerJSON string = `{
                     "title": "uid",
                     "x-displayname": "UID",
                     "x-ves-example": "d15f1fad-4d37-48c0-8706-df1824d76d31"
-                }
-            }
-        },
-        "network_firewallActiveEnhancedFirewallPoliciesType": {
-            "type": "object",
-            "description": "List of Enhanced Firewall Policies\nThese policies use session-based rules and provide all options available under firewall policies\nwith an additional option for service insertion.",
-            "title": "Active Enhanced Firewall Policies Type",
-            "x-displayname": "Active Enhanced Network Policies Type",
-            "x-ves-proto-message": "ves.io.schema.network_firewall.ActiveEnhancedFirewallPoliciesType",
-            "properties": {
-                "enhanced_firewall_policies": {
-                    "type": "array",
-                    "description": " Ordered List of Enhanced Firewall Policies active\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 128\n  ves.io.schema.rules.repeated.min_items: 1\n",
-                    "title": "Enhanced Firewall Policy",
-                    "minItems": 1,
-                    "maxItems": 128,
-                    "items": {
-                        "$ref": "#/definitions/schemaviewsObjectRefType"
-                    },
-                    "x-displayname": "Enhanced Firewall Policy",
-                    "x-ves-required": "true",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.message.required": "true",
-                        "ves.io.schema.rules.repeated.max_items": "128",
-                        "ves.io.schema.rules.repeated.min_items": "1"
-                    }
-                }
-            }
-        },
-        "network_firewallActiveForwardProxyPoliciesType": {
-            "type": "object",
-            "description": "Ordered List of Forward Proxy Policies active",
-            "title": "Active Forward Proxy Policies Type",
-            "x-displayname": "Active Forward Proxy Policies Type",
-            "x-ves-proto-message": "ves.io.schema.network_firewall.ActiveForwardProxyPoliciesType",
-            "properties": {
-                "forward_proxy_policies": {
-                    "type": "array",
-                    "description": " Ordered List of Forward Proxy Policies active\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 128\n  ves.io.schema.rules.repeated.min_items: 1\n",
-                    "title": "Forward Proxy Policies",
-                    "minItems": 1,
-                    "maxItems": 128,
-                    "items": {
-                        "$ref": "#/definitions/schemaviewsObjectRefType"
-                    },
-                    "x-displayname": "Forward Proxy Policies",
-                    "x-ves-required": "true",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.message.required": "true",
-                        "ves.io.schema.rules.repeated.max_items": "128",
-                        "ves.io.schema.rules.repeated.min_items": "1"
-                    }
                 }
             }
         },
@@ -3392,7 +3363,7 @@ var APISwaggerJSON string = `{
             "properties": {
                 "dns_list": {
                     "type": "array",
-                    "description": " List of IPV6 Addresses acting as Dns servers\n\nExample: - \"2001::11\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 4\n  ves.io.schema.rules.repeated.min_items: 1\n  ves.io.schema.rules.repeated.unique: true\n  ves.io.schema.rules.string.ipv6: true\n",
+                    "description": " List of IPV6 Addresses acting as Dns servers\n\nExample: - \"2001::11\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.items.string.ipv6: true\n  ves.io.schema.rules.repeated.max_items: 4\n  ves.io.schema.rules.repeated.min_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "Dns List",
                     "minItems": 1,
                     "maxItems": 4,
@@ -3404,10 +3375,10 @@ var APISwaggerJSON string = `{
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.repeated.items.string.ipv6": "true",
                         "ves.io.schema.rules.repeated.max_items": "4",
                         "ves.io.schema.rules.repeated.min_items": "1",
-                        "ves.io.schema.rules.repeated.unique": "true",
-                        "ves.io.schema.rules.string.ipv6": "true"
+                        "ves.io.schema.rules.repeated.unique": "true"
                     }
                 }
             }
@@ -4290,7 +4261,7 @@ var APISwaggerJSON string = `{
         },
         "schemaVirtualNetworkType": {
             "type": "string",
-            "description": "Different types of virtual networks understood by the system\n\nVirtual-network of type VIRTUAL_NETWORK_SITE_LOCAL provides connectivity to public (outside) network.\nThis is an insecure network and is connected to public internet via NAT Gateways/firwalls\nVirtual-network of this type is local to every site. Two virtual networks of this type on different\nsites are neither related nor connected.\n\nConstraints:\nThere can be atmost one virtual network of this type in a given site.\nThis network type is supported on CE sites. This network is created automatically and present on all sites\nVirtual-network of type VIRTUAL_NETWORK_SITE_LOCAL_INSIDE is a private network inside site.\nIt is a secure network and is not connected to public network.\nVirtual-network of this type is local to every site. Two virtual networks of this type on different\nsites are neither related nor connected.\n\nConstraints:\nThere can be atmost one virtual network of this type in a given site.\nThis network type is supported on CE sites. This network is created during provisioning of site\nUser defined per-site virtual network. Scope of this virtual network is limited to the site.\nThis is not yet supported\nVirtual-network of type VIRTUAL_NETWORK_PUBLIC directly conects to the public internet.\nVirtual-network of this type is local to every site. Two virtual networks of this type on different sites are neither related nor connected.\n\nConstraints:\nThere can be atmost one virtual network of this type in a given site.\nThis network type is supported on RE sites only\nIt is an internally created by the system. They must not be created by user\nVirtual Neworks with global scope across different sites in F5XC domain.\nAn example global virtual-network called \"AIN Network\" is created for every tenant.\nfor volterra fabric\n\nConstraints:\nIt is currently only supported as internally created by the system.\nvK8s service network for a given tenant. Used to advertise a virtual host only to vk8s pods for that tenant\nConstraints:\nIt is an internally created by the system. Must not be created by user\nVER internal network for the site. It can only be used for virtual hosts with SMA_PROXY type proxy\nConstraints:\nIt is an internally created by the system. Must not be created by user\nVirtual-network of type VIRTUAL_NETWORK_SITE_LOCAL_INSIDE_OUTSIDE represents both\nVIRTUAL_NETWORK_SITE_LOCAL and VIRTUAL_NETWORK_SITE_LOCAL_INSIDE\n\nConstraints:\nThis network type is only meaningful in an advertise policy\nWhen virtual-network of type VIRTUAL_NETWORK_IP_AUTO is selected for\nan endpoint, VER will try to determine the network based on the provided\nIP address\n\nConstraints:\nThis network type is only meaningful in an endpoint\n\nVoltADN Private Network is used on volterra RE(s) to connect to customer private networks\nThis network is created by opening a support ticket\n\nThis network is per site srv6 network\nVER IP Fabric network for the site.\nThis Virtual network type is used for exposing virtual host on IP Fabric network on the VER site or\nfor endpoint in IP Fabric network\nConstraints:\nIt is an internally created by the system. Must not be created by user\nNetwork internally created for a segment\nConstraints:\nIt is an internally created by the system. Must not be created by user\nVirtual-network of type VIRTUAL_NETWORK_MANAGEMENT is used for management purposes",
+            "description": "Different types of virtual networks understood by the system\n\nVirtual-network of type VIRTUAL_NETWORK_SITE_LOCAL provides connectivity to public (outside) network.\nThis is an insecure network and is connected to public internet via NAT Gateways/firwalls\nVirtual-network of this type is local to every site. Two virtual networks of this type on different\nsites are neither related nor connected.\n\nConstraints:\nThere can be atmost one virtual network of this type in a given site.\nThis network type is supported on CE sites. This network is created automatically and present on all sites\nVirtual-network of type VIRTUAL_NETWORK_SITE_LOCAL_INSIDE is a private network inside site.\nIt is a secure network and is not connected to public network.\nVirtual-network of this type is local to every site. Two virtual networks of this type on different\nsites are neither related nor connected.\n\nConstraints:\nThere can be atmost one virtual network of this type in a given site.\nThis network type is supported on CE sites. This network is created during provisioning of site\nUser defined per-site virtual network. Scope of this virtual network is limited to the site.\nThis is not yet supported\nVirtual-network of type VIRTUAL_NETWORK_PUBLIC directly conects to the public internet.\nVirtual-network of this type is local to every site. Two virtual networks of this type on different sites are neither related nor connected.\n\nConstraints:\nThere can be atmost one virtual network of this type in a given site.\nThis network type is supported on RE sites only\nIt is an internally created by the system. They must not be created by user\nVirtual Neworks with global scope across different sites in F5XC domain.\nAn example global virtual-network called \"AIN Network\" is created for every tenant.\nfor volterra fabric\n\nConstraints:\nIt is currently only supported as internally created by the system.\nvK8s service network for a given tenant. Used to advertise a virtual host only to vk8s pods for that tenant\nConstraints:\nIt is an internally created by the system. Must not be created by user\nVER internal network for the site. It can only be used for virtual hosts with SMA_PROXY type proxy\nConstraints:\nIt is an internally created by the system. Must not be created by user\nVirtual-network of type VIRTUAL_NETWORK_SITE_LOCAL_INSIDE_OUTSIDE represents both\nVIRTUAL_NETWORK_SITE_LOCAL and VIRTUAL_NETWORK_SITE_LOCAL_INSIDE\n\nConstraints:\nThis network type is only meaningful in an advertise policy\nWhen virtual-network of type VIRTUAL_NETWORK_IP_AUTO is selected for\nan endpoint, VER will try to determine the network based on the provided\nIP address\n\nConstraints:\nThis network type is only meaningful in an endpoint\n\nVoltADN Private Network is used on volterra RE(s) to connect to customer private networks\nThis network is created by opening a support ticket\n\nThis network is per site srv6 network\nVER IP Fabric network for the site.\nThis Virtual network type is used for exposing virtual host on IP Fabric network on the VER site or\nfor endpoint in IP Fabric network\nConstraints:\nIt is an internally created by the system. Must not be created by user\nVirtual-network of type VIRTUAL_NETWORK_SEGMENT for segment interface\nVirtual-network of type VIRTUAL_NETWORK_MANAGEMENT is used for management purposes",
             "title": "VirtualNetworkType",
             "enum": [
                 "VIRTUAL_NETWORK_SITE_LOCAL",
@@ -4321,6 +4292,58 @@ var APISwaggerJSON string = `{
                     "type": "string",
                     "description": "x-displayName: \"Name\"\nx-required\nx-example: \"ChargeBack-API-Key\"\nName of the secret.",
                     "title": "Name"
+                }
+            }
+        },
+        "schemanetwork_firewallActiveEnhancedFirewallPoliciesType": {
+            "type": "object",
+            "description": "List of Enhanced Firewall Policies\nThese policies use session-based rules and provide all options available under firewall policies\nwith an additional option for service insertion.",
+            "title": "Active Enhanced Firewall Policies Type",
+            "x-displayname": "Active Enhanced Network Policies Type",
+            "x-ves-proto-message": "ves.io.schema.network_firewall.ActiveEnhancedFirewallPoliciesType",
+            "properties": {
+                "enhanced_firewall_policies": {
+                    "type": "array",
+                    "description": " Ordered List of Enhanced Firewall Policies active\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 128\n  ves.io.schema.rules.repeated.min_items: 1\n",
+                    "title": "Enhanced Firewall Policy",
+                    "minItems": 1,
+                    "maxItems": 128,
+                    "items": {
+                        "$ref": "#/definitions/schemaviewsObjectRefType"
+                    },
+                    "x-displayname": "Enhanced Firewall Policy",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.repeated.max_items": "128",
+                        "ves.io.schema.rules.repeated.min_items": "1"
+                    }
+                }
+            }
+        },
+        "schemanetwork_firewallActiveForwardProxyPoliciesType": {
+            "type": "object",
+            "description": "Ordered List of Forward Proxy Policies active",
+            "title": "Active Forward Proxy Policies Type",
+            "x-displayname": "Active Forward Proxy Policies Type",
+            "x-ves-proto-message": "ves.io.schema.network_firewall.ActiveForwardProxyPoliciesType",
+            "properties": {
+                "forward_proxy_policies": {
+                    "type": "array",
+                    "description": " Ordered List of Forward Proxy Policies active\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 128\n  ves.io.schema.rules.repeated.min_items: 1\n",
+                    "title": "Forward Proxy Policies",
+                    "minItems": 1,
+                    "maxItems": 128,
+                    "items": {
+                        "$ref": "#/definitions/schemaviewsObjectRefType"
+                    },
+                    "x-displayname": "Forward Proxy Policies",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.repeated.max_items": "128",
+                        "ves.io.schema.rules.repeated.min_items": "1"
+                    }
                 }
             }
         },
@@ -4826,13 +4849,13 @@ var APISwaggerJSON string = `{
                 },
                 "mtu": {
                     "type": "integer",
-                    "description": " Maximum packet size (Maximum Transfer Unit) of the interface\n When configured, mtu must be between 512 and 16384\n\nExample: - \"1450\"-\n\nValidation Rules:\n  ves.io.schema.rules.uint32.ranges: 0,512-16384\n",
+                    "description": " Maximum packet size (Maximum Transfer Unit) of the interface\n When configured, mtu must be between 512 and 8000\n\nExample: - \"1450\"-\n\nValidation Rules:\n  ves.io.schema.rules.uint32.ranges: 0,512-8000\n",
                     "title": "Maximum Packet Size (MTU)",
                     "format": "int64",
                     "x-displayname": "Maximum Packet Size (MTU)",
                     "x-ves-example": "1450",
                     "x-ves-validation-rules": {
-                        "ves.io.schema.rules.uint32.ranges": "0,512-16384"
+                        "ves.io.schema.rules.uint32.ranges": "0,512-8000"
                     }
                 },
                 "network_option": {
@@ -5248,13 +5271,13 @@ var APISwaggerJSON string = `{
             "properties": {
                 "mtu": {
                     "type": "integer",
-                    "description": " Maximum packet size (Maximum Transfer Unit) of the interface\n When configured, mtu must be between 512 and 16384\n\nExample: - \"1450\"-\n\nValidation Rules:\n  ves.io.schema.rules.uint32.ranges: 0,512-16384\n",
+                    "description": " Maximum packet size (Maximum Transfer Unit) of the interface\n When configured, mtu must be between 512 and 8000\n\nExample: - \"1450\"-\n\nValidation Rules:\n  ves.io.schema.rules.uint32.ranges: 0,512-8000\n",
                     "title": "Maximum Packet Size (MTU)",
                     "format": "int64",
                     "x-displayname": "Maximum Packet Size (MTU)",
                     "x-ves-example": "1450",
                     "x-ves-validation-rules": {
-                        "ves.io.schema.rules.uint32.ranges": "0,512-16384"
+                        "ves.io.schema.rules.uint32.ranges": "0,512-8000"
                     }
                 },
                 "network_option": {
@@ -5616,14 +5639,10 @@ var APISwaggerJSON string = `{
             "x-ves-proto-message": "ves.io.schema.views.securemesh_site_v2.EnableVIPAutomationType",
             "properties": {
                 "dns_connector_ref": {
-                    "description": " Choose the DNS Connector object.\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "description": " Choose the DNS Connector object.",
                     "title": "DNS Connector",
                     "$ref": "#/definitions/schemaviewsObjectRefType",
-                    "x-displayname": "DNS Connector",
-                    "x-ves-required": "true",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.message.required": "true"
-                    }
+                    "x-displayname": "DNS Connector"
                 }
             }
         },
@@ -5925,13 +5944,13 @@ var APISwaggerJSON string = `{
             "properties": {
                 "mtu": {
                     "type": "integer",
-                    "description": " Maximum packet size (Maximum Transfer Unit) of the interface\n When configured, mtu must be between 512 and 16384\n\nExample: - \"1450\"-\n\nValidation Rules:\n  ves.io.schema.rules.uint32.ranges: 0,512-16384\n",
+                    "description": " Maximum packet size (Maximum Transfer Unit) of the interface\n When configured, mtu must be between 512 and 8000\n\nExample: - \"1450\"-\n\nValidation Rules:\n  ves.io.schema.rules.uint32.ranges: 0,512-8000\n",
                     "title": "Maximum Packet Size (MTU)",
                     "format": "int64",
                     "x-displayname": "Maximum Packet Size (MTU)",
                     "x-ves-example": "1450",
                     "x-ves-validation-rules": {
-                        "ves.io.schema.rules.uint32.ranges": "0,512-16384"
+                        "ves.io.schema.rules.uint32.ranges": "0,512-8000"
                     }
                 },
                 "network_option": {
@@ -6140,13 +6159,13 @@ var APISwaggerJSON string = `{
                 },
                 "mtu": {
                     "type": "integer",
-                    "description": " Maximum packet size (Maximum Transfer Unit) of the interface\n When configured, mtu must be between 512 and 16384\n\nExample: - \"1450\"-\n\nValidation Rules:\n  ves.io.schema.rules.uint32.ranges: 0,512-16384\n",
+                    "description": " Maximum packet size (Maximum Transfer Unit) of the interface\n When configured, mtu must be between 512 and 8000\n\nExample: - \"1450\"-\n\nValidation Rules:\n  ves.io.schema.rules.uint32.ranges: 0,512-8000\n",
                     "title": "Maximum Packet Size (MTU)",
                     "format": "int64",
                     "x-displayname": "Maximum Packet Size (MTU)",
                     "x-ves-example": "1450",
                     "x-ves-validation-rules": {
-                        "ves.io.schema.rules.uint32.ranges": "0,512-16384"
+                        "ves.io.schema.rules.uint32.ranges": "0,512-8000"
                     }
                 },
                 "name": {
@@ -6239,6 +6258,73 @@ var APISwaggerJSON string = `{
                     "title": "Not Managed By F5XC",
                     "$ref": "#/definitions/securemesh_site_v2NodeList",
                     "x-displayname": "Not Managed By F5XC"
+                }
+            }
+        },
+        "securemesh_site_v2KubernetesDeploymentSize": {
+            "type": "string",
+            "description": "Enum for Kubernetes deployment size options\n\n - KUBERNETES_DEPLOYMENT_SIZE_MEDIUM: Medium\n\nMedium deployment size with moderate resource requirements (8 vCPU, 32 GB memory). Suitable for most deployments.\n - KUBERNETES_DEPLOYMENT_SIZE_LARGE: Large\n\nLarge deployment size with higher resource requirements (16 vCPU, 64 GB memory) for demanding workloads requiring additional performance and capacity.",
+            "title": "Kubernetes Deployment Size",
+            "enum": [
+                "KUBERNETES_DEPLOYMENT_SIZE_MEDIUM",
+                "KUBERNETES_DEPLOYMENT_SIZE_LARGE"
+            ],
+            "default": "KUBERNETES_DEPLOYMENT_SIZE_MEDIUM",
+            "x-displayname": "Deployment Size",
+            "x-ves-proto-enum": "ves.io.schema.views.securemesh_site_v2.KubernetesDeploymentSize"
+        },
+        "securemesh_site_v2KubernetesProviderType": {
+            "type": "object",
+            "description": "Kubernetes Provider Type",
+            "title": "Kubernetes Provider Type",
+            "x-displayname": "Kubernetes Provider Type",
+            "x-ves-oneof-field-anti_affinity_choice": "[\"disable_anti_affinity\",\"enable_anti_affinity\"]",
+            "x-ves-proto-message": "ves.io.schema.views.securemesh_site_v2.KubernetesProviderType",
+            "properties": {
+                "deployment_size": {
+                    "description": " Select the size/flavor for the Customer Edge deployment on Kubernetes.\n This determines the resource allocation (CPU, memory) for the VPM and related pods.\n Medium (8 vCPU, 24 GB memory) is suitable for most deployments, Large (12 vCPU, 48 GB memory) for workloads requiring additional resources.\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "title": "Deployment Size",
+                    "$ref": "#/definitions/securemesh_site_v2KubernetesDeploymentSize",
+                    "x-displayname": "Deployment Size",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true"
+                    }
+                },
+                "disable_anti_affinity": {
+                    "description": "Exclusive with [enable_anti_affinity]\n Pod anti-affinity is disabled. Pods may run on the same node.",
+                    "title": "Disable Anti-Affinity",
+                    "$ref": "#/definitions/schemaEmpty",
+                    "x-displayname": "Disable"
+                },
+                "enable_anti_affinity": {
+                    "description": "Exclusive with [disable_anti_affinity]\n Pod anti-affinity is enabled. Kubernetes scheduler will distribute pods across different nodes.",
+                    "title": "Enable Anti-Affinity",
+                    "$ref": "#/definitions/securemesh_site_v2PodAntiAffinityConfigType",
+                    "x-displayname": "Enable"
+                },
+                "labels": {
+                    "type": "object",
+                    "description": " Add labels to control which Kubernetes nodes the VPM and related pods (etcd, VER, prometheus) are deployed to.\n Specify label key-value pairs that match the labels on your Kubernetes nodes.\n This uses Kubernetes nodeSelector to schedule pods only on nodes with matching labels.\n\nValidation Rules:\n  ves.io.schema.rules.map.keys.string.max_len: 253\n  ves.io.schema.rules.map.keys.string.min_len: 1\n  ves.io.schema.rules.map.max_pairs: 64\n  ves.io.schema.rules.map.values.string.max_len: 63\n  ves.io.schema.rules.map.values.string.min_len: 1\n",
+                    "title": "Node Selector Labels",
+                    "x-displayname": "Node Selector Labels",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.map.keys.string.max_len": "253",
+                        "ves.io.schema.rules.map.keys.string.min_len": "1",
+                        "ves.io.schema.rules.map.max_pairs": "64",
+                        "ves.io.schema.rules.map.values.string.max_len": "63",
+                        "ves.io.schema.rules.map.values.string.min_len": "1"
+                    }
+                },
+                "not_managed": {
+                    "description": " Select the orchestration mode for this site.\n Customers can either choose to use F5 Distributed Cloud's orchestration services to manage the lifecycle of nodes for this site,\n or, choose to manage the lifecycle of the nodes themselves via manual provisioning or using automation tools such as Terraform.\n At this time, Secure Mesh Site only supports the 'Not Managed by F5XC' mode.\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "title": "Orchestration Mode",
+                    "$ref": "#/definitions/securemesh_site_v2NodeList",
+                    "x-displayname": "Orchestration Mode",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true"
+                    }
                 }
             }
         },
@@ -6404,6 +6490,95 @@ var APISwaggerJSON string = `{
                     "title": "Not Managed By F5XC",
                     "$ref": "#/definitions/securemesh_site_v2NodeList",
                     "x-displayname": "Not Managed By F5XC"
+                }
+            }
+        },
+        "securemesh_site_v2PodAntiAffinityConfigType": {
+            "type": "object",
+            "description": "Configuration for pod anti-affinity scheduling rules.\nDefine multiple rules to control how different applications/components are distributed across your Kubernetes cluster.",
+            "title": "Pod Anti-Affinity Configuration Type",
+            "x-displayname": "Pod Anti-Affinity Configuration",
+            "x-ves-proto-message": "ves.io.schema.views.securemesh_site_v2.PodAntiAffinityConfigType",
+            "properties": {
+                "rules": {
+                    "type": "array",
+                    "description": " Define one or more anti-affinity rules. Each rule specifies which pods (by labels) should be distributed across which topology domains.\n Example: Rule 1 - Distribute VPM pods across nodes, Rule 2 - Distribute Prometheus pods across zones.\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 20\n  ves.io.schema.rules.repeated.min_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "title": "Anti-Affinity Rules",
+                    "minItems": 1,
+                    "maxItems": 20,
+                    "items": {
+                        "$ref": "#/definitions/securemesh_site_v2PodAntiAffinityRule"
+                    },
+                    "x-displayname": "Anti-Affinity Rules",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.repeated.max_items": "20",
+                        "ves.io.schema.rules.repeated.min_items": "1",
+                        "ves.io.schema.rules.repeated.unique": "true"
+                    }
+                }
+            }
+        },
+        "securemesh_site_v2PodAntiAffinityRule": {
+            "type": "object",
+            "description": "A single anti-affinity rule that groups application labels with their topology distribution keys.\nEach rule defines which pods (via labels) should be distributed across which topology domains (via topology keys).",
+            "title": "Pod Anti-Affinity Rule",
+            "x-displayname": "Anti-Affinity Rule",
+            "x-ves-proto-message": "ves.io.schema.views.securemesh_site_v2.PodAntiAffinityRule",
+            "properties": {
+                "label_key": {
+                    "type": "string",
+                    "description": " Specify the label key of the customer pods that CE pods should avoid being co-scheduled with.\n Combined with the label value below, this identifies the target pods.\n\nExample: - \"app\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.max_len: 253\n  ves.io.schema.rules.string.min_len: 1\n",
+                    "title": "Label Key",
+                    "minLength": 1,
+                    "maxLength": 253,
+                    "x-displayname": "Label Key",
+                    "x-ves-example": "app",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.string.max_len": "253",
+                        "ves.io.schema.rules.string.min_len": "1"
+                    }
+                },
+                "label_value": {
+                    "type": "string",
+                    "description": " Specify the label value that, together with the label key, identifies the customer pods to avoid.\n\nExample: - \"vpm\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.max_len: 63\n  ves.io.schema.rules.string.min_len: 1\n",
+                    "title": "Label Value",
+                    "minLength": 1,
+                    "maxLength": 63,
+                    "x-displayname": "Label Value",
+                    "x-ves-example": "vpm",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.string.max_len": "63",
+                        "ves.io.schema.rules.string.min_len": "1"
+                    }
+                },
+                "topology_keys": {
+                    "type": "array",
+                    "description": " Specify one or more node label keys that define the scope of avoidance.\n For each topology key (e.g., kubernetes.io/hostname), CE pods will avoid nodes whose topology value matches a node already running a pod with the above specified label.\n Example: with kubernetes.io/hostname, CE pods are kept off any node running the matching customer pod.\n\nExample: - \"kubernetes.io/hostname\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.items.string.max_len: 253\n  ves.io.schema.rules.repeated.items.string.min_len: 1\n  ves.io.schema.rules.repeated.max_items: 10\n  ves.io.schema.rules.repeated.min_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "title": "Topology Keys",
+                    "minItems": 1,
+                    "maxItems": 10,
+                    "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 253
+                    },
+                    "x-displayname": "Topology Keys",
+                    "x-ves-example": "kubernetes.io/hostname",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.repeated.items.string.max_len": "253",
+                        "ves.io.schema.rules.repeated.items.string.min_len": "1",
+                        "ves.io.schema.rules.repeated.max_items": "10",
+                        "ves.io.schema.rules.repeated.min_items": "1",
+                        "ves.io.schema.rules.repeated.unique": "true"
+                    }
                 }
             }
         },
@@ -6593,17 +6768,12 @@ var APISwaggerJSON string = `{
                     "title": "F5XC Software Version",
                     "$ref": "#/definitions/viewsVolterraSoftwareType",
                     "x-displayname": "F5XC Software"
-                }
-            }
-        },
-        "securemesh_site_v2SpecType": {
-            "type": "object",
-            "x-ves-proto-message": "ves.io.schema.views.securemesh_site_v2.SpecType",
-            "properties": {
-                "gc_spec": {
-                    "title": "gc_spec",
-                    "$ref": "#/definitions/viewssecuremesh_site_v2GlobalSpecType",
-                    "x-displayname": "GC Spec"
+                },
+                "waf_signatures": {
+                    "description": " Select WAF Signatures Update Mode for the site. By default, new signatures will be applied manually.",
+                    "title": "WAF Signatures Update Mode",
+                    "$ref": "#/definitions/common_wafLiveSignaturesUpdate",
+                    "x-displayname": "WAF Signatures Update Mode"
                 }
             }
         },
@@ -7585,14 +7755,14 @@ var APISwaggerJSON string = `{
             "x-ves-oneof-field-advanced_delivery_choice": "[\"disable_advanced_delivery\",\"enable_advanced_delivery\"]",
             "x-ves-oneof-field-blocked_services_choice": "[\"block_all_services\",\"blocked_services\"]",
             "x-ves-oneof-field-discovery_mode": "[\"discovered\",\"manual\"]",
-            "x-ves-oneof-field-enterprise_proxy_choice": "[\"custom_proxy\",\"f5_proxy\"]",
+            "x-ves-oneof-field-enterprise_proxy_choice": "[\"custom_proxy\",\"f5_proxy\",\"private_adn\"]",
             "x-ves-oneof-field-forward_proxy_choice": "[\"active_forward_proxy_policies\",\"no_forward_proxy\"]",
             "x-ves-oneof-field-log_anonymization_choice": "[\"disable_log_anonymization\",\"enable_log_anonymization\"]",
             "x-ves-oneof-field-logs_receiver_choice": "[\"log_receiver_with_net\",\"logs_streaming_disabled\"]",
             "x-ves-oneof-field-management_network_choice": "[\"disable_management_network\",\"enable_management_network\"]",
             "x-ves-oneof-field-network_policy_choice": "[\"active_enhanced_firewall_policies\",\"no_network_policy\"]",
             "x-ves-oneof-field-node_ha_choice": "[\"disable_ha\",\"enable_ha\"]",
-            "x-ves-oneof-field-provider_choice": "[\"aws\",\"azure\",\"baremetal\",\"equinix\",\"gcp\",\"kvm\",\"nutanix\",\"oci\",\"openshift_virtualization\",\"openstack\",\"rseries\",\"vmware\"]",
+            "x-ves-oneof-field-provider_choice": "[\"aws\",\"azure\",\"baremetal\",\"eks_k8s\",\"equinix\",\"gcp\",\"kvm\",\"nutanix\",\"oci\",\"openshift_virtualization\",\"openstack\",\"rseries\",\"vmware\"]",
             "x-ves-oneof-field-proxy_bypass_choice": "[\"custom_proxy_bypass\",\"no_proxy_bypass\"]",
             "x-ves-oneof-field-s2s_connectivity_sli_choice": "[\"dc_cluster_group_sli\",\"no_s2s_connectivity_sli\"]",
             "x-ves-oneof-field-s2s_connectivity_slo_choice": "[\"dc_cluster_group_slo\",\"no_s2s_connectivity_slo\",\"site_mesh_group_on_slo\"]",
@@ -7602,13 +7772,13 @@ var APISwaggerJSON string = `{
                 "active_enhanced_firewall_policies": {
                     "description": "Exclusive with [no_network_policy]\n Enable Network Firewall for this site. Traffic will be processed in the order that Network Firewall Policies are added.",
                     "title": "Manage Enhanced Firewall Policy",
-                    "$ref": "#/definitions/network_firewallActiveEnhancedFirewallPoliciesType",
+                    "$ref": "#/definitions/schemanetwork_firewallActiveEnhancedFirewallPoliciesType",
                     "x-displayname": "Active Enhanced Firewall Policies"
                 },
                 "active_forward_proxy_policies": {
                     "description": "Exclusive with [no_forward_proxy]\n Enable Forward Proxy for this site. Traffic will be processed in the order that Forward Proxy Policies are added.",
                     "title": "Enable Forward Proxy and Manage Policies",
-                    "$ref": "#/definitions/network_firewallActiveForwardProxyPoliciesType",
+                    "$ref": "#/definitions/schemanetwork_firewallActiveForwardProxyPoliciesType",
                     "x-displayname": "Enable and Manage Policies"
                 },
                 "admin_user_credentials": {
@@ -7618,19 +7788,19 @@ var APISwaggerJSON string = `{
                     "x-displayname": "Admin User Credentials"
                 },
                 "aws": {
-                    "description": "Exclusive with [azure baremetal equinix gcp kvm nutanix oci openshift_virtualization openstack rseries vmware]\n",
+                    "description": "Exclusive with [azure baremetal eks_k8s equinix gcp kvm nutanix oci openshift_virtualization openstack rseries vmware]\n",
                     "title": "AWS",
                     "$ref": "#/definitions/securemesh_site_v2AWSProviderType",
                     "x-displayname": "AWS"
                 },
                 "azure": {
-                    "description": "Exclusive with [aws baremetal equinix gcp kvm nutanix oci openshift_virtualization openstack rseries vmware]\n",
+                    "description": "Exclusive with [aws baremetal eks_k8s equinix gcp kvm nutanix oci openshift_virtualization openstack rseries vmware]\n",
                     "title": "Azure",
                     "$ref": "#/definitions/securemesh_site_v2AzureProviderType",
                     "x-displayname": "Azure"
                 },
                 "baremetal": {
-                    "description": "Exclusive with [aws azure equinix gcp kvm nutanix oci openshift_virtualization openstack rseries vmware]\n",
+                    "description": "Exclusive with [aws azure eks_k8s equinix gcp kvm nutanix oci openshift_virtualization openstack rseries vmware]\n",
                     "title": "Baremetal",
                     "$ref": "#/definitions/securemesh_site_v2BaremetalProviderType",
                     "x-displayname": "Baremetal"
@@ -7648,7 +7818,7 @@ var APISwaggerJSON string = `{
                     "x-displayname": "Disable"
                 },
                 "custom_proxy": {
-                    "description": "Exclusive with [f5_proxy]\n Use the customer provided internal Enterprise Proxy",
+                    "description": "Exclusive with [f5_proxy private_adn]\n Use the customer provided internal Enterprise Proxy",
                     "title": "Custom Enterprise Proxy",
                     "$ref": "#/definitions/securemesh_site_v2CustomProxy",
                     "x-displayname": "Custom Enterprise Proxy"
@@ -7713,6 +7883,12 @@ var APISwaggerJSON string = `{
                     "$ref": "#/definitions/securemesh_site_v2DNSNTPServerConfig",
                     "x-displayname": "DNS \u0026 NTP Servers Settings"
                 },
+                "eks_k8s": {
+                    "description": "Exclusive with [aws azure baremetal equinix gcp kvm nutanix oci openshift_virtualization openstack rseries vmware]\n",
+                    "title": "EKS (AWS Based Kubernetes)",
+                    "$ref": "#/definitions/securemesh_site_v2KubernetesProviderType",
+                    "x-displayname": "EKS (AWS Based Kubernetes)"
+                },
                 "enable_advanced_delivery": {
                     "description": "Exclusive with [disable_advanced_delivery]\n",
                     "title": "Enable Advanced Delivery",
@@ -7744,25 +7920,25 @@ var APISwaggerJSON string = `{
                     "x-displayname": "Enable"
                 },
                 "equinix": {
-                    "description": "Exclusive with [aws azure baremetal gcp kvm nutanix oci openshift_virtualization openstack rseries vmware]\n",
+                    "description": "Exclusive with [aws azure baremetal eks_k8s gcp kvm nutanix oci openshift_virtualization openstack rseries vmware]\n",
                     "title": "Equinix",
                     "$ref": "#/definitions/securemesh_site_v2EquinixProviderType",
                     "x-displayname": "Equinix"
                 },
                 "f5_proxy": {
-                    "description": "Exclusive with [custom_proxy]\n Use the F5 Enterprise Proxy hosted on the F5 Global Network",
+                    "description": "Exclusive with [custom_proxy private_adn]\n Use the F5 Enterprise Proxy hosted on the F5 Global Network",
                     "title": "F5 Enterprise Proxy",
                     "$ref": "#/definitions/schemaEmpty",
                     "x-displayname": "F5 Enterprise Proxy"
                 },
                 "gcp": {
-                    "description": "Exclusive with [aws azure baremetal equinix kvm nutanix oci openshift_virtualization openstack rseries vmware]\n",
+                    "description": "Exclusive with [aws azure baremetal eks_k8s equinix kvm nutanix oci openshift_virtualization openstack rseries vmware]\n",
                     "title": "GCP",
                     "$ref": "#/definitions/securemesh_site_v2GCPProviderType",
                     "x-displayname": "GCP"
                 },
                 "kvm": {
-                    "description": "Exclusive with [aws azure baremetal equinix gcp nutanix oci openshift_virtualization openstack rseries vmware]\n",
+                    "description": "Exclusive with [aws azure baremetal eks_k8s equinix gcp nutanix oci openshift_virtualization openstack rseries vmware]\n",
                     "title": "KVM",
                     "$ref": "#/definitions/securemesh_site_v2KVMProviderType",
                     "x-displayname": "KVM (EA)"
@@ -7828,13 +8004,13 @@ var APISwaggerJSON string = `{
                     "x-displayname": "Disabled"
                 },
                 "nutanix": {
-                    "description": "Exclusive with [aws azure baremetal equinix gcp kvm oci openshift_virtualization openstack rseries vmware]\n",
+                    "description": "Exclusive with [aws azure baremetal eks_k8s equinix gcp kvm oci openshift_virtualization openstack rseries vmware]\n",
                     "title": "Nutanix",
                     "$ref": "#/definitions/securemesh_site_v2NutanixProviderType",
                     "x-displayname": "Nutanix"
                 },
                 "oci": {
-                    "description": "Exclusive with [aws azure baremetal equinix gcp kvm nutanix openshift_virtualization openstack rseries vmware]\n",
+                    "description": "Exclusive with [aws azure baremetal eks_k8s equinix gcp kvm nutanix openshift_virtualization openstack rseries vmware]\n",
                     "title": "OCI",
                     "$ref": "#/definitions/securemesh_site_v2OCIProviderType",
                     "x-displayname": "OCI"
@@ -7846,13 +8022,13 @@ var APISwaggerJSON string = `{
                     "x-displayname": "Offline Survivability Mode"
                 },
                 "openshift_virtualization": {
-                    "description": "Exclusive with [aws azure baremetal equinix gcp kvm nutanix oci openstack rseries vmware]\n",
+                    "description": "Exclusive with [aws azure baremetal eks_k8s equinix gcp kvm nutanix oci openstack rseries vmware]\n",
                     "title": "OpenShift Virtualization",
                     "$ref": "#/definitions/securemesh_site_v2OpenShiftProviderType",
                     "x-displayname": "OpenShift Virtualization"
                 },
                 "openstack": {
-                    "description": "Exclusive with [aws azure baremetal equinix gcp kvm nutanix oci openshift_virtualization rseries vmware]\n",
+                    "description": "Exclusive with [aws azure baremetal eks_k8s equinix gcp kvm nutanix oci openshift_virtualization rseries vmware]\n",
                     "title": "OpenStack",
                     "$ref": "#/definitions/securemesh_site_v2OpenstackProviderType",
                     "x-displayname": "OpenStack"
@@ -7875,15 +8051,11 @@ var APISwaggerJSON string = `{
                     "x-displayname": "Performance Enhancement Mode"
                 },
                 "private_adn": {
-                    "description": " Establish private connectivity with the F5 Distributed Cloud Global Network using a Private ADN network. To provision a Private ADN network, please contact F5 Distributed Cloud support.\n\nExample: - \"private-cloud-ntw\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
+                    "description": "Exclusive with [custom_proxy f5_proxy]\n Establish private connectivity with the F5 Distributed Cloud Global Network using a Private ADN network. To provision a Private ADN network, please contact F5 Distributed Cloud support.\n\nExample: - \"private-cloud-ntw\"-",
                     "title": "Private ADN Network",
                     "$ref": "#/definitions/securemesh_site_v2PrivateADNType",
-                    "x-displayname": "Private ADN Network",
-                    "x-ves-example": "private-cloud-ntw",
-                    "x-ves-required": "true",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.message.required": "true"
-                    }
+                    "x-displayname": "Private ADN Network - (EA)",
+                    "x-ves-example": "private-cloud-ntw"
                 },
                 "re_select": {
                     "description": " Selection criteria to connect the site with F5 Distributed Cloud Regional Edge(s).",
@@ -7892,7 +8064,7 @@ var APISwaggerJSON string = `{
                     "x-displayname": "Regional Edge Selection"
                 },
                 "rseries": {
-                    "description": "Exclusive with [aws azure baremetal equinix gcp kvm nutanix oci openshift_virtualization openstack vmware]\n",
+                    "description": "Exclusive with [aws azure baremetal eks_k8s equinix gcp kvm nutanix oci openshift_virtualization openstack vmware]\n",
                     "title": "F5 rSeries",
                     "$ref": "#/definitions/securemesh_site_v2RSeriesProviderType",
                     "x-displayname": "F5 rSeries (EA)"
@@ -7962,7 +8134,7 @@ var APISwaggerJSON string = `{
                     "x-displayname": "Upgrade Settings"
                 },
                 "vmware": {
-                    "description": "Exclusive with [aws azure baremetal equinix gcp kvm nutanix oci openshift_virtualization openstack rseries]\n",
+                    "description": "Exclusive with [aws azure baremetal eks_k8s equinix gcp kvm nutanix oci openshift_virtualization openstack rseries]\n",
                     "title": "VMWare",
                     "$ref": "#/definitions/securemesh_site_v2VMwareProviderType",
                     "x-displayname": "VMWare"
@@ -8032,6 +8204,17 @@ var APISwaggerJSON string = `{
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.string.in": "[\\\"Control\\\",\\\"Worker\\\"]"
                     }
+                }
+            }
+        },
+        "viewssecuremesh_site_v2SpecType": {
+            "type": "object",
+            "x-ves-proto-message": "ves.io.schema.views.securemesh_site_v2.SpecType",
+            "properties": {
+                "gc_spec": {
+                    "title": "gc_spec",
+                    "$ref": "#/definitions/viewssecuremesh_site_v2GlobalSpecType",
+                    "x-displayname": "GC Spec"
                 }
             }
         },

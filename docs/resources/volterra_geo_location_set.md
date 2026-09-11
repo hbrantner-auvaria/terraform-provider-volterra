@@ -24,6 +24,7 @@ resource "volterra_geo_location_set" "example" {
 
   global = true
 }
+
 ```
 
 Argument Reference
@@ -60,4 +61,4 @@ Select multiple geo locations.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured geo_location_set.
+-	`id` - This is the id of the configured geo_location_set.

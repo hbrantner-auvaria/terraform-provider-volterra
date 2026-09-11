@@ -71,6 +71,14 @@ func (v *ValidateDnsInfo) IpAddressValidationRuleHandler(rules map[string]string
 
 	return validatorFn, nil
 }
+func (v *ValidateDnsInfo) Ipv6AddressValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for ipv6_address")
+	}
+
+	return validatorFn, nil
+}
 
 func (v *ValidateDnsInfo) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
 	m, ok := pm.(*DnsInfo)
@@ -94,6 +102,12 @@ func (v *ValidateDnsInfo) Validate(ctx context.Context, pm interface{}, opts ...
 	if fv, exists := v.FldValidators["ip_address"]; exists {
 		vOpts := append(opts, db.WithValidateField("ip_address"))
 		if err := fv(ctx, m.GetIpAddress(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["ipv6_address"]; exists {
+		vOpts := append(opts, db.WithValidateField("ipv6_address"))
+		if err := fv(ctx, m.GetIpv6Address(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -121,6 +135,17 @@ var DefaultDnsInfoValidator = func() *ValidateDnsInfo {
 		panic(errMsg)
 	}
 	v.FldValidators["ip_address"] = vFn
+
+	vrhIpv6Address := v.Ipv6AddressValidationRuleHandler
+	rulesIpv6Address := map[string]string{
+		"ves.io.schema.rules.string.ipv6": "true",
+	}
+	vFn, err = vrhIpv6Address(rulesIpv6Address)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for DnsInfo.ipv6_address: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["ipv6_address"] = vFn
 
 	return v
 }()

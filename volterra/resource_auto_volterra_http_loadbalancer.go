@@ -34,18 +34,26 @@ import (
 	ves_io_schema_views_rate_limiter_policy "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/views/rate_limiter_policy"
 	ves_io_schema_virtual_host "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/virtual_host"
 
-	drift "github.com/volterraedge/terraform-provider-volterra/volterra/drift_detection"
 	statemigration "github.com/volterraedge/terraform-provider-volterra/volterra/state_migration"
+
+	drift "github.com/volterraedge/terraform-provider-volterra/volterra/drift_detection"
 )
 
 // resourceVolterraHttpLoadbalancer is implementation of Volterra's HttpLoadbalancer resources
 func resourceVolterraHttpLoadbalancer() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceVolterraHttpLoadbalancerCreate,
-		Read:   resourceVolterraHttpLoadbalancerRead,
-		Update: resourceVolterraHttpLoadbalancerUpdate,
-		Delete: resourceVolterraHttpLoadbalancerDelete,
-
+		Create:        resourceVolterraHttpLoadbalancerCreate,
+		Read:          resourceVolterraHttpLoadbalancerRead,
+		Update:        resourceVolterraHttpLoadbalancerUpdate,
+		Delete:        resourceVolterraHttpLoadbalancerDelete,
+		SchemaVersion: 2,
+		StateUpgraders: []schema.StateUpgrader{
+			{
+				Type:    statemigration.ResourceHttpLoadbalancerInstanceResourceV1().CoreConfigSchema().ImpliedType(),
+				Upgrade: statemigration.ResourceHttpLoadbalancerInstanceStateUpgradeV1,
+				Version: 1,
+			},
+		},
 		Schema: map[string]*schema.Schema{
 
 			"annotations": {
@@ -105,7 +113,75 @@ func resourceVolterraHttpLoadbalancer() *schema.Resource {
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 
+									"advertise_dualstack_on_public": {
+
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"public_ip": {
+													Type:     schema.TypeList,
+													MaxItems: 1,
+													Required: true,
+													Elem: &schema.Resource{
+														Schema: map[string]*schema.Schema{
+
+															"name": {
+																Type:     schema.TypeString,
+																Optional: true,
+															},
+															"namespace": {
+																Type:     schema.TypeString,
+																Optional: true,
+															},
+															"tenant": {
+																Type:     schema.TypeString,
+																Optional: true,
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+
 									"advertise_on_public": {
+
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"public_ip": {
+													Type:     schema.TypeList,
+													MaxItems: 1,
+													Required: true,
+													Elem: &schema.Resource{
+														Schema: map[string]*schema.Schema{
+
+															"name": {
+																Type:     schema.TypeString,
+																Optional: true,
+															},
+															"namespace": {
+																Type:     schema.TypeString,
+																Optional: true,
+															},
+															"tenant": {
+																Type:     schema.TypeString,
+																Optional: true,
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+
+									"advertise_v6_on_public": {
 
 										Type:     schema.TypeList,
 										MaxItems: 1,
@@ -662,6 +738,40 @@ func resourceVolterraHttpLoadbalancer() *schema.Resource {
 				},
 			},
 
+			"advertise_dualstack_on_public": {
+
+				Type:     schema.TypeList,
+				MaxItems: 1,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+
+						"public_ip": {
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Required: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"namespace": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"tenant": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+
 			"advertise_on_public": {
 
 				Type:     schema.TypeList,
@@ -696,10 +806,56 @@ func resourceVolterraHttpLoadbalancer() *schema.Resource {
 				},
 			},
 
+			"advertise_on_public_default_dualstack_vip": {
+
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
+
+			"advertise_on_public_default_ipv6_vip": {
+
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
+
 			"advertise_on_public_default_vip": {
 
 				Type:     schema.TypeBool,
 				Optional: true,
+			},
+
+			"advertise_v6_on_public": {
+
+				Type:     schema.TypeList,
+				MaxItems: 1,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+
+						"public_ip": {
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Required: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"namespace": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"tenant": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
+					},
+				},
 			},
 
 			"do_not_advertise": {
@@ -8202,29 +8358,33 @@ func resourceVolterraHttpLoadbalancer() *schema.Resource {
 
 			"bot_defense_advanced": {
 
-				Type:     schema.TypeList,
-				MaxItems: 1,
-				Optional: true,
+				Type:       schema.TypeList,
+				MaxItems:   1,
+				Optional:   true,
+				Deprecated: "This field is deprecated and will be removed in future release.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 
 						"disable_js_insert": {
 
-							Type:     schema.TypeBool,
-							Optional: true,
+							Type:       schema.TypeBool,
+							Optional:   true,
+							Deprecated: "This field is deprecated and will be removed in future release.",
 						},
 
 						"js_insert_all_pages": {
 
-							Type:     schema.TypeList,
-							MaxItems: 1,
-							Optional: true,
+							Type:       schema.TypeList,
+							MaxItems:   1,
+							Optional:   true,
+							Deprecated: "This field is deprecated and will be removed in future release.",
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 
 									"javascript_location": {
-										Type:     schema.TypeString,
-										Optional: true,
+										Type:       schema.TypeString,
+										Optional:   true,
+										Deprecated: "This field is deprecated and will be removed in future release.",
 									},
 								},
 							},
@@ -8232,49 +8392,56 @@ func resourceVolterraHttpLoadbalancer() *schema.Resource {
 
 						"js_insert_all_pages_except": {
 
-							Type:     schema.TypeList,
-							MaxItems: 1,
-							Optional: true,
+							Type:       schema.TypeList,
+							MaxItems:   1,
+							Optional:   true,
+							Deprecated: "This field is deprecated and will be removed in future release.",
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 
 									"exclude_list": {
 
-										Type:     schema.TypeList,
-										Optional: true,
+										Type:       schema.TypeList,
+										Optional:   true,
+										Deprecated: "This field is deprecated and will be removed in future release.",
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
 
 												"any_domain": {
 
-													Type:     schema.TypeBool,
-													Optional: true,
+													Type:       schema.TypeBool,
+													Optional:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
 												},
 
 												"domain": {
 
-													Type:     schema.TypeList,
-													MaxItems: 1,
-													Optional: true,
+													Type:       schema.TypeList,
+													MaxItems:   1,
+													Optional:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
 
 															"exact_value": {
 
-																Type:     schema.TypeString,
-																Optional: true,
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
 															},
 
 															"regex_value": {
 
-																Type:     schema.TypeString,
-																Optional: true,
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
 															},
 
 															"suffix_value": {
 
-																Type:     schema.TypeString,
-																Optional: true,
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
 															},
 														},
 													},
@@ -8282,15 +8449,17 @@ func resourceVolterraHttpLoadbalancer() *schema.Resource {
 
 												"metadata": {
 
-													Type:     schema.TypeList,
-													MaxItems: 1,
-													Required: true,
+													Type:       schema.TypeList,
+													MaxItems:   1,
+													Required:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
 
 															"description": {
-																Type:     schema.TypeString,
-																Optional: true,
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
 															},
 
 															"disable": {
@@ -8300,8 +8469,9 @@ func resourceVolterraHttpLoadbalancer() *schema.Resource {
 															},
 
 															"name": {
-																Type:     schema.TypeString,
-																Required: true,
+																Type:       schema.TypeString,
+																Required:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
 															},
 														},
 													},
@@ -8309,28 +8479,32 @@ func resourceVolterraHttpLoadbalancer() *schema.Resource {
 
 												"path": {
 
-													Type:     schema.TypeList,
-													MaxItems: 1,
-													Required: true,
+													Type:       schema.TypeList,
+													MaxItems:   1,
+													Required:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
 
 															"path": {
 
-																Type:     schema.TypeString,
-																Optional: true,
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
 															},
 
 															"prefix": {
 
-																Type:     schema.TypeString,
-																Optional: true,
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
 															},
 
 															"regex": {
 
-																Type:     schema.TypeString,
-																Optional: true,
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
 															},
 														},
 													},
@@ -8340,8 +8514,9 @@ func resourceVolterraHttpLoadbalancer() *schema.Resource {
 									},
 
 									"javascript_location": {
-										Type:     schema.TypeString,
-										Optional: true,
+										Type:       schema.TypeString,
+										Optional:   true,
+										Deprecated: "This field is deprecated and will be removed in future release.",
 									},
 								},
 							},
@@ -8349,49 +8524,56 @@ func resourceVolterraHttpLoadbalancer() *schema.Resource {
 
 						"js_insertion_rules": {
 
-							Type:     schema.TypeList,
-							MaxItems: 1,
-							Optional: true,
+							Type:       schema.TypeList,
+							MaxItems:   1,
+							Optional:   true,
+							Deprecated: "This field is deprecated and will be removed in future release.",
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 
 									"exclude_list": {
 
-										Type:     schema.TypeList,
-										Optional: true,
+										Type:       schema.TypeList,
+										Optional:   true,
+										Deprecated: "This field is deprecated and will be removed in future release.",
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
 
 												"any_domain": {
 
-													Type:     schema.TypeBool,
-													Optional: true,
+													Type:       schema.TypeBool,
+													Optional:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
 												},
 
 												"domain": {
 
-													Type:     schema.TypeList,
-													MaxItems: 1,
-													Optional: true,
+													Type:       schema.TypeList,
+													MaxItems:   1,
+													Optional:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
 
 															"exact_value": {
 
-																Type:     schema.TypeString,
-																Optional: true,
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
 															},
 
 															"regex_value": {
 
-																Type:     schema.TypeString,
-																Optional: true,
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
 															},
 
 															"suffix_value": {
 
-																Type:     schema.TypeString,
-																Optional: true,
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
 															},
 														},
 													},
@@ -8399,15 +8581,17 @@ func resourceVolterraHttpLoadbalancer() *schema.Resource {
 
 												"metadata": {
 
-													Type:     schema.TypeList,
-													MaxItems: 1,
-													Required: true,
+													Type:       schema.TypeList,
+													MaxItems:   1,
+													Required:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
 
 															"description": {
-																Type:     schema.TypeString,
-																Optional: true,
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
 															},
 
 															"disable": {
@@ -8417,8 +8601,9 @@ func resourceVolterraHttpLoadbalancer() *schema.Resource {
 															},
 
 															"name": {
-																Type:     schema.TypeString,
-																Required: true,
+																Type:       schema.TypeString,
+																Required:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
 															},
 														},
 													},
@@ -8426,28 +8611,32 @@ func resourceVolterraHttpLoadbalancer() *schema.Resource {
 
 												"path": {
 
-													Type:     schema.TypeList,
-													MaxItems: 1,
-													Required: true,
+													Type:       schema.TypeList,
+													MaxItems:   1,
+													Required:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
 
 															"path": {
 
-																Type:     schema.TypeString,
-																Optional: true,
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
 															},
 
 															"prefix": {
 
-																Type:     schema.TypeString,
-																Optional: true,
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
 															},
 
 															"regex": {
 
-																Type:     schema.TypeString,
-																Optional: true,
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
 															},
 														},
 													},
@@ -8458,62 +8647,71 @@ func resourceVolterraHttpLoadbalancer() *schema.Resource {
 
 									"rules": {
 
-										Type:     schema.TypeList,
-										Required: true,
+										Type:       schema.TypeList,
+										Required:   true,
+										Deprecated: "This field is deprecated and will be removed in future release.",
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
 
 												"any_domain": {
 
-													Type:     schema.TypeBool,
-													Optional: true,
+													Type:       schema.TypeBool,
+													Optional:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
 												},
 
 												"domain": {
 
-													Type:     schema.TypeList,
-													MaxItems: 1,
-													Optional: true,
+													Type:       schema.TypeList,
+													MaxItems:   1,
+													Optional:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
 
 															"exact_value": {
 
-																Type:     schema.TypeString,
-																Optional: true,
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
 															},
 
 															"regex_value": {
 
-																Type:     schema.TypeString,
-																Optional: true,
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
 															},
 
 															"suffix_value": {
 
-																Type:     schema.TypeString,
-																Optional: true,
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
 															},
 														},
 													},
 												},
 
 												"javascript_location": {
-													Type:     schema.TypeString,
-													Optional: true,
+													Type:       schema.TypeString,
+													Optional:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
 												},
 
 												"metadata": {
 
-													Type:     schema.TypeList,
-													MaxItems: 1,
-													Required: true,
+													Type:       schema.TypeList,
+													MaxItems:   1,
+													Required:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
 
 															"description": {
-																Type:     schema.TypeString,
-																Optional: true,
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
 															},
 
 															"disable": {
@@ -8523,8 +8721,9 @@ func resourceVolterraHttpLoadbalancer() *schema.Resource {
 															},
 
 															"name": {
-																Type:     schema.TypeString,
-																Required: true,
+																Type:       schema.TypeString,
+																Required:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
 															},
 														},
 													},
@@ -8532,28 +8731,32 @@ func resourceVolterraHttpLoadbalancer() *schema.Resource {
 
 												"path": {
 
-													Type:     schema.TypeList,
-													MaxItems: 1,
-													Required: true,
+													Type:       schema.TypeList,
+													MaxItems:   1,
+													Required:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
 
 															"path": {
 
-																Type:     schema.TypeString,
-																Optional: true,
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
 															},
 
 															"prefix": {
 
-																Type:     schema.TypeString,
-																Optional: true,
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
 															},
 
 															"regex": {
 
-																Type:     schema.TypeString,
-																Optional: true,
+																Type:       schema.TypeString,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
 															},
 														},
 													},
@@ -8566,23 +8769,27 @@ func resourceVolterraHttpLoadbalancer() *schema.Resource {
 						},
 
 						"mobile": {
-							Type:     schema.TypeList,
-							MaxItems: 1,
-							Optional: true,
+							Type:       schema.TypeList,
+							MaxItems:   1,
+							Optional:   true,
+							Deprecated: "This field is deprecated and will be removed in future release.",
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 
 									"name": {
-										Type:     schema.TypeString,
-										Optional: true,
+										Type:       schema.TypeString,
+										Optional:   true,
+										Deprecated: "This field is deprecated and will be removed in future release.",
 									},
 									"namespace": {
-										Type:     schema.TypeString,
-										Optional: true,
+										Type:       schema.TypeString,
+										Optional:   true,
+										Deprecated: "This field is deprecated and will be removed in future release.",
 									},
 									"tenant": {
-										Type:     schema.TypeString,
-										Optional: true,
+										Type:       schema.TypeString,
+										Optional:   true,
+										Deprecated: "This field is deprecated and will be removed in future release.",
 									},
 								},
 							},
@@ -8590,57 +8797,65 @@ func resourceVolterraHttpLoadbalancer() *schema.Resource {
 
 						"disable_mobile_sdk": {
 
-							Type:     schema.TypeBool,
-							Optional: true,
+							Type:       schema.TypeBool,
+							Optional:   true,
+							Deprecated: "This field is deprecated and will be removed in future release.",
 						},
 
 						"mobile_sdk_config": {
 
-							Type:     schema.TypeList,
-							MaxItems: 1,
-							Optional: true,
+							Type:       schema.TypeList,
+							MaxItems:   1,
+							Optional:   true,
+							Deprecated: "This field is deprecated and will be removed in future release.",
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 
 									"mobile_identifier": {
 
-										Type:     schema.TypeList,
-										MaxItems: 1,
-										Optional: true,
+										Type:       schema.TypeList,
+										MaxItems:   1,
+										Optional:   true,
+										Deprecated: "This field is deprecated and will be removed in future release.",
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
 
 												"headers": {
 
-													Type:     schema.TypeList,
-													Optional: true,
+													Type:       schema.TypeList,
+													Optional:   true,
+													Deprecated: "This field is deprecated and will be removed in future release.",
 													Elem: &schema.Resource{
 														Schema: map[string]*schema.Schema{
 
 															"check_not_present": {
 
-																Type:     schema.TypeBool,
-																Optional: true,
+																Type:       schema.TypeBool,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
 															},
 
 															"check_present": {
 
-																Type:     schema.TypeBool,
-																Optional: true,
+																Type:       schema.TypeBool,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
 															},
 
 															"item": {
 
-																Type:     schema.TypeList,
-																MaxItems: 1,
-																Optional: true,
+																Type:       schema.TypeList,
+																MaxItems:   1,
+																Optional:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
 																Elem: &schema.Resource{
 																	Schema: map[string]*schema.Schema{
 
 																		"exact_values": {
 																			Type: schema.TypeList,
 
-																			Optional: true,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
 																			Elem: &schema.Schema{
 																				Type: schema.TypeString,
 																			},
@@ -8649,7 +8864,8 @@ func resourceVolterraHttpLoadbalancer() *schema.Resource {
 																		"regex_values": {
 																			Type: schema.TypeList,
 
-																			Optional: true,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
 																			Elem: &schema.Schema{
 																				Type: schema.TypeString,
 																			},
@@ -8658,7 +8874,8 @@ func resourceVolterraHttpLoadbalancer() *schema.Resource {
 																		"transformers": {
 																			Type: schema.TypeList,
 
-																			Optional: true,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
 																			Elem: &schema.Schema{
 																				Type: schema.TypeString,
 																			},
@@ -8668,8 +8885,9 @@ func resourceVolterraHttpLoadbalancer() *schema.Resource {
 															},
 
 															"name": {
-																Type:     schema.TypeString,
-																Required: true,
+																Type:       schema.TypeString,
+																Required:   true,
+																Deprecated: "This field is deprecated and will be removed in future release.",
 															},
 														},
 													},
@@ -8682,23 +8900,970 @@ func resourceVolterraHttpLoadbalancer() *schema.Resource {
 						},
 
 						"web": {
+							Type:       schema.TypeList,
+							MaxItems:   1,
+							Optional:   true,
+							Deprecated: "This field is deprecated and will be removed in future release.",
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"name": {
+										Type:       schema.TypeString,
+										Optional:   true,
+										Deprecated: "This field is deprecated and will be removed in future release.",
+									},
+									"namespace": {
+										Type:       schema.TypeString,
+										Optional:   true,
+										Deprecated: "This field is deprecated and will be removed in future release.",
+									},
+									"tenant": {
+										Type:       schema.TypeString,
+										Optional:   true,
+										Deprecated: "This field is deprecated and will be removed in future release.",
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+
+			"bot_defense_advanced_protection": {
+
+				Type:     schema.TypeList,
+				MaxItems: 1,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+
+						"both_web_and_mobile": {
+
 							Type:     schema.TypeList,
 							MaxItems: 1,
 							Optional: true,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 
-									"name": {
-										Type:     schema.TypeString,
+									"disable_js_insert": {
+
+										Type:     schema.TypeBool,
 										Optional: true,
 									},
-									"namespace": {
-										Type:     schema.TypeString,
+
+									"js_insert_all_pages": {
+
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"javascript_location": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"js_insert_all_pages_except": {
+
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"exclude_list": {
+
+													Type:     schema.TypeList,
+													Optional: true,
+													Elem: &schema.Resource{
+														Schema: map[string]*schema.Schema{
+
+															"any_domain": {
+
+																Type:     schema.TypeBool,
+																Optional: true,
+															},
+
+															"domain": {
+
+																Type:     schema.TypeList,
+																MaxItems: 1,
+																Optional: true,
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"exact_value": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"regex_value": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"suffix_value": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+																	},
+																},
+															},
+
+															"metadata": {
+
+																Type:     schema.TypeList,
+																MaxItems: 1,
+																Required: true,
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"description": {
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"disable": {
+																			Type:       schema.TypeBool,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																		},
+
+																		"name": {
+																			Type:     schema.TypeString,
+																			Required: true,
+																		},
+																	},
+																},
+															},
+
+															"path": {
+
+																Type:     schema.TypeList,
+																MaxItems: 1,
+																Required: true,
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"path": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"prefix": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"regex": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+
+												"javascript_location": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"js_insertion_rules": {
+
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"exclude_list": {
+
+													Type:     schema.TypeList,
+													Optional: true,
+													Elem: &schema.Resource{
+														Schema: map[string]*schema.Schema{
+
+															"any_domain": {
+
+																Type:     schema.TypeBool,
+																Optional: true,
+															},
+
+															"domain": {
+
+																Type:     schema.TypeList,
+																MaxItems: 1,
+																Optional: true,
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"exact_value": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"regex_value": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"suffix_value": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+																	},
+																},
+															},
+
+															"metadata": {
+
+																Type:     schema.TypeList,
+																MaxItems: 1,
+																Required: true,
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"description": {
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"disable": {
+																			Type:       schema.TypeBool,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																		},
+
+																		"name": {
+																			Type:     schema.TypeString,
+																			Required: true,
+																		},
+																	},
+																},
+															},
+
+															"path": {
+
+																Type:     schema.TypeList,
+																MaxItems: 1,
+																Required: true,
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"path": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"prefix": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"regex": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+
+												"rules": {
+
+													Type:     schema.TypeList,
+													Required: true,
+													Elem: &schema.Resource{
+														Schema: map[string]*schema.Schema{
+
+															"any_domain": {
+
+																Type:     schema.TypeBool,
+																Optional: true,
+															},
+
+															"domain": {
+
+																Type:     schema.TypeList,
+																MaxItems: 1,
+																Optional: true,
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"exact_value": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"regex_value": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"suffix_value": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+																	},
+																},
+															},
+
+															"javascript_location": {
+																Type:     schema.TypeString,
+																Optional: true,
+															},
+
+															"metadata": {
+
+																Type:     schema.TypeList,
+																MaxItems: 1,
+																Required: true,
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"description": {
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"disable": {
+																			Type:       schema.TypeBool,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																		},
+
+																		"name": {
+																			Type:     schema.TypeString,
+																			Required: true,
+																		},
+																	},
+																},
+															},
+
+															"path": {
+
+																Type:     schema.TypeList,
+																MaxItems: 1,
+																Required: true,
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"path": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"prefix": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"regex": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+
+									"mobile": {
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Required: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"disable_mobile_sdk": {
+
+										Type:     schema.TypeBool,
 										Optional: true,
 									},
-									"tenant": {
-										Type:     schema.TypeString,
+
+									"mobile_sdk_config": {
+
+										Type:     schema.TypeList,
+										MaxItems: 1,
 										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"mobile_identifier": {
+
+													Type:     schema.TypeList,
+													MaxItems: 1,
+													Optional: true,
+													Elem: &schema.Resource{
+														Schema: map[string]*schema.Schema{
+
+															"headers": {
+
+																Type:     schema.TypeList,
+																Optional: true,
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"check_not_present": {
+
+																			Type:     schema.TypeBool,
+																			Optional: true,
+																		},
+
+																		"check_present": {
+
+																			Type:     schema.TypeBool,
+																			Optional: true,
+																		},
+
+																		"item": {
+
+																			Type:     schema.TypeList,
+																			MaxItems: 1,
+																			Optional: true,
+																			Elem: &schema.Resource{
+																				Schema: map[string]*schema.Schema{
+
+																					"exact_values": {
+																						Type: schema.TypeList,
+
+																						Optional: true,
+																						Elem: &schema.Schema{
+																							Type: schema.TypeString,
+																						},
+																					},
+
+																					"regex_values": {
+																						Type: schema.TypeList,
+
+																						Optional: true,
+																						Elem: &schema.Schema{
+																							Type: schema.TypeString,
+																						},
+																					},
+
+																					"transformers": {
+																						Type: schema.TypeList,
+
+																						Optional: true,
+																						Elem: &schema.Schema{
+																							Type: schema.TypeString,
+																						},
+																					},
+																				},
+																			},
+																		},
+
+																		"name": {
+																			Type:     schema.TypeString,
+																			Required: true,
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+
+									"web": {
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Required: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+
+						"mobile_only": {
+
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"mobile": {
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Required: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+
+						"web_only": {
+
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"disable_js_insert": {
+
+										Type:     schema.TypeBool,
+										Optional: true,
+									},
+
+									"js_insert_all_pages": {
+
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"javascript_location": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"js_insert_all_pages_except": {
+
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"exclude_list": {
+
+													Type:     schema.TypeList,
+													Optional: true,
+													Elem: &schema.Resource{
+														Schema: map[string]*schema.Schema{
+
+															"any_domain": {
+
+																Type:     schema.TypeBool,
+																Optional: true,
+															},
+
+															"domain": {
+
+																Type:     schema.TypeList,
+																MaxItems: 1,
+																Optional: true,
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"exact_value": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"regex_value": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"suffix_value": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+																	},
+																},
+															},
+
+															"metadata": {
+
+																Type:     schema.TypeList,
+																MaxItems: 1,
+																Required: true,
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"description": {
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"disable": {
+																			Type:       schema.TypeBool,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																		},
+
+																		"name": {
+																			Type:     schema.TypeString,
+																			Required: true,
+																		},
+																	},
+																},
+															},
+
+															"path": {
+
+																Type:     schema.TypeList,
+																MaxItems: 1,
+																Required: true,
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"path": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"prefix": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"regex": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+
+												"javascript_location": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"js_insertion_rules": {
+
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"exclude_list": {
+
+													Type:     schema.TypeList,
+													Optional: true,
+													Elem: &schema.Resource{
+														Schema: map[string]*schema.Schema{
+
+															"any_domain": {
+
+																Type:     schema.TypeBool,
+																Optional: true,
+															},
+
+															"domain": {
+
+																Type:     schema.TypeList,
+																MaxItems: 1,
+																Optional: true,
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"exact_value": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"regex_value": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"suffix_value": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+																	},
+																},
+															},
+
+															"metadata": {
+
+																Type:     schema.TypeList,
+																MaxItems: 1,
+																Required: true,
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"description": {
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"disable": {
+																			Type:       schema.TypeBool,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																		},
+
+																		"name": {
+																			Type:     schema.TypeString,
+																			Required: true,
+																		},
+																	},
+																},
+															},
+
+															"path": {
+
+																Type:     schema.TypeList,
+																MaxItems: 1,
+																Required: true,
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"path": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"prefix": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"regex": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+
+												"rules": {
+
+													Type:     schema.TypeList,
+													Required: true,
+													Elem: &schema.Resource{
+														Schema: map[string]*schema.Schema{
+
+															"any_domain": {
+
+																Type:     schema.TypeBool,
+																Optional: true,
+															},
+
+															"domain": {
+
+																Type:     schema.TypeList,
+																MaxItems: 1,
+																Optional: true,
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"exact_value": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"regex_value": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"suffix_value": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+																	},
+																},
+															},
+
+															"javascript_location": {
+																Type:     schema.TypeString,
+																Optional: true,
+															},
+
+															"metadata": {
+
+																Type:     schema.TypeList,
+																MaxItems: 1,
+																Required: true,
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"description": {
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"disable": {
+																			Type:       schema.TypeBool,
+																			Optional:   true,
+																			Deprecated: "This field is deprecated and will be removed in future release.",
+																		},
+
+																		"name": {
+																			Type:     schema.TypeString,
+																			Required: true,
+																		},
+																	},
+																},
+															},
+
+															"path": {
+
+																Type:     schema.TypeList,
+																MaxItems: 1,
+																Required: true,
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"path": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"prefix": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+
+																		"regex": {
+
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+
+									"web": {
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Required: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
 									},
 								},
 							},
@@ -22743,14 +23908,6 @@ func resourceVolterraHttpLoadbalancer() *schema.Resource {
 				},
 			},
 		},
-		SchemaVersion: 2,
-		StateUpgraders: []schema.StateUpgrader{
-			{
-				Type:    statemigration.ResourceHttpLoadbalancerInstanceResourceV1().CoreConfigSchema().ImpliedType(),
-				Upgrade: statemigration.ResourceHttpLoadbalancerInstanceStateUpgradeV1,
-				Version: 1,
-			},
-		},
 	}
 }
 
@@ -22843,6 +24000,47 @@ func resourceVolterraHttpLoadbalancerCreate(d *schema.ResourceData, meta interfa
 
 							choiceTypeFound := false
 
+							if v, ok := advertiseWhereMapStrToI["advertise_dualstack_on_public"]; ok && !isIntfNil(v) && !choiceTypeFound {
+
+								choiceTypeFound = true
+								choiceInt := &ves_io_schema_views.WhereType_AdvertiseDualstackOnPublic{}
+								choiceInt.AdvertiseDualstackOnPublic = &ves_io_schema_views.AdvertisePublic{}
+								advertiseWhere[i].Choice = choiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											publicIpInt := &ves_io_schema_views.ObjectRefType{}
+											choiceInt.AdvertiseDualstackOnPublic.PublicIp = publicIpInt
+
+											for _, set := range sl {
+												if set != nil {
+													piMapToStrVal := set.(map[string]interface{})
+													if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+														publicIpInt.Name = val.(string)
+													}
+													if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+														publicIpInt.Namespace = val.(string)
+													}
+
+													if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+														publicIpInt.Tenant = val.(string)
+													}
+												}
+											}
+
+										}
+
+									}
+								}
+
+							}
+
 							if v, ok := advertiseWhereMapStrToI["advertise_on_public"]; ok && !isIntfNil(v) && !choiceTypeFound {
 
 								choiceTypeFound = true
@@ -22860,6 +24058,47 @@ func resourceVolterraHttpLoadbalancerCreate(d *schema.ResourceData, meta interfa
 											sl := v.([]interface{})
 											publicIpInt := &ves_io_schema_views.ObjectRefType{}
 											choiceInt.AdvertiseOnPublic.PublicIp = publicIpInt
+
+											for _, set := range sl {
+												if set != nil {
+													piMapToStrVal := set.(map[string]interface{})
+													if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+														publicIpInt.Name = val.(string)
+													}
+													if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+														publicIpInt.Namespace = val.(string)
+													}
+
+													if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+														publicIpInt.Tenant = val.(string)
+													}
+												}
+											}
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := advertiseWhereMapStrToI["advertise_v6_on_public"]; ok && !isIntfNil(v) && !choiceTypeFound {
+
+								choiceTypeFound = true
+								choiceInt := &ves_io_schema_views.WhereType_AdvertiseV6OnPublic{}
+								choiceInt.AdvertiseV6OnPublic = &ves_io_schema_views.AdvertisePublic{}
+								advertiseWhere[i].Choice = choiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											publicIpInt := &ves_io_schema_views.ObjectRefType{}
+											choiceInt.AdvertiseV6OnPublic.PublicIp = publicIpInt
 
 											for _, set := range sl {
 												if set != nil {
@@ -23429,6 +24668,47 @@ func resourceVolterraHttpLoadbalancerCreate(d *schema.ResourceData, meta interfa
 
 	}
 
+	if v, ok := d.GetOk("advertise_dualstack_on_public"); ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
+
+		advertiseChoiceTypeFound = true
+		advertiseChoiceInt := &ves_io_schema_views_http_loadbalancer.CreateSpecType_AdvertiseDualstackOnPublic{}
+		advertiseChoiceInt.AdvertiseDualstackOnPublic = &ves_io_schema_views.AdvertisePublic{}
+		createSpec.AdvertiseChoice = advertiseChoiceInt
+
+		sl := v.([]interface{})
+		for _, set := range sl {
+			if set != nil {
+				cs := set.(map[string]interface{})
+
+				if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					publicIpInt := &ves_io_schema_views.ObjectRefType{}
+					advertiseChoiceInt.AdvertiseDualstackOnPublic.PublicIp = publicIpInt
+
+					for _, set := range sl {
+						if set != nil {
+							piMapToStrVal := set.(map[string]interface{})
+							if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+								publicIpInt.Name = val.(string)
+							}
+							if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								publicIpInt.Namespace = val.(string)
+							}
+
+							if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								publicIpInt.Tenant = val.(string)
+							}
+						}
+					}
+
+				}
+
+			}
+		}
+
+	}
+
 	if v, ok := d.GetOk("advertise_on_public"); ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
 
 		advertiseChoiceTypeFound = true
@@ -23470,6 +24750,30 @@ func resourceVolterraHttpLoadbalancerCreate(d *schema.ResourceData, meta interfa
 
 	}
 
+	if v, ok := d.GetOk("advertise_on_public_default_dualstack_vip"); ok && !advertiseChoiceTypeFound {
+
+		advertiseChoiceTypeFound = true
+
+		if v.(bool) {
+			advertiseChoiceInt := &ves_io_schema_views_http_loadbalancer.CreateSpecType_AdvertiseOnPublicDefaultDualstackVip{}
+			advertiseChoiceInt.AdvertiseOnPublicDefaultDualstackVip = &ves_io_schema.Empty{}
+			createSpec.AdvertiseChoice = advertiseChoiceInt
+		}
+
+	}
+
+	if v, ok := d.GetOk("advertise_on_public_default_ipv6_vip"); ok && !advertiseChoiceTypeFound {
+
+		advertiseChoiceTypeFound = true
+
+		if v.(bool) {
+			advertiseChoiceInt := &ves_io_schema_views_http_loadbalancer.CreateSpecType_AdvertiseOnPublicDefaultIpv6Vip{}
+			advertiseChoiceInt.AdvertiseOnPublicDefaultIpv6Vip = &ves_io_schema.Empty{}
+			createSpec.AdvertiseChoice = advertiseChoiceInt
+		}
+
+	}
+
 	if v, ok := d.GetOk("advertise_on_public_default_vip"); ok && !advertiseChoiceTypeFound {
 
 		advertiseChoiceTypeFound = true
@@ -23478,6 +24782,47 @@ func resourceVolterraHttpLoadbalancerCreate(d *schema.ResourceData, meta interfa
 			advertiseChoiceInt := &ves_io_schema_views_http_loadbalancer.CreateSpecType_AdvertiseOnPublicDefaultVip{}
 			advertiseChoiceInt.AdvertiseOnPublicDefaultVip = &ves_io_schema.Empty{}
 			createSpec.AdvertiseChoice = advertiseChoiceInt
+		}
+
+	}
+
+	if v, ok := d.GetOk("advertise_v6_on_public"); ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
+
+		advertiseChoiceTypeFound = true
+		advertiseChoiceInt := &ves_io_schema_views_http_loadbalancer.CreateSpecType_AdvertiseV6OnPublic{}
+		advertiseChoiceInt.AdvertiseV6OnPublic = &ves_io_schema_views.AdvertisePublic{}
+		createSpec.AdvertiseChoice = advertiseChoiceInt
+
+		sl := v.([]interface{})
+		for _, set := range sl {
+			if set != nil {
+				cs := set.(map[string]interface{})
+
+				if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					publicIpInt := &ves_io_schema_views.ObjectRefType{}
+					advertiseChoiceInt.AdvertiseV6OnPublic.PublicIp = publicIpInt
+
+					for _, set := range sl {
+						if set != nil {
+							piMapToStrVal := set.(map[string]interface{})
+							if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+								publicIpInt.Name = val.(string)
+							}
+							if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								publicIpInt.Namespace = val.(string)
+							}
+
+							if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								publicIpInt.Tenant = val.(string)
+							}
+						}
+					}
+
+				}
+
+			}
 		}
 
 	}
@@ -34973,6 +36318,1424 @@ func resourceVolterraHttpLoadbalancerCreate(d *schema.ResourceData, meta interfa
 							if val, ok := wMapToStrVal["tenant"]; ok && !isIntfNil(v) {
 								webInt.Tenant = val.(string)
 							}
+						}
+					}
+
+				}
+
+			}
+		}
+
+	}
+
+	if v, ok := d.GetOk("bot_defense_advanced_protection"); ok && !isIntfNil(v) && !botDefenseChoiceTypeFound {
+
+		botDefenseChoiceTypeFound = true
+		botDefenseChoiceInt := &ves_io_schema_views_http_loadbalancer.CreateSpecType_BotDefenseAdvancedProtection{}
+		botDefenseChoiceInt.BotDefenseAdvancedProtection = &ves_io_schema_views_common_security.BotDefenseAdvancedProtection{}
+		createSpec.BotDefenseChoice = botDefenseChoiceInt
+
+		sl := v.([]interface{})
+		for _, set := range sl {
+			if set != nil {
+				cs := set.(map[string]interface{})
+
+				clientTypeChoiceTypeFound := false
+
+				if v, ok := cs["both_web_and_mobile"]; ok && !isIntfNil(v) && !clientTypeChoiceTypeFound {
+
+					clientTypeChoiceTypeFound = true
+					clientTypeChoiceInt := &ves_io_schema_views_common_security.BotDefenseAdvancedProtection_BothWebAndMobile{}
+					clientTypeChoiceInt.BothWebAndMobile = &ves_io_schema_views_common_security.BothWebAndMobileType{}
+					botDefenseChoiceInt.BotDefenseAdvancedProtection.ClientTypeChoice = clientTypeChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							javaScriptChoiceTypeFound := false
+
+							if v, ok := cs["disable_js_insert"]; ok && !isIntfNil(v) && !javaScriptChoiceTypeFound {
+
+								javaScriptChoiceTypeFound = true
+
+								if v.(bool) {
+									javaScriptChoiceInt := &ves_io_schema_views_common_security.BothWebAndMobileType_DisableJsInsert{}
+									javaScriptChoiceInt.DisableJsInsert = &ves_io_schema.Empty{}
+									clientTypeChoiceInt.BothWebAndMobile.JavaScriptChoice = javaScriptChoiceInt
+								}
+
+							}
+
+							if v, ok := cs["js_insert_all_pages"]; ok && !isIntfNil(v) && !javaScriptChoiceTypeFound {
+
+								javaScriptChoiceTypeFound = true
+								javaScriptChoiceInt := &ves_io_schema_views_common_security.BothWebAndMobileType_JsInsertAllPages{}
+								javaScriptChoiceInt.JsInsertAllPages = &ves_io_schema_views_common_security.ShapeJavaScriptInsertAllType{}
+								clientTypeChoiceInt.BothWebAndMobile.JavaScriptChoice = javaScriptChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["javascript_location"]; ok && !isIntfNil(v) {
+
+											javaScriptChoiceInt.JsInsertAllPages.JavascriptLocation = ves_io_schema_views_common_security.JavaScriptLocation(ves_io_schema_views_common_security.JavaScriptLocation_value[v.(string)])
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["js_insert_all_pages_except"]; ok && !isIntfNil(v) && !javaScriptChoiceTypeFound {
+
+								javaScriptChoiceTypeFound = true
+								javaScriptChoiceInt := &ves_io_schema_views_common_security.BothWebAndMobileType_JsInsertAllPagesExcept{}
+								javaScriptChoiceInt.JsInsertAllPagesExcept = &ves_io_schema_views_common_security.ShapeJavaScriptInsertAllWithExceptionsType{}
+								clientTypeChoiceInt.BothWebAndMobile.JavaScriptChoice = javaScriptChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["exclude_list"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											excludeList := make([]*ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule, len(sl))
+											javaScriptChoiceInt.JsInsertAllPagesExcept.ExcludeList = excludeList
+											for i, set := range sl {
+												if set != nil {
+													excludeList[i] = &ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule{}
+													excludeListMapStrToI := set.(map[string]interface{})
+
+													domainMatcherChoiceTypeFound := false
+
+													if v, ok := excludeListMapStrToI["any_domain"]; ok && !isIntfNil(v) && !domainMatcherChoiceTypeFound {
+
+														domainMatcherChoiceTypeFound = true
+
+														if v.(bool) {
+															domainMatcherChoiceInt := &ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule_AnyDomain{}
+															domainMatcherChoiceInt.AnyDomain = &ves_io_schema.Empty{}
+															excludeList[i].DomainMatcherChoice = domainMatcherChoiceInt
+														}
+
+													}
+
+													if v, ok := excludeListMapStrToI["domain"]; ok && !isIntfNil(v) && !domainMatcherChoiceTypeFound {
+
+														domainMatcherChoiceTypeFound = true
+														domainMatcherChoiceInt := &ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule_Domain{}
+														domainMatcherChoiceInt.Domain = &ves_io_schema.DomainType{}
+														excludeList[i].DomainMatcherChoice = domainMatcherChoiceInt
+
+														sl := v.([]interface{})
+														for _, set := range sl {
+															if set != nil {
+																cs := set.(map[string]interface{})
+
+																domainChoiceTypeFound := false
+
+																if v, ok := cs["exact_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_ExactValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.ExactValue = v.(string)
+
+																}
+
+																if v, ok := cs["regex_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_RegexValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.RegexValue = v.(string)
+
+																}
+
+																if v, ok := cs["suffix_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_SuffixValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.SuffixValue = v.(string)
+
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := excludeListMapStrToI["metadata"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														metadata := &ves_io_schema.MessageMetaType{}
+														excludeList[i].Metadata = metadata
+														for _, set := range sl {
+															if set != nil {
+																metadataMapStrToI := set.(map[string]interface{})
+
+																if w, ok := metadataMapStrToI["description"]; ok && !isIntfNil(w) {
+																	metadata.Description = w.(string)
+																}
+
+																if w, ok := metadataMapStrToI["disable"]; ok && !isIntfNil(w) {
+																	metadata.Disable = w.(bool)
+																}
+
+																if w, ok := metadataMapStrToI["name"]; ok && !isIntfNil(w) {
+																	metadata.Name = w.(string)
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := excludeListMapStrToI["path"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														path := &ves_io_schema.PathMatcherType{}
+														excludeList[i].Path = path
+														for _, set := range sl {
+															if set != nil {
+																pathMapStrToI := set.(map[string]interface{})
+
+																pathMatchTypeFound := false
+
+																if v, ok := pathMapStrToI["path"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Path{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Path = v.(string)
+
+																}
+
+																if v, ok := pathMapStrToI["prefix"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Prefix{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Prefix = v.(string)
+
+																}
+
+																if v, ok := pathMapStrToI["regex"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Regex{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Regex = v.(string)
+
+																}
+
+															}
+														}
+
+													}
+
+												}
+											}
+
+										}
+
+										if v, ok := cs["javascript_location"]; ok && !isIntfNil(v) {
+
+											javaScriptChoiceInt.JsInsertAllPagesExcept.JavascriptLocation = ves_io_schema_views_common_security.JavaScriptLocation(ves_io_schema_views_common_security.JavaScriptLocation_value[v.(string)])
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["js_insertion_rules"]; ok && !isIntfNil(v) && !javaScriptChoiceTypeFound {
+
+								javaScriptChoiceTypeFound = true
+								javaScriptChoiceInt := &ves_io_schema_views_common_security.BothWebAndMobileType_JsInsertionRules{}
+								javaScriptChoiceInt.JsInsertionRules = &ves_io_schema_views_common_security.ShapeJavaScriptInsertType{}
+								clientTypeChoiceInt.BothWebAndMobile.JavaScriptChoice = javaScriptChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["exclude_list"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											excludeList := make([]*ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule, len(sl))
+											javaScriptChoiceInt.JsInsertionRules.ExcludeList = excludeList
+											for i, set := range sl {
+												if set != nil {
+													excludeList[i] = &ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule{}
+													excludeListMapStrToI := set.(map[string]interface{})
+
+													domainMatcherChoiceTypeFound := false
+
+													if v, ok := excludeListMapStrToI["any_domain"]; ok && !isIntfNil(v) && !domainMatcherChoiceTypeFound {
+
+														domainMatcherChoiceTypeFound = true
+
+														if v.(bool) {
+															domainMatcherChoiceInt := &ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule_AnyDomain{}
+															domainMatcherChoiceInt.AnyDomain = &ves_io_schema.Empty{}
+															excludeList[i].DomainMatcherChoice = domainMatcherChoiceInt
+														}
+
+													}
+
+													if v, ok := excludeListMapStrToI["domain"]; ok && !isIntfNil(v) && !domainMatcherChoiceTypeFound {
+
+														domainMatcherChoiceTypeFound = true
+														domainMatcherChoiceInt := &ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule_Domain{}
+														domainMatcherChoiceInt.Domain = &ves_io_schema.DomainType{}
+														excludeList[i].DomainMatcherChoice = domainMatcherChoiceInt
+
+														sl := v.([]interface{})
+														for _, set := range sl {
+															if set != nil {
+																cs := set.(map[string]interface{})
+
+																domainChoiceTypeFound := false
+
+																if v, ok := cs["exact_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_ExactValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.ExactValue = v.(string)
+
+																}
+
+																if v, ok := cs["regex_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_RegexValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.RegexValue = v.(string)
+
+																}
+
+																if v, ok := cs["suffix_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_SuffixValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.SuffixValue = v.(string)
+
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := excludeListMapStrToI["metadata"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														metadata := &ves_io_schema.MessageMetaType{}
+														excludeList[i].Metadata = metadata
+														for _, set := range sl {
+															if set != nil {
+																metadataMapStrToI := set.(map[string]interface{})
+
+																if w, ok := metadataMapStrToI["description"]; ok && !isIntfNil(w) {
+																	metadata.Description = w.(string)
+																}
+
+																if w, ok := metadataMapStrToI["disable"]; ok && !isIntfNil(w) {
+																	metadata.Disable = w.(bool)
+																}
+
+																if w, ok := metadataMapStrToI["name"]; ok && !isIntfNil(w) {
+																	metadata.Name = w.(string)
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := excludeListMapStrToI["path"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														path := &ves_io_schema.PathMatcherType{}
+														excludeList[i].Path = path
+														for _, set := range sl {
+															if set != nil {
+																pathMapStrToI := set.(map[string]interface{})
+
+																pathMatchTypeFound := false
+
+																if v, ok := pathMapStrToI["path"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Path{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Path = v.(string)
+
+																}
+
+																if v, ok := pathMapStrToI["prefix"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Prefix{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Prefix = v.(string)
+
+																}
+
+																if v, ok := pathMapStrToI["regex"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Regex{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Regex = v.(string)
+
+																}
+
+															}
+														}
+
+													}
+
+												}
+											}
+
+										}
+
+										if v, ok := cs["rules"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											rules := make([]*ves_io_schema_views_common_security.ShapeJavaScriptInsertionRule, len(sl))
+											javaScriptChoiceInt.JsInsertionRules.Rules = rules
+											for i, set := range sl {
+												if set != nil {
+													rules[i] = &ves_io_schema_views_common_security.ShapeJavaScriptInsertionRule{}
+													rulesMapStrToI := set.(map[string]interface{})
+
+													domainMatcherChoiceTypeFound := false
+
+													if v, ok := rulesMapStrToI["any_domain"]; ok && !isIntfNil(v) && !domainMatcherChoiceTypeFound {
+
+														domainMatcherChoiceTypeFound = true
+
+														if v.(bool) {
+															domainMatcherChoiceInt := &ves_io_schema_views_common_security.ShapeJavaScriptInsertionRule_AnyDomain{}
+															domainMatcherChoiceInt.AnyDomain = &ves_io_schema.Empty{}
+															rules[i].DomainMatcherChoice = domainMatcherChoiceInt
+														}
+
+													}
+
+													if v, ok := rulesMapStrToI["domain"]; ok && !isIntfNil(v) && !domainMatcherChoiceTypeFound {
+
+														domainMatcherChoiceTypeFound = true
+														domainMatcherChoiceInt := &ves_io_schema_views_common_security.ShapeJavaScriptInsertionRule_Domain{}
+														domainMatcherChoiceInt.Domain = &ves_io_schema.DomainType{}
+														rules[i].DomainMatcherChoice = domainMatcherChoiceInt
+
+														sl := v.([]interface{})
+														for _, set := range sl {
+															if set != nil {
+																cs := set.(map[string]interface{})
+
+																domainChoiceTypeFound := false
+
+																if v, ok := cs["exact_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_ExactValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.ExactValue = v.(string)
+
+																}
+
+																if v, ok := cs["regex_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_RegexValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.RegexValue = v.(string)
+
+																}
+
+																if v, ok := cs["suffix_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_SuffixValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.SuffixValue = v.(string)
+
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := rulesMapStrToI["javascript_location"]; ok && !isIntfNil(v) {
+
+														rules[i].JavascriptLocation = ves_io_schema_views_common_security.JavaScriptLocation(ves_io_schema_views_common_security.JavaScriptLocation_value[v.(string)])
+
+													}
+
+													if v, ok := rulesMapStrToI["metadata"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														metadata := &ves_io_schema.MessageMetaType{}
+														rules[i].Metadata = metadata
+														for _, set := range sl {
+															if set != nil {
+																metadataMapStrToI := set.(map[string]interface{})
+
+																if w, ok := metadataMapStrToI["description"]; ok && !isIntfNil(w) {
+																	metadata.Description = w.(string)
+																}
+
+																if w, ok := metadataMapStrToI["disable"]; ok && !isIntfNil(w) {
+																	metadata.Disable = w.(bool)
+																}
+
+																if w, ok := metadataMapStrToI["name"]; ok && !isIntfNil(w) {
+																	metadata.Name = w.(string)
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := rulesMapStrToI["path"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														path := &ves_io_schema.PathMatcherType{}
+														rules[i].Path = path
+														for _, set := range sl {
+															if set != nil {
+																pathMapStrToI := set.(map[string]interface{})
+
+																pathMatchTypeFound := false
+
+																if v, ok := pathMapStrToI["path"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Path{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Path = v.(string)
+
+																}
+
+																if v, ok := pathMapStrToI["prefix"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Prefix{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Prefix = v.(string)
+
+																}
+
+																if v, ok := pathMapStrToI["regex"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Regex{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Regex = v.(string)
+
+																}
+
+															}
+														}
+
+													}
+
+												}
+											}
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["mobile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								mobileInt := &ves_io_schema_views.ObjectRefType{}
+								clientTypeChoiceInt.BothWebAndMobile.Mobile = mobileInt
+
+								for _, set := range sl {
+									if set != nil {
+										mMapToStrVal := set.(map[string]interface{})
+										if val, ok := mMapToStrVal["name"]; ok && !isIntfNil(v) {
+											mobileInt.Name = val.(string)
+										}
+										if val, ok := mMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											mobileInt.Namespace = val.(string)
+										}
+
+										if val, ok := mMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											mobileInt.Tenant = val.(string)
+										}
+									}
+								}
+
+							}
+
+							mobileSdkChoiceTypeFound := false
+
+							if v, ok := cs["disable_mobile_sdk"]; ok && !isIntfNil(v) && !mobileSdkChoiceTypeFound {
+
+								mobileSdkChoiceTypeFound = true
+
+								if v.(bool) {
+									mobileSdkChoiceInt := &ves_io_schema_views_common_security.BothWebAndMobileType_DisableMobileSdk{}
+									mobileSdkChoiceInt.DisableMobileSdk = &ves_io_schema.Empty{}
+									clientTypeChoiceInt.BothWebAndMobile.MobileSdkChoice = mobileSdkChoiceInt
+								}
+
+							}
+
+							if v, ok := cs["mobile_sdk_config"]; ok && !isIntfNil(v) && !mobileSdkChoiceTypeFound {
+
+								mobileSdkChoiceTypeFound = true
+								mobileSdkChoiceInt := &ves_io_schema_views_common_security.BothWebAndMobileType_MobileSdkConfig{}
+								mobileSdkChoiceInt.MobileSdkConfig = &ves_io_schema_views_common_security.BotAdvancedMobileSDKConfigType{}
+								clientTypeChoiceInt.BothWebAndMobile.MobileSdkChoice = mobileSdkChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["mobile_identifier"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											mobileIdentifier := &ves_io_schema_views_common_security.MobileTrafficIdentifierType{}
+											mobileSdkChoiceInt.MobileSdkConfig.MobileIdentifier = mobileIdentifier
+											for _, set := range sl {
+												if set != nil {
+													mobileIdentifierMapStrToI := set.(map[string]interface{})
+
+													if v, ok := mobileIdentifierMapStrToI["headers"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														headers := make([]*ves_io_schema_policy.HeaderMatcherTypeBasic, len(sl))
+														mobileIdentifier.Headers = headers
+														for i, set := range sl {
+															if set != nil {
+																headers[i] = &ves_io_schema_policy.HeaderMatcherTypeBasic{}
+																headersMapStrToI := set.(map[string]interface{})
+
+																matchTypeFound := false
+
+																if v, ok := headersMapStrToI["check_not_present"]; ok && !isIntfNil(v) && !matchTypeFound {
+
+																	matchTypeFound = true
+
+																	if v.(bool) {
+																		matchInt := &ves_io_schema_policy.HeaderMatcherTypeBasic_CheckNotPresent{}
+																		matchInt.CheckNotPresent = &ves_io_schema.Empty{}
+																		headers[i].Match = matchInt
+																	}
+
+																}
+
+																if v, ok := headersMapStrToI["check_present"]; ok && !isIntfNil(v) && !matchTypeFound {
+
+																	matchTypeFound = true
+
+																	if v.(bool) {
+																		matchInt := &ves_io_schema_policy.HeaderMatcherTypeBasic_CheckPresent{}
+																		matchInt.CheckPresent = &ves_io_schema.Empty{}
+																		headers[i].Match = matchInt
+																	}
+
+																}
+
+																if v, ok := headersMapStrToI["item"]; ok && !isIntfNil(v) && !matchTypeFound {
+
+																	matchTypeFound = true
+																	matchInt := &ves_io_schema_policy.HeaderMatcherTypeBasic_Item{}
+																	matchInt.Item = &ves_io_schema_policy.MatcherType{}
+																	headers[i].Match = matchInt
+
+																	sl := v.([]interface{})
+																	for _, set := range sl {
+																		if set != nil {
+																			cs := set.(map[string]interface{})
+
+																			if v, ok := cs["exact_values"]; ok && !isIntfNil(v) {
+
+																				ls := make([]string, len(v.([]interface{})))
+																				for i, v := range v.([]interface{}) {
+																					if v == nil {
+																						return fmt.Errorf("please provide valid non-empty string value of field exact_values")
+																					}
+																					if str, ok := v.(string); ok {
+																						ls[i] = str
+																					}
+																				}
+																				matchInt.Item.ExactValues = ls
+
+																			}
+
+																			if v, ok := cs["regex_values"]; ok && !isIntfNil(v) {
+
+																				ls := make([]string, len(v.([]interface{})))
+																				for i, v := range v.([]interface{}) {
+																					if v == nil {
+																						return fmt.Errorf("please provide valid non-empty string value of field regex_values")
+																					}
+																					if str, ok := v.(string); ok {
+																						ls[i] = str
+																					}
+																				}
+																				matchInt.Item.RegexValues = ls
+
+																			}
+
+																			if v, ok := cs["transformers"]; ok && !isIntfNil(v) {
+
+																				transformersList := []ves_io_schema_policy.Transformer{}
+																				for _, j := range v.([]interface{}) {
+																					if j == nil {
+																						return fmt.Errorf("please provide valid non-empty enum value of field transformers")
+																					}
+																					transformersList = append(transformersList, ves_io_schema_policy.Transformer(ves_io_schema_policy.Transformer_value[j.(string)]))
+																				}
+																				matchInt.Item.Transformers = transformersList
+
+																			}
+
+																		}
+																	}
+
+																}
+
+																if w, ok := headersMapStrToI["name"]; ok && !isIntfNil(w) {
+																	headers[i].Name = w.(string)
+																}
+
+															}
+														}
+
+													}
+
+												}
+											}
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["web"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								webInt := &ves_io_schema_views.ObjectRefType{}
+								clientTypeChoiceInt.BothWebAndMobile.Web = webInt
+
+								for _, set := range sl {
+									if set != nil {
+										wMapToStrVal := set.(map[string]interface{})
+										if val, ok := wMapToStrVal["name"]; ok && !isIntfNil(v) {
+											webInt.Name = val.(string)
+										}
+										if val, ok := wMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											webInt.Namespace = val.(string)
+										}
+
+										if val, ok := wMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											webInt.Tenant = val.(string)
+										}
+									}
+								}
+
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := cs["mobile_only"]; ok && !isIntfNil(v) && !clientTypeChoiceTypeFound {
+
+					clientTypeChoiceTypeFound = true
+					clientTypeChoiceInt := &ves_io_schema_views_common_security.BotDefenseAdvancedProtection_MobileOnly{}
+					clientTypeChoiceInt.MobileOnly = &ves_io_schema_views_common_security.MobileOnlyType{}
+					botDefenseChoiceInt.BotDefenseAdvancedProtection.ClientTypeChoice = clientTypeChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							if v, ok := cs["mobile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								mobileInt := &ves_io_schema_views.ObjectRefType{}
+								clientTypeChoiceInt.MobileOnly.Mobile = mobileInt
+
+								for _, set := range sl {
+									if set != nil {
+										mMapToStrVal := set.(map[string]interface{})
+										if val, ok := mMapToStrVal["name"]; ok && !isIntfNil(v) {
+											mobileInt.Name = val.(string)
+										}
+										if val, ok := mMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											mobileInt.Namespace = val.(string)
+										}
+
+										if val, ok := mMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											mobileInt.Tenant = val.(string)
+										}
+									}
+								}
+
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := cs["web_only"]; ok && !isIntfNil(v) && !clientTypeChoiceTypeFound {
+
+					clientTypeChoiceTypeFound = true
+					clientTypeChoiceInt := &ves_io_schema_views_common_security.BotDefenseAdvancedProtection_WebOnly{}
+					clientTypeChoiceInt.WebOnly = &ves_io_schema_views_common_security.WebOnlyType{}
+					botDefenseChoiceInt.BotDefenseAdvancedProtection.ClientTypeChoice = clientTypeChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							javaScriptChoiceTypeFound := false
+
+							if v, ok := cs["disable_js_insert"]; ok && !isIntfNil(v) && !javaScriptChoiceTypeFound {
+
+								javaScriptChoiceTypeFound = true
+
+								if v.(bool) {
+									javaScriptChoiceInt := &ves_io_schema_views_common_security.WebOnlyType_DisableJsInsert{}
+									javaScriptChoiceInt.DisableJsInsert = &ves_io_schema.Empty{}
+									clientTypeChoiceInt.WebOnly.JavaScriptChoice = javaScriptChoiceInt
+								}
+
+							}
+
+							if v, ok := cs["js_insert_all_pages"]; ok && !isIntfNil(v) && !javaScriptChoiceTypeFound {
+
+								javaScriptChoiceTypeFound = true
+								javaScriptChoiceInt := &ves_io_schema_views_common_security.WebOnlyType_JsInsertAllPages{}
+								javaScriptChoiceInt.JsInsertAllPages = &ves_io_schema_views_common_security.ShapeJavaScriptInsertAllType{}
+								clientTypeChoiceInt.WebOnly.JavaScriptChoice = javaScriptChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["javascript_location"]; ok && !isIntfNil(v) {
+
+											javaScriptChoiceInt.JsInsertAllPages.JavascriptLocation = ves_io_schema_views_common_security.JavaScriptLocation(ves_io_schema_views_common_security.JavaScriptLocation_value[v.(string)])
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["js_insert_all_pages_except"]; ok && !isIntfNil(v) && !javaScriptChoiceTypeFound {
+
+								javaScriptChoiceTypeFound = true
+								javaScriptChoiceInt := &ves_io_schema_views_common_security.WebOnlyType_JsInsertAllPagesExcept{}
+								javaScriptChoiceInt.JsInsertAllPagesExcept = &ves_io_schema_views_common_security.ShapeJavaScriptInsertAllWithExceptionsType{}
+								clientTypeChoiceInt.WebOnly.JavaScriptChoice = javaScriptChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["exclude_list"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											excludeList := make([]*ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule, len(sl))
+											javaScriptChoiceInt.JsInsertAllPagesExcept.ExcludeList = excludeList
+											for i, set := range sl {
+												if set != nil {
+													excludeList[i] = &ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule{}
+													excludeListMapStrToI := set.(map[string]interface{})
+
+													domainMatcherChoiceTypeFound := false
+
+													if v, ok := excludeListMapStrToI["any_domain"]; ok && !isIntfNil(v) && !domainMatcherChoiceTypeFound {
+
+														domainMatcherChoiceTypeFound = true
+
+														if v.(bool) {
+															domainMatcherChoiceInt := &ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule_AnyDomain{}
+															domainMatcherChoiceInt.AnyDomain = &ves_io_schema.Empty{}
+															excludeList[i].DomainMatcherChoice = domainMatcherChoiceInt
+														}
+
+													}
+
+													if v, ok := excludeListMapStrToI["domain"]; ok && !isIntfNil(v) && !domainMatcherChoiceTypeFound {
+
+														domainMatcherChoiceTypeFound = true
+														domainMatcherChoiceInt := &ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule_Domain{}
+														domainMatcherChoiceInt.Domain = &ves_io_schema.DomainType{}
+														excludeList[i].DomainMatcherChoice = domainMatcherChoiceInt
+
+														sl := v.([]interface{})
+														for _, set := range sl {
+															if set != nil {
+																cs := set.(map[string]interface{})
+
+																domainChoiceTypeFound := false
+
+																if v, ok := cs["exact_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_ExactValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.ExactValue = v.(string)
+
+																}
+
+																if v, ok := cs["regex_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_RegexValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.RegexValue = v.(string)
+
+																}
+
+																if v, ok := cs["suffix_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_SuffixValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.SuffixValue = v.(string)
+
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := excludeListMapStrToI["metadata"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														metadata := &ves_io_schema.MessageMetaType{}
+														excludeList[i].Metadata = metadata
+														for _, set := range sl {
+															if set != nil {
+																metadataMapStrToI := set.(map[string]interface{})
+
+																if w, ok := metadataMapStrToI["description"]; ok && !isIntfNil(w) {
+																	metadata.Description = w.(string)
+																}
+
+																if w, ok := metadataMapStrToI["disable"]; ok && !isIntfNil(w) {
+																	metadata.Disable = w.(bool)
+																}
+
+																if w, ok := metadataMapStrToI["name"]; ok && !isIntfNil(w) {
+																	metadata.Name = w.(string)
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := excludeListMapStrToI["path"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														path := &ves_io_schema.PathMatcherType{}
+														excludeList[i].Path = path
+														for _, set := range sl {
+															if set != nil {
+																pathMapStrToI := set.(map[string]interface{})
+
+																pathMatchTypeFound := false
+
+																if v, ok := pathMapStrToI["path"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Path{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Path = v.(string)
+
+																}
+
+																if v, ok := pathMapStrToI["prefix"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Prefix{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Prefix = v.(string)
+
+																}
+
+																if v, ok := pathMapStrToI["regex"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Regex{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Regex = v.(string)
+
+																}
+
+															}
+														}
+
+													}
+
+												}
+											}
+
+										}
+
+										if v, ok := cs["javascript_location"]; ok && !isIntfNil(v) {
+
+											javaScriptChoiceInt.JsInsertAllPagesExcept.JavascriptLocation = ves_io_schema_views_common_security.JavaScriptLocation(ves_io_schema_views_common_security.JavaScriptLocation_value[v.(string)])
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["js_insertion_rules"]; ok && !isIntfNil(v) && !javaScriptChoiceTypeFound {
+
+								javaScriptChoiceTypeFound = true
+								javaScriptChoiceInt := &ves_io_schema_views_common_security.WebOnlyType_JsInsertionRules{}
+								javaScriptChoiceInt.JsInsertionRules = &ves_io_schema_views_common_security.ShapeJavaScriptInsertType{}
+								clientTypeChoiceInt.WebOnly.JavaScriptChoice = javaScriptChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["exclude_list"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											excludeList := make([]*ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule, len(sl))
+											javaScriptChoiceInt.JsInsertionRules.ExcludeList = excludeList
+											for i, set := range sl {
+												if set != nil {
+													excludeList[i] = &ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule{}
+													excludeListMapStrToI := set.(map[string]interface{})
+
+													domainMatcherChoiceTypeFound := false
+
+													if v, ok := excludeListMapStrToI["any_domain"]; ok && !isIntfNil(v) && !domainMatcherChoiceTypeFound {
+
+														domainMatcherChoiceTypeFound = true
+
+														if v.(bool) {
+															domainMatcherChoiceInt := &ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule_AnyDomain{}
+															domainMatcherChoiceInt.AnyDomain = &ves_io_schema.Empty{}
+															excludeList[i].DomainMatcherChoice = domainMatcherChoiceInt
+														}
+
+													}
+
+													if v, ok := excludeListMapStrToI["domain"]; ok && !isIntfNil(v) && !domainMatcherChoiceTypeFound {
+
+														domainMatcherChoiceTypeFound = true
+														domainMatcherChoiceInt := &ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule_Domain{}
+														domainMatcherChoiceInt.Domain = &ves_io_schema.DomainType{}
+														excludeList[i].DomainMatcherChoice = domainMatcherChoiceInt
+
+														sl := v.([]interface{})
+														for _, set := range sl {
+															if set != nil {
+																cs := set.(map[string]interface{})
+
+																domainChoiceTypeFound := false
+
+																if v, ok := cs["exact_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_ExactValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.ExactValue = v.(string)
+
+																}
+
+																if v, ok := cs["regex_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_RegexValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.RegexValue = v.(string)
+
+																}
+
+																if v, ok := cs["suffix_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_SuffixValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.SuffixValue = v.(string)
+
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := excludeListMapStrToI["metadata"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														metadata := &ves_io_schema.MessageMetaType{}
+														excludeList[i].Metadata = metadata
+														for _, set := range sl {
+															if set != nil {
+																metadataMapStrToI := set.(map[string]interface{})
+
+																if w, ok := metadataMapStrToI["description"]; ok && !isIntfNil(w) {
+																	metadata.Description = w.(string)
+																}
+
+																if w, ok := metadataMapStrToI["disable"]; ok && !isIntfNil(w) {
+																	metadata.Disable = w.(bool)
+																}
+
+																if w, ok := metadataMapStrToI["name"]; ok && !isIntfNil(w) {
+																	metadata.Name = w.(string)
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := excludeListMapStrToI["path"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														path := &ves_io_schema.PathMatcherType{}
+														excludeList[i].Path = path
+														for _, set := range sl {
+															if set != nil {
+																pathMapStrToI := set.(map[string]interface{})
+
+																pathMatchTypeFound := false
+
+																if v, ok := pathMapStrToI["path"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Path{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Path = v.(string)
+
+																}
+
+																if v, ok := pathMapStrToI["prefix"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Prefix{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Prefix = v.(string)
+
+																}
+
+																if v, ok := pathMapStrToI["regex"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Regex{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Regex = v.(string)
+
+																}
+
+															}
+														}
+
+													}
+
+												}
+											}
+
+										}
+
+										if v, ok := cs["rules"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											rules := make([]*ves_io_schema_views_common_security.ShapeJavaScriptInsertionRule, len(sl))
+											javaScriptChoiceInt.JsInsertionRules.Rules = rules
+											for i, set := range sl {
+												if set != nil {
+													rules[i] = &ves_io_schema_views_common_security.ShapeJavaScriptInsertionRule{}
+													rulesMapStrToI := set.(map[string]interface{})
+
+													domainMatcherChoiceTypeFound := false
+
+													if v, ok := rulesMapStrToI["any_domain"]; ok && !isIntfNil(v) && !domainMatcherChoiceTypeFound {
+
+														domainMatcherChoiceTypeFound = true
+
+														if v.(bool) {
+															domainMatcherChoiceInt := &ves_io_schema_views_common_security.ShapeJavaScriptInsertionRule_AnyDomain{}
+															domainMatcherChoiceInt.AnyDomain = &ves_io_schema.Empty{}
+															rules[i].DomainMatcherChoice = domainMatcherChoiceInt
+														}
+
+													}
+
+													if v, ok := rulesMapStrToI["domain"]; ok && !isIntfNil(v) && !domainMatcherChoiceTypeFound {
+
+														domainMatcherChoiceTypeFound = true
+														domainMatcherChoiceInt := &ves_io_schema_views_common_security.ShapeJavaScriptInsertionRule_Domain{}
+														domainMatcherChoiceInt.Domain = &ves_io_schema.DomainType{}
+														rules[i].DomainMatcherChoice = domainMatcherChoiceInt
+
+														sl := v.([]interface{})
+														for _, set := range sl {
+															if set != nil {
+																cs := set.(map[string]interface{})
+
+																domainChoiceTypeFound := false
+
+																if v, ok := cs["exact_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_ExactValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.ExactValue = v.(string)
+
+																}
+
+																if v, ok := cs["regex_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_RegexValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.RegexValue = v.(string)
+
+																}
+
+																if v, ok := cs["suffix_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_SuffixValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.SuffixValue = v.(string)
+
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := rulesMapStrToI["javascript_location"]; ok && !isIntfNil(v) {
+
+														rules[i].JavascriptLocation = ves_io_schema_views_common_security.JavaScriptLocation(ves_io_schema_views_common_security.JavaScriptLocation_value[v.(string)])
+
+													}
+
+													if v, ok := rulesMapStrToI["metadata"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														metadata := &ves_io_schema.MessageMetaType{}
+														rules[i].Metadata = metadata
+														for _, set := range sl {
+															if set != nil {
+																metadataMapStrToI := set.(map[string]interface{})
+
+																if w, ok := metadataMapStrToI["description"]; ok && !isIntfNil(w) {
+																	metadata.Description = w.(string)
+																}
+
+																if w, ok := metadataMapStrToI["disable"]; ok && !isIntfNil(w) {
+																	metadata.Disable = w.(bool)
+																}
+
+																if w, ok := metadataMapStrToI["name"]; ok && !isIntfNil(w) {
+																	metadata.Name = w.(string)
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := rulesMapStrToI["path"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														path := &ves_io_schema.PathMatcherType{}
+														rules[i].Path = path
+														for _, set := range sl {
+															if set != nil {
+																pathMapStrToI := set.(map[string]interface{})
+
+																pathMatchTypeFound := false
+
+																if v, ok := pathMapStrToI["path"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Path{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Path = v.(string)
+
+																}
+
+																if v, ok := pathMapStrToI["prefix"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Prefix{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Prefix = v.(string)
+
+																}
+
+																if v, ok := pathMapStrToI["regex"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Regex{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Regex = v.(string)
+
+																}
+
+															}
+														}
+
+													}
+
+												}
+											}
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["web"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								webInt := &ves_io_schema_views.ObjectRefType{}
+								clientTypeChoiceInt.WebOnly.Web = webInt
+
+								for _, set := range sl {
+									if set != nil {
+										wMapToStrVal := set.(map[string]interface{})
+										if val, ok := wMapToStrVal["name"]; ok && !isIntfNil(v) {
+											webInt.Name = val.(string)
+										}
+										if val, ok := wMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											webInt.Namespace = val.(string)
+										}
+
+										if val, ok := wMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											webInt.Tenant = val.(string)
+										}
+									}
+								}
+
+							}
+
 						}
 					}
 
@@ -55697,7 +58460,6 @@ func setHttpLoadbalancerFields(client *APIClient, d *schema.ResourceData, resp v
 	d.Set("namespace", metadata.GetNamespace())
 
 	drift.DriftDetectionSpec(d, resp)
-
 	return nil
 }
 
@@ -55787,6 +58549,47 @@ func resourceVolterraHttpLoadbalancerUpdate(d *schema.ResourceData, meta interfa
 
 							choiceTypeFound := false
 
+							if v, ok := advertiseWhereMapStrToI["advertise_dualstack_on_public"]; ok && !isIntfNil(v) && !choiceTypeFound {
+
+								choiceTypeFound = true
+								choiceInt := &ves_io_schema_views.WhereType_AdvertiseDualstackOnPublic{}
+								choiceInt.AdvertiseDualstackOnPublic = &ves_io_schema_views.AdvertisePublic{}
+								advertiseWhere[i].Choice = choiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											publicIpInt := &ves_io_schema_views.ObjectRefType{}
+											choiceInt.AdvertiseDualstackOnPublic.PublicIp = publicIpInt
+
+											for _, set := range sl {
+												if set != nil {
+													piMapToStrVal := set.(map[string]interface{})
+													if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+														publicIpInt.Name = val.(string)
+													}
+													if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+														publicIpInt.Namespace = val.(string)
+													}
+
+													if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+														publicIpInt.Tenant = val.(string)
+													}
+												}
+											}
+
+										}
+
+									}
+								}
+
+							}
+
 							if v, ok := advertiseWhereMapStrToI["advertise_on_public"]; ok && !isIntfNil(v) && !choiceTypeFound {
 
 								choiceTypeFound = true
@@ -55804,6 +58607,47 @@ func resourceVolterraHttpLoadbalancerUpdate(d *schema.ResourceData, meta interfa
 											sl := v.([]interface{})
 											publicIpInt := &ves_io_schema_views.ObjectRefType{}
 											choiceInt.AdvertiseOnPublic.PublicIp = publicIpInt
+
+											for _, set := range sl {
+												if set != nil {
+													piMapToStrVal := set.(map[string]interface{})
+													if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+														publicIpInt.Name = val.(string)
+													}
+													if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+														publicIpInt.Namespace = val.(string)
+													}
+
+													if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+														publicIpInt.Tenant = val.(string)
+													}
+												}
+											}
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := advertiseWhereMapStrToI["advertise_v6_on_public"]; ok && !isIntfNil(v) && !choiceTypeFound {
+
+								choiceTypeFound = true
+								choiceInt := &ves_io_schema_views.WhereType_AdvertiseV6OnPublic{}
+								choiceInt.AdvertiseV6OnPublic = &ves_io_schema_views.AdvertisePublic{}
+								advertiseWhere[i].Choice = choiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											publicIpInt := &ves_io_schema_views.ObjectRefType{}
+											choiceInt.AdvertiseV6OnPublic.PublicIp = publicIpInt
 
 											for _, set := range sl {
 												if set != nil {
@@ -56373,6 +59217,47 @@ func resourceVolterraHttpLoadbalancerUpdate(d *schema.ResourceData, meta interfa
 
 	}
 
+	if v, ok := d.GetOk("advertise_dualstack_on_public"); ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
+
+		advertiseChoiceTypeFound = true
+		advertiseChoiceInt := &ves_io_schema_views_http_loadbalancer.ReplaceSpecType_AdvertiseDualstackOnPublic{}
+		advertiseChoiceInt.AdvertiseDualstackOnPublic = &ves_io_schema_views.AdvertisePublic{}
+		updateSpec.AdvertiseChoice = advertiseChoiceInt
+
+		sl := v.([]interface{})
+		for _, set := range sl {
+			if set != nil {
+				cs := set.(map[string]interface{})
+
+				if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					publicIpInt := &ves_io_schema_views.ObjectRefType{}
+					advertiseChoiceInt.AdvertiseDualstackOnPublic.PublicIp = publicIpInt
+
+					for _, set := range sl {
+						if set != nil {
+							piMapToStrVal := set.(map[string]interface{})
+							if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+								publicIpInt.Name = val.(string)
+							}
+							if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								publicIpInt.Namespace = val.(string)
+							}
+
+							if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								publicIpInt.Tenant = val.(string)
+							}
+						}
+					}
+
+				}
+
+			}
+		}
+
+	}
+
 	if v, ok := d.GetOk("advertise_on_public"); ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
 
 		advertiseChoiceTypeFound = true
@@ -56414,6 +59299,30 @@ func resourceVolterraHttpLoadbalancerUpdate(d *schema.ResourceData, meta interfa
 
 	}
 
+	if v, ok := d.GetOk("advertise_on_public_default_dualstack_vip"); ok && !advertiseChoiceTypeFound {
+
+		advertiseChoiceTypeFound = true
+
+		if v.(bool) {
+			advertiseChoiceInt := &ves_io_schema_views_http_loadbalancer.ReplaceSpecType_AdvertiseOnPublicDefaultDualstackVip{}
+			advertiseChoiceInt.AdvertiseOnPublicDefaultDualstackVip = &ves_io_schema.Empty{}
+			updateSpec.AdvertiseChoice = advertiseChoiceInt
+		}
+
+	}
+
+	if v, ok := d.GetOk("advertise_on_public_default_ipv6_vip"); ok && !advertiseChoiceTypeFound {
+
+		advertiseChoiceTypeFound = true
+
+		if v.(bool) {
+			advertiseChoiceInt := &ves_io_schema_views_http_loadbalancer.ReplaceSpecType_AdvertiseOnPublicDefaultIpv6Vip{}
+			advertiseChoiceInt.AdvertiseOnPublicDefaultIpv6Vip = &ves_io_schema.Empty{}
+			updateSpec.AdvertiseChoice = advertiseChoiceInt
+		}
+
+	}
+
 	if v, ok := d.GetOk("advertise_on_public_default_vip"); ok && !advertiseChoiceTypeFound {
 
 		advertiseChoiceTypeFound = true
@@ -56422,6 +59331,47 @@ func resourceVolterraHttpLoadbalancerUpdate(d *schema.ResourceData, meta interfa
 			advertiseChoiceInt := &ves_io_schema_views_http_loadbalancer.ReplaceSpecType_AdvertiseOnPublicDefaultVip{}
 			advertiseChoiceInt.AdvertiseOnPublicDefaultVip = &ves_io_schema.Empty{}
 			updateSpec.AdvertiseChoice = advertiseChoiceInt
+		}
+
+	}
+
+	if v, ok := d.GetOk("advertise_v6_on_public"); ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
+
+		advertiseChoiceTypeFound = true
+		advertiseChoiceInt := &ves_io_schema_views_http_loadbalancer.ReplaceSpecType_AdvertiseV6OnPublic{}
+		advertiseChoiceInt.AdvertiseV6OnPublic = &ves_io_schema_views.AdvertisePublic{}
+		updateSpec.AdvertiseChoice = advertiseChoiceInt
+
+		sl := v.([]interface{})
+		for _, set := range sl {
+			if set != nil {
+				cs := set.(map[string]interface{})
+
+				if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
+
+					sl := v.([]interface{})
+					publicIpInt := &ves_io_schema_views.ObjectRefType{}
+					advertiseChoiceInt.AdvertiseV6OnPublic.PublicIp = publicIpInt
+
+					for _, set := range sl {
+						if set != nil {
+							piMapToStrVal := set.(map[string]interface{})
+							if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+								publicIpInt.Name = val.(string)
+							}
+							if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								publicIpInt.Namespace = val.(string)
+							}
+
+							if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								publicIpInt.Tenant = val.(string)
+							}
+						}
+					}
+
+				}
+
+			}
 		}
 
 	}
@@ -67906,6 +70856,1424 @@ func resourceVolterraHttpLoadbalancerUpdate(d *schema.ResourceData, meta interfa
 							if val, ok := wMapToStrVal["tenant"]; ok && !isIntfNil(v) {
 								webInt.Tenant = val.(string)
 							}
+						}
+					}
+
+				}
+
+			}
+		}
+
+	}
+
+	if v, ok := d.GetOk("bot_defense_advanced_protection"); ok && !isIntfNil(v) && !botDefenseChoiceTypeFound {
+
+		botDefenseChoiceTypeFound = true
+		botDefenseChoiceInt := &ves_io_schema_views_http_loadbalancer.ReplaceSpecType_BotDefenseAdvancedProtection{}
+		botDefenseChoiceInt.BotDefenseAdvancedProtection = &ves_io_schema_views_common_security.BotDefenseAdvancedProtection{}
+		updateSpec.BotDefenseChoice = botDefenseChoiceInt
+
+		sl := v.([]interface{})
+		for _, set := range sl {
+			if set != nil {
+				cs := set.(map[string]interface{})
+
+				clientTypeChoiceTypeFound := false
+
+				if v, ok := cs["both_web_and_mobile"]; ok && !isIntfNil(v) && !clientTypeChoiceTypeFound {
+
+					clientTypeChoiceTypeFound = true
+					clientTypeChoiceInt := &ves_io_schema_views_common_security.BotDefenseAdvancedProtection_BothWebAndMobile{}
+					clientTypeChoiceInt.BothWebAndMobile = &ves_io_schema_views_common_security.BothWebAndMobileType{}
+					botDefenseChoiceInt.BotDefenseAdvancedProtection.ClientTypeChoice = clientTypeChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							javaScriptChoiceTypeFound := false
+
+							if v, ok := cs["disable_js_insert"]; ok && !isIntfNil(v) && !javaScriptChoiceTypeFound {
+
+								javaScriptChoiceTypeFound = true
+
+								if v.(bool) {
+									javaScriptChoiceInt := &ves_io_schema_views_common_security.BothWebAndMobileType_DisableJsInsert{}
+									javaScriptChoiceInt.DisableJsInsert = &ves_io_schema.Empty{}
+									clientTypeChoiceInt.BothWebAndMobile.JavaScriptChoice = javaScriptChoiceInt
+								}
+
+							}
+
+							if v, ok := cs["js_insert_all_pages"]; ok && !isIntfNil(v) && !javaScriptChoiceTypeFound {
+
+								javaScriptChoiceTypeFound = true
+								javaScriptChoiceInt := &ves_io_schema_views_common_security.BothWebAndMobileType_JsInsertAllPages{}
+								javaScriptChoiceInt.JsInsertAllPages = &ves_io_schema_views_common_security.ShapeJavaScriptInsertAllType{}
+								clientTypeChoiceInt.BothWebAndMobile.JavaScriptChoice = javaScriptChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["javascript_location"]; ok && !isIntfNil(v) {
+
+											javaScriptChoiceInt.JsInsertAllPages.JavascriptLocation = ves_io_schema_views_common_security.JavaScriptLocation(ves_io_schema_views_common_security.JavaScriptLocation_value[v.(string)])
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["js_insert_all_pages_except"]; ok && !isIntfNil(v) && !javaScriptChoiceTypeFound {
+
+								javaScriptChoiceTypeFound = true
+								javaScriptChoiceInt := &ves_io_schema_views_common_security.BothWebAndMobileType_JsInsertAllPagesExcept{}
+								javaScriptChoiceInt.JsInsertAllPagesExcept = &ves_io_schema_views_common_security.ShapeJavaScriptInsertAllWithExceptionsType{}
+								clientTypeChoiceInt.BothWebAndMobile.JavaScriptChoice = javaScriptChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["exclude_list"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											excludeList := make([]*ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule, len(sl))
+											javaScriptChoiceInt.JsInsertAllPagesExcept.ExcludeList = excludeList
+											for i, set := range sl {
+												if set != nil {
+													excludeList[i] = &ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule{}
+													excludeListMapStrToI := set.(map[string]interface{})
+
+													domainMatcherChoiceTypeFound := false
+
+													if v, ok := excludeListMapStrToI["any_domain"]; ok && !isIntfNil(v) && !domainMatcherChoiceTypeFound {
+
+														domainMatcherChoiceTypeFound = true
+
+														if v.(bool) {
+															domainMatcherChoiceInt := &ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule_AnyDomain{}
+															domainMatcherChoiceInt.AnyDomain = &ves_io_schema.Empty{}
+															excludeList[i].DomainMatcherChoice = domainMatcherChoiceInt
+														}
+
+													}
+
+													if v, ok := excludeListMapStrToI["domain"]; ok && !isIntfNil(v) && !domainMatcherChoiceTypeFound {
+
+														domainMatcherChoiceTypeFound = true
+														domainMatcherChoiceInt := &ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule_Domain{}
+														domainMatcherChoiceInt.Domain = &ves_io_schema.DomainType{}
+														excludeList[i].DomainMatcherChoice = domainMatcherChoiceInt
+
+														sl := v.([]interface{})
+														for _, set := range sl {
+															if set != nil {
+																cs := set.(map[string]interface{})
+
+																domainChoiceTypeFound := false
+
+																if v, ok := cs["exact_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_ExactValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.ExactValue = v.(string)
+
+																}
+
+																if v, ok := cs["regex_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_RegexValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.RegexValue = v.(string)
+
+																}
+
+																if v, ok := cs["suffix_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_SuffixValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.SuffixValue = v.(string)
+
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := excludeListMapStrToI["metadata"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														metadata := &ves_io_schema.MessageMetaType{}
+														excludeList[i].Metadata = metadata
+														for _, set := range sl {
+															if set != nil {
+																metadataMapStrToI := set.(map[string]interface{})
+
+																if w, ok := metadataMapStrToI["description"]; ok && !isIntfNil(w) {
+																	metadata.Description = w.(string)
+																}
+
+																if w, ok := metadataMapStrToI["disable"]; ok && !isIntfNil(w) {
+																	metadata.Disable = w.(bool)
+																}
+
+																if w, ok := metadataMapStrToI["name"]; ok && !isIntfNil(w) {
+																	metadata.Name = w.(string)
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := excludeListMapStrToI["path"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														path := &ves_io_schema.PathMatcherType{}
+														excludeList[i].Path = path
+														for _, set := range sl {
+															if set != nil {
+																pathMapStrToI := set.(map[string]interface{})
+
+																pathMatchTypeFound := false
+
+																if v, ok := pathMapStrToI["path"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Path{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Path = v.(string)
+
+																}
+
+																if v, ok := pathMapStrToI["prefix"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Prefix{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Prefix = v.(string)
+
+																}
+
+																if v, ok := pathMapStrToI["regex"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Regex{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Regex = v.(string)
+
+																}
+
+															}
+														}
+
+													}
+
+												}
+											}
+
+										}
+
+										if v, ok := cs["javascript_location"]; ok && !isIntfNil(v) {
+
+											javaScriptChoiceInt.JsInsertAllPagesExcept.JavascriptLocation = ves_io_schema_views_common_security.JavaScriptLocation(ves_io_schema_views_common_security.JavaScriptLocation_value[v.(string)])
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["js_insertion_rules"]; ok && !isIntfNil(v) && !javaScriptChoiceTypeFound {
+
+								javaScriptChoiceTypeFound = true
+								javaScriptChoiceInt := &ves_io_schema_views_common_security.BothWebAndMobileType_JsInsertionRules{}
+								javaScriptChoiceInt.JsInsertionRules = &ves_io_schema_views_common_security.ShapeJavaScriptInsertType{}
+								clientTypeChoiceInt.BothWebAndMobile.JavaScriptChoice = javaScriptChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["exclude_list"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											excludeList := make([]*ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule, len(sl))
+											javaScriptChoiceInt.JsInsertionRules.ExcludeList = excludeList
+											for i, set := range sl {
+												if set != nil {
+													excludeList[i] = &ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule{}
+													excludeListMapStrToI := set.(map[string]interface{})
+
+													domainMatcherChoiceTypeFound := false
+
+													if v, ok := excludeListMapStrToI["any_domain"]; ok && !isIntfNil(v) && !domainMatcherChoiceTypeFound {
+
+														domainMatcherChoiceTypeFound = true
+
+														if v.(bool) {
+															domainMatcherChoiceInt := &ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule_AnyDomain{}
+															domainMatcherChoiceInt.AnyDomain = &ves_io_schema.Empty{}
+															excludeList[i].DomainMatcherChoice = domainMatcherChoiceInt
+														}
+
+													}
+
+													if v, ok := excludeListMapStrToI["domain"]; ok && !isIntfNil(v) && !domainMatcherChoiceTypeFound {
+
+														domainMatcherChoiceTypeFound = true
+														domainMatcherChoiceInt := &ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule_Domain{}
+														domainMatcherChoiceInt.Domain = &ves_io_schema.DomainType{}
+														excludeList[i].DomainMatcherChoice = domainMatcherChoiceInt
+
+														sl := v.([]interface{})
+														for _, set := range sl {
+															if set != nil {
+																cs := set.(map[string]interface{})
+
+																domainChoiceTypeFound := false
+
+																if v, ok := cs["exact_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_ExactValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.ExactValue = v.(string)
+
+																}
+
+																if v, ok := cs["regex_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_RegexValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.RegexValue = v.(string)
+
+																}
+
+																if v, ok := cs["suffix_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_SuffixValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.SuffixValue = v.(string)
+
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := excludeListMapStrToI["metadata"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														metadata := &ves_io_schema.MessageMetaType{}
+														excludeList[i].Metadata = metadata
+														for _, set := range sl {
+															if set != nil {
+																metadataMapStrToI := set.(map[string]interface{})
+
+																if w, ok := metadataMapStrToI["description"]; ok && !isIntfNil(w) {
+																	metadata.Description = w.(string)
+																}
+
+																if w, ok := metadataMapStrToI["disable"]; ok && !isIntfNil(w) {
+																	metadata.Disable = w.(bool)
+																}
+
+																if w, ok := metadataMapStrToI["name"]; ok && !isIntfNil(w) {
+																	metadata.Name = w.(string)
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := excludeListMapStrToI["path"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														path := &ves_io_schema.PathMatcherType{}
+														excludeList[i].Path = path
+														for _, set := range sl {
+															if set != nil {
+																pathMapStrToI := set.(map[string]interface{})
+
+																pathMatchTypeFound := false
+
+																if v, ok := pathMapStrToI["path"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Path{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Path = v.(string)
+
+																}
+
+																if v, ok := pathMapStrToI["prefix"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Prefix{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Prefix = v.(string)
+
+																}
+
+																if v, ok := pathMapStrToI["regex"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Regex{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Regex = v.(string)
+
+																}
+
+															}
+														}
+
+													}
+
+												}
+											}
+
+										}
+
+										if v, ok := cs["rules"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											rules := make([]*ves_io_schema_views_common_security.ShapeJavaScriptInsertionRule, len(sl))
+											javaScriptChoiceInt.JsInsertionRules.Rules = rules
+											for i, set := range sl {
+												if set != nil {
+													rules[i] = &ves_io_schema_views_common_security.ShapeJavaScriptInsertionRule{}
+													rulesMapStrToI := set.(map[string]interface{})
+
+													domainMatcherChoiceTypeFound := false
+
+													if v, ok := rulesMapStrToI["any_domain"]; ok && !isIntfNil(v) && !domainMatcherChoiceTypeFound {
+
+														domainMatcherChoiceTypeFound = true
+
+														if v.(bool) {
+															domainMatcherChoiceInt := &ves_io_schema_views_common_security.ShapeJavaScriptInsertionRule_AnyDomain{}
+															domainMatcherChoiceInt.AnyDomain = &ves_io_schema.Empty{}
+															rules[i].DomainMatcherChoice = domainMatcherChoiceInt
+														}
+
+													}
+
+													if v, ok := rulesMapStrToI["domain"]; ok && !isIntfNil(v) && !domainMatcherChoiceTypeFound {
+
+														domainMatcherChoiceTypeFound = true
+														domainMatcherChoiceInt := &ves_io_schema_views_common_security.ShapeJavaScriptInsertionRule_Domain{}
+														domainMatcherChoiceInt.Domain = &ves_io_schema.DomainType{}
+														rules[i].DomainMatcherChoice = domainMatcherChoiceInt
+
+														sl := v.([]interface{})
+														for _, set := range sl {
+															if set != nil {
+																cs := set.(map[string]interface{})
+
+																domainChoiceTypeFound := false
+
+																if v, ok := cs["exact_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_ExactValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.ExactValue = v.(string)
+
+																}
+
+																if v, ok := cs["regex_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_RegexValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.RegexValue = v.(string)
+
+																}
+
+																if v, ok := cs["suffix_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_SuffixValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.SuffixValue = v.(string)
+
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := rulesMapStrToI["javascript_location"]; ok && !isIntfNil(v) {
+
+														rules[i].JavascriptLocation = ves_io_schema_views_common_security.JavaScriptLocation(ves_io_schema_views_common_security.JavaScriptLocation_value[v.(string)])
+
+													}
+
+													if v, ok := rulesMapStrToI["metadata"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														metadata := &ves_io_schema.MessageMetaType{}
+														rules[i].Metadata = metadata
+														for _, set := range sl {
+															if set != nil {
+																metadataMapStrToI := set.(map[string]interface{})
+
+																if w, ok := metadataMapStrToI["description"]; ok && !isIntfNil(w) {
+																	metadata.Description = w.(string)
+																}
+
+																if w, ok := metadataMapStrToI["disable"]; ok && !isIntfNil(w) {
+																	metadata.Disable = w.(bool)
+																}
+
+																if w, ok := metadataMapStrToI["name"]; ok && !isIntfNil(w) {
+																	metadata.Name = w.(string)
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := rulesMapStrToI["path"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														path := &ves_io_schema.PathMatcherType{}
+														rules[i].Path = path
+														for _, set := range sl {
+															if set != nil {
+																pathMapStrToI := set.(map[string]interface{})
+
+																pathMatchTypeFound := false
+
+																if v, ok := pathMapStrToI["path"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Path{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Path = v.(string)
+
+																}
+
+																if v, ok := pathMapStrToI["prefix"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Prefix{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Prefix = v.(string)
+
+																}
+
+																if v, ok := pathMapStrToI["regex"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Regex{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Regex = v.(string)
+
+																}
+
+															}
+														}
+
+													}
+
+												}
+											}
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["mobile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								mobileInt := &ves_io_schema_views.ObjectRefType{}
+								clientTypeChoiceInt.BothWebAndMobile.Mobile = mobileInt
+
+								for _, set := range sl {
+									if set != nil {
+										mMapToStrVal := set.(map[string]interface{})
+										if val, ok := mMapToStrVal["name"]; ok && !isIntfNil(v) {
+											mobileInt.Name = val.(string)
+										}
+										if val, ok := mMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											mobileInt.Namespace = val.(string)
+										}
+
+										if val, ok := mMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											mobileInt.Tenant = val.(string)
+										}
+									}
+								}
+
+							}
+
+							mobileSdkChoiceTypeFound := false
+
+							if v, ok := cs["disable_mobile_sdk"]; ok && !isIntfNil(v) && !mobileSdkChoiceTypeFound {
+
+								mobileSdkChoiceTypeFound = true
+
+								if v.(bool) {
+									mobileSdkChoiceInt := &ves_io_schema_views_common_security.BothWebAndMobileType_DisableMobileSdk{}
+									mobileSdkChoiceInt.DisableMobileSdk = &ves_io_schema.Empty{}
+									clientTypeChoiceInt.BothWebAndMobile.MobileSdkChoice = mobileSdkChoiceInt
+								}
+
+							}
+
+							if v, ok := cs["mobile_sdk_config"]; ok && !isIntfNil(v) && !mobileSdkChoiceTypeFound {
+
+								mobileSdkChoiceTypeFound = true
+								mobileSdkChoiceInt := &ves_io_schema_views_common_security.BothWebAndMobileType_MobileSdkConfig{}
+								mobileSdkChoiceInt.MobileSdkConfig = &ves_io_schema_views_common_security.BotAdvancedMobileSDKConfigType{}
+								clientTypeChoiceInt.BothWebAndMobile.MobileSdkChoice = mobileSdkChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["mobile_identifier"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											mobileIdentifier := &ves_io_schema_views_common_security.MobileTrafficIdentifierType{}
+											mobileSdkChoiceInt.MobileSdkConfig.MobileIdentifier = mobileIdentifier
+											for _, set := range sl {
+												if set != nil {
+													mobileIdentifierMapStrToI := set.(map[string]interface{})
+
+													if v, ok := mobileIdentifierMapStrToI["headers"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														headers := make([]*ves_io_schema_policy.HeaderMatcherTypeBasic, len(sl))
+														mobileIdentifier.Headers = headers
+														for i, set := range sl {
+															if set != nil {
+																headers[i] = &ves_io_schema_policy.HeaderMatcherTypeBasic{}
+																headersMapStrToI := set.(map[string]interface{})
+
+																matchTypeFound := false
+
+																if v, ok := headersMapStrToI["check_not_present"]; ok && !isIntfNil(v) && !matchTypeFound {
+
+																	matchTypeFound = true
+
+																	if v.(bool) {
+																		matchInt := &ves_io_schema_policy.HeaderMatcherTypeBasic_CheckNotPresent{}
+																		matchInt.CheckNotPresent = &ves_io_schema.Empty{}
+																		headers[i].Match = matchInt
+																	}
+
+																}
+
+																if v, ok := headersMapStrToI["check_present"]; ok && !isIntfNil(v) && !matchTypeFound {
+
+																	matchTypeFound = true
+
+																	if v.(bool) {
+																		matchInt := &ves_io_schema_policy.HeaderMatcherTypeBasic_CheckPresent{}
+																		matchInt.CheckPresent = &ves_io_schema.Empty{}
+																		headers[i].Match = matchInt
+																	}
+
+																}
+
+																if v, ok := headersMapStrToI["item"]; ok && !isIntfNil(v) && !matchTypeFound {
+
+																	matchTypeFound = true
+																	matchInt := &ves_io_schema_policy.HeaderMatcherTypeBasic_Item{}
+																	matchInt.Item = &ves_io_schema_policy.MatcherType{}
+																	headers[i].Match = matchInt
+
+																	sl := v.([]interface{})
+																	for _, set := range sl {
+																		if set != nil {
+																			cs := set.(map[string]interface{})
+
+																			if v, ok := cs["exact_values"]; ok && !isIntfNil(v) {
+
+																				ls := make([]string, len(v.([]interface{})))
+																				for i, v := range v.([]interface{}) {
+																					if v == nil {
+																						return fmt.Errorf("please provide valid non-empty string value of field exact_values")
+																					}
+																					if str, ok := v.(string); ok {
+																						ls[i] = str
+																					}
+																				}
+																				matchInt.Item.ExactValues = ls
+
+																			}
+
+																			if v, ok := cs["regex_values"]; ok && !isIntfNil(v) {
+
+																				ls := make([]string, len(v.([]interface{})))
+																				for i, v := range v.([]interface{}) {
+																					if v == nil {
+																						return fmt.Errorf("please provide valid non-empty string value of field regex_values")
+																					}
+																					if str, ok := v.(string); ok {
+																						ls[i] = str
+																					}
+																				}
+																				matchInt.Item.RegexValues = ls
+
+																			}
+
+																			if v, ok := cs["transformers"]; ok && !isIntfNil(v) {
+
+																				transformersList := []ves_io_schema_policy.Transformer{}
+																				for _, j := range v.([]interface{}) {
+																					if j == nil {
+																						return fmt.Errorf("please provide valid non-empty enum value of field transformers")
+																					}
+																					transformersList = append(transformersList, ves_io_schema_policy.Transformer(ves_io_schema_policy.Transformer_value[j.(string)]))
+																				}
+																				matchInt.Item.Transformers = transformersList
+
+																			}
+
+																		}
+																	}
+
+																}
+
+																if w, ok := headersMapStrToI["name"]; ok && !isIntfNil(w) {
+																	headers[i].Name = w.(string)
+																}
+
+															}
+														}
+
+													}
+
+												}
+											}
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["web"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								webInt := &ves_io_schema_views.ObjectRefType{}
+								clientTypeChoiceInt.BothWebAndMobile.Web = webInt
+
+								for _, set := range sl {
+									if set != nil {
+										wMapToStrVal := set.(map[string]interface{})
+										if val, ok := wMapToStrVal["name"]; ok && !isIntfNil(v) {
+											webInt.Name = val.(string)
+										}
+										if val, ok := wMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											webInt.Namespace = val.(string)
+										}
+
+										if val, ok := wMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											webInt.Tenant = val.(string)
+										}
+									}
+								}
+
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := cs["mobile_only"]; ok && !isIntfNil(v) && !clientTypeChoiceTypeFound {
+
+					clientTypeChoiceTypeFound = true
+					clientTypeChoiceInt := &ves_io_schema_views_common_security.BotDefenseAdvancedProtection_MobileOnly{}
+					clientTypeChoiceInt.MobileOnly = &ves_io_schema_views_common_security.MobileOnlyType{}
+					botDefenseChoiceInt.BotDefenseAdvancedProtection.ClientTypeChoice = clientTypeChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							if v, ok := cs["mobile"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								mobileInt := &ves_io_schema_views.ObjectRefType{}
+								clientTypeChoiceInt.MobileOnly.Mobile = mobileInt
+
+								for _, set := range sl {
+									if set != nil {
+										mMapToStrVal := set.(map[string]interface{})
+										if val, ok := mMapToStrVal["name"]; ok && !isIntfNil(v) {
+											mobileInt.Name = val.(string)
+										}
+										if val, ok := mMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											mobileInt.Namespace = val.(string)
+										}
+
+										if val, ok := mMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											mobileInt.Tenant = val.(string)
+										}
+									}
+								}
+
+							}
+
+						}
+					}
+
+				}
+
+				if v, ok := cs["web_only"]; ok && !isIntfNil(v) && !clientTypeChoiceTypeFound {
+
+					clientTypeChoiceTypeFound = true
+					clientTypeChoiceInt := &ves_io_schema_views_common_security.BotDefenseAdvancedProtection_WebOnly{}
+					clientTypeChoiceInt.WebOnly = &ves_io_schema_views_common_security.WebOnlyType{}
+					botDefenseChoiceInt.BotDefenseAdvancedProtection.ClientTypeChoice = clientTypeChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							javaScriptChoiceTypeFound := false
+
+							if v, ok := cs["disable_js_insert"]; ok && !isIntfNil(v) && !javaScriptChoiceTypeFound {
+
+								javaScriptChoiceTypeFound = true
+
+								if v.(bool) {
+									javaScriptChoiceInt := &ves_io_schema_views_common_security.WebOnlyType_DisableJsInsert{}
+									javaScriptChoiceInt.DisableJsInsert = &ves_io_schema.Empty{}
+									clientTypeChoiceInt.WebOnly.JavaScriptChoice = javaScriptChoiceInt
+								}
+
+							}
+
+							if v, ok := cs["js_insert_all_pages"]; ok && !isIntfNil(v) && !javaScriptChoiceTypeFound {
+
+								javaScriptChoiceTypeFound = true
+								javaScriptChoiceInt := &ves_io_schema_views_common_security.WebOnlyType_JsInsertAllPages{}
+								javaScriptChoiceInt.JsInsertAllPages = &ves_io_schema_views_common_security.ShapeJavaScriptInsertAllType{}
+								clientTypeChoiceInt.WebOnly.JavaScriptChoice = javaScriptChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["javascript_location"]; ok && !isIntfNil(v) {
+
+											javaScriptChoiceInt.JsInsertAllPages.JavascriptLocation = ves_io_schema_views_common_security.JavaScriptLocation(ves_io_schema_views_common_security.JavaScriptLocation_value[v.(string)])
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["js_insert_all_pages_except"]; ok && !isIntfNil(v) && !javaScriptChoiceTypeFound {
+
+								javaScriptChoiceTypeFound = true
+								javaScriptChoiceInt := &ves_io_schema_views_common_security.WebOnlyType_JsInsertAllPagesExcept{}
+								javaScriptChoiceInt.JsInsertAllPagesExcept = &ves_io_schema_views_common_security.ShapeJavaScriptInsertAllWithExceptionsType{}
+								clientTypeChoiceInt.WebOnly.JavaScriptChoice = javaScriptChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["exclude_list"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											excludeList := make([]*ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule, len(sl))
+											javaScriptChoiceInt.JsInsertAllPagesExcept.ExcludeList = excludeList
+											for i, set := range sl {
+												if set != nil {
+													excludeList[i] = &ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule{}
+													excludeListMapStrToI := set.(map[string]interface{})
+
+													domainMatcherChoiceTypeFound := false
+
+													if v, ok := excludeListMapStrToI["any_domain"]; ok && !isIntfNil(v) && !domainMatcherChoiceTypeFound {
+
+														domainMatcherChoiceTypeFound = true
+
+														if v.(bool) {
+															domainMatcherChoiceInt := &ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule_AnyDomain{}
+															domainMatcherChoiceInt.AnyDomain = &ves_io_schema.Empty{}
+															excludeList[i].DomainMatcherChoice = domainMatcherChoiceInt
+														}
+
+													}
+
+													if v, ok := excludeListMapStrToI["domain"]; ok && !isIntfNil(v) && !domainMatcherChoiceTypeFound {
+
+														domainMatcherChoiceTypeFound = true
+														domainMatcherChoiceInt := &ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule_Domain{}
+														domainMatcherChoiceInt.Domain = &ves_io_schema.DomainType{}
+														excludeList[i].DomainMatcherChoice = domainMatcherChoiceInt
+
+														sl := v.([]interface{})
+														for _, set := range sl {
+															if set != nil {
+																cs := set.(map[string]interface{})
+
+																domainChoiceTypeFound := false
+
+																if v, ok := cs["exact_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_ExactValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.ExactValue = v.(string)
+
+																}
+
+																if v, ok := cs["regex_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_RegexValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.RegexValue = v.(string)
+
+																}
+
+																if v, ok := cs["suffix_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_SuffixValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.SuffixValue = v.(string)
+
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := excludeListMapStrToI["metadata"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														metadata := &ves_io_schema.MessageMetaType{}
+														excludeList[i].Metadata = metadata
+														for _, set := range sl {
+															if set != nil {
+																metadataMapStrToI := set.(map[string]interface{})
+
+																if w, ok := metadataMapStrToI["description"]; ok && !isIntfNil(w) {
+																	metadata.Description = w.(string)
+																}
+
+																if w, ok := metadataMapStrToI["disable"]; ok && !isIntfNil(w) {
+																	metadata.Disable = w.(bool)
+																}
+
+																if w, ok := metadataMapStrToI["name"]; ok && !isIntfNil(w) {
+																	metadata.Name = w.(string)
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := excludeListMapStrToI["path"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														path := &ves_io_schema.PathMatcherType{}
+														excludeList[i].Path = path
+														for _, set := range sl {
+															if set != nil {
+																pathMapStrToI := set.(map[string]interface{})
+
+																pathMatchTypeFound := false
+
+																if v, ok := pathMapStrToI["path"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Path{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Path = v.(string)
+
+																}
+
+																if v, ok := pathMapStrToI["prefix"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Prefix{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Prefix = v.(string)
+
+																}
+
+																if v, ok := pathMapStrToI["regex"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Regex{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Regex = v.(string)
+
+																}
+
+															}
+														}
+
+													}
+
+												}
+											}
+
+										}
+
+										if v, ok := cs["javascript_location"]; ok && !isIntfNil(v) {
+
+											javaScriptChoiceInt.JsInsertAllPagesExcept.JavascriptLocation = ves_io_schema_views_common_security.JavaScriptLocation(ves_io_schema_views_common_security.JavaScriptLocation_value[v.(string)])
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["js_insertion_rules"]; ok && !isIntfNil(v) && !javaScriptChoiceTypeFound {
+
+								javaScriptChoiceTypeFound = true
+								javaScriptChoiceInt := &ves_io_schema_views_common_security.WebOnlyType_JsInsertionRules{}
+								javaScriptChoiceInt.JsInsertionRules = &ves_io_schema_views_common_security.ShapeJavaScriptInsertType{}
+								clientTypeChoiceInt.WebOnly.JavaScriptChoice = javaScriptChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["exclude_list"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											excludeList := make([]*ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule, len(sl))
+											javaScriptChoiceInt.JsInsertionRules.ExcludeList = excludeList
+											for i, set := range sl {
+												if set != nil {
+													excludeList[i] = &ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule{}
+													excludeListMapStrToI := set.(map[string]interface{})
+
+													domainMatcherChoiceTypeFound := false
+
+													if v, ok := excludeListMapStrToI["any_domain"]; ok && !isIntfNil(v) && !domainMatcherChoiceTypeFound {
+
+														domainMatcherChoiceTypeFound = true
+
+														if v.(bool) {
+															domainMatcherChoiceInt := &ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule_AnyDomain{}
+															domainMatcherChoiceInt.AnyDomain = &ves_io_schema.Empty{}
+															excludeList[i].DomainMatcherChoice = domainMatcherChoiceInt
+														}
+
+													}
+
+													if v, ok := excludeListMapStrToI["domain"]; ok && !isIntfNil(v) && !domainMatcherChoiceTypeFound {
+
+														domainMatcherChoiceTypeFound = true
+														domainMatcherChoiceInt := &ves_io_schema_views_common_security.ShapeJavaScriptExclusionRule_Domain{}
+														domainMatcherChoiceInt.Domain = &ves_io_schema.DomainType{}
+														excludeList[i].DomainMatcherChoice = domainMatcherChoiceInt
+
+														sl := v.([]interface{})
+														for _, set := range sl {
+															if set != nil {
+																cs := set.(map[string]interface{})
+
+																domainChoiceTypeFound := false
+
+																if v, ok := cs["exact_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_ExactValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.ExactValue = v.(string)
+
+																}
+
+																if v, ok := cs["regex_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_RegexValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.RegexValue = v.(string)
+
+																}
+
+																if v, ok := cs["suffix_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_SuffixValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.SuffixValue = v.(string)
+
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := excludeListMapStrToI["metadata"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														metadata := &ves_io_schema.MessageMetaType{}
+														excludeList[i].Metadata = metadata
+														for _, set := range sl {
+															if set != nil {
+																metadataMapStrToI := set.(map[string]interface{})
+
+																if w, ok := metadataMapStrToI["description"]; ok && !isIntfNil(w) {
+																	metadata.Description = w.(string)
+																}
+
+																if w, ok := metadataMapStrToI["disable"]; ok && !isIntfNil(w) {
+																	metadata.Disable = w.(bool)
+																}
+
+																if w, ok := metadataMapStrToI["name"]; ok && !isIntfNil(w) {
+																	metadata.Name = w.(string)
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := excludeListMapStrToI["path"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														path := &ves_io_schema.PathMatcherType{}
+														excludeList[i].Path = path
+														for _, set := range sl {
+															if set != nil {
+																pathMapStrToI := set.(map[string]interface{})
+
+																pathMatchTypeFound := false
+
+																if v, ok := pathMapStrToI["path"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Path{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Path = v.(string)
+
+																}
+
+																if v, ok := pathMapStrToI["prefix"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Prefix{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Prefix = v.(string)
+
+																}
+
+																if v, ok := pathMapStrToI["regex"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Regex{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Regex = v.(string)
+
+																}
+
+															}
+														}
+
+													}
+
+												}
+											}
+
+										}
+
+										if v, ok := cs["rules"]; ok && !isIntfNil(v) {
+
+											sl := v.([]interface{})
+											rules := make([]*ves_io_schema_views_common_security.ShapeJavaScriptInsertionRule, len(sl))
+											javaScriptChoiceInt.JsInsertionRules.Rules = rules
+											for i, set := range sl {
+												if set != nil {
+													rules[i] = &ves_io_schema_views_common_security.ShapeJavaScriptInsertionRule{}
+													rulesMapStrToI := set.(map[string]interface{})
+
+													domainMatcherChoiceTypeFound := false
+
+													if v, ok := rulesMapStrToI["any_domain"]; ok && !isIntfNil(v) && !domainMatcherChoiceTypeFound {
+
+														domainMatcherChoiceTypeFound = true
+
+														if v.(bool) {
+															domainMatcherChoiceInt := &ves_io_schema_views_common_security.ShapeJavaScriptInsertionRule_AnyDomain{}
+															domainMatcherChoiceInt.AnyDomain = &ves_io_schema.Empty{}
+															rules[i].DomainMatcherChoice = domainMatcherChoiceInt
+														}
+
+													}
+
+													if v, ok := rulesMapStrToI["domain"]; ok && !isIntfNil(v) && !domainMatcherChoiceTypeFound {
+
+														domainMatcherChoiceTypeFound = true
+														domainMatcherChoiceInt := &ves_io_schema_views_common_security.ShapeJavaScriptInsertionRule_Domain{}
+														domainMatcherChoiceInt.Domain = &ves_io_schema.DomainType{}
+														rules[i].DomainMatcherChoice = domainMatcherChoiceInt
+
+														sl := v.([]interface{})
+														for _, set := range sl {
+															if set != nil {
+																cs := set.(map[string]interface{})
+
+																domainChoiceTypeFound := false
+
+																if v, ok := cs["exact_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_ExactValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.ExactValue = v.(string)
+
+																}
+
+																if v, ok := cs["regex_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_RegexValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.RegexValue = v.(string)
+
+																}
+
+																if v, ok := cs["suffix_value"]; ok && !isIntfNil(v) && !domainChoiceTypeFound {
+
+																	domainChoiceTypeFound = true
+																	domainChoiceInt := &ves_io_schema.DomainType_SuffixValue{}
+
+																	domainMatcherChoiceInt.Domain.DomainChoice = domainChoiceInt
+
+																	domainChoiceInt.SuffixValue = v.(string)
+
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := rulesMapStrToI["javascript_location"]; ok && !isIntfNil(v) {
+
+														rules[i].JavascriptLocation = ves_io_schema_views_common_security.JavaScriptLocation(ves_io_schema_views_common_security.JavaScriptLocation_value[v.(string)])
+
+													}
+
+													if v, ok := rulesMapStrToI["metadata"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														metadata := &ves_io_schema.MessageMetaType{}
+														rules[i].Metadata = metadata
+														for _, set := range sl {
+															if set != nil {
+																metadataMapStrToI := set.(map[string]interface{})
+
+																if w, ok := metadataMapStrToI["description"]; ok && !isIntfNil(w) {
+																	metadata.Description = w.(string)
+																}
+
+																if w, ok := metadataMapStrToI["disable"]; ok && !isIntfNil(w) {
+																	metadata.Disable = w.(bool)
+																}
+
+																if w, ok := metadataMapStrToI["name"]; ok && !isIntfNil(w) {
+																	metadata.Name = w.(string)
+																}
+
+															}
+														}
+
+													}
+
+													if v, ok := rulesMapStrToI["path"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														path := &ves_io_schema.PathMatcherType{}
+														rules[i].Path = path
+														for _, set := range sl {
+															if set != nil {
+																pathMapStrToI := set.(map[string]interface{})
+
+																pathMatchTypeFound := false
+
+																if v, ok := pathMapStrToI["path"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Path{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Path = v.(string)
+
+																}
+
+																if v, ok := pathMapStrToI["prefix"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Prefix{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Prefix = v.(string)
+
+																}
+
+																if v, ok := pathMapStrToI["regex"]; ok && !isIntfNil(v) && !pathMatchTypeFound {
+
+																	pathMatchTypeFound = true
+																	pathMatchInt := &ves_io_schema.PathMatcherType_Regex{}
+
+																	path.PathMatch = pathMatchInt
+
+																	pathMatchInt.Regex = v.(string)
+
+																}
+
+															}
+														}
+
+													}
+
+												}
+											}
+
+										}
+
+									}
+								}
+
+							}
+
+							if v, ok := cs["web"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								webInt := &ves_io_schema_views.ObjectRefType{}
+								clientTypeChoiceInt.WebOnly.Web = webInt
+
+								for _, set := range sl {
+									if set != nil {
+										wMapToStrVal := set.(map[string]interface{})
+										if val, ok := wMapToStrVal["name"]; ok && !isIntfNil(v) {
+											webInt.Name = val.(string)
+										}
+										if val, ok := wMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											webInt.Namespace = val.(string)
+										}
+
+										if val, ok := wMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											webInt.Tenant = val.(string)
+										}
+									}
+								}
+
+							}
+
 						}
 					}
 

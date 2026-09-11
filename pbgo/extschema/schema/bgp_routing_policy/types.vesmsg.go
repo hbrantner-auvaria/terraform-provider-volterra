@@ -139,11 +139,11 @@ var DefaultBgpCommunityValidator = func() *ValidateBgpCommunity {
 
 	vrhCommunity := v.CommunityValidationRuleHandler
 	rulesCommunity := map[string]string{
-		"ves.io.schema.rules.message.required":   "true",
-		"ves.io.schema.rules.repeated.max_items": "8",
-		"ves.io.schema.rules.repeated.min_items": "1",
-		"ves.io.schema.rules.repeated.unique":    "true",
-		"ves.io.schema.rules.string.pattern":     "^[0-9]{1,5}:[0-9]{1,5}$",
+		"ves.io.schema.rules.message.required":              "true",
+		"ves.io.schema.rules.repeated.items.string.pattern": "^[0-9]{1,5}:[0-9]{1,5}$",
+		"ves.io.schema.rules.repeated.max_items":            "8",
+		"ves.io.schema.rules.repeated.min_items":            "1",
+		"ves.io.schema.rules.repeated.unique":               "true",
 	}
 	vFn, err = vrhCommunity(rulesCommunity)
 	if err != nil {

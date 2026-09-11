@@ -31,11 +31,10 @@ resource "volterra_report_config" "example" {
 
     // One of the arguments from this list "all_namespaces current_namespace namespaces" must be set
 
-    namespaces {
-      namespaces = ["['test', 'production']"]
-    }
+    current_namespace = true
   }
 }
+
 ```
 
 Argument Reference
@@ -158,4 +157,4 @@ x-displayName: "Web App & API Protection".
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured report_config.
+-	`id` - This is the id of the configured report_config.

@@ -3641,13 +3641,13 @@ var APISwaggerJSON string = `{
             "x-ves-proto-message": "ves.io.schema.global_log_receiver.RequestLogsConfig",
             "properties": {
                 "sampled": {
-                    "description": "Exclusive with [unsampled]\n Sampled request logs delivered via Kafka pipeline (default)",
+                    "description": "Exclusive with [unsampled]\n Forward a sample of logs. Recommended for trend analysis and troubleshooting.",
                     "title": "Sampled Request Logs",
                     "$ref": "#/definitions/schemaEmpty",
                     "x-displayname": "Sampled"
                 },
                 "unsampled": {
-                    "description": "Exclusive with [sampled]\n Full (unsampled) request logs delivered via S3 file-based pipeline.\n Note: Unsampled logs require additional infrastructure and may have higher latency.",
+                    "description": "Exclusive with [sampled]\n Forward all logs. Recommended for deep analysis and compliance, but will increase cost due to higher log volume.",
                     "title": "Unsampled Request Logs",
                     "$ref": "#/definitions/schemaEmpty",
                     "x-displayname": "Unsampled"
@@ -3924,14 +3924,13 @@ var APISwaggerJSON string = `{
                 },
                 "trusted_ca_url": {
                     "type": "string",
-                    "description": "Exclusive with [no_ca]\n The URL or value for trusted Server CA certificate or certificate chain\n Certificates in PEM format including the PEM headers.\n\nValidation Rules:\n  ves.io.schema.rules.string.max_bytes: 131072\n  ves.io.schema.rules.string.truststore_url: true\n  ves.io.schema.rules.string.uri_ref: true\n",
+                    "description": "Exclusive with [no_ca]\n The URL or value for trusted Server CA certificate or certificate chain\n Certificates in PEM format including the PEM headers.\n\nValidation Rules:\n  ves.io.schema.rules.string.max_bytes: 131072\n  ves.io.schema.rules.string.truststore_url: true\n",
                     "title": "Server CA certificates",
                     "maxLength": 131072,
                     "x-displayname": "Server CA Certificates",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.string.max_bytes": "131072",
-                        "ves.io.schema.rules.string.truststore_url": "true",
-                        "ves.io.schema.rules.string.uri_ref": "true"
+                        "ves.io.schema.rules.string.truststore_url": "true"
                     }
                 }
             }

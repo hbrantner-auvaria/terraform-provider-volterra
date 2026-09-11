@@ -14,6 +14,7 @@ import (
 func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.views.vs_pool.SpecType"] = SpecTypeValidator()
 	vr["ves.io.schema.views.vs_pool.Object"] = ObjectValidator()
+	vr["ves.io.schema.views.vs_pool.StatusObject"] = StatusObjectValidator()
 	vr["ves.io.schema.views.vs_pool.CreateRequest"] = CreateRequestValidator()
 	vr["ves.io.schema.views.vs_pool.CreateResponse"] = CreateResponseValidator()
 	vr["ves.io.schema.views.vs_pool.DeleteRequest"] = DeleteRequestValidator()
@@ -49,6 +50,10 @@ func initializeEntryRegistry(mdr *svcfw.MDRegistry) {
 	mdr.EntryStoreMap["ves.io.schema.views.vs_pool.Object"] = store.InMemory
 	mdr.EntryRegistry["ves.io.schema.views.vs_pool.Object"] = reflect.TypeOf(&DBObject{})
 	mdr.EntryIndexers["ves.io.schema.views.vs_pool.Object"] = GetObjectIndexers
+	mdr.EntryFactory["ves.io.schema.views.vs_pool.StatusObject"] = NewEntryStatusObject
+	mdr.EntryStoreMap["ves.io.schema.views.vs_pool.StatusObject"] = store.InMemory
+	mdr.EntryRegistry["ves.io.schema.views.vs_pool.StatusObject"] = reflect.TypeOf(&DBStatusObject{})
+	mdr.EntryIndexers["ves.io.schema.views.vs_pool.StatusObject"] = GetStatusObjectIndexers
 }
 
 func initializeRPCRegistry(mdr *svcfw.MDRegistry) {

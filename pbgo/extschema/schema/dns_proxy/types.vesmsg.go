@@ -2484,6 +2484,30 @@ func (m *ProxyAdvertisementType) GetAdvertiseChoiceDRefInfo() ([]db.DRefInfo, er
 			dri.DRField = "advertise_custom." + dri.DRField
 		}
 		return drInfos, err
+	case *ProxyAdvertisementType_AdvertiseV6OnPublic:
+		drInfos, err := m.GetAdvertiseV6OnPublic().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetAdvertiseV6OnPublic().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "advertise_v6_on_public." + dri.DRField
+		}
+		return drInfos, err
+	case *ProxyAdvertisementType_AdvertiseDualstackOnPublic:
+		drInfos, err := m.GetAdvertiseDualstackOnPublic().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetAdvertiseDualstackOnPublic().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "advertise_dualstack_on_public." + dri.DRField
+		}
+		return drInfos, err
+	case *ProxyAdvertisementType_AdvertiseOnPublicDefaultIpv6Vip:
+		return nil, nil
+	case *ProxyAdvertisementType_AdvertiseOnPublicDefaultDualstackVip:
+		return nil, nil
 	default:
 		return nil, nil
 	}
@@ -2570,6 +2594,50 @@ func (v *ValidateProxyAdvertisementType) Validate(ctx context.Context, pm interf
 				return err
 			}
 		}
+	case *ProxyAdvertisementType_AdvertiseV6OnPublic:
+		if fv, exists := v.FldValidators["advertise_choice.advertise_v6_on_public"]; exists {
+			val := m.GetAdvertiseChoice().(*ProxyAdvertisementType_AdvertiseV6OnPublic).AdvertiseV6OnPublic
+			vOpts := append(opts,
+				db.WithValidateField("advertise_choice"),
+				db.WithValidateField("advertise_v6_on_public"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *ProxyAdvertisementType_AdvertiseDualstackOnPublic:
+		if fv, exists := v.FldValidators["advertise_choice.advertise_dualstack_on_public"]; exists {
+			val := m.GetAdvertiseChoice().(*ProxyAdvertisementType_AdvertiseDualstackOnPublic).AdvertiseDualstackOnPublic
+			vOpts := append(opts,
+				db.WithValidateField("advertise_choice"),
+				db.WithValidateField("advertise_dualstack_on_public"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *ProxyAdvertisementType_AdvertiseOnPublicDefaultIpv6Vip:
+		if fv, exists := v.FldValidators["advertise_choice.advertise_on_public_default_ipv6_vip"]; exists {
+			val := m.GetAdvertiseChoice().(*ProxyAdvertisementType_AdvertiseOnPublicDefaultIpv6Vip).AdvertiseOnPublicDefaultIpv6Vip
+			vOpts := append(opts,
+				db.WithValidateField("advertise_choice"),
+				db.WithValidateField("advertise_on_public_default_ipv6_vip"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *ProxyAdvertisementType_AdvertiseOnPublicDefaultDualstackVip:
+		if fv, exists := v.FldValidators["advertise_choice.advertise_on_public_default_dualstack_vip"]; exists {
+			val := m.GetAdvertiseChoice().(*ProxyAdvertisementType_AdvertiseOnPublicDefaultDualstackVip).AdvertiseOnPublicDefaultDualstackVip
+			vOpts := append(opts,
+				db.WithValidateField("advertise_choice"),
+				db.WithValidateField("advertise_on_public_default_dualstack_vip"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 	return nil
 }
@@ -2596,6 +2664,8 @@ var DefaultProxyAdvertisementTypeValidator = func() *ValidateProxyAdvertisementT
 	v.FldValidators["advertise_choice"] = vFn
 	v.FldValidators["advertise_choice.advertise_on_public"] = ves_io_schema_views.AdvertisePublicValidator().Validate
 	v.FldValidators["advertise_choice.advertise_custom"] = ves_io_schema_views.AdvertiseCustomValidator().Validate
+	v.FldValidators["advertise_choice.advertise_v6_on_public"] = ves_io_schema_views.AdvertisePublicValidator().Validate
+	v.FldValidators["advertise_choice.advertise_dualstack_on_public"] = ves_io_schema_views.AdvertisePublicValidator().Validate
 
 	return v
 }()

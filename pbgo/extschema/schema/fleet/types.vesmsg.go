@@ -362,7 +362,7 @@ var DefaultBlockedServicesValidator = func() *ValidateBlockedServices {
 
 	vrhNetworkType := v.NetworkTypeValidationRuleHandler
 	rulesNetworkType := map[string]string{
-		"ves.io.schema.rules.enum.in": "[0,1,13]",
+		"ves.io.schema.rules.enum.in": "[0,1,12,13]",
 	}
 	vFn, err = vrhNetworkType(rulesNetworkType)
 	if err != nil {

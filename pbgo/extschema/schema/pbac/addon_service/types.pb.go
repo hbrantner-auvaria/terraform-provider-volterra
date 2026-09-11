@@ -17,6 +17,7 @@ import (
 	math "math"
 	math_bits "math/bits"
 	reflect "reflect"
+	strconv "strconv"
 	strings "strings"
 )
 
@@ -31,6 +32,28 @@ var _ = math.Inf
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
+
+type Operator int32
+
+const (
+	// EQUAL
+	//
+	// x-displayName: "Equal"
+	// EQUAL
+	EQUAL Operator = 0
+)
+
+var Operator_name = map[int32]string{
+	0: "EQUAL",
+}
+
+var Operator_value = map[string]int32{
+	"EQUAL": 0,
+}
+
+func (Operator) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_000eebb1e98e78db, []int{0}
+}
 
 // SelfActivationType
 //
@@ -590,6 +613,12 @@ type GlobalSpecType struct {
 	// x-example: "{tier: ADVANCED,billing_doc_link: <url>,usage_types: {F5-V-O-ADN-MSH-PBVIP: {name: Anycast Public Virtual IP, unit: hour}F5-V-O-ADN-MSH-RLIM: {name: Rate Limiting enabled on App Connect Load balancers on Regional Edge (good requests to origin), unit: requests}}}"
 	// ServiceUsageType represents the usage type information for the service
 	ServiceUsageType *ServiceUsageType `protobuf:"bytes,15,opt,name=service_usage_type,json=serviceUsageType,proto3" json:"service_usage_type,omitempty"`
+	// Entitlement Config
+	//
+	// x-displayName: "Entitlement Config"
+	// x-example: "{entitlement_features: {re_public_loadbalancer_in_qty: {usage_type: public-loadbalancer-usage, quota_mapping: {object_limits: {http_loadbalancer.public: {operator: EQUAL}}}}, dns_loadbalancer_in_qty: {usage_type: dns-loadbalancer-usage, quota_mapping: {object_limits: {dns_loadbalancer.public: {operator: EQUAL}}}}}}"
+	// EntitlementConfig contains the details of each entitlement feature and data associated with it
+	EntitlementConfig *EntitlementConfig `protobuf:"bytes,16,opt,name=entitlement_config,json=entitlementConfig,proto3" json:"entitlement_config,omitempty"`
 }
 
 func (m *GlobalSpecType) Reset()      { *m = GlobalSpecType{} }
@@ -746,6 +775,13 @@ func (m *GlobalSpecType) GetServiceUsageType() *ServiceUsageType {
 	return nil
 }
 
+func (m *GlobalSpecType) GetEntitlementConfig() *EntitlementConfig {
+	if m != nil {
+		return m.EntitlementConfig
+	}
+	return nil
+}
+
 // XXX_OneofWrappers is for the internal use of the proto package.
 func (*GlobalSpecType) XXX_OneofWrappers() []interface{} {
 	return []interface{}{
@@ -878,6 +914,210 @@ func (m *UsageType) GetUnit() string {
 	return ""
 }
 
+// EntitlementConfig
+//
+// x-displayName: "Entitlement Config"
+// EntitlementConfig represents data such as service usage type, quota mapping required for entitlement feature
+type EntitlementConfig struct {
+	// EntitlementFeatures
+	//
+	// x-displayName: "Entitlement Features"
+	// x-example: "{re_public_loadbalancer_in_qty: {usage_type: public-loadbalancer-usage, quota_mapping: {object_limits: {http_loadbalancer.public: {operator: EQUAL}}}}, dns_loadbalancer_in_qty: {usage_type: dns-loadbalancer-usage, quota_mapping: {object_limits: {dns_loadbalancer.public: {operator: EQUAL}}}}}"
+	// Map of entitlement feature name and feature details
+	EntitlementFeatures map[string]*EntitlementFeatureDetails `protobuf:"bytes,1,rep,name=entitlement_features,json=entitlementFeatures,proto3" json:"entitlement_features,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+}
+
+func (m *EntitlementConfig) Reset()      { *m = EntitlementConfig{} }
+func (*EntitlementConfig) ProtoMessage() {}
+func (*EntitlementConfig) Descriptor() ([]byte, []int) {
+	return fileDescriptor_000eebb1e98e78db, []int{10}
+}
+func (m *EntitlementConfig) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *EntitlementConfig) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	b = b[:cap(b)]
+	n, err := m.MarshalToSizedBuffer(b)
+	if err != nil {
+		return nil, err
+	}
+	return b[:n], nil
+}
+func (m *EntitlementConfig) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EntitlementConfig.Merge(m, src)
+}
+func (m *EntitlementConfig) XXX_Size() int {
+	return m.Size()
+}
+func (m *EntitlementConfig) XXX_DiscardUnknown() {
+	xxx_messageInfo_EntitlementConfig.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EntitlementConfig proto.InternalMessageInfo
+
+func (m *EntitlementConfig) GetEntitlementFeatures() map[string]*EntitlementFeatureDetails {
+	if m != nil {
+		return m.EntitlementFeatures
+	}
+	return nil
+}
+
+// EntitlementFeatureDetails
+//
+// x-displayName: "Entitlement Feature Details"
+// EntitlementFeatureDetails holds the details required for entitlement ingestion
+type EntitlementFeatureDetails struct {
+	// Usage Type
+	//
+	// x-displayName: "Usage Type"
+	// x-example: "public-loadbalancer-usage"
+	// UsageType represents the name of the telemetry config usage metric
+	UsageType string `protobuf:"bytes,1,opt,name=usage_type,json=usageType,proto3" json:"usage_type,omitempty"`
+	//Quota Mapping
+	//
+	// x-displayName: "Quota Mapping"
+	// x-example: "{object_limits: {http_loadbalancer.public: {operator: EQUAL}}}"
+	// QuotaMapping holds the quota details for the entitlement feature
+	QuotaMapping *QuotaMapping `protobuf:"bytes,2,opt,name=quota_mapping,json=quotaMapping,proto3" json:"quota_mapping,omitempty"`
+}
+
+func (m *EntitlementFeatureDetails) Reset()      { *m = EntitlementFeatureDetails{} }
+func (*EntitlementFeatureDetails) ProtoMessage() {}
+func (*EntitlementFeatureDetails) Descriptor() ([]byte, []int) {
+	return fileDescriptor_000eebb1e98e78db, []int{11}
+}
+func (m *EntitlementFeatureDetails) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *EntitlementFeatureDetails) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	b = b[:cap(b)]
+	n, err := m.MarshalToSizedBuffer(b)
+	if err != nil {
+		return nil, err
+	}
+	return b[:n], nil
+}
+func (m *EntitlementFeatureDetails) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EntitlementFeatureDetails.Merge(m, src)
+}
+func (m *EntitlementFeatureDetails) XXX_Size() int {
+	return m.Size()
+}
+func (m *EntitlementFeatureDetails) XXX_DiscardUnknown() {
+	xxx_messageInfo_EntitlementFeatureDetails.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EntitlementFeatureDetails proto.InternalMessageInfo
+
+func (m *EntitlementFeatureDetails) GetUsageType() string {
+	if m != nil {
+		return m.UsageType
+	}
+	return ""
+}
+
+func (m *EntitlementFeatureDetails) GetQuotaMapping() *QuotaMapping {
+	if m != nil {
+		return m.QuotaMapping
+	}
+	return nil
+}
+
+// QuotaMapping
+//
+// x-displayName: "Quota Mapping"
+// QuotaMapping holds the quota mapping details for the usage type
+type QuotaMapping struct {
+	//Object Limits
+	//
+	// x-displayName: "Object Limits"
+	// x-example: "{http_loadbalancer.public: {operator: EQUAL}}"
+	// ObjectLimits holds the object limits for the entitlement feature
+	ObjectLimits map[string]*Formula `protobuf:"bytes,1,rep,name=object_limits,json=objectLimits,proto3" json:"object_limits,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+}
+
+func (m *QuotaMapping) Reset()      { *m = QuotaMapping{} }
+func (*QuotaMapping) ProtoMessage() {}
+func (*QuotaMapping) Descriptor() ([]byte, []int) {
+	return fileDescriptor_000eebb1e98e78db, []int{12}
+}
+func (m *QuotaMapping) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QuotaMapping) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	b = b[:cap(b)]
+	n, err := m.MarshalToSizedBuffer(b)
+	if err != nil {
+		return nil, err
+	}
+	return b[:n], nil
+}
+func (m *QuotaMapping) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QuotaMapping.Merge(m, src)
+}
+func (m *QuotaMapping) XXX_Size() int {
+	return m.Size()
+}
+func (m *QuotaMapping) XXX_DiscardUnknown() {
+	xxx_messageInfo_QuotaMapping.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QuotaMapping proto.InternalMessageInfo
+
+func (m *QuotaMapping) GetObjectLimits() map[string]*Formula {
+	if m != nil {
+		return m.ObjectLimits
+	}
+	return nil
+}
+
+// Formula
+//
+// x-displayName: "Formula"
+// Formula holds the operator details for the entitlement feature
+type Formula struct {
+	// Operator
+	//
+	// x-displayName: "Operator"
+	// Operator for the quota mapping
+	Operator Operator `protobuf:"varint,1,opt,name=operator,proto3,enum=ves.io.schema.pbac.addon_service.Operator" json:"operator,omitempty"`
+}
+
+func (m *Formula) Reset()      { *m = Formula{} }
+func (*Formula) ProtoMessage() {}
+func (*Formula) Descriptor() ([]byte, []int) {
+	return fileDescriptor_000eebb1e98e78db, []int{13}
+}
+func (m *Formula) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Formula) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	b = b[:cap(b)]
+	n, err := m.MarshalToSizedBuffer(b)
+	if err != nil {
+		return nil, err
+	}
+	return b[:n], nil
+}
+func (m *Formula) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Formula.Merge(m, src)
+}
+func (m *Formula) XXX_Size() int {
+	return m.Size()
+}
+func (m *Formula) XXX_DiscardUnknown() {
+	xxx_messageInfo_Formula.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Formula proto.InternalMessageInfo
+
+func (m *Formula) GetOperator() Operator {
+	if m != nil {
+		return m.Operator
+	}
+	return EQUAL
+}
+
 // Get addon service
 //
 // x-displayName: "Get Addon Service"
@@ -895,12 +1135,13 @@ type GetSpecType struct {
 	IncludedServices  []*schema.ObjectRefType     `protobuf:"bytes,9,rep,name=included_services,json=includedServices,proto3" json:"included_services,omitempty"`
 	Tags              []schema.FeatureTag         `protobuf:"varint,12,rep,packed,name=tags,proto3,enum=ves.io.schema.FeatureTag" json:"tags,omitempty"`
 	Tier              schema.AddonServiceTierType `protobuf:"varint,13,opt,name=tier,proto3,enum=ves.io.schema.AddonServiceTierType" json:"tier,omitempty"`
+	EntitlementConfig *EntitlementConfig          `protobuf:"bytes,16,opt,name=entitlement_config,json=entitlementConfig,proto3" json:"entitlement_config,omitempty"`
 }
 
 func (m *GetSpecType) Reset()      { *m = GetSpecType{} }
 func (*GetSpecType) ProtoMessage() {}
 func (*GetSpecType) Descriptor() ([]byte, []int) {
-	return fileDescriptor_000eebb1e98e78db, []int{10}
+	return fileDescriptor_000eebb1e98e78db, []int{14}
 }
 func (m *GetSpecType) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1016,6 +1257,13 @@ func (m *GetSpecType) GetTier() schema.AddonServiceTierType {
 	return schema.NO_TIER
 }
 
+func (m *GetSpecType) GetEntitlementConfig() *EntitlementConfig {
+	if m != nil {
+		return m.EntitlementConfig
+	}
+	return nil
+}
+
 // XXX_OneofWrappers is for the internal use of the proto package.
 func (*GetSpecType) XXX_OneofWrappers() []interface{} {
 	return []interface{}{
@@ -1026,6 +1274,8 @@ func (*GetSpecType) XXX_OneofWrappers() []interface{} {
 }
 
 func init() {
+	proto.RegisterEnum("ves.io.schema.pbac.addon_service.Operator", Operator_name, Operator_value)
+	golang_proto.RegisterEnum("ves.io.schema.pbac.addon_service.Operator", Operator_name, Operator_value)
 	proto.RegisterType((*SelfActivationType)(nil), "ves.io.schema.pbac.addon_service.SelfActivationType")
 	golang_proto.RegisterType((*SelfActivationType)(nil), "ves.io.schema.pbac.addon_service.SelfActivationType")
 	proto.RegisterType((*PartiallyManagedActivationType)(nil), "ves.io.schema.pbac.addon_service.PartiallyManagedActivationType")
@@ -1048,6 +1298,18 @@ func init() {
 	golang_proto.RegisterMapType((map[string]*UsageType)(nil), "ves.io.schema.pbac.addon_service.ServiceUsageType.UsageTypesEntry")
 	proto.RegisterType((*UsageType)(nil), "ves.io.schema.pbac.addon_service.UsageType")
 	golang_proto.RegisterType((*UsageType)(nil), "ves.io.schema.pbac.addon_service.UsageType")
+	proto.RegisterType((*EntitlementConfig)(nil), "ves.io.schema.pbac.addon_service.EntitlementConfig")
+	golang_proto.RegisterType((*EntitlementConfig)(nil), "ves.io.schema.pbac.addon_service.EntitlementConfig")
+	proto.RegisterMapType((map[string]*EntitlementFeatureDetails)(nil), "ves.io.schema.pbac.addon_service.EntitlementConfig.EntitlementFeaturesEntry")
+	golang_proto.RegisterMapType((map[string]*EntitlementFeatureDetails)(nil), "ves.io.schema.pbac.addon_service.EntitlementConfig.EntitlementFeaturesEntry")
+	proto.RegisterType((*EntitlementFeatureDetails)(nil), "ves.io.schema.pbac.addon_service.EntitlementFeatureDetails")
+	golang_proto.RegisterType((*EntitlementFeatureDetails)(nil), "ves.io.schema.pbac.addon_service.EntitlementFeatureDetails")
+	proto.RegisterType((*QuotaMapping)(nil), "ves.io.schema.pbac.addon_service.QuotaMapping")
+	golang_proto.RegisterType((*QuotaMapping)(nil), "ves.io.schema.pbac.addon_service.QuotaMapping")
+	proto.RegisterMapType((map[string]*Formula)(nil), "ves.io.schema.pbac.addon_service.QuotaMapping.ObjectLimitsEntry")
+	golang_proto.RegisterMapType((map[string]*Formula)(nil), "ves.io.schema.pbac.addon_service.QuotaMapping.ObjectLimitsEntry")
+	proto.RegisterType((*Formula)(nil), "ves.io.schema.pbac.addon_service.Formula")
+	golang_proto.RegisterType((*Formula)(nil), "ves.io.schema.pbac.addon_service.Formula")
 	proto.RegisterType((*GetSpecType)(nil), "ves.io.schema.pbac.addon_service.GetSpecType")
 	golang_proto.RegisterType((*GetSpecType)(nil), "ves.io.schema.pbac.addon_service.GetSpecType")
 }
@@ -1060,102 +1322,125 @@ func init() {
 }
 
 var fileDescriptor_000eebb1e98e78db = []byte{
-	// 1478 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xec, 0x58, 0xcb, 0x6f, 0x13, 0xc7,
-	0x1f, 0xf7, 0xd8, 0xce, 0x6b, 0x02, 0x8e, 0x33, 0xf0, 0xcb, 0x6f, 0x09, 0x68, 0x6b, 0x4c, 0x0e,
-	0x01, 0xfc, 0xa0, 0x76, 0xc2, 0x23, 0x42, 0xd0, 0xb8, 0x04, 0x5c, 0x4a, 0x79, 0x6c, 0x52, 0x2a,
-	0x81, 0xe8, 0x76, 0xbd, 0x3b, 0x76, 0x86, 0xac, 0x77, 0x97, 0xdd, 0x59, 0x53, 0x1f, 0x90, 0x68,
-	0x55, 0xce, 0xad, 0x50, 0x4f, 0xbd, 0xf5, 0x56, 0xf1, 0x27, 0x34, 0x17, 0x8e, 0x55, 0x55, 0xa9,
-	0x39, 0x72, 0x2c, 0x8e, 0x54, 0xc1, 0x0d, 0xf5, 0xd8, 0x53, 0xb5, 0xb3, 0xb3, 0x7e, 0xac, 0xed,
-	0x26, 0xd0, 0x8a, 0x53, 0x4f, 0x9e, 0xfd, 0x3e, 0x3e, 0xdf, 0xd7, 0xec, 0xe7, 0x6b, 0x1b, 0x66,
-	0x1a, 0xd8, 0xc9, 0x11, 0x33, 0xef, 0xa8, 0xeb, 0xb8, 0xae, 0xe4, 0xad, 0x8a, 0xa2, 0xe6, 0x15,
-	0x4d, 0x33, 0x0d, 0xd9, 0xc1, 0x76, 0x83, 0xa8, 0x38, 0x4f, 0x9b, 0x16, 0x76, 0x72, 0x96, 0x6d,
-	0x52, 0x13, 0xa5, 0x7c, 0xeb, 0x9c, 0x6f, 0x9d, 0xf3, 0xac, 0x73, 0x3d, 0xd6, 0xb3, 0xd9, 0x1a,
-	0xa1, 0xeb, 0x6e, 0x25, 0xa7, 0x9a, 0xf5, 0x7c, 0xcd, 0xac, 0x99, 0x79, 0xe6, 0x58, 0x71, 0xab,
-	0xec, 0x89, 0x3d, 0xb0, 0x93, 0x0f, 0x38, 0x7b, 0xac, 0x37, 0xbc, 0xea, 0x3a, 0xd4, 0xac, 0x63,
-	0x5b, 0x76, 0x5c, 0xcb, 0x32, 0x6d, 0xda, 0x1d, 0x7c, 0xf6, 0x60, 0xaf, 0xad, 0x69, 0x51, 0x62,
-	0x1a, 0x81, 0x52, 0x1c, 0x50, 0x47, 0xb7, 0xf3, 0x81, 0x5e, 0x7d, 0xb7, 0xea, 0x50, 0xaf, 0xaa,
-	0xa1, 0xe8, 0x44, 0x53, 0x28, 0xe6, 0xda, 0x62, 0x48, 0x8b, 0x1d, 0x6c, 0x34, 0xf2, 0x8a, 0xae,
-	0xcb, 0x3d, 0x85, 0xcb, 0x35, 0xdb, 0x74, 0xad, 0x00, 0x32, 0x15, 0x72, 0x22, 0xf8, 0xbe, 0xdc,
-	0x93, 0x6f, 0xfa, 0x43, 0x88, 0x56, 0xb1, 0x5e, 0x5d, 0x56, 0x29, 0x69, 0x28, 0x9e, 0x62, 0xad,
-	0x69, 0x61, 0xb4, 0x08, 0xa7, 0x35, 0x5c, 0x55, 0x5c, 0x9d, 0xca, 0x94, 0xe8, 0x58, 0x36, 0x94,
-	0x3a, 0x16, 0x40, 0x0a, 0xcc, 0x4f, 0x94, 0x26, 0x7e, 0x7c, 0xf9, 0x34, 0x16, 0xb7, 0xa3, 0x42,
-	0x4a, 0x9a, 0xe2, 0x36, 0x6b, 0x44, 0xc7, 0x57, 0x95, 0x3a, 0x4e, 0x3f, 0x06, 0x50, 0xbc, 0xae,
-	0xd8, 0x94, 0x28, 0xba, 0xde, 0xfc, 0x48, 0x31, 0x94, 0x1a, 0xd6, 0x42, 0xc8, 0x16, 0xfc, 0x1f,
-	0xef, 0xa9, 0x4c, 0x89, 0xba, 0x81, 0x29, 0xcf, 0x87, 0xa1, 0x4f, 0x16, 0x4e, 0xe6, 0x76, 0x9a,
-	0x6c, 0x6e, 0xd5, 0x77, 0x5f, 0x63, 0xde, 0xd7, 0xfc, 0x62, 0x4a, 0xf1, 0x17, 0x9b, 0x00, 0x48,
-	0xfb, 0x9c, 0x7e, 0x5d, 0xfa, 0x6b, 0x00, 0x67, 0x2f, 0xba, 0x43, 0x13, 0xba, 0x07, 0xff, 0x6f,
-	0x98, 0x94, 0x54, 0x89, 0xca, 0x64, 0xb2, 0x65, 0xe3, 0x2a, 0xb6, 0xb1, 0xa1, 0x62, 0x9e, 0xd2,
-	0xe9, 0x9d, 0x53, 0xba, 0xda, 0x05, 0x70, 0xbd, 0xed, 0x2f, 0xcd, 0x18, 0x03, 0xe5, 0xe9, 0x97,
-	0x00, 0xce, 0x0c, 0x76, 0x41, 0xfa, 0xb0, 0xf6, 0x44, 0xff, 0x49, 0x7b, 0xca, 0x91, 0x81, 0xad,
-	0x41, 0x8b, 0x70, 0x14, 0xd7, 0x15, 0xa2, 0x3b, 0x42, 0x8c, 0xc1, 0x1f, 0x1c, 0x04, 0xbf, 0xe2,
-	0x59, 0x5c, 0xb8, 0x52, 0x8e, 0x48, 0xdc, 0xb8, 0x34, 0x07, 0xa7, 0x7b, 0x5a, 0xe6, 0x5d, 0x62,
-	0x34, 0xf5, 0x74, 0x13, 0x44, 0xb7, 0x36, 0x01, 0x68, 0x6d, 0x82, 0x58, 0x21, 0x53, 0xbc, 0x1c,
-	0x1f, 0x07, 0xc9, 0x68, 0xfa, 0x51, 0x0c, 0xee, 0x1f, 0x94, 0x12, 0x2a, 0x79, 0x20, 0x72, 0x6f,
-	0xb1, 0xbc, 0xca, 0xfd, 0xa1, 0x34, 0x56, 0xea, 0x16, 0x6d, 0x96, 0x23, 0xd2, 0x94, 0x61, 0xf6,
-	0x40, 0xa1, 0x2a, 0x9c, 0x0b, 0x75, 0xeb, 0x3e, 0xa1, 0xeb, 0x72, 0xfb, 0xea, 0xe2, 0xba, 0xa5,
-	0x2b, 0x14, 0xf3, 0xea, 0x86, 0xc1, 0xa6, 0x7a, 0x5a, 0xf3, 0x09, 0xa1, 0xeb, 0x17, 0xf8, 0xbd,
-	0xe6, 0xfe, 0xe8, 0x11, 0x80, 0x47, 0x06, 0x05, 0xf2, 0x69, 0xa2, 0x13, 0x27, 0xce, 0xe2, 0x2c,
-	0xee, 0x3c, 0xa4, 0xf7, 0x99, 0x63, 0x4f, 0x31, 0xe5, 0x88, 0xf4, 0x4e, 0x5f, 0x22, 0xbe, 0x5d,
-	0x90, 0x47, 0xa9, 0x08, 0xc5, 0x50, 0x1a, 0xaa, 0x8d, 0xfd, 0x19, 0xa8, 0xeb, 0x26, 0x51, 0x31,
-	0x9a, 0xee, 0x9a, 0xc2, 0x48, 0x21, 0x53, 0xcc, 0x2c, 0xf0, 0x39, 0xfc, 0x1e, 0x85, 0xfb, 0x06,
-	0x44, 0x45, 0x65, 0x38, 0xc6, 0x93, 0x62, 0xd7, 0x3d, 0x51, 0xc8, 0x85, 0xb2, 0x0f, 0x53, 0x61,
-	0x70, 0xc1, 0x56, 0x7d, 0x2f, 0x29, 0x70, 0x47, 0x37, 0xe0, 0xb8, 0x65, 0x13, 0xd3, 0x26, 0xb4,
-	0xc9, 0xe6, 0x98, 0xe8, 0x6b, 0xc4, 0x30, 0x28, 0x3f, 0x95, 0xeb, 0xdc, 0x59, 0x6a, 0xc3, 0xa0,
-	0x9b, 0x70, 0xda, 0x71, 0x2b, 0x8e, 0x6a, 0x93, 0x0a, 0x96, 0x55, 0xd3, 0xa0, 0xd8, 0xa0, 0x7c,
-	0x98, 0x47, 0x77, 0xd1, 0x64, 0xdf, 0x41, 0x4a, 0xb6, 0x31, 0xb8, 0x04, 0xdd, 0x82, 0xfb, 0x5c,
-	0xa3, 0x1f, 0x39, 0xfe, 0xba, 0xc8, 0xa8, 0x0b, 0x85, 0xcb, 0xd2, 0x2b, 0x70, 0x2c, 0x08, 0x23,
-	0xc0, 0x31, 0xc7, 0xad, 0xdc, 0xc5, 0x2a, 0xf5, 0xb9, 0x53, 0x0a, 0x1e, 0x51, 0x0a, 0x4e, 0x6a,
-	0xd8, 0xf3, 0xeb, 0xbc, 0xdc, 0x13, 0x52, 0xb7, 0x28, 0xfd, 0xc5, 0x04, 0x4c, 0x5c, 0xd2, 0xcd,
-	0x8a, 0xa2, 0xaf, 0x5a, 0x58, 0x65, 0x4c, 0x95, 0x85, 0x7b, 0x34, 0xe2, 0x58, 0xba, 0xd2, 0xec,
-	0xe6, 0x63, 0xe8, 0xf1, 0xf1, 0x88, 0x1d, 0x13, 0x1e, 0xc6, 0xa5, 0x49, 0xae, 0xf7, 0xc8, 0x18,
-	0xc9, 0x70, 0xca, 0xc1, 0x7a, 0x55, 0x56, 0xda, 0x7c, 0xc7, 0x5b, 0xb7, 0xb0, 0x0b, 0x12, 0xe9,
-	0x5b, 0x09, 0xe5, 0x88, 0x94, 0x70, 0x7a, 0xa4, 0xe8, 0x2b, 0x00, 0x0f, 0x59, 0x01, 0xdb, 0xcb,
-	0x75, 0x9f, 0x5d, 0xbb, 0xc3, 0xf9, 0xfd, 0x7c, 0x6f, 0xe7, 0x70, 0x7f, 0xbf, 0x33, 0xca, 0x11,
-	0x69, 0xd6, 0x1a, 0x6a, 0x81, 0xea, 0x10, 0x0d, 0x88, 0x3d, 0xc2, 0x62, 0x9f, 0xdd, 0x39, 0xf6,
-	0xf0, 0xd5, 0x50, 0x8e, 0x48, 0xd3, 0xf5, 0xbe, 0x70, 0xab, 0x10, 0x2a, 0x16, 0xe1, 0x6b, 0x56,
-	0x18, 0x4d, 0xc5, 0xe6, 0x27, 0x0b, 0x87, 0x42, 0x61, 0xae, 0xb1, 0x29, 0x4b, 0xb8, 0xea, 0xc1,
-	0x94, 0x66, 0x9e, 0x3c, 0x98, 0x68, 0xbb, 0xb0, 0x69, 0x3d, 0x06, 0xd1, 0x64, 0x4a, 0xf2, 0x84,
-	0x97, 0x18, 0x0c, 0xba, 0x01, 0x47, 0x2d, 0x53, 0x27, 0x6a, 0x53, 0x18, 0xdb, 0x05, 0xe0, 0xc1,
-	0x27, 0x0f, 0x12, 0xc1, 0xba, 0xf7, 0xdd, 0xda, 0xa8, 0x40, 0xe2, 0x40, 0xe8, 0x1e, 0x44, 0x1a,
-	0xb6, 0xb0, 0xa1, 0x61, 0x83, 0x06, 0xc5, 0x3a, 0xc2, 0xf8, 0x2e, 0xe0, 0xe7, 0x9e, 0x3c, 0xd8,
-	0xdb, 0xd3, 0xa3, 0x4e, 0xce, 0xc1, 0x49, 0x00, 0xd2, 0x74, 0x1b, 0x9d, 0x33, 0x81, 0x83, 0x4c,
-	0x38, 0x4d, 0x0c, 0x55, 0x77, 0x35, 0xac, 0x75, 0x22, 0x4e, 0xfc, 0x6b, 0x11, 0x93, 0x01, 0x78,
-	0x3b, 0xa0, 0x08, 0xa1, 0x8d, 0x1d, 0x6a, 0x13, 0x95, 0x62, 0x4d, 0x80, 0x29, 0x30, 0x3f, 0x2e,
-	0x75, 0x49, 0xbc, 0xd7, 0x8c, 0x18, 0xeb, 0xd8, 0x26, 0x54, 0xa9, 0xe8, 0x58, 0x98, 0x64, 0x06,
-	0xdd, 0x22, 0x94, 0x85, 0x71, 0xaa, 0xd4, 0x1c, 0x61, 0x4f, 0x2a, 0x36, 0x9f, 0x28, 0x1c, 0x08,
-	0x65, 0x79, 0x11, 0x2b, 0xd4, 0xb5, 0xf1, 0x9a, 0x52, 0x93, 0x98, 0x19, 0x3a, 0x05, 0xe3, 0x94,
-	0x60, 0x5b, 0xd8, 0xcb, 0xf8, 0xed, 0x48, 0xc8, 0x7c, 0xd9, 0x2b, 0x81, 0x27, 0xb7, 0x46, 0xb0,
-	0xed, 0xd5, 0x26, 0x31, 0x07, 0x2f, 0x53, 0x0d, 0x5b, 0x36, 0x56, 0x15, 0x2f, 0xd3, 0x84, 0x9f,
-	0x69, 0x47, 0x82, 0x3e, 0x83, 0x28, 0x98, 0xa8, 0xeb, 0x28, 0x35, 0xcc, 0x76, 0xaa, 0x30, 0xc5,
-	0x2e, 0x71, 0x61, 0x37, 0xef, 0x2b, 0xfb, 0xfc, 0xd8, 0x73, 0x65, 0x51, 0x93, 0x4e, 0x48, 0x52,
-	0x3a, 0x0e, 0x67, 0x3a, 0xaf, 0x07, 0x83, 0xef, 0xde, 0x19, 0xb1, 0xad, 0x4d, 0x10, 0xf5, 0x76,
-	0x46, 0x31, 0xb3, 0x90, 0x59, 0xbc, 0x1c, 0x1f, 0x8f, 0x26, 0x63, 0xe9, 0x5f, 0xa2, 0x30, 0x19,
-	0x46, 0x46, 0xf3, 0x30, 0x59, 0x21, 0xba, 0x4e, 0x8c, 0x9a, 0xac, 0x99, 0xaa, 0xac, 0x13, 0x63,
-	0x83, 0xb3, 0x5b, 0x82, 0xcb, 0x2f, 0x98, 0xea, 0x15, 0x62, 0x6c, 0xa0, 0xef, 0x01, 0x9c, 0xec,
-	0x14, 0xe3, 0x08, 0x51, 0x76, 0x13, 0x4a, 0xaf, 0x5f, 0x4d, 0xae, 0x7d, 0x72, 0x56, 0x0c, 0x6a,
-	0x37, 0x4b, 0x67, 0xbd, 0x5b, 0x71, 0xea, 0x3b, 0xb0, 0x90, 0x2e, 0xd8, 0x27, 0x0a, 0xb9, 0x4f,
-	0x6f, 0x2f, 0x67, 0x6f, 0xdd, 0x99, 0x3f, 0xbf, 0xe4, 0x7d, 0x9e, 0xc8, 0x9e, 0xb9, 0x73, 0x2c,
-	0x7b, 0xf4, 0x7c, 0x70, 0x3e, 0x3e, 0x7f, 0x7e, 0x29, 0xdb, 0x7e, 0x38, 0x7a, 0x6c, 0x4e, 0x82,
-	0x6e, 0x1b, 0x6e, 0xf6, 0x2e, 0x9c, 0x0a, 0x81, 0xa3, 0x24, 0x8c, 0x6d, 0xe0, 0x26, 0xaf, 0xc9,
-	0x3b, 0xa2, 0x65, 0x38, 0xd2, 0x50, 0x74, 0x17, 0xf3, 0xaf, 0x27, 0xc7, 0x77, 0xae, 0xa0, 0x33,
-	0x08, 0xdf, 0x73, 0x29, 0x7a, 0x1a, 0xa4, 0x8b, 0x70, 0xa2, 0xd3, 0x46, 0x04, 0xe3, 0x1d, 0x12,
-	0x97, 0xd8, 0xd9, 0x93, 0xb9, 0x06, 0xa1, 0x7c, 0x1d, 0xb0, 0x73, 0xfa, 0xd7, 0x51, 0x38, 0x79,
-	0x09, 0xd3, 0xf6, 0x12, 0x38, 0x3c, 0x68, 0x09, 0xfc, 0x47, 0xfc, 0x6f, 0x81, 0xf8, 0x3f, 0x78,
-	0x6d, 0xe2, 0xdf, 0xd3, 0x4d, 0xfc, 0xdd, 0x74, 0x7f, 0xe7, 0x8d, 0xb9, 0x39, 0x19, 0x66, 0xca,
-	0x41, 0x3c, 0x7c, 0xfb, 0x4d, 0x79, 0xb8, 0x1f, 0xbd, 0x9f, 0x73, 0xdf, 0x12, 0x63, 0x2e, 0x1d,
-	0xfe, 0xf9, 0x5c, 0xe8, 0x0b, 0xd0, 0x1f, 0xe7, 0xf6, 0xbe, 0x9b, 0x61, 0xfc, 0x94, 0x39, 0x99,
-	0x39, 0x9d, 0x39, 0x53, 0x5a, 0x18, 0x4a, 0x69, 0xb3, 0x5f, 0xfe, 0x09, 0x86, 0xe8, 0x4a, 0xdf,
-	0x82, 0xad, 0xe7, 0x62, 0xe4, 0xd9, 0x73, 0x31, 0xf2, 0xea, 0xb9, 0x08, 0x1e, 0xb6, 0x44, 0xf0,
-	0x43, 0x4b, 0x04, 0x3f, 0xb5, 0x44, 0xb0, 0xd5, 0x12, 0xc1, 0xb3, 0x96, 0x08, 0x7e, 0x6b, 0x89,
-	0xe0, 0x45, 0x4b, 0x8c, 0xbc, 0x6a, 0x89, 0xe0, 0x9b, 0x6d, 0x31, 0xf2, 0x74, 0x5b, 0x04, 0x5b,
-	0xdb, 0x62, 0xe4, 0xd9, 0xb6, 0x18, 0xb9, 0x75, 0xb3, 0x66, 0x5a, 0x1b, 0xb5, 0x5c, 0xc3, 0xd4,
-	0x29, 0xb6, 0x6d, 0x25, 0xe7, 0x3a, 0x79, 0x76, 0xa8, 0x9a, 0x76, 0x3d, 0x6b, 0xd9, 0x66, 0x83,
-	0x68, 0xd8, 0xce, 0x06, 0xea, 0xbc, 0x55, 0xa9, 0x99, 0x79, 0xfc, 0x39, 0xe5, 0xbf, 0xc0, 0x87,
-	0xfe, 0xbd, 0x51, 0x19, 0x65, 0xbf, 0xc7, 0x8b, 0x7f, 0x05, 0x00, 0x00, 0xff, 0xff, 0x7d, 0x1d,
-	0xf2, 0x96, 0x09, 0x11, 0x00, 0x00,
+	// 1739 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xec, 0x58, 0x3d, 0x70, 0x1b, 0xc7,
+	0x15, 0xc6, 0x02, 0xa0, 0x48, 0x2c, 0xff, 0x80, 0x95, 0xac, 0x9c, 0x20, 0xe5, 0x02, 0xc3, 0x2a,
+	0x28, 0x0a, 0x3f, 0x0e, 0x48, 0xd9, 0xb2, 0xe2, 0xb1, 0x4c, 0x58, 0x94, 0x18, 0x87, 0xb6, 0xc4,
+	0x23, 0xed, 0xcc, 0xc8, 0xa3, 0x5c, 0x16, 0x87, 0x05, 0xb8, 0xe2, 0xe1, 0xf6, 0x74, 0xb7, 0x07,
+	0x07, 0x85, 0x26, 0x9e, 0x24, 0xae, 0x9d, 0xf1, 0xa4, 0x72, 0x97, 0x2e, 0xa3, 0x36, 0x5d, 0xd8,
+	0xa8, 0xcc, 0x64, 0x52, 0xb0, 0x54, 0x19, 0x81, 0x33, 0x19, 0x3b, 0x45, 0xc6, 0x93, 0x32, 0x55,
+	0xe6, 0xf6, 0xf6, 0x80, 0xc3, 0x5f, 0x40, 0x2a, 0x1e, 0x55, 0xa9, 0xb8, 0xf7, 0xf6, 0x7d, 0xdf,
+	0xfb, 0xdb, 0x7d, 0xfb, 0x08, 0x58, 0x68, 0x13, 0xb7, 0x44, 0x59, 0xd9, 0x35, 0xf6, 0x49, 0x0b,
+	0x97, 0xed, 0x1a, 0x36, 0xca, 0xb8, 0x5e, 0x67, 0x96, 0xee, 0x12, 0xa7, 0x4d, 0x0d, 0x52, 0xe6,
+	0x1d, 0x9b, 0xb8, 0x25, 0xdb, 0x61, 0x9c, 0xa1, 0x5c, 0xa0, 0x5d, 0x0a, 0xb4, 0x4b, 0xbe, 0x76,
+	0x69, 0x40, 0x3b, 0x5b, 0x6c, 0x52, 0xbe, 0xef, 0xd5, 0x4a, 0x06, 0x6b, 0x95, 0x9b, 0xac, 0xc9,
+	0xca, 0x02, 0x58, 0xf3, 0x1a, 0xe2, 0x4b, 0x7c, 0x88, 0x55, 0x40, 0x98, 0x5d, 0x1d, 0x34, 0x6f,
+	0x78, 0x2e, 0x67, 0x2d, 0xe2, 0xe8, 0xae, 0x67, 0xdb, 0xcc, 0xe1, 0x51, 0xe3, 0xd9, 0x8b, 0x83,
+	0xba, 0xcc, 0xe6, 0x94, 0x59, 0xe1, 0xa6, 0x3a, 0x26, 0x8e, 0x28, 0xf8, 0xc2, 0xe0, 0x7e, 0x74,
+	0xeb, 0xd2, 0xe0, 0x56, 0x1b, 0x9b, 0xb4, 0x8e, 0x39, 0x91, 0xbb, 0x6b, 0x43, 0xbb, 0xc4, 0x25,
+	0x56, 0xbb, 0x8c, 0x4d, 0x53, 0x1f, 0x08, 0x5c, 0x6f, 0x3a, 0xcc, 0xb3, 0x43, 0xca, 0xdc, 0x10,
+	0x88, 0x92, 0x4f, 0xf5, 0x01, 0x7f, 0xf3, 0x3f, 0x81, 0x68, 0x97, 0x98, 0x8d, 0x0d, 0x83, 0xd3,
+	0x36, 0xf6, 0x37, 0xf6, 0x3a, 0x36, 0x41, 0xd7, 0x60, 0xa6, 0x4e, 0x1a, 0xd8, 0x33, 0xb9, 0xce,
+	0xa9, 0x49, 0x74, 0x0b, 0xb7, 0x88, 0x02, 0x72, 0x60, 0x25, 0x55, 0x4d, 0xfd, 0xe9, 0x9b, 0xa7,
+	0x89, 0xa4, 0x13, 0x57, 0x72, 0xda, 0xb2, 0xd4, 0xd9, 0xa3, 0x26, 0xf9, 0x10, 0xb7, 0x48, 0xfe,
+	0x4b, 0x00, 0xd5, 0x7b, 0xd8, 0xe1, 0x14, 0x9b, 0x66, 0xe7, 0x03, 0x6c, 0xe1, 0x26, 0xa9, 0x0f,
+	0x31, 0xdb, 0xf0, 0x15, 0x99, 0x53, 0x9d, 0x53, 0xe3, 0x80, 0x70, 0xe9, 0x8f, 0x60, 0x9f, 0xaf,
+	0xbc, 0x51, 0x9a, 0x56, 0xd9, 0xd2, 0x6e, 0x00, 0xdf, 0x13, 0xe8, 0xbb, 0x41, 0x30, 0xd5, 0xe4,
+	0xd7, 0x87, 0x00, 0x68, 0x67, 0xdd, 0xd1, 0xbd, 0xfc, 0x17, 0x00, 0x66, 0x6f, 0x7b, 0x13, 0x1d,
+	0x7a, 0x04, 0xbf, 0x67, 0x31, 0x4e, 0x1b, 0xd4, 0x10, 0x32, 0xdd, 0x76, 0x48, 0x83, 0x38, 0xc4,
+	0x32, 0x88, 0x74, 0xe9, 0xfa, 0x74, 0x97, 0x3e, 0x8c, 0x10, 0xdc, 0xeb, 0xe1, 0xb5, 0xf3, 0xd6,
+	0x58, 0x79, 0xfe, 0x1b, 0x00, 0xcf, 0x8f, 0x87, 0x20, 0x73, 0x52, 0x7a, 0xe2, 0xff, 0x4b, 0x7a,
+	0xb6, 0x62, 0x63, 0x53, 0x83, 0xae, 0xc1, 0x33, 0xa4, 0x85, 0xa9, 0xe9, 0x2a, 0x09, 0x41, 0x7f,
+	0x71, 0x1c, 0xfd, 0xa6, 0xaf, 0x71, 0x6b, 0x7b, 0x2b, 0xa6, 0x49, 0xe5, 0xea, 0x65, 0x98, 0x19,
+	0x48, 0x99, 0x7f, 0x88, 0xd1, 0xf2, 0xd3, 0x43, 0x10, 0x3f, 0x3a, 0x04, 0xa0, 0x7b, 0x08, 0x12,
+	0x95, 0xc2, 0xda, 0xfb, 0xc9, 0x39, 0x90, 0x8e, 0xe7, 0x3f, 0x4f, 0xc0, 0x73, 0xe3, 0x5c, 0x42,
+	0x55, 0x9f, 0x44, 0x1f, 0x0c, 0x56, 0x46, 0x79, 0x6e, 0xc8, 0x8d, 0xcd, 0x96, 0xcd, 0x3b, 0x5b,
+	0x31, 0x6d, 0xd9, 0x62, 0x03, 0x54, 0xa8, 0x01, 0x2f, 0x0f, 0x65, 0xeb, 0x53, 0xca, 0xf7, 0xf5,
+	0xde, 0xd1, 0x25, 0x2d, 0xdb, 0xc4, 0x9c, 0xc8, 0xe8, 0x26, 0xd1, 0xe6, 0x06, 0x52, 0xf3, 0x53,
+	0xca, 0xf7, 0x6f, 0xc9, 0x73, 0x2d, 0xf1, 0xe8, 0x73, 0x00, 0x5f, 0x1b, 0x67, 0x28, 0x68, 0x13,
+	0x7d, 0x3b, 0x49, 0x61, 0xe7, 0xda, 0xf4, 0x22, 0xbd, 0x27, 0x80, 0x03, 0xc1, 0x6c, 0xc5, 0xb4,
+	0x1f, 0x8c, 0x38, 0x12, 0xe8, 0x85, 0x7e, 0x54, 0xd7, 0xa0, 0x3a, 0xe4, 0x86, 0xe1, 0x90, 0xa0,
+	0x06, 0xc6, 0x3e, 0xa3, 0x06, 0x41, 0x99, 0x48, 0x15, 0x66, 0x2a, 0x85, 0xb5, 0xc2, 0xba, 0xac,
+	0xc3, 0xdf, 0xe3, 0xf0, 0xec, 0x18, 0xab, 0x68, 0x0b, 0xce, 0x4a, 0xa7, 0xc4, 0x71, 0x5f, 0xaa,
+	0x94, 0x86, 0xbc, 0x1f, 0x6e, 0x85, 0xe1, 0x01, 0xdb, 0x0d, 0x50, 0x5a, 0x08, 0x47, 0x3b, 0x70,
+	0xce, 0x76, 0x28, 0x73, 0x28, 0xef, 0x88, 0x3a, 0x2e, 0x8d, 0x24, 0x62, 0x12, 0x55, 0xe0, 0xca,
+	0x3d, 0x09, 0xd6, 0x7a, 0x34, 0xe8, 0x63, 0x98, 0x71, 0xbd, 0x9a, 0x6b, 0x38, 0xb4, 0x46, 0x74,
+	0x83, 0x59, 0x9c, 0x58, 0x5c, 0x16, 0xf3, 0xca, 0x09, 0x92, 0x1c, 0x00, 0xb4, 0x74, 0x8f, 0x43,
+	0x4a, 0xd0, 0x7d, 0x78, 0xd6, 0xb3, 0x46, 0x99, 0x93, 0xa7, 0x65, 0x46, 0x11, 0x16, 0x29, 0xcb,
+	0x6f, 0xc2, 0xd9, 0xd0, 0x8c, 0x02, 0x67, 0x5d, 0xaf, 0xf6, 0x90, 0x18, 0x3c, 0xe8, 0x9d, 0x5a,
+	0xf8, 0x89, 0x72, 0x70, 0xbe, 0x4e, 0x7c, 0x5c, 0xff, 0x72, 0xa7, 0xb4, 0xa8, 0x28, 0xff, 0xcf,
+	0x14, 0x5c, 0xba, 0x63, 0xb2, 0x1a, 0x36, 0x77, 0x6d, 0x62, 0x88, 0x4e, 0x55, 0x84, 0x0b, 0x75,
+	0xea, 0xda, 0x26, 0xee, 0x44, 0xfb, 0x31, 0xf4, 0xfb, 0xf1, 0x8c, 0x93, 0x50, 0x3e, 0x4b, 0x6a,
+	0xf3, 0x72, 0xdf, 0x6f, 0xc6, 0x48, 0x87, 0xcb, 0x2e, 0x31, 0x1b, 0x3a, 0xee, 0xf5, 0x3b, 0x99,
+	0xba, 0xf5, 0x13, 0x34, 0x91, 0x91, 0x27, 0x61, 0x2b, 0xa6, 0x2d, 0xb9, 0x03, 0x52, 0xf4, 0x1b,
+	0x00, 0x2f, 0xd9, 0x61, 0xb7, 0xd7, 0x5b, 0x41, 0x77, 0x8d, 0x9a, 0x0b, 0xf2, 0xf9, 0xee, 0x74,
+	0x73, 0xff, 0xfd, 0xcd, 0xd8, 0x8a, 0x69, 0x59, 0x7b, 0xa2, 0x06, 0x6a, 0x41, 0x34, 0xc6, 0xf6,
+	0x8c, 0xb0, 0xfd, 0xf6, 0x74, 0xdb, 0x93, 0x9f, 0x86, 0xad, 0x98, 0x96, 0x69, 0x8d, 0x98, 0xdb,
+	0x85, 0x10, 0xdb, 0x54, 0x3e, 0xb3, 0xca, 0x99, 0x5c, 0x62, 0x65, 0xbe, 0x72, 0x69, 0xc8, 0xcc,
+	0x5d, 0x51, 0x65, 0x8d, 0x34, 0x7c, 0x9a, 0xea, 0xf9, 0x27, 0x8f, 0x53, 0x3d, 0x88, 0xa8, 0xd6,
+	0x97, 0x20, 0x9e, 0xce, 0x69, 0xbe, 0xf0, 0x8e, 0xa0, 0x41, 0x3b, 0xf0, 0x8c, 0xcd, 0x4c, 0x6a,
+	0x74, 0x94, 0xd9, 0x13, 0x10, 0x5e, 0x7c, 0xf2, 0x78, 0x29, 0x7c, 0xee, 0x03, 0x58, 0x8f, 0x15,
+	0x68, 0x92, 0x08, 0x3d, 0x82, 0xa8, 0x4e, 0x6c, 0x62, 0xd5, 0x89, 0xc5, 0xc3, 0x60, 0x5d, 0x65,
+	0xee, 0x04, 0xf4, 0x97, 0x9f, 0x3c, 0x5e, 0x1c, 0xc8, 0x51, 0xdf, 0xe7, 0x70, 0xa5, 0x00, 0x2d,
+	0xd3, 0x63, 0x97, 0x9d, 0xc0, 0x45, 0x0c, 0x66, 0xa8, 0x65, 0x98, 0x5e, 0x9d, 0xd4, 0xfb, 0x16,
+	0x53, 0xdf, 0x99, 0xc5, 0x74, 0x48, 0xde, 0x33, 0xa8, 0x42, 0xe8, 0x10, 0x97, 0x3b, 0xd4, 0xe0,
+	0xa4, 0xae, 0xc0, 0x1c, 0x58, 0x99, 0xd3, 0x22, 0x12, 0xff, 0x9a, 0x51, 0x6b, 0x9f, 0x38, 0x94,
+	0xe3, 0x9a, 0x49, 0x94, 0x79, 0xa1, 0x10, 0x15, 0xa1, 0x22, 0x4c, 0x72, 0xdc, 0x74, 0x95, 0x85,
+	0x5c, 0x62, 0x65, 0xa9, 0x72, 0x61, 0xc8, 0xcb, 0xdb, 0x04, 0x73, 0xcf, 0x21, 0x7b, 0xb8, 0xa9,
+	0x09, 0x35, 0xf4, 0x26, 0x4c, 0x72, 0x4a, 0x1c, 0x65, 0x51, 0xf4, 0xb7, 0xd7, 0x86, 0xd4, 0x37,
+	0xfc, 0x10, 0xa4, 0x73, 0x7b, 0x94, 0x38, 0x7e, 0x6c, 0x9a, 0x00, 0xf8, 0x9e, 0xd6, 0x89, 0xed,
+	0x10, 0x03, 0xfb, 0x9e, 0x2e, 0x05, 0x9e, 0xf6, 0x25, 0xe8, 0xe7, 0x10, 0x85, 0x15, 0xf5, 0x5c,
+	0xdc, 0x24, 0xe2, 0x4d, 0x55, 0x96, 0xc5, 0x21, 0xae, 0x9c, 0xe4, 0xbe, 0x8a, 0xbf, 0x1f, 0xf9,
+	0x50, 0x61, 0x35, 0xed, 0x0e, 0x49, 0xd0, 0x01, 0x44, 0xc4, 0xe2, 0x94, 0x9b, 0xa4, 0xe5, 0x9f,
+	0x08, 0x83, 0x59, 0x0d, 0xda, 0x54, 0xd2, 0xc2, 0xc2, 0xda, 0x74, 0x0b, 0x9b, 0x7d, 0xec, 0x7b,
+	0x02, 0x5a, 0x9d, 0xfd, 0xc7, 0xe3, 0x24, 0x27, 0x2e, 0xd7, 0x32, 0x64, 0x64, 0xef, 0x2a, 0x3c,
+	0xdf, 0xbf, 0x8b, 0x22, 0x96, 0xe8, 0x03, 0x95, 0x38, 0x3a, 0x04, 0x71, 0xff, 0x81, 0x5a, 0x2b,
+	0xac, 0x17, 0xae, 0xbd, 0x9f, 0x9c, 0x8b, 0xa7, 0x13, 0xf9, 0xbf, 0xc6, 0x61, 0x7a, 0x38, 0x0c,
+	0xb4, 0x02, 0xd3, 0x35, 0x6a, 0x9a, 0xd4, 0x6a, 0xea, 0x75, 0x66, 0xe8, 0x26, 0xb5, 0x0e, 0x64,
+	0x2b, 0x5d, 0x92, 0xf2, 0x5b, 0xcc, 0xd8, 0xa6, 0xd6, 0x01, 0xfa, 0x3d, 0x80, 0xf3, 0xfd, 0xcc,
+	0xb9, 0x4a, 0x5c, 0x1c, 0xbb, 0xea, 0xe9, 0x53, 0x57, 0xea, 0xad, 0xdc, 0x4d, 0x8b, 0x3b, 0x9d,
+	0xea, 0xdb, 0xfe, 0x11, 0x7c, 0xf3, 0x2b, 0xb0, 0x9e, 0xaf, 0x38, 0xaf, 0x57, 0x4a, 0x3f, 0xfb,
+	0x64, 0xa3, 0x78, 0xff, 0xc1, 0xca, 0xcd, 0x1b, 0xfe, 0xdf, 0xd7, 0x8b, 0x6f, 0x3d, 0x58, 0x2d,
+	0x5e, 0xb9, 0x19, 0xae, 0xaf, 0xae, 0xdc, 0xbc, 0x51, 0xec, 0x7d, 0x5c, 0x59, 0xbd, 0xac, 0x41,
+	0xaf, 0x47, 0x97, 0x7d, 0x08, 0x97, 0x87, 0xc8, 0x51, 0x1a, 0x26, 0x0e, 0x48, 0x47, 0xc6, 0xe4,
+	0x2f, 0xd1, 0x06, 0x9c, 0x69, 0x63, 0xd3, 0x23, 0x72, 0x16, 0xba, 0x3a, 0x3d, 0x82, 0x7e, 0xd5,
+	0x03, 0xe4, 0x8d, 0xf8, 0x75, 0x90, 0x5f, 0x83, 0xa9, 0x7e, 0x1a, 0x11, 0x4c, 0xf6, 0x5f, 0x0c,
+	0x4d, 0xac, 0x7d, 0x99, 0x67, 0x51, 0x2e, 0xdf, 0x1e, 0xb1, 0xce, 0x7f, 0x15, 0x87, 0x99, 0x91,
+	0x42, 0xa3, 0x5f, 0xc2, 0x73, 0xd1, 0x93, 0xd3, 0x08, 0x2e, 0x85, 0xab, 0x00, 0x91, 0xe2, 0xed,
+	0x17, 0x38, 0x3b, 0x51, 0x89, 0xbc, 0x63, 0x41, 0x3e, 0xb4, 0xb3, 0x64, 0x74, 0x27, 0xfb, 0x6b,
+	0x00, 0x95, 0x49, 0x88, 0x31, 0x19, 0xdc, 0x19, 0xcc, 0xe0, 0x8f, 0x4e, 0xe5, 0xa0, 0x24, 0xbf,
+	0x45, 0xb8, 0x3f, 0xea, 0x46, 0x33, 0xfa, 0x05, 0x80, 0x17, 0x26, 0x2a, 0xa2, 0xef, 0x43, 0x18,
+	0xb9, 0xb8, 0x81, 0x37, 0xa9, 0x5e, 0xed, 0xd1, 0x2e, 0x5c, 0x7c, 0xe4, 0x31, 0x8e, 0xf5, 0x16,
+	0xb6, 0x6d, 0x6a, 0x35, 0xa5, 0x6f, 0xa5, 0xe9, 0xbe, 0xed, 0xf8, 0xb0, 0x0f, 0x02, 0x94, 0xb6,
+	0xf0, 0x28, 0xf2, 0x95, 0x7f, 0x0e, 0xe0, 0x42, 0x74, 0x1b, 0x11, 0xb8, 0xc8, 0x44, 0x63, 0xd5,
+	0x4d, 0xda, 0xa2, 0x3c, 0x2c, 0xd1, 0xbb, 0xa7, 0xb3, 0x22, 0x9b, 0xf3, 0xb6, 0xa0, 0x08, 0xca,
+	0xb2, 0xc0, 0x22, 0xa2, 0xec, 0x43, 0x98, 0x19, 0x51, 0x19, 0x53, 0x87, 0x9b, 0x83, 0x75, 0x38,
+	0xc1, 0x5c, 0x75, 0x9b, 0x39, 0x2d, 0xcf, 0xc4, 0xd1, 0xac, 0xef, 0xc0, 0x59, 0x29, 0x45, 0xb7,
+	0xe1, 0x1c, 0xb3, 0x89, 0x83, 0x39, 0x73, 0xe4, 0xac, 0xba, 0x3a, 0x9d, 0xf2, 0xae, 0x44, 0x68,
+	0x3d, 0x6c, 0xfe, 0x8f, 0xb3, 0x70, 0xfe, 0x0e, 0xe1, 0xbd, 0xb9, 0xea, 0xd5, 0x71, 0x73, 0xd5,
+	0xff, 0x67, 0xa9, 0x97, 0x30, 0x4b, 0xfd, 0xf8, 0xd4, 0xb3, 0xd4, 0x42, 0x74, 0x96, 0x8a, 0x4e,
+	0x50, 0x0f, 0x5e, 0x78, 0xdc, 0x49, 0x0f, 0x0f, 0x1f, 0xe3, 0x46, 0x9b, 0x4f, 0x5e, 0x74, 0xb4,
+	0x19, 0x65, 0x1f, 0x1d, 0x63, 0x5e, 0xd6, 0x10, 0x52, 0xfb, 0x8e, 0x47, 0x80, 0x31, 0x2f, 0xff,
+	0x8d, 0x57, 0xff, 0xf2, 0xce, 0xd0, 0xff, 0x2d, 0xff, 0x7a, 0x67, 0xf1, 0x87, 0x05, 0xf1, 0xd2,
+	0x17, 0xde, 0x28, 0x5c, 0x2f, 0xbc, 0x55, 0x5d, 0x9f, 0x38, 0x1c, 0x64, 0x7f, 0xf5, 0x6f, 0x30,
+	0x61, 0x6f, 0xf5, 0x15, 0x38, 0x17, 0xde, 0x65, 0x94, 0x82, 0x33, 0x9b, 0x3b, 0x1f, 0x6d, 0x6c,
+	0xa7, 0x63, 0xd5, 0xdf, 0x81, 0xa3, 0xe7, 0x6a, 0xec, 0xd9, 0x73, 0x35, 0xf6, 0xed, 0x73, 0x15,
+	0x7c, 0xd6, 0x55, 0xc1, 0x1f, 0xba, 0x2a, 0xf8, 0x73, 0x57, 0x05, 0x47, 0x5d, 0x15, 0x3c, 0xeb,
+	0xaa, 0xe0, 0x6f, 0x5d, 0x15, 0x7c, 0xdd, 0x55, 0x63, 0xdf, 0x76, 0x55, 0xf0, 0xdb, 0x63, 0x35,
+	0xf6, 0xf4, 0x58, 0x05, 0x47, 0xc7, 0x6a, 0xec, 0xd9, 0xb1, 0x1a, 0xbb, 0xff, 0x71, 0x93, 0xd9,
+	0x07, 0xcd, 0x52, 0x9b, 0x99, 0x9c, 0x38, 0x0e, 0x2e, 0x79, 0x6e, 0x59, 0x2c, 0x1a, 0xcc, 0x69,
+	0x15, 0x6d, 0x87, 0xb5, 0x69, 0x9d, 0x38, 0xc5, 0x70, 0xbb, 0x6c, 0xd7, 0x9a, 0xac, 0x4c, 0x7e,
+	0xc1, 0xe5, 0xef, 0x69, 0x13, 0x7f, 0xac, 0xac, 0x9d, 0x11, 0xbf, 0xae, 0xad, 0xfd, 0x27, 0x00,
+	0x00, 0xff, 0xff, 0xf1, 0x83, 0x96, 0xe3, 0xd7, 0x14, 0x00, 0x00,
 }
 
+func (x Operator) String() string {
+	s, ok := Operator_name[int32(x)]
+	if ok {
+		return s
+	}
+	return strconv.Itoa(int(x))
+}
 func (this *SelfActivationType) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -1554,6 +1839,9 @@ func (this *GlobalSpecType) Equal(that interface{}) bool {
 	if !this.ServiceUsageType.Equal(that1.ServiceUsageType) {
 		return false
 	}
+	if !this.EntitlementConfig.Equal(that1.EntitlementConfig) {
+		return false
+	}
 	return true
 }
 func (this *GlobalSpecType_SelfActivation) Equal(that interface{}) bool {
@@ -1687,6 +1975,115 @@ func (this *UsageType) Equal(that interface{}) bool {
 	}
 	return true
 }
+func (this *EntitlementConfig) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*EntitlementConfig)
+	if !ok {
+		that2, ok := that.(EntitlementConfig)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if len(this.EntitlementFeatures) != len(that1.EntitlementFeatures) {
+		return false
+	}
+	for i := range this.EntitlementFeatures {
+		if !this.EntitlementFeatures[i].Equal(that1.EntitlementFeatures[i]) {
+			return false
+		}
+	}
+	return true
+}
+func (this *EntitlementFeatureDetails) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*EntitlementFeatureDetails)
+	if !ok {
+		that2, ok := that.(EntitlementFeatureDetails)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.UsageType != that1.UsageType {
+		return false
+	}
+	if !this.QuotaMapping.Equal(that1.QuotaMapping) {
+		return false
+	}
+	return true
+}
+func (this *QuotaMapping) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*QuotaMapping)
+	if !ok {
+		that2, ok := that.(QuotaMapping)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if len(this.ObjectLimits) != len(that1.ObjectLimits) {
+		return false
+	}
+	for i := range this.ObjectLimits {
+		if !this.ObjectLimits[i].Equal(that1.ObjectLimits[i]) {
+			return false
+		}
+	}
+	return true
+}
+func (this *Formula) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*Formula)
+	if !ok {
+		that2, ok := that.(Formula)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Operator != that1.Operator {
+		return false
+	}
+	return true
+}
 func (this *GetSpecType) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -1751,6 +2148,9 @@ func (this *GetSpecType) Equal(that interface{}) bool {
 		}
 	}
 	if this.Tier != that1.Tier {
+		return false
+	}
+	if !this.EntitlementConfig.Equal(that1.EntitlementConfig) {
 		return false
 	}
 	return true
@@ -1957,7 +2357,7 @@ func (this *GlobalSpecType) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 18)
+	s := make([]string, 0, 19)
 	s = append(s, "&addon_service.GlobalSpecType{")
 	s = append(s, "DisplayName: "+fmt.Sprintf("%#v", this.DisplayName)+",\n")
 	if this.ActivationTypeChoice != nil {
@@ -1982,6 +2382,9 @@ func (this *GlobalSpecType) GoString() string {
 	s = append(s, "Deprecated: "+fmt.Sprintf("%#v", this.Deprecated)+",\n")
 	if this.ServiceUsageType != nil {
 		s = append(s, "ServiceUsageType: "+fmt.Sprintf("%#v", this.ServiceUsageType)+",\n")
+	}
+	if this.EntitlementConfig != nil {
+		s = append(s, "EntitlementConfig: "+fmt.Sprintf("%#v", this.EntitlementConfig)+",\n")
 	}
 	s = append(s, "}")
 	return strings.Join(s, "")
@@ -2044,11 +2447,78 @@ func (this *UsageType) GoString() string {
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
+func (this *EntitlementConfig) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&addon_service.EntitlementConfig{")
+	keysForEntitlementFeatures := make([]string, 0, len(this.EntitlementFeatures))
+	for k, _ := range this.EntitlementFeatures {
+		keysForEntitlementFeatures = append(keysForEntitlementFeatures, k)
+	}
+	github_com_gogo_protobuf_sortkeys.Strings(keysForEntitlementFeatures)
+	mapStringForEntitlementFeatures := "map[string]*EntitlementFeatureDetails{"
+	for _, k := range keysForEntitlementFeatures {
+		mapStringForEntitlementFeatures += fmt.Sprintf("%#v: %#v,", k, this.EntitlementFeatures[k])
+	}
+	mapStringForEntitlementFeatures += "}"
+	if this.EntitlementFeatures != nil {
+		s = append(s, "EntitlementFeatures: "+mapStringForEntitlementFeatures+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *EntitlementFeatureDetails) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 6)
+	s = append(s, "&addon_service.EntitlementFeatureDetails{")
+	s = append(s, "UsageType: "+fmt.Sprintf("%#v", this.UsageType)+",\n")
+	if this.QuotaMapping != nil {
+		s = append(s, "QuotaMapping: "+fmt.Sprintf("%#v", this.QuotaMapping)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *QuotaMapping) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&addon_service.QuotaMapping{")
+	keysForObjectLimits := make([]string, 0, len(this.ObjectLimits))
+	for k, _ := range this.ObjectLimits {
+		keysForObjectLimits = append(keysForObjectLimits, k)
+	}
+	github_com_gogo_protobuf_sortkeys.Strings(keysForObjectLimits)
+	mapStringForObjectLimits := "map[string]*Formula{"
+	for _, k := range keysForObjectLimits {
+		mapStringForObjectLimits += fmt.Sprintf("%#v: %#v,", k, this.ObjectLimits[k])
+	}
+	mapStringForObjectLimits += "}"
+	if this.ObjectLimits != nil {
+		s = append(s, "ObjectLimits: "+mapStringForObjectLimits+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *Formula) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&addon_service.Formula{")
+	s = append(s, "Operator: "+fmt.Sprintf("%#v", this.Operator)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
 func (this *GetSpecType) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 13)
+	s := make([]string, 0, 14)
 	s = append(s, "&addon_service.GetSpecType{")
 	s = append(s, "DisplayName: "+fmt.Sprintf("%#v", this.DisplayName)+",\n")
 	if this.ActivationTypeChoice != nil {
@@ -2065,6 +2535,9 @@ func (this *GetSpecType) GoString() string {
 	}
 	s = append(s, "Tags: "+fmt.Sprintf("%#v", this.Tags)+",\n")
 	s = append(s, "Tier: "+fmt.Sprintf("%#v", this.Tier)+",\n")
+	if this.EntitlementConfig != nil {
+		s = append(s, "EntitlementConfig: "+fmt.Sprintf("%#v", this.EntitlementConfig)+",\n")
+	}
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
@@ -2483,6 +2956,20 @@ func (m *GlobalSpecType) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.EntitlementConfig != nil {
+		{
+			size, err := m.EntitlementConfig.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTypes(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0x82
+	}
 	if m.ServiceUsageType != nil {
 		{
 			size, err := m.ServiceUsageType.MarshalToSizedBuffer(dAtA[:i])
@@ -2511,20 +2998,20 @@ func (m *GlobalSpecType) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		dAtA[i] = 0x68
 	}
 	if len(m.Tags) > 0 {
-		dAtA12 := make([]byte, len(m.Tags)*10)
-		var j11 int
+		dAtA13 := make([]byte, len(m.Tags)*10)
+		var j12 int
 		for _, num := range m.Tags {
 			for num >= 1<<7 {
-				dAtA12[j11] = uint8(uint64(num)&0x7f | 0x80)
+				dAtA13[j12] = uint8(uint64(num)&0x7f | 0x80)
 				num >>= 7
-				j11++
+				j12++
 			}
-			dAtA12[j11] = uint8(num)
-			j11++
+			dAtA13[j12] = uint8(num)
+			j12++
 		}
-		i -= j11
-		copy(dAtA[i:], dAtA12[:j11])
-		i = encodeVarintTypes(dAtA, i, uint64(j11))
+		i -= j12
+		copy(dAtA[i:], dAtA13[:j12])
+		i = encodeVarintTypes(dAtA, i, uint64(j12))
 		i--
 		dAtA[i] = 0x62
 	}
@@ -2784,6 +3271,184 @@ func (m *UsageType) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *EntitlementConfig) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *EntitlementConfig) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *EntitlementConfig) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.EntitlementFeatures) > 0 {
+		keysForEntitlementFeatures := make([]string, 0, len(m.EntitlementFeatures))
+		for k := range m.EntitlementFeatures {
+			keysForEntitlementFeatures = append(keysForEntitlementFeatures, string(k))
+		}
+		github_com_gogo_protobuf_sortkeys.Strings(keysForEntitlementFeatures)
+		for iNdEx := len(keysForEntitlementFeatures) - 1; iNdEx >= 0; iNdEx-- {
+			v := m.EntitlementFeatures[string(keysForEntitlementFeatures[iNdEx])]
+			baseI := i
+			if v != nil {
+				{
+					size, err := v.MarshalToSizedBuffer(dAtA[:i])
+					if err != nil {
+						return 0, err
+					}
+					i -= size
+					i = encodeVarintTypes(dAtA, i, uint64(size))
+				}
+				i--
+				dAtA[i] = 0x12
+			}
+			i -= len(keysForEntitlementFeatures[iNdEx])
+			copy(dAtA[i:], keysForEntitlementFeatures[iNdEx])
+			i = encodeVarintTypes(dAtA, i, uint64(len(keysForEntitlementFeatures[iNdEx])))
+			i--
+			dAtA[i] = 0xa
+			i = encodeVarintTypes(dAtA, i, uint64(baseI-i))
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *EntitlementFeatureDetails) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *EntitlementFeatureDetails) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *EntitlementFeatureDetails) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.QuotaMapping != nil {
+		{
+			size, err := m.QuotaMapping.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTypes(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.UsageType) > 0 {
+		i -= len(m.UsageType)
+		copy(dAtA[i:], m.UsageType)
+		i = encodeVarintTypes(dAtA, i, uint64(len(m.UsageType)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QuotaMapping) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QuotaMapping) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QuotaMapping) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.ObjectLimits) > 0 {
+		keysForObjectLimits := make([]string, 0, len(m.ObjectLimits))
+		for k := range m.ObjectLimits {
+			keysForObjectLimits = append(keysForObjectLimits, string(k))
+		}
+		github_com_gogo_protobuf_sortkeys.Strings(keysForObjectLimits)
+		for iNdEx := len(keysForObjectLimits) - 1; iNdEx >= 0; iNdEx-- {
+			v := m.ObjectLimits[string(keysForObjectLimits[iNdEx])]
+			baseI := i
+			if v != nil {
+				{
+					size, err := v.MarshalToSizedBuffer(dAtA[:i])
+					if err != nil {
+						return 0, err
+					}
+					i -= size
+					i = encodeVarintTypes(dAtA, i, uint64(size))
+				}
+				i--
+				dAtA[i] = 0x12
+			}
+			i -= len(keysForObjectLimits[iNdEx])
+			copy(dAtA[i:], keysForObjectLimits[iNdEx])
+			i = encodeVarintTypes(dAtA, i, uint64(len(keysForObjectLimits[iNdEx])))
+			i--
+			dAtA[i] = 0xa
+			i = encodeVarintTypes(dAtA, i, uint64(baseI-i))
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *Formula) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Formula) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Formula) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Operator != 0 {
+		i = encodeVarintTypes(dAtA, i, uint64(m.Operator))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
 func (m *GetSpecType) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -2804,26 +3469,40 @@ func (m *GetSpecType) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.EntitlementConfig != nil {
+		{
+			size, err := m.EntitlementConfig.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTypes(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0x82
+	}
 	if m.Tier != 0 {
 		i = encodeVarintTypes(dAtA, i, uint64(m.Tier))
 		i--
 		dAtA[i] = 0x68
 	}
 	if len(m.Tags) > 0 {
-		dAtA18 := make([]byte, len(m.Tags)*10)
-		var j17 int
+		dAtA23 := make([]byte, len(m.Tags)*10)
+		var j22 int
 		for _, num := range m.Tags {
 			for num >= 1<<7 {
-				dAtA18[j17] = uint8(uint64(num)&0x7f | 0x80)
+				dAtA23[j22] = uint8(uint64(num)&0x7f | 0x80)
 				num >>= 7
-				j17++
+				j22++
 			}
-			dAtA18[j17] = uint8(num)
-			j17++
+			dAtA23[j22] = uint8(num)
+			j22++
 		}
-		i -= j17
-		copy(dAtA[i:], dAtA18[:j17])
-		i = encodeVarintTypes(dAtA, i, uint64(j17))
+		i -= j22
+		copy(dAtA[i:], dAtA23[:j22])
+		i = encodeVarintTypes(dAtA, i, uint64(j22))
 		i--
 		dAtA[i] = 0x62
 	}
@@ -3185,6 +3864,10 @@ func (m *GlobalSpecType) Size() (n int) {
 		l = m.ServiceUsageType.Size()
 		n += 1 + l + sovTypes(uint64(l))
 	}
+	if m.EntitlementConfig != nil {
+		l = m.EntitlementConfig.Size()
+		n += 2 + l + sovTypes(uint64(l))
+	}
 	return n
 }
 
@@ -3267,6 +3950,79 @@ func (m *UsageType) Size() (n int) {
 	return n
 }
 
+func (m *EntitlementConfig) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.EntitlementFeatures) > 0 {
+		for k, v := range m.EntitlementFeatures {
+			_ = k
+			_ = v
+			l = 0
+			if v != nil {
+				l = v.Size()
+				l += 1 + sovTypes(uint64(l))
+			}
+			mapEntrySize := 1 + len(k) + sovTypes(uint64(len(k))) + l
+			n += mapEntrySize + 1 + sovTypes(uint64(mapEntrySize))
+		}
+	}
+	return n
+}
+
+func (m *EntitlementFeatureDetails) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.UsageType)
+	if l > 0 {
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	if m.QuotaMapping != nil {
+		l = m.QuotaMapping.Size()
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	return n
+}
+
+func (m *QuotaMapping) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.ObjectLimits) > 0 {
+		for k, v := range m.ObjectLimits {
+			_ = k
+			_ = v
+			l = 0
+			if v != nil {
+				l = v.Size()
+				l += 1 + sovTypes(uint64(l))
+			}
+			mapEntrySize := 1 + len(k) + sovTypes(uint64(len(k))) + l
+			n += mapEntrySize + 1 + sovTypes(uint64(mapEntrySize))
+		}
+	}
+	return n
+}
+
+func (m *Formula) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Operator != 0 {
+		n += 1 + sovTypes(uint64(m.Operator))
+	}
+	return n
+}
+
 func (m *GetSpecType) Size() (n int) {
 	if m == nil {
 		return 0
@@ -3307,6 +4063,10 @@ func (m *GetSpecType) Size() (n int) {
 	}
 	if m.Tier != 0 {
 		n += 1 + sovTypes(uint64(m.Tier))
+	}
+	if m.EntitlementConfig != nil {
+		l = m.EntitlementConfig.Size()
+		n += 2 + l + sovTypes(uint64(l))
 	}
 	return n
 }
@@ -3515,6 +4275,7 @@ func (this *GlobalSpecType) String() string {
 		`Tier:` + fmt.Sprintf("%v", this.Tier) + `,`,
 		`Deprecated:` + fmt.Sprintf("%v", this.Deprecated) + `,`,
 		`ServiceUsageType:` + strings.Replace(this.ServiceUsageType.String(), "ServiceUsageType", "ServiceUsageType", 1) + `,`,
+		`EntitlementConfig:` + strings.Replace(this.EntitlementConfig.String(), "EntitlementConfig", "EntitlementConfig", 1) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -3581,6 +4342,67 @@ func (this *UsageType) String() string {
 	}, "")
 	return s
 }
+func (this *EntitlementConfig) String() string {
+	if this == nil {
+		return "nil"
+	}
+	keysForEntitlementFeatures := make([]string, 0, len(this.EntitlementFeatures))
+	for k, _ := range this.EntitlementFeatures {
+		keysForEntitlementFeatures = append(keysForEntitlementFeatures, k)
+	}
+	github_com_gogo_protobuf_sortkeys.Strings(keysForEntitlementFeatures)
+	mapStringForEntitlementFeatures := "map[string]*EntitlementFeatureDetails{"
+	for _, k := range keysForEntitlementFeatures {
+		mapStringForEntitlementFeatures += fmt.Sprintf("%v: %v,", k, this.EntitlementFeatures[k])
+	}
+	mapStringForEntitlementFeatures += "}"
+	s := strings.Join([]string{`&EntitlementConfig{`,
+		`EntitlementFeatures:` + mapStringForEntitlementFeatures + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *EntitlementFeatureDetails) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&EntitlementFeatureDetails{`,
+		`UsageType:` + fmt.Sprintf("%v", this.UsageType) + `,`,
+		`QuotaMapping:` + strings.Replace(this.QuotaMapping.String(), "QuotaMapping", "QuotaMapping", 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *QuotaMapping) String() string {
+	if this == nil {
+		return "nil"
+	}
+	keysForObjectLimits := make([]string, 0, len(this.ObjectLimits))
+	for k, _ := range this.ObjectLimits {
+		keysForObjectLimits = append(keysForObjectLimits, k)
+	}
+	github_com_gogo_protobuf_sortkeys.Strings(keysForObjectLimits)
+	mapStringForObjectLimits := "map[string]*Formula{"
+	for _, k := range keysForObjectLimits {
+		mapStringForObjectLimits += fmt.Sprintf("%v: %v,", k, this.ObjectLimits[k])
+	}
+	mapStringForObjectLimits += "}"
+	s := strings.Join([]string{`&QuotaMapping{`,
+		`ObjectLimits:` + mapStringForObjectLimits + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *Formula) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&Formula{`,
+		`Operator:` + fmt.Sprintf("%v", this.Operator) + `,`,
+		`}`,
+	}, "")
+	return s
+}
 func (this *GetSpecType) String() string {
 	if this == nil {
 		return "nil"
@@ -3608,6 +4430,7 @@ func (this *GetSpecType) String() string {
 		`IncludedServices:` + repeatedStringForIncludedServices + `,`,
 		`Tags:` + fmt.Sprintf("%v", this.Tags) + `,`,
 		`Tier:` + fmt.Sprintf("%v", this.Tier) + `,`,
+		`EntitlementConfig:` + strings.Replace(this.EntitlementConfig.String(), "EntitlementConfig", "EntitlementConfig", 1) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -4960,6 +5783,42 @@ func (m *GlobalSpecType) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		case 16:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EntitlementConfig", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.EntitlementConfig == nil {
+				m.EntitlementConfig = &EntitlementConfig{}
+			}
+			if err := m.EntitlementConfig.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTypes(dAtA[iNdEx:])
@@ -5291,6 +6150,563 @@ func (m *UsageType) Unmarshal(dAtA []byte) error {
 			}
 			m.Unit = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTypes(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *EntitlementConfig) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTypes
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: EntitlementConfig: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: EntitlementConfig: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EntitlementFeatures", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.EntitlementFeatures == nil {
+				m.EntitlementFeatures = make(map[string]*EntitlementFeatureDetails)
+			}
+			var mapkey string
+			var mapvalue *EntitlementFeatureDetails
+			for iNdEx < postIndex {
+				entryPreIndex := iNdEx
+				var wire uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowTypes
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					wire |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				fieldNum := int32(wire >> 3)
+				if fieldNum == 1 {
+					var stringLenmapkey uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowTypes
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapkey |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapkey := int(stringLenmapkey)
+					if intStringLenmapkey < 0 {
+						return ErrInvalidLengthTypes
+					}
+					postStringIndexmapkey := iNdEx + intStringLenmapkey
+					if postStringIndexmapkey < 0 {
+						return ErrInvalidLengthTypes
+					}
+					if postStringIndexmapkey > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
+					iNdEx = postStringIndexmapkey
+				} else if fieldNum == 2 {
+					var mapmsglen int
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowTypes
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						mapmsglen |= int(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					if mapmsglen < 0 {
+						return ErrInvalidLengthTypes
+					}
+					postmsgIndex := iNdEx + mapmsglen
+					if postmsgIndex < 0 {
+						return ErrInvalidLengthTypes
+					}
+					if postmsgIndex > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapvalue = &EntitlementFeatureDetails{}
+					if err := mapvalue.Unmarshal(dAtA[iNdEx:postmsgIndex]); err != nil {
+						return err
+					}
+					iNdEx = postmsgIndex
+				} else {
+					iNdEx = entryPreIndex
+					skippy, err := skipTypes(dAtA[iNdEx:])
+					if err != nil {
+						return err
+					}
+					if skippy < 0 {
+						return ErrInvalidLengthTypes
+					}
+					if (iNdEx + skippy) > postIndex {
+						return io.ErrUnexpectedEOF
+					}
+					iNdEx += skippy
+				}
+			}
+			m.EntitlementFeatures[mapkey] = mapvalue
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTypes(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *EntitlementFeatureDetails) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTypes
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: EntitlementFeatureDetails: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: EntitlementFeatureDetails: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field UsageType", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.UsageType = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field QuotaMapping", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.QuotaMapping == nil {
+				m.QuotaMapping = &QuotaMapping{}
+			}
+			if err := m.QuotaMapping.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTypes(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QuotaMapping) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTypes
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QuotaMapping: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QuotaMapping: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ObjectLimits", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.ObjectLimits == nil {
+				m.ObjectLimits = make(map[string]*Formula)
+			}
+			var mapkey string
+			var mapvalue *Formula
+			for iNdEx < postIndex {
+				entryPreIndex := iNdEx
+				var wire uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowTypes
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					wire |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				fieldNum := int32(wire >> 3)
+				if fieldNum == 1 {
+					var stringLenmapkey uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowTypes
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapkey |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapkey := int(stringLenmapkey)
+					if intStringLenmapkey < 0 {
+						return ErrInvalidLengthTypes
+					}
+					postStringIndexmapkey := iNdEx + intStringLenmapkey
+					if postStringIndexmapkey < 0 {
+						return ErrInvalidLengthTypes
+					}
+					if postStringIndexmapkey > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
+					iNdEx = postStringIndexmapkey
+				} else if fieldNum == 2 {
+					var mapmsglen int
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowTypes
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						mapmsglen |= int(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					if mapmsglen < 0 {
+						return ErrInvalidLengthTypes
+					}
+					postmsgIndex := iNdEx + mapmsglen
+					if postmsgIndex < 0 {
+						return ErrInvalidLengthTypes
+					}
+					if postmsgIndex > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapvalue = &Formula{}
+					if err := mapvalue.Unmarshal(dAtA[iNdEx:postmsgIndex]); err != nil {
+						return err
+					}
+					iNdEx = postmsgIndex
+				} else {
+					iNdEx = entryPreIndex
+					skippy, err := skipTypes(dAtA[iNdEx:])
+					if err != nil {
+						return err
+					}
+					if skippy < 0 {
+						return ErrInvalidLengthTypes
+					}
+					if (iNdEx + skippy) > postIndex {
+						return io.ErrUnexpectedEOF
+					}
+					iNdEx += skippy
+				}
+			}
+			m.ObjectLimits[mapkey] = mapvalue
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTypes(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Formula) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTypes
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Formula: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Formula: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Operator", wireType)
+			}
+			m.Operator = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Operator |= Operator(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTypes(dAtA[iNdEx:])
@@ -5671,6 +7087,42 @@ func (m *GetSpecType) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		case 16:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EntitlementConfig", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.EntitlementConfig == nil {
+				m.EntitlementConfig = &EntitlementConfig{}
+			}
+			if err := m.EntitlementConfig.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTypes(dAtA[iNdEx:])

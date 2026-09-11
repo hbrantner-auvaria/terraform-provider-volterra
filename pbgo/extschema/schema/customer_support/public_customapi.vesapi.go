@@ -75,6 +75,14 @@ func (c *CustomAPIGrpcClient) doRPCGetAttachment(ctx context.Context, yamlReq st
 	rsp, err := c.grpcClient.GetAttachment(ctx, req, opts...)
 	return rsp, err
 }
+func (c *CustomAPIGrpcClient) doRPCGetComments(ctx context.Context, yamlReq string, opts ...grpc.CallOption) (proto.Message, error) {
+	req := &GetCommentsRequest{}
+	if err := codec.FromYAML(yamlReq, req); err != nil {
+		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.customer_support.GetCommentsRequest", yamlReq)
+	}
+	rsp, err := c.grpcClient.GetComments(ctx, req, opts...)
+	return rsp, err
+}
 func (c *CustomAPIGrpcClient) doRPCListCTSupportTickets(ctx context.Context, yamlReq string, opts ...grpc.CallOption) (proto.Message, error) {
 	req := &ListSupportRequest{}
 	if err := codec.FromYAML(yamlReq, req); err != nil {
@@ -89,14 +97,6 @@ func (c *CustomAPIGrpcClient) doRPCPriority(ctx context.Context, yamlReq string,
 		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.customer_support.PriorityRequest", yamlReq)
 	}
 	rsp, err := c.grpcClient.Priority(ctx, req, opts...)
-	return rsp, err
-}
-func (c *CustomAPIGrpcClient) doRPCRaiseTaxExemptVerificationSupportTicket(ctx context.Context, yamlReq string, opts ...grpc.CallOption) (proto.Message, error) {
-	req := &RaiseTaxExemptVerificationSupportTicketRequest{}
-	if err := codec.FromYAML(yamlReq, req); err != nil {
-		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.customer_support.RaiseTaxExemptVerificationSupportTicketRequest", yamlReq)
-	}
-	rsp, err := c.grpcClient.RaiseTaxExemptVerificationSupportTicket(ctx, req, opts...)
 	return rsp, err
 }
 func (c *CustomAPIGrpcClient) doRPCReopen(ctx context.Context, yamlReq string, opts ...grpc.CallOption) (proto.Message, error) {
@@ -143,9 +143,9 @@ func NewCustomAPIGrpcClient(cc *grpc.ClientConn) server.CustomClient {
 	rpcFns["Comment"] = ccl.doRPCComment
 	rpcFns["Escalate"] = ccl.doRPCEscalate
 	rpcFns["GetAttachment"] = ccl.doRPCGetAttachment
+	rpcFns["GetComments"] = ccl.doRPCGetComments
 	rpcFns["ListCTSupportTickets"] = ccl.doRPCListCTSupportTickets
 	rpcFns["Priority"] = ccl.doRPCPriority
-	rpcFns["RaiseTaxExemptVerificationSupportTicket"] = ccl.doRPCRaiseTaxExemptVerificationSupportTicket
 	rpcFns["Reopen"] = ccl.doRPCReopen
 	ccl.rpcFns = rpcFns
 	return ccl
@@ -582,6 +582,88 @@ func (c *CustomAPIRestClient) doRPCGetAttachment(ctx context.Context, callOpts *
 	}
 	return pbRsp, nil
 }
+func (c *CustomAPIRestClient) doRPCGetComments(ctx context.Context, callOpts *server.CustomCallOpts) (proto.Message, error) {
+	if callOpts.URI == "" {
+		return nil, fmt.Errorf("Error, URI should be specified, got empty")
+	}
+	url := fmt.Sprintf("%s%s", c.baseURL, callOpts.URI)
+
+	yamlReq := callOpts.YAMLReq
+	req := &GetCommentsRequest{}
+	if err := codec.FromYAML(yamlReq, req); err != nil {
+		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.customer_support.GetCommentsRequest: %s", yamlReq, err)
+	}
+
+	var hReq *http.Request
+	hm := strings.ToLower(callOpts.HTTPMethod)
+	switch hm {
+	case "post", "put":
+		jsn, err := codec.ToJSON(req, codec.ToWithUseProtoFieldName())
+		if err != nil {
+			return nil, errors.Wrap(err, "Custom RestClient converting YAML to JSON")
+		}
+		var op string
+		if hm == "post" {
+			op = http.MethodPost
+		} else {
+			op = http.MethodPut
+		}
+		newReq, err := http.NewRequest(op, url, bytes.NewBuffer([]byte(jsn)))
+		if err != nil {
+			return nil, errors.Wrapf(err, "Creating new HTTP %s request for custom API", op)
+		}
+		hReq = newReq
+	case "get":
+		newReq, err := http.NewRequest(http.MethodGet, url, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "Creating new HTTP GET request for custom API")
+		}
+		hReq = newReq
+		q := hReq.URL.Query()
+		_ = q
+		q.Add("created_until_timestamp", fmt.Sprintf("%v", req.CreatedUntilTimestamp))
+		q.Add("name", fmt.Sprintf("%v", req.Name))
+
+		hReq.URL.RawQuery += q.Encode()
+	case "delete":
+		newReq, err := http.NewRequest(http.MethodDelete, url, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "Creating new HTTP DELETE request for custom API")
+		}
+		hReq = newReq
+	default:
+		return nil, fmt.Errorf("Error, invalid/empty HTTPMethod(%s) specified, should be POST|DELETE|GET", callOpts.HTTPMethod)
+	}
+	hReq = hReq.WithContext(ctx)
+	hReq.Header.Set("Content-Type", "application/json")
+	client.AddHdrsToReq(callOpts.Headers, hReq)
+
+	rsp, err := c.client.Do(hReq)
+	if err != nil {
+		return nil, errors.Wrap(err, "Custom API RestClient")
+	}
+	defer rsp.Body.Close()
+
+	// checking whether the status code is a successful status code (2xx series)
+	if rsp.StatusCode < 200 || rsp.StatusCode > 299 {
+		body, err := io.ReadAll(rsp.Body)
+		return nil, fmt.Errorf("Unsuccessful custom API %s on %s, status code %d, body %s, err %s", callOpts.HTTPMethod, callOpts.URI, rsp.StatusCode, body, err)
+	}
+
+	body, err := io.ReadAll(rsp.Body)
+	if err != nil {
+		return nil, errors.Wrap(err, "Custom API RestClient read body")
+	}
+	pbRsp := &GetCommentsResponse{}
+	if err := codec.FromJSON(string(body), pbRsp); err != nil {
+		return nil, errors.Wrapf(err, "JSON Response %s is not of type *ves.io.schema.customer_support.GetCommentsResponse", body)
+	}
+	if callOpts.OutCallResponse != nil {
+		callOpts.OutCallResponse.ProtoMsg = pbRsp
+		callOpts.OutCallResponse.JSON = string(body)
+	}
+	return pbRsp, nil
+}
 func (c *CustomAPIRestClient) doRPCListCTSupportTickets(ctx context.Context, callOpts *server.CustomCallOpts) (proto.Message, error) {
 	if callOpts.URI == "" {
 		return nil, fmt.Errorf("Error, URI should be specified, got empty")
@@ -751,90 +833,6 @@ func (c *CustomAPIRestClient) doRPCPriority(ctx context.Context, callOpts *serve
 	}
 	return pbRsp, nil
 }
-func (c *CustomAPIRestClient) doRPCRaiseTaxExemptVerificationSupportTicket(ctx context.Context, callOpts *server.CustomCallOpts) (proto.Message, error) {
-	if callOpts.URI == "" {
-		return nil, fmt.Errorf("Error, URI should be specified, got empty")
-	}
-	url := fmt.Sprintf("%s%s", c.baseURL, callOpts.URI)
-
-	yamlReq := callOpts.YAMLReq
-	req := &RaiseTaxExemptVerificationSupportTicketRequest{}
-	if err := codec.FromYAML(yamlReq, req); err != nil {
-		return nil, fmt.Errorf("YAML Request %s is not of type *ves.io.schema.customer_support.RaiseTaxExemptVerificationSupportTicketRequest: %s", yamlReq, err)
-	}
-
-	var hReq *http.Request
-	hm := strings.ToLower(callOpts.HTTPMethod)
-	switch hm {
-	case "post", "put":
-		jsn, err := codec.ToJSON(req, codec.ToWithUseProtoFieldName())
-		if err != nil {
-			return nil, errors.Wrap(err, "Custom RestClient converting YAML to JSON")
-		}
-		var op string
-		if hm == "post" {
-			op = http.MethodPost
-		} else {
-			op = http.MethodPut
-		}
-		newReq, err := http.NewRequest(op, url, bytes.NewBuffer([]byte(jsn)))
-		if err != nil {
-			return nil, errors.Wrapf(err, "Creating new HTTP %s request for custom API", op)
-		}
-		hReq = newReq
-	case "get":
-		newReq, err := http.NewRequest(http.MethodGet, url, nil)
-		if err != nil {
-			return nil, errors.Wrap(err, "Creating new HTTP GET request for custom API")
-		}
-		hReq = newReq
-		q := hReq.URL.Query()
-		_ = q
-		for _, item := range req.Attachments {
-			q.Add("attachments", fmt.Sprintf("%v", item))
-		}
-		q.Add("request_description", fmt.Sprintf("%v", req.RequestDescription))
-
-		hReq.URL.RawQuery += q.Encode()
-	case "delete":
-		newReq, err := http.NewRequest(http.MethodDelete, url, nil)
-		if err != nil {
-			return nil, errors.Wrap(err, "Creating new HTTP DELETE request for custom API")
-		}
-		hReq = newReq
-	default:
-		return nil, fmt.Errorf("Error, invalid/empty HTTPMethod(%s) specified, should be POST|DELETE|GET", callOpts.HTTPMethod)
-	}
-	hReq = hReq.WithContext(ctx)
-	hReq.Header.Set("Content-Type", "application/json")
-	client.AddHdrsToReq(callOpts.Headers, hReq)
-
-	rsp, err := c.client.Do(hReq)
-	if err != nil {
-		return nil, errors.Wrap(err, "Custom API RestClient")
-	}
-	defer rsp.Body.Close()
-
-	// checking whether the status code is a successful status code (2xx series)
-	if rsp.StatusCode < 200 || rsp.StatusCode > 299 {
-		body, err := io.ReadAll(rsp.Body)
-		return nil, fmt.Errorf("Unsuccessful custom API %s on %s, status code %d, body %s, err %s", callOpts.HTTPMethod, callOpts.URI, rsp.StatusCode, body, err)
-	}
-
-	body, err := io.ReadAll(rsp.Body)
-	if err != nil {
-		return nil, errors.Wrap(err, "Custom API RestClient read body")
-	}
-	pbRsp := &RaiseTaxExemptVerificationSupportTicketResponse{}
-	if err := codec.FromJSON(string(body), pbRsp); err != nil {
-		return nil, errors.Wrapf(err, "JSON Response %s is not of type *ves.io.schema.customer_support.RaiseTaxExemptVerificationSupportTicketResponse", body)
-	}
-	if callOpts.OutCallResponse != nil {
-		callOpts.OutCallResponse.ProtoMsg = pbRsp
-		callOpts.OutCallResponse.JSON = string(body)
-	}
-	return pbRsp, nil
-}
 func (c *CustomAPIRestClient) doRPCReopen(ctx context.Context, callOpts *server.CustomCallOpts) (proto.Message, error) {
 	if callOpts.URI == "" {
 		return nil, fmt.Errorf("Error, URI should be specified, got empty")
@@ -947,9 +945,9 @@ func NewCustomAPIRestClient(baseURL string, hc http.Client) server.CustomClient 
 	rpcFns["Comment"] = ccl.doRPCComment
 	rpcFns["Escalate"] = ccl.doRPCEscalate
 	rpcFns["GetAttachment"] = ccl.doRPCGetAttachment
+	rpcFns["GetComments"] = ccl.doRPCGetComments
 	rpcFns["ListCTSupportTickets"] = ccl.doRPCListCTSupportTickets
 	rpcFns["Priority"] = ccl.doRPCPriority
-	rpcFns["RaiseTaxExemptVerificationSupportTicket"] = ccl.doRPCRaiseTaxExemptVerificationSupportTicket
 	rpcFns["Reopen"] = ccl.doRPCReopen
 	ccl.rpcFns = rpcFns
 	return ccl
@@ -982,6 +980,10 @@ func (c *customAPIInprocClient) GetAttachment(ctx context.Context, in *GetAttach
 	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.customer_support.CustomAPI.GetAttachment")
 	return c.CustomAPIServer.GetAttachment(ctx, in)
 }
+func (c *customAPIInprocClient) GetComments(ctx context.Context, in *GetCommentsRequest, opts ...grpc.CallOption) (*GetCommentsResponse, error) {
+	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.customer_support.CustomAPI.GetComments")
+	return c.CustomAPIServer.GetComments(ctx, in)
+}
 func (c *customAPIInprocClient) ListCTSupportTickets(ctx context.Context, in *ListSupportRequest, opts ...grpc.CallOption) (*ListSupportResponse, error) {
 	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.customer_support.CustomAPI.ListCTSupportTickets")
 	return c.CustomAPIServer.ListCTSupportTickets(ctx, in)
@@ -989,10 +991,6 @@ func (c *customAPIInprocClient) ListCTSupportTickets(ctx context.Context, in *Li
 func (c *customAPIInprocClient) Priority(ctx context.Context, in *PriorityRequest, opts ...grpc.CallOption) (*PriorityResponse, error) {
 	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.customer_support.CustomAPI.Priority")
 	return c.CustomAPIServer.Priority(ctx, in)
-}
-func (c *customAPIInprocClient) RaiseTaxExemptVerificationSupportTicket(ctx context.Context, in *RaiseTaxExemptVerificationSupportTicketRequest, opts ...grpc.CallOption) (*RaiseTaxExemptVerificationSupportTicketResponse, error) {
-	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.customer_support.CustomAPI.RaiseTaxExemptVerificationSupportTicket")
-	return c.CustomAPIServer.RaiseTaxExemptVerificationSupportTicket(ctx, in)
 }
 func (c *customAPIInprocClient) Reopen(ctx context.Context, in *ReopenRequest, opts ...grpc.CallOption) (*ReopenResponse, error) {
 	ctx = server.ContextWithRpcFQN(ctx, "ves.io.schema.customer_support.CustomAPI.Reopen")
@@ -1260,6 +1258,54 @@ func (s *customAPISrv) GetAttachment(ctx context.Context, in *GetAttachmentReque
 
 	return rsp, nil
 }
+func (s *customAPISrv) GetComments(ctx context.Context, in *GetCommentsRequest) (*GetCommentsResponse, error) {
+	ah := s.svc.GetAPIHandler("ves.io.schema.customer_support.CustomAPI")
+	cah, ok := ah.(CustomAPIServer)
+	if !ok {
+		return nil, fmt.Errorf("ah %v is not of type *CustomAPIServer", ah)
+	}
+
+	var (
+		rsp *GetCommentsResponse
+		err error
+	)
+
+	bodyFields := svcfw.GenAuditReqBodyFields(ctx, s.svc, "ves.io.schema.customer_support.GetCommentsRequest", in)
+	defer func() {
+		if len(bodyFields) > 0 {
+			server.ExtendAPIAudit(ctx, svcfw.PublicAPIBodyLog.Uid, bodyFields)
+		}
+		userMsg := "The 'CustomAPI.GetComments' operation on 'customer_support'"
+		if err == nil {
+			userMsg += " was successfully performed."
+		} else {
+			userMsg += " failed to be performed."
+		}
+		server.AddUserMsgToAPIAudit(ctx, userMsg)
+	}()
+
+	if err := svcfw.FillOneofDefaultChoice(ctx, s.svc, in); err != nil {
+		err = server.MaybePublicRestError(ctx, errors.Wrapf(err, "Filling oneof default choice"))
+		return nil, server.GRPCStatusFromError(err).Err()
+	}
+
+	if s.svc.Config().EnableAPIValidation {
+		if rvFn := s.svc.GetRPCValidator("ves.io.schema.customer_support.CustomAPI.GetComments"); rvFn != nil {
+			if verr := rvFn(ctx, in); verr != nil {
+				err = server.MaybePublicRestError(ctx, errors.Wrapf(verr, "Validating Request"))
+				return nil, server.GRPCStatusFromError(err).Err()
+			}
+		}
+	}
+
+	rsp, err = cah.GetComments(ctx, in)
+	if err != nil {
+		return rsp, server.GRPCStatusFromError(server.MaybePublicRestError(ctx, err)).Err()
+	}
+	bodyFields = append(bodyFields, svcfw.GenAuditRspBodyFields(ctx, s.svc, "ves.io.schema.customer_support.GetCommentsResponse", rsp)...)
+
+	return rsp, nil
+}
 func (s *customAPISrv) ListCTSupportTickets(ctx context.Context, in *ListSupportRequest) (*ListSupportResponse, error) {
 	ah := s.svc.GetAPIHandler("ves.io.schema.customer_support.CustomAPI")
 	cah, ok := ah.(CustomAPIServer)
@@ -1353,54 +1399,6 @@ func (s *customAPISrv) Priority(ctx context.Context, in *PriorityRequest) (*Prio
 		return rsp, server.GRPCStatusFromError(server.MaybePublicRestError(ctx, err)).Err()
 	}
 	bodyFields = append(bodyFields, svcfw.GenAuditRspBodyFields(ctx, s.svc, "ves.io.schema.customer_support.PriorityResponse", rsp)...)
-
-	return rsp, nil
-}
-func (s *customAPISrv) RaiseTaxExemptVerificationSupportTicket(ctx context.Context, in *RaiseTaxExemptVerificationSupportTicketRequest) (*RaiseTaxExemptVerificationSupportTicketResponse, error) {
-	ah := s.svc.GetAPIHandler("ves.io.schema.customer_support.CustomAPI")
-	cah, ok := ah.(CustomAPIServer)
-	if !ok {
-		return nil, fmt.Errorf("ah %v is not of type *CustomAPIServer", ah)
-	}
-
-	var (
-		rsp *RaiseTaxExemptVerificationSupportTicketResponse
-		err error
-	)
-
-	bodyFields := svcfw.GenAuditReqBodyFields(ctx, s.svc, "ves.io.schema.customer_support.RaiseTaxExemptVerificationSupportTicketRequest", in)
-	defer func() {
-		if len(bodyFields) > 0 {
-			server.ExtendAPIAudit(ctx, svcfw.PublicAPIBodyLog.Uid, bodyFields)
-		}
-		userMsg := "The 'CustomAPI.RaiseTaxExemptVerificationSupportTicket' operation on 'customer_support'"
-		if err == nil {
-			userMsg += " was successfully performed."
-		} else {
-			userMsg += " failed to be performed."
-		}
-		server.AddUserMsgToAPIAudit(ctx, userMsg)
-	}()
-
-	if err := svcfw.FillOneofDefaultChoice(ctx, s.svc, in); err != nil {
-		err = server.MaybePublicRestError(ctx, errors.Wrapf(err, "Filling oneof default choice"))
-		return nil, server.GRPCStatusFromError(err).Err()
-	}
-
-	if s.svc.Config().EnableAPIValidation {
-		if rvFn := s.svc.GetRPCValidator("ves.io.schema.customer_support.CustomAPI.RaiseTaxExemptVerificationSupportTicket"); rvFn != nil {
-			if verr := rvFn(ctx, in); verr != nil {
-				err = server.MaybePublicRestError(ctx, errors.Wrapf(verr, "Validating Request"))
-				return nil, server.GRPCStatusFromError(err).Err()
-			}
-		}
-	}
-
-	rsp, err = cah.RaiseTaxExemptVerificationSupportTicket(ctx, in)
-	if err != nil {
-		return rsp, server.GRPCStatusFromError(server.MaybePublicRestError(ctx, err)).Err()
-	}
-	bodyFields = append(bodyFields, svcfw.GenAuditRspBodyFields(ctx, s.svc, "ves.io.schema.customer_support.RaiseTaxExemptVerificationSupportTicketResponse", rsp)...)
 
 	return rsp, nil
 }
@@ -1560,90 +1558,6 @@ var CustomAPISwaggerJSON string = `{
             "x-ves-proto-service": "ves.io.schema.customer_support.CustomAPI",
             "x-ves-proto-service-type": "CUSTOM_PUBLIC"
         },
-        "/public/namespaces/system/customer_support/tax_exempt_request": {
-            "post": {
-                "summary": "Tax exemption verification request",
-                "description": "Raises a tax exemption verification request. This will ultimately create a support ticket and assign it to our billing department.\nIf verified and approved then the customer will not be levied sale taxes.",
-                "operationId": "ves.io.schema.customer_support.CustomAPI.RaiseTaxExemptVerificationSupportTicket",
-                "responses": {
-                    "200": {
-                        "description": "A successful response.",
-                        "schema": {
-                            "$ref": "#/definitions/customer_supportRaiseTaxExemptVerificationSupportTicketResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Returned when operation is not authorized",
-                        "schema": {
-                            "format": "string"
-                        }
-                    },
-                    "403": {
-                        "description": "Returned when there is no permission to access resource",
-                        "schema": {
-                            "format": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Returned when resource is not found",
-                        "schema": {
-                            "format": "string"
-                        }
-                    },
-                    "409": {
-                        "description": "Returned when operation on resource is conflicting with current value",
-                        "schema": {
-                            "format": "string"
-                        }
-                    },
-                    "429": {
-                        "description": "Returned when operation has been rejected as it is happening too frequently",
-                        "schema": {
-                            "format": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Returned when server encountered an error in processing API",
-                        "schema": {
-                            "format": "string"
-                        }
-                    },
-                    "503": {
-                        "description": "Returned when service is unavailable temporarily",
-                        "schema": {
-                            "format": "string"
-                        }
-                    },
-                    "504": {
-                        "description": "Returned when server timed out processing request",
-                        "schema": {
-                            "format": "string"
-                        }
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/customer_supportRaiseTaxExemptVerificationSupportTicketRequest"
-                        }
-                    }
-                ],
-                "tags": [
-                    "CustomAPI"
-                ],
-                "externalDocs": {
-                    "description": "Examples of this operation",
-                    "url": "https://docs.cloud.f5.com/docs-v2/platform/reference/api-ref/ves-io-schema-customer_support-customapi-raisetaxexemptverificationsupportticket"
-                },
-                "x-ves-proto-rpc": "ves.io.schema.customer_support.CustomAPI.RaiseTaxExemptVerificationSupportTicket"
-            },
-            "x-displayname": "customer_support",
-            "x-ves-proto-service": "ves.io.schema.customer_support.CustomAPI",
-            "x-ves-proto-service-type": "CUSTOM_PUBLIC"
-        },
         "/public/namespaces/system/customer_support/{name}/comment/{comment_id}/attachment/{attachment_id}": {
             "get": {
                 "summary": "Get attachment",
@@ -1739,6 +1653,98 @@ var CustomAPISwaggerJSON string = `{
                     "url": "https://docs.cloud.f5.com/docs-v2/platform/reference/api-ref/ves-io-schema-customer_support-customapi-getattachment"
                 },
                 "x-ves-proto-rpc": "ves.io.schema.customer_support.CustomAPI.GetAttachment"
+            },
+            "x-displayname": "customer_support",
+            "x-ves-proto-service": "ves.io.schema.customer_support.CustomAPI",
+            "x-ves-proto-service-type": "CUSTOM_PUBLIC"
+        },
+        "/public/namespaces/system/customer_support/{name}/comments": {
+            "get": {
+                "summary": "Get comments",
+                "description": "Get comments for a given customer support ticket.",
+                "operationId": "ves.io.schema.customer_support.CustomAPI.GetComments",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/customer_supportGetCommentsResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Returned when operation is not authorized",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "Returned when there is no permission to access resource",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Returned when resource is not found",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Returned when operation on resource is conflicting with current value",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "429": {
+                        "description": "Returned when operation has been rejected as it is happening too frequently",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Returned when server encountered an error in processing API",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "503": {
+                        "description": "Returned when service is unavailable temporarily",
+                        "schema": {
+                            "format": "string"
+                        }
+                    },
+                    "504": {
+                        "description": "Returned when server timed out processing request",
+                        "schema": {
+                            "format": "string"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "name",
+                        "description": "name\n\nx-example: \"uid-82668f85-2e35-b8b9-dbc5-64cf63e0ab1d\"\nThe name (issue ID) of the customer support ticket object.",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "x-displayname": "Name"
+                    },
+                    {
+                        "name": "created_until_timestamp",
+                        "description": "x-example: \"2025-01-01T00:00:00Z\"\nFilter to retrieve comments created up to the specified timestamp.",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "x-displayname": "Created Until Timestamp"
+                    }
+                ],
+                "tags": [
+                    "CustomAPI"
+                ],
+                "externalDocs": {
+                    "description": "Examples of this operation",
+                    "url": "https://docs.cloud.f5.com/docs-v2/platform/reference/api-ref/ves-io-schema-customer_support-customapi-getcomments"
+                },
+                "x-ves-proto-rpc": "ves.io.schema.customer_support.CustomAPI.GetComments"
             },
             "x-displayname": "customer_support",
             "x-ves-proto-service": "ves.io.schema.customer_support.CustomAPI",
@@ -2629,6 +2635,31 @@ var CustomAPISwaggerJSON string = `{
                 }
             }
         },
+        "customer_supportGetCommentsResponse": {
+            "type": "object",
+            "description": "Response containing comments for a given customer support ticket.",
+            "title": "Get comments response",
+            "x-displayname": "Get customer support ticket comments response",
+            "x-ves-proto-message": "ves.io.schema.customer_support.GetCommentsResponse",
+            "properties": {
+                "all_comments_returned": {
+                    "type": "boolean",
+                    "description": " Indicates if all comments for the issue have been returned",
+                    "title": "all_comments_returned",
+                    "format": "boolean",
+                    "x-displayname": "All Comments Returned"
+                },
+                "comments": {
+                    "type": "array",
+                    "description": " List of comments on the customer support ticket.",
+                    "title": "comments",
+                    "items": {
+                        "$ref": "#/definitions/customer_supportCommentType"
+                    },
+                    "x-displayname": "Comments"
+                }
+            }
+        },
         "customer_supportListResponse": {
             "type": "object",
             "description": "This is the output message of 'List' RPC.",
@@ -2869,50 +2900,6 @@ var CustomAPISwaggerJSON string = `{
                 }
             }
         },
-        "customer_supportRaiseTaxExemptVerificationSupportTicketRequest": {
-            "type": "object",
-            "description": "Provides ability to request tax status of the customer, eventually flagging them as tax exempt (U.S. only)",
-            "title": "Request to verify customer tax exemption status",
-            "x-displayname": "Request to verify customer tax exemption status",
-            "x-ves-proto-message": "ves.io.schema.customer_support.RaiseTaxExemptVerificationSupportTicketRequest",
-            "properties": {
-                "attachments": {
-                    "type": "array",
-                    "description": " Information about any attachments (such as screenshots, plain text files) to support the tax exemption review request.",
-                    "title": "Attachments information",
-                    "items": {
-                        "$ref": "#/definitions/customer_supportAttachmentType"
-                    },
-                    "x-displayname": "Attachments details"
-                },
-                "request_description": {
-                    "type": "string",
-                    "description": " Description introducing reasons for tax exemption status verification\n\nExample: - \"requesting a tax exemption status review as we're a not-for-profit organisation\"-",
-                    "title": "Request description",
-                    "x-displayname": "Description",
-                    "x-ves-example": "requesting a tax exemption status review as we're a not-for-profit organisation"
-                }
-            }
-        },
-        "customer_supportRaiseTaxExemptVerificationSupportTicketResponse": {
-            "type": "object",
-            "description": "Any error that may occurred during tax status verification request. Note that the verification process itself takes\na lot of time (days) - this message only indicates the reception of the request",
-            "title": "Tax exemption status verification response",
-            "x-displayname": "Response to tax status verification call",
-            "x-ves-proto-message": "ves.io.schema.customer_support.RaiseTaxExemptVerificationSupportTicketResponse",
-            "properties": {
-                "err": {
-                    "description": " x-displayName : \"Error\"\n err gives specific reason if tax status verification couldn't be incepted",
-                    "title": "error code",
-                    "$ref": "#/definitions/schemacustomer_supportErrorCode"
-                },
-                "name": {
-                    "type": "string",
-                    "description": " x-displayName : \"Name\"\n name of the ticket created on the back of the request",
-                    "title": "name of ticket"
-                }
-            }
-        },
         "customer_supportReopenRequest": {
             "type": "object",
             "description": "Reopens a closed existing customer support ticket",
@@ -2988,15 +2975,13 @@ var CustomAPISwaggerJSON string = `{
         },
         "customer_supportSupportService": {
             "type": "string",
-            "description": "Indicates the list of support service\n\nUnknown Support Service\nAccount Protection Support Service\nAdministration Support Service\nApplication Traffic Insight Support Service\nAudit Logs \u0026 Alerts Support Service\nAuthentication Intelligence Support Service\nBilling Support Service\nClient Side Defense Support Service\nCloud \u0026 Edge Sites Support Service\ndeprecated: use SS_MULTI_CLOUD_NETWORK_CONNECT instead\nDDOS \u0026 Transit Support Service\nDeprecated: use SS_ROUTED_DDOS instead\nDistributed Apps Support Service\nDNS Management Support Service\nLoadBalancers Support Service\ndeprecated: use SS_MULTI_CLOUD_APP_CONNECT instead\nShared Configuration Support Service\nWeb App \u0026 API Protection Support Service\nOther Support Service\nBot Defense Support Service\nContent delivery network Support Service\nObservability Support Service\nDelegated Access Support Service\nNetworking \u0026 security across clouds, edge and on-premises\nConnect apps across clouds, edge and on-premises using Load Balancers\nData Intelligence Support Service\nNGINX One Support Service\nWeb App Scanning Support Service\nRouted DDoS Support Service\nMobile App Shield protects mobile apps from reverse engineering, tampering and malware\nDefault for deprecated services\nAutomation Support Service for Terraform Provider",
+            "description": "Indicates the list of support service\n\nUnknown Support Service\nAccount Protection Support Service\nAdministration Support Service\nApplication Traffic Insight Support Service\nAudit Logs \u0026 Alerts Support Service\nAuthentication Intelligence Support Service\nBilling Support Service\nClient Side Defense Support Service\nCloud \u0026 Edge Sites Support Service\ndeprecated: use SS_MULTI_CLOUD_NETWORK_CONNECT instead\nDDOS \u0026 Transit Support Service\nDeprecated: use SS_ROUTED_DDOS instead\nDistributed Apps Support Service\nDNS Management Support Service\nLoadBalancers Support Service\ndeprecated: use SS_MULTI_CLOUD_APP_CONNECT instead\nShared Configuration Support Service\nWeb App \u0026 API Protection Support Service\nOther Support Service\nBot Defense Support Service\nContent delivery network Support Service\nObservability Support Service\nDelegated Access Support Service\nNetworking \u0026 security across clouds, edge and on-premises\nConnect apps across clouds, edge and on-premises using Load Balancers\nData Intelligence Support Service\nNGINX One Support Service\nWeb App Scanning Support Service\nRouted DDoS Support Service\nMobile App Shield protects mobile apps from reverse engineering, tampering and malware\nDevice Intelligence Support Service\nDefault for deprecated services\nAutomation Support Service for Terraform Provider",
             "title": "SupportService",
             "enum": [
                 "SS_UNKNOWN",
-                "SS_ACCOUNT_PROTECTION",
                 "SS_ADMINISTRATION",
                 "SS_APPLICATION_TRAFFIC_INSIGHT",
                 "SS_AUDIT_LOGS_AND_ALERTS",
-                "SS_AUTHENTICATION_INTELLIGENCE",
                 "SS_BILLING",
                 "SS_CLIENT_SIDE_DEFENSE",
                 "SS_CLOUD_AND_EDGE_SITES",
@@ -3018,6 +3003,7 @@ var CustomAPISwaggerJSON string = `{
                 "SS_WEB_APP_SCANNING",
                 "SS_ROUTED_DDOS",
                 "SS_MOBILE_APP_SHIELD",
+                "SS_DEVICE_INTELLIGENCE",
                 "SS_DEPRECATED",
                 "SS_AUTOMATION"
             ],
@@ -3077,7 +3063,7 @@ var CustomAPISwaggerJSON string = `{
         },
         "customer_supportSupportTopic": {
             "type": "string",
-            "description": "Support Topic indicates the list of topics for service tickets\n\nUnknown/empty priority\nACCOUNT_SUPPORT_TOPIC_ACCESS_REQUEST\nACCOUNT_SUPPORT_TOPIC_ACCOUNT\nACCOUNT_SUPPORT_TOPIC_BILLING\nACCOUNT_SUPPORT_TOPIC_BILLING_PLAN_CHANGE\nACCOUNT_SUPPORT_TOPIC_PUBLIC_IP\nACCOUNT_SUPPORT_TOPIC_QUOTA_INCREASE\nACCOUNT_SUPPORT_TOPIC_RMA\nACCOUNT_SUPPORT_TOPIC_TAX_EXEMPT_VERIFICATION\nACCOUNT_SUPPORT_TOPIC_OTHERS\nTECHNICAL_SUPPORT_TOPIC_CONFIGURATION_CHANGES\nTECHNICAL_SUPPORT_TOPIC_ERROR_MESSAGE\nTECHNICAL_SUPPORT_TOPIC_NEW_CONFIGURATION\nTECHNICAL_SUPPORT_TOPIC_PRODUCT_QUESTION\nTECHNICAL_SUPPORT_TOPIC_TROUBLESHOOTING\nTECHNICAL_SUPPORT_TOPIC_OTHERS\nINCIDENT_SUPPORT_TOPIC_LATENCY\nINCIDENT_SUPPORT_TOPIC_PERFORMANCE_DEGRADATION\nINCIDENT_SUPPORT_TOPIC_PARTIAL_OUTAGE\nINCIDENT_SUPPORT_TOPIC_COMPLETE_OUTAGE\nINCIDENT_SUPPORT_TOPIC_OTHERS\nTASK_TOPIC_PLAN_TRANSITION\nPROBLEM_TOPIC_SUPPORT_ALERT\nQUESTION_TOPIC_INFRASTRUCTURE\nTECHNICAL_SUPPORT_TOPIC_DELEGATED_DOMAIN_MIGRATION\nTECHNICAL_SUPPORT_TOPIC_TERRAFORM_PROVIDER",
+            "description": "Support Topic indicates the list of topics for service tickets\n\nUnknown/empty priority\nACCOUNT_SUPPORT_TOPIC_ACCESS_REQUEST\nACCOUNT_SUPPORT_TOPIC_ACCOUNT\nACCOUNT_SUPPORT_TOPIC_BILLING\nACCOUNT_SUPPORT_TOPIC_BILLING_PLAN_CHANGE\nACCOUNT_SUPPORT_TOPIC_PUBLIC_IP\nACCOUNT_SUPPORT_TOPIC_QUOTA_INCREASE\nACCOUNT_SUPPORT_TOPIC_RMA\nACCOUNT_SUPPORT_TOPIC_TAX_EXEMPT_VERIFICATION\nACCOUNT_SUPPORT_TOPIC_OTHERS\nTECHNICAL_SUPPORT_TOPIC_CONFIGURATION_CHANGES\nTECHNICAL_SUPPORT_TOPIC_ERROR_MESSAGE\nTECHNICAL_SUPPORT_TOPIC_NEW_CONFIGURATION\nTECHNICAL_SUPPORT_TOPIC_PRODUCT_QUESTION\nTECHNICAL_SUPPORT_TOPIC_TROUBLESHOOTING\nTECHNICAL_SUPPORT_TOPIC_OTHERS\nINCIDENT_SUPPORT_TOPIC_LATENCY\nINCIDENT_SUPPORT_TOPIC_PERFORMANCE_DEGRADATION\nINCIDENT_SUPPORT_TOPIC_PARTIAL_OUTAGE\nINCIDENT_SUPPORT_TOPIC_COMPLETE_OUTAGE\nINCIDENT_SUPPORT_TOPIC_OTHERS\nTASK_TOPIC_PLAN_TRANSITION\nPROBLEM_TOPIC_SUPPORT_ALERT\nQUESTION_TOPIC_INFRASTRUCTURE\nTECHNICAL_SUPPORT_TOPIC_DELEGATED_DOMAIN_MIGRATION\nACCOUNT_SUPPORT_TOPIC_PUBLIC_IPv6\nACCOUNT_SUPPORT_TOPIC_DUALSTACK_IP\nTECHNICAL_SUPPORT_TOPIC_TERRAFORM_PROVIDER",
             "title": "SupportTopic",
             "enum": [
                 "TOPIC_UNKNOWN",
@@ -3105,6 +3091,8 @@ var CustomAPISwaggerJSON string = `{
                 "PROBLEM_TOPIC_SUPPORT_ALERT",
                 "QUESTION_TOPIC_INFRASTRUCTURE",
                 "TECHNICAL_SUPPORT_TOPIC_DELEGATED_DOMAIN_MIGRATION",
+                "ACCOUNT_SUPPORT_TOPIC_PUBLIC_IPV6",
+                "ACCOUNT_SUPPORT_TOPIC_PUBLIC_DUALSTACK_IP",
                 "TECHNICAL_SUPPORT_TOPIC_TERRAFORM_PROVIDER"
             ],
             "default": "TOPIC_UNKNOWN",

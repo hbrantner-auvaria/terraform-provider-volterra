@@ -26,7 +26,7 @@ resource "volterra_gcp_vpc_site" "example" {
     blocked_sevice {
       // One of the arguments from this list "dns ssh web_user_interface" can be set
 
-      web_user_interface = true
+      dns = true
 
       network_type = "network_type"
     }
@@ -48,45 +48,34 @@ resource "volterra_gcp_vpc_site" "example" {
 
   // One of the arguments from this list "private_connect_disabled private_connectivity" must be set
 
-  private_connect_disabled = true
+  private_connectivity {
+    cloud_link {
+      name      = "test1"
+      namespace = "staging"
+      tenant    = "acmecorp"
+    }
+
+    // One of the arguments from this list "inside outside" can be set
+
+    outside = true
+  }
 
   // One of the arguments from this list "ingress_egress_gw ingress_gw voltstack_cluster" must be set
 
-  voltstack_cluster {
-    // One of the arguments from this list "dc_cluster_group no_dc_cluster_group" must be set
+  ingress_gw {
+    gcp_certified_hw = "gcp-byol-voltmesh"
 
-    no_dc_cluster_group = true
-
-    // One of the arguments from this list "active_forward_proxy_policies forward_proxy_allow_all no_forward_proxy" must be set
-
-    no_forward_proxy = true
-    gcp_certified_hw = "gcp-byol-voltstack-combo"
     gcp_zone_names = ["us-west1-a, us-west1-b, us-west1-c"]
 
-    // One of the arguments from this list "global_network_list no_global_network" must be set
-
-    no_global_network = true
-
-    // One of the arguments from this list "k8s_cluster no_k8s_cluster" must be set
-
-    no_k8s_cluster = true
-
-    // One of the arguments from this list "active_enhanced_firewall_policies active_network_policies no_network_policy" must be set
-
-    no_network_policy = true
-    node_number = "1"
-
-    // One of the arguments from this list "no_outside_static_routes outside_static_routes" must be set
-
-    no_outside_static_routes = true
-    site_local_network {
+    local_network {
       // One of the arguments from this list "existing_network new_network new_network_autogenerate" must be set
 
       new_network_autogenerate {
         autogenerate = true
       }
     }
-    site_local_subnet {
+
+    local_subnet {
       // One of the arguments from this list "existing_subnet new_subnet" must be set
 
       new_subnet {
@@ -96,16 +85,21 @@ resource "volterra_gcp_vpc_site" "example" {
       }
     }
 
-    // One of the arguments from this list "sm_connection_public_ip sm_connection_pvt_ip" must be set
+    node_number = "1"
 
-    sm_connection_pvt_ip = true
+    performance_enhancement_mode {
+      // One of the arguments from this list "perf_mode_l3_enhanced perf_mode_l7_enhanced" must be set
 
-    // One of the arguments from this list "default_storage storage_class_list" must be set
+      perf_mode_l7_enhanced {
+        // One of the arguments from this list "jumbo_disabled jumbo_enabled" must be set
 
-    default_storage = true
+        jumbo_disabled = true
+      }
+    }
   }
   ssh_key = ["ssh-rsa AAAAB..."]
 }
+
 ```
 
 Argument Reference
@@ -193,6 +187,8 @@ Argument Reference
 
 `sw` - (Optional) F5XC Software Details. See [Sw ](#sw) below for details.
 
+`waf_signatures` - (Optional) Select WAF Signatures Update Mode for the site. By default, new signatures will be applied manually.. See [Waf Signatures ](#waf-signatures) below for details.
+
 ### Admin Password
 
 Admin password user for accessing site through serial console ..
@@ -270,6 +266,16 @@ F5XC Software Details.
 `default_sw_version` - (Optional) Will assign latest available F5XC Software Version (`Bool`).
 
 `volterra_software_version` - (Optional) Specify a F5XC Software Version to be used e.g. crt-20210329-1002. (`String`).
+
+### Waf Signatures
+
+Select WAF Signatures Update Mode for the site. By default, new signatures will be applied manually..
+
+###### One of the arguments from this list "automatic, manual" can be set
+
+`automatic` - (Optional) New WAF signatures will be applied automatically as soon as they are released. (`Bool`).
+
+`manual` - (Optional) New WAF signatures will only be applied when an update is triggered manually. (`Bool`).
 
 ### Admin Password Blindfold Secret Info Internal
 
@@ -416,6 +422,18 @@ List of route prefixes.
 ### Dc Cluster Group Choice No Dc Cluster Group
 
 This site is not a member of dc cluster group.
+
+### Dual Stack Ipv4
+
+IPv4 Address.
+
+`addr` - (Optional) IPv4 Address in string form with dot-decimal notation (`String`).
+
+### Dual Stack Ipv6
+
+IPv6 Address.
+
+`addr` - (Optional) e.g. '2001:db8:0:0:0:0:2:1' becomes '2001:db8::2:1' or '2001:db8:0:0:0:2:0:0' becomes '2001:db8::2::' (`String`).
 
 ### Enable Disable Choice Disable Interception
 
@@ -677,7 +695,9 @@ Firewall Policy is disabled for this site..
 
 Nexthop address when type is "Use-Configured".
 
-###### One of the arguments from this list "ipv4, ipv6" can be set
+###### One of the arguments from this list "dual_stack, ipv4, ipv6" can be set
+
+`dual_stack` - (Optional) Both IPv4 and IPv6 addresses are specified together. See [Ver Dual Stack ](#ver-dual-stack) below for details.
 
 `ipv4` - (Optional) IPv4 Address. See [Ver Ipv4 ](#ver-ipv4) below for details.
 
@@ -855,6 +875,14 @@ Secret is given as bootstrap secret in F5XC Security Sidecar.
 
 `name` - (Required) Name of the secret. (`String`).
 
+### Signatures Update Mode Choice Automatic
+
+New WAF signatures will be applied automatically as soon as they are released..
+
+### Signatures Update Mode Choice Manual
+
+New WAF signatures will only be applied when an update is triggered manually..
+
 ### Signing Cert Choice Custom Certificate
 
 Certificates for generating intermediate certificate for TLS interception..
@@ -975,7 +1003,7 @@ App Stack Cluster using single interface, useful for deploying K8s cluster..
 
 ###### One of the arguments from this list "dc_cluster_group, no_dc_cluster_group" must be set
 
-`dc_cluster_group`- (Optional) This site is member of dc cluster group connected via outside network. See [ref](#ref) below for details.
+`dc_cluster_group` - (Optional) This site is member of dc cluster group connected via outside network. See [ref](#ref) below for details.
 
 `no_dc_cluster_group` - (Optional) This site is not a member of dc cluster group (`Bool`).
 
@@ -1091,6 +1119,14 @@ Disable Vega Upgrade Mode.
 
 When enabled, vega will inform RE to stop traffic to the specific node..
 
+### Ver Dual Stack
+
+Both IPv4 and IPv6 addresses are specified together.
+
+`ipv4` - (Optional) IPv4 Address. See [Dual Stack Ipv4 ](#dual-stack-ipv4) below for details.
+
+`ipv6` - (Optional) IPv6 Address. See [Dual Stack Ipv6 ](#dual-stack-ipv6) below for details.
+
 ### Ver Ipv4
 
 IPv4 Address.
@@ -1148,4 +1184,4 @@ Subnet for the local interface of the node..
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured gcp_vpc_site.
+-	`id` - This is the id of the configured gcp_vpc_site.

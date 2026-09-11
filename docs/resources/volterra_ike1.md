@@ -22,16 +22,15 @@ resource "volterra_ike1" "example" {
 
   // One of the arguments from this list "ike_keylifetime_hours ike_keylifetime_minutes use_default_keylifetime" must be set
 
-  ike_keylifetime_hours {
+  ike_keylifetime_minutes {
     duration = "duration"
   }
 
   // One of the arguments from this list "reauth_disabled reauth_timeout_days reauth_timeout_hours" must be set
 
-  reauth_timeout_hours {
-    duration = "duration"
-  }
+  reauth_disabled = true
 }
+
 ```
 
 Argument Reference
@@ -104,4 +103,4 @@ Set Reauthentication timeout in Hours.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured ike1.
+-	`id` - This is the id of the configured ike1.

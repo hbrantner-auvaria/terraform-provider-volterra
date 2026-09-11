@@ -262,7 +262,14 @@ func resourceVolterraHealthcheck() *schema.Resource {
 				Required: true,
 			},
 
+			"default_jitter": {
+
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
+
 			"jitter_percent": {
+
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
@@ -616,11 +623,30 @@ func resourceVolterraHealthcheckCreate(d *schema.ResourceData, meta interface{})
 
 	}
 
-	//jitter_percent
-	if v, ok := d.GetOk("jitter_percent"); ok && !isIntfNil(v) {
+	//jitter_choice
 
-		createSpec.JitterPercent =
-			uint32(v.(int))
+	jitterChoiceTypeFound := false
+
+	if v, ok := d.GetOk("default_jitter"); ok && !jitterChoiceTypeFound {
+
+		jitterChoiceTypeFound = true
+
+		if v.(bool) {
+			jitterChoiceInt := &ves_io_schema_healthcheck.CreateSpecType_DefaultJitter{}
+			jitterChoiceInt.DefaultJitter = &ves_io_schema.Empty{}
+			createSpec.JitterChoice = jitterChoiceInt
+		}
+
+	}
+
+	if v, ok := d.GetOk("jitter_percent"); ok && !isIntfNil(v) && !jitterChoiceTypeFound {
+
+		jitterChoiceTypeFound = true
+		jitterChoiceInt := &ves_io_schema_healthcheck.CreateSpecType_JitterPercent{}
+
+		createSpec.JitterChoice = jitterChoiceInt
+
+		jitterChoiceInt.JitterPercent = uint32(v.(int))
 
 	}
 
@@ -1019,10 +1045,28 @@ func resourceVolterraHealthcheckUpdate(d *schema.ResourceData, meta interface{})
 
 	}
 
-	if v, ok := d.GetOk("jitter_percent"); ok && !isIntfNil(v) {
+	jitterChoiceTypeFound := false
 
-		updateSpec.JitterPercent =
-			uint32(v.(int))
+	if v, ok := d.GetOk("default_jitter"); ok && !jitterChoiceTypeFound {
+
+		jitterChoiceTypeFound = true
+
+		if v.(bool) {
+			jitterChoiceInt := &ves_io_schema_healthcheck.ReplaceSpecType_DefaultJitter{}
+			jitterChoiceInt.DefaultJitter = &ves_io_schema.Empty{}
+			updateSpec.JitterChoice = jitterChoiceInt
+		}
+
+	}
+
+	if v, ok := d.GetOk("jitter_percent"); ok && !isIntfNil(v) && !jitterChoiceTypeFound {
+
+		jitterChoiceTypeFound = true
+		jitterChoiceInt := &ves_io_schema_healthcheck.ReplaceSpecType_JitterPercent{}
+
+		updateSpec.JitterChoice = jitterChoiceInt
+
+		jitterChoiceInt.JitterPercent = uint32(v.(int))
 
 	}
 

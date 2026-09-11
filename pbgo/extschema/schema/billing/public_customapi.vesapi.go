@@ -1043,7 +1043,7 @@ var CustomPublicAPISwaggerJSON string = `{
         },
         "schemabillingUsageType": {
             "type": "string",
-            "description": "List of usage type\n\nTenant Info\nRE Container Flavor Large Usage\nRE Container Flavor Medium Usage\nRE Container Flavor Tiny Usage\nPublic IP Usage\nCE Mesh Node Small Usage\nCE Mesh Node Medium Usage\nCE Mesh Node Large Usage\nCE Stack Node Small Usage\nCE Stack Node Medium Usage\nCE Stack Node Large Usage\nDNS LoadBalancer Usage\nDNS LoadBalancer Healthcheck Usage\nDNS Zone Usage\nCE to RE traffic usage\nRE api sec good requests\nCE api sec good requests\nSynthetic monitor invocations usage\nPublic LoadBalancer usage\nRE app fw usage\nCE app fw usage\nTenant plan usage\nTenant logins count\nAPI Discovery LoadBalancer usage\nAPI protection good requests\nTenant object usage\nFast ACL IP prefix usage\nGood requests to origin usage\nTenant add on service info\nClient side defense transactions\nRE WAF requests\nLMA region usage\nGLR sent logs\nGLR sent log bytes\nRE rate limiting good requests\nPublic RE CDN data transfer usage North America\nPublic RE CDN data transfer usage Europe\nPublic RE CDN data transfer usage Asia\nPublic RE CDN data transfer usage South America\nPublic RE CDN request usage North America\nPublic RE CDN request usage Europe\nPublic RE CDN request usage Asia\nPublic RE CDN request usage South America\nDNSSEC Zone Usage\nAdvanced DNS LoadBalancer Usage\nDNS LoadBalancer CNAME pool health check usage\nDNS LoadBalancer CNAME pool priority algorithm usage",
+            "description": "List of usage type\n\nTenant Info\nRE Container Flavor Large Usage\nRE Container Flavor Medium Usage\nRE Container Flavor Tiny Usage\nPublic IP Usage\nCE Mesh Node Small Usage\nCE Mesh Node Medium Usage\nCE Mesh Node Large Usage\nCE Stack Node Small Usage\nCE Stack Node Medium Usage\nCE Stack Node Large Usage\nDNS LoadBalancer Usage\nDNS LoadBalancer Healthcheck Usage\nDNS Zone Usage\nCE to RE traffic usage\nRE api sec good requests\nCE api sec good requests\nSynthetic monitor invocations usage\nPublic LoadBalancer usage\nRE app fw usage\nCE app fw usage\nTenant plan usage\nTenant logins count\nAPI Discovery LoadBalancer usage\nAPI protection good requests\nTenant object usage\nFast ACL IP prefix usage\nGood requests to origin usage\nTenant add on service info\nClient side defense transactions\nRE WAF requests\nLMA region usage\nGLR sent logs\nGLR sent log bytes\nRE rate limiting good requests\nPublic RE CDN data transfer usage North America\nPublic RE CDN data transfer usage Europe\nPublic RE CDN data transfer usage Asia\nPublic RE CDN data transfer usage South America\nPublic RE CDN request usage North America\nPublic RE CDN request usage Europe\nPublic RE CDN request usage Asia\nPublic RE CDN request usage South America\nDNSSEC Zone Usage\nAdvanced DNS LoadBalancer Usage\nDNS LoadBalancer CNAME pool health check usage\nDNS LoadBalancer CNAME pool priority algorithm usage\nMalware successful scans total\nRouted ddos out throughput bps\nTCP and UDP - Throughput bps\nDelegated Access Connections Count\nRE–LB API Discovery Enabled Requests in Millions\nRE Essential Req in Millions\nRE Enterprise Req in Millions\nPublic Bring Your Own VIP Count",
             "title": "UsageType",
             "enum": [
                 "TENANT_INFO",
@@ -1092,7 +1092,15 @@ var CustomPublicAPISwaggerJSON string = `{
                 "DNSSEC_ZONE_USAGE",
                 "ADVANCED_DNS_LOAD_BALANCER_USAGE",
                 "DNS_LOAD_BALANCER_CNAME_POOL_HEALTH_CHECK_USAGE",
-                "DNS_LOAD_BALANCER_CNAME_POOL_PRIORITY_ALGORITHM_USAGE"
+                "DNS_LOAD_BALANCER_CNAME_POOL_PRIORITY_ALGORITHM_USAGE",
+                "MALWARE_PROTECTION_SCAN_COUNT",
+                "ROUTED_DDOS_OUT_THROUGHPUT",
+                "TCP_UDP_THROUGHPUT",
+                "DELEGATED_ACCESS_CONNECTIONS_COUNT",
+                "RE_LB_API_DISCOVERY_REQ_COUNT",
+                "RE_ESSENTIAL_REQ_COUNT",
+                "RE_ENTERPRISE_REQ_COUNT",
+                "PUBLIC_IP_BYO_COUNT"
             ],
             "default": "TENANT_INFO",
             "x-displayname": "UsageType",

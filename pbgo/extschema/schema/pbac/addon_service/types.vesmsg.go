@@ -199,6 +199,237 @@ func CustomSupportTicketValidator() db.Validator {
 
 // augmented methods on protoc/std generated struct
 
+func (m *EntitlementConfig) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *EntitlementConfig) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *EntitlementConfig) DeepCopy() *EntitlementConfig {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &EntitlementConfig{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *EntitlementConfig) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *EntitlementConfig) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return EntitlementConfigValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateEntitlementConfig struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateEntitlementConfig) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*EntitlementConfig)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *EntitlementConfig got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["entitlement_features"]; exists {
+		vOpts := append(opts, db.WithValidateField("entitlement_features"))
+		for key, value := range m.GetEntitlementFeatures() {
+			vOpts := append(vOpts, db.WithValidateMapKey(key))
+			if err := fv(ctx, value, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultEntitlementConfigValidator = func() *ValidateEntitlementConfig {
+	v := &ValidateEntitlementConfig{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func EntitlementConfigValidator() db.Validator {
+	return DefaultEntitlementConfigValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *EntitlementFeatureDetails) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *EntitlementFeatureDetails) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *EntitlementFeatureDetails) DeepCopy() *EntitlementFeatureDetails {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &EntitlementFeatureDetails{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *EntitlementFeatureDetails) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *EntitlementFeatureDetails) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return EntitlementFeatureDetailsValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateEntitlementFeatureDetails struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateEntitlementFeatureDetails) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*EntitlementFeatureDetails)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *EntitlementFeatureDetails got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["quota_mapping"]; exists {
+		vOpts := append(opts, db.WithValidateField("quota_mapping"))
+		if err := fv(ctx, m.GetQuotaMapping(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["usage_type"]; exists {
+		vOpts := append(opts, db.WithValidateField("usage_type"))
+		if err := fv(ctx, m.GetUsageType(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultEntitlementFeatureDetailsValidator = func() *ValidateEntitlementFeatureDetails {
+	v := &ValidateEntitlementFeatureDetails{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func EntitlementFeatureDetailsValidator() db.Validator {
+	return DefaultEntitlementFeatureDetailsValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *Formula) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *Formula) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *Formula) DeepCopy() *Formula {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &Formula{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *Formula) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *Formula) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return FormulaValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateFormula struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateFormula) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*Formula)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *Formula got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["operator"]; exists {
+		vOpts := append(opts, db.WithValidateField("operator"))
+		if err := fv(ctx, m.GetOperator(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultFormulaValidator = func() *ValidateFormula {
+	v := &ValidateFormula{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func FormulaValidator() db.Validator {
+	return DefaultFormulaValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *FullyManagedActivationType) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
@@ -694,6 +925,12 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 	if fv, exists := v.FldValidators["display_name"]; exists {
 		vOpts := append(opts, db.WithValidateField("display_name"))
 		if err := fv(ctx, m.GetDisplayName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["entitlement_config"]; exists {
+		vOpts := append(opts, db.WithValidateField("entitlement_config"))
+		if err := fv(ctx, m.GetEntitlementConfig(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -1324,6 +1561,12 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["entitlement_config"]; exists {
+		vOpts := append(opts, db.WithValidateField("entitlement_config"))
+		if err := fv(ctx, m.GetEntitlementConfig(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["included_services"]; exists {
 		vOpts := append(opts, db.WithValidateField("included_services"))
 		if err := fv(ctx, m.GetIncludedServices(), vOpts...); err != nil {
@@ -1630,6 +1873,83 @@ var DefaultPartiallyManagedActivationTypeValidator = func() *ValidatePartiallyMa
 
 func PartiallyManagedActivationTypeValidator() db.Validator {
 	return DefaultPartiallyManagedActivationTypeValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *QuotaMapping) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *QuotaMapping) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *QuotaMapping) DeepCopy() *QuotaMapping {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &QuotaMapping{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *QuotaMapping) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *QuotaMapping) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return QuotaMappingValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateQuotaMapping struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateQuotaMapping) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*QuotaMapping)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *QuotaMapping got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["object_limits"]; exists {
+		vOpts := append(opts, db.WithValidateField("object_limits"))
+		for key, value := range m.GetObjectLimits() {
+			vOpts := append(vOpts, db.WithValidateMapKey(key))
+			if err := fv(ctx, value, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultQuotaMappingValidator = func() *ValidateQuotaMapping {
+	v := &ValidateQuotaMapping{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func QuotaMappingValidator() db.Validator {
+	return DefaultQuotaMappingValidator
 }
 
 // augmented methods on protoc/std generated struct
@@ -2139,6 +2459,7 @@ func (m *GetSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	m.ApiGroups = f.GetApiGroups()
 	m.DependentServices = f.GetDependentServices()
 	m.DisplayName = f.GetDisplayName()
+	m.EntitlementConfig = f.GetEntitlementConfig()
 	m.IncludedServices = f.GetIncludedServices()
 	m.Tags = f.GetTags()
 	m.Tier = f.GetTier()
@@ -2163,6 +2484,7 @@ func (m *GetSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	f.ApiGroups = m1.ApiGroups
 	f.DependentServices = m1.DependentServices
 	f.DisplayName = m1.DisplayName
+	f.EntitlementConfig = m1.EntitlementConfig
 	f.IncludedServices = m1.IncludedServices
 	f.Tags = m1.Tags
 	f.Tier = m1.Tier

@@ -22,12 +22,28 @@ resource "volterra_healthcheck" "example" {
 
   // One of the arguments from this list "dns_health_check dns_proxy_icmp_health_check dns_proxy_tcp_health_check dns_proxy_udp_health_check http_health_check tcp_health_check udp_icmp_health_check" must be set
 
-  udp_icmp_health_check = true
-  healthy_threshold     = ["2"]
-  interval              = ["10"]
-  timeout               = ["1"]
-  unhealthy_threshold   = ["5"]
+  http_health_check {
+    expected_response = "00000034"
+
+    expected_status_codes = ["200-250"]
+
+    headers = {
+      "key1" = "value1"
+    }
+
+    // One of the arguments from this list "host_header use_origin_server_name" must be set
+
+    use_origin_server_name = true
+    path = "/healthcheck"
+    request_headers_to_remove = ["user-agent"]
+    use_http2 = true
+  }
+  healthy_threshold   = ["2"]
+  interval            = ["10"]
+  timeout             = ["1"]
+  unhealthy_threshold = ["5"]
 }
+
 ```
 
 Argument Reference
@@ -69,7 +85,11 @@ Argument Reference
 
 `interval` - (Required) Time interval in seconds between two healthcheck requests. (`Int`).
 
-`jitter_percent` - (Optional) Add a random amount of time as a percent value to the interval between successive healthcheck requests. (`Int`).
+###### One of the arguments from this list "default_jitter, jitter_percent" can be set
+
+`default_jitter` - (Optional) Use the default jitter value of 30 percent of the health check interval. (`Bool`).
+
+`jitter_percent` - (Optional) Valid values are 0 (to disable jitter) and 10 to 50. (`Int`).
 
 `timeout` - (Required) health check attempt will be considered a failure. (`Int`).
 
@@ -77,7 +97,7 @@ Argument Reference
 
 ### Health Check Dns Health Check
 
-1.  Expected IP Address.
+1.	Expected IP Address.
 
 `expected_rcode` - (Required) Specifies an expected Rcode in the answer section of DNS Response, option [no-error, any](`String`).
 
@@ -109,7 +129,7 @@ Specifies send string and expected response payload pattern for UDP health Check
 
 ### Health Check Http Health Check
 
-1.  Request headers to remove.
+1.	Request headers to remove.
 
 `expected_response` - (Optional) If left empty, then response body is not considered for evaluating health check status. (`String`).
 
@@ -144,4 +164,4 @@ Use the origin server name..
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured healthcheck.
+-	`id` - This is the id of the configured healthcheck.

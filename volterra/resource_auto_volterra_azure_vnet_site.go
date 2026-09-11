@@ -15,14 +15,15 @@ import (
 
 	"gopkg.volterra.us/stdlib/client/vesapi"
 
-statemigration "github.com/volterraedge/terraform-provider-volterra/volterra/state_migration"
-
 	ves_io_schema "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema"
 	ves_io_schema_fleet "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/fleet"
 	ves_io_schema_network_firewall "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/network_firewall"
 	ves_io_schema_site "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/site"
 	ves_io_schema_views "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/views"
 	ves_io_schema_views_azure_vnet_site "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/views/azure_vnet_site"
+	ves_io_schema_views_common_waf "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/views/common_waf"
+
+	statemigration "github.com/volterraedge/terraform-provider-volterra/volterra/state_migration"
 )
 
 // resourceVolterraAzureVnetSite is implementation of Volterra's AzureVnetSite resources
@@ -32,6 +33,15 @@ func resourceVolterraAzureVnetSite() *schema.Resource {
 		Read:   resourceVolterraAzureVnetSiteRead,
 		Update: resourceVolterraAzureVnetSiteUpdate,
 		Delete: resourceVolterraAzureVnetSiteDelete,
+
+		SchemaVersion: 1,
+		StateUpgraders: []schema.StateUpgrader{
+			{
+				Type:    statemigration.ResourceAzureVnetSiteInstanceResourceV1().CoreConfigSchema().ImpliedType(),
+				Upgrade: statemigration.ResourceAzureVnetSiteInstanceStateUpgradeV1,
+				Version: 0,
+			},
+		},
 
 		Schema: map[string]*schema.Schema{
 
@@ -1901,6 +1911,49 @@ func resourceVolterraAzureVnetSite() *schema.Resource {
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
 
+																					"dual_stack": {
+
+																						Type:     schema.TypeList,
+																						MaxItems: 1,
+																						Optional: true,
+																						Elem: &schema.Resource{
+																							Schema: map[string]*schema.Schema{
+
+																								"ipv4": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"addr": {
+																												Type:     schema.TypeString,
+																												Optional: true,
+																											},
+																										},
+																									},
+																								},
+
+																								"ipv6": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"addr": {
+																												Type:     schema.TypeString,
+																												Optional: true,
+																											},
+																										},
+																									},
+																								},
+																							},
+																						},
+																					},
+
 																					"ipv4": {
 
 																						Type:     schema.TypeList,
@@ -2174,6 +2227,49 @@ func resourceVolterraAzureVnetSite() *schema.Resource {
 																			Optional: true,
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
+
+																					"dual_stack": {
+
+																						Type:     schema.TypeList,
+																						MaxItems: 1,
+																						Optional: true,
+																						Elem: &schema.Resource{
+																							Schema: map[string]*schema.Schema{
+
+																								"ipv4": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"addr": {
+																												Type:     schema.TypeString,
+																												Optional: true,
+																											},
+																										},
+																									},
+																								},
+
+																								"ipv6": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"addr": {
+																												Type:     schema.TypeString,
+																												Optional: true,
+																											},
+																										},
+																									},
+																								},
+																							},
+																						},
+																					},
 
 																					"ipv4": {
 
@@ -3569,6 +3665,49 @@ func resourceVolterraAzureVnetSite() *schema.Resource {
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
 
+																					"dual_stack": {
+
+																						Type:     schema.TypeList,
+																						MaxItems: 1,
+																						Optional: true,
+																						Elem: &schema.Resource{
+																							Schema: map[string]*schema.Schema{
+
+																								"ipv4": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"addr": {
+																												Type:     schema.TypeString,
+																												Optional: true,
+																											},
+																										},
+																									},
+																								},
+
+																								"ipv6": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"addr": {
+																												Type:     schema.TypeString,
+																												Optional: true,
+																											},
+																										},
+																									},
+																								},
+																							},
+																						},
+																					},
+
 																					"ipv4": {
 
 																						Type:     schema.TypeList,
@@ -3988,6 +4127,49 @@ func resourceVolterraAzureVnetSite() *schema.Resource {
 																			Optional: true,
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
+
+																					"dual_stack": {
+
+																						Type:     schema.TypeList,
+																						MaxItems: 1,
+																						Optional: true,
+																						Elem: &schema.Resource{
+																							Schema: map[string]*schema.Schema{
+
+																								"ipv4": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"addr": {
+																												Type:     schema.TypeString,
+																												Optional: true,
+																											},
+																										},
+																									},
+																								},
+
+																								"ipv6": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"addr": {
+																												Type:     schema.TypeString,
+																												Optional: true,
+																											},
+																										},
+																									},
+																								},
+																							},
+																						},
+																					},
 
 																					"ipv4": {
 
@@ -5403,6 +5585,49 @@ func resourceVolterraAzureVnetSite() *schema.Resource {
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
 
+																					"dual_stack": {
+
+																						Type:     schema.TypeList,
+																						MaxItems: 1,
+																						Optional: true,
+																						Elem: &schema.Resource{
+																							Schema: map[string]*schema.Schema{
+
+																								"ipv4": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"addr": {
+																												Type:     schema.TypeString,
+																												Optional: true,
+																											},
+																										},
+																									},
+																								},
+
+																								"ipv6": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"addr": {
+																												Type:     schema.TypeString,
+																												Optional: true,
+																											},
+																										},
+																									},
+																								},
+																							},
+																						},
+																					},
+
 																					"ipv4": {
 
 																						Type:     schema.TypeList,
@@ -6443,6 +6668,49 @@ func resourceVolterraAzureVnetSite() *schema.Resource {
 																			Elem: &schema.Resource{
 																				Schema: map[string]*schema.Schema{
 
+																					"dual_stack": {
+
+																						Type:     schema.TypeList,
+																						MaxItems: 1,
+																						Optional: true,
+																						Elem: &schema.Resource{
+																							Schema: map[string]*schema.Schema{
+
+																								"ipv4": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"addr": {
+																												Type:     schema.TypeString,
+																												Optional: true,
+																											},
+																										},
+																									},
+																								},
+
+																								"ipv6": {
+
+																									Type:     schema.TypeList,
+																									MaxItems: 1,
+																									Optional: true,
+																									Elem: &schema.Resource{
+																										Schema: map[string]*schema.Schema{
+
+																											"addr": {
+																												Type:     schema.TypeString,
+																												Optional: true,
+																											},
+																										},
+																									},
+																								},
+																							},
+																						},
+																					},
+
 																					"ipv4": {
 
 																						Type:     schema.TypeList,
@@ -6710,6 +6978,29 @@ func resourceVolterraAzureVnetSite() *schema.Resource {
 				},
 			},
 
+			"waf_signatures": {
+
+				Type:     schema.TypeList,
+				MaxItems: 1,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+
+						"automatic": {
+
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+
+						"manual": {
+
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+					},
+				},
+			},
+
 			"no_worker_nodes": {
 
 				Type:     schema.TypeBool,
@@ -6726,14 +7017,6 @@ func resourceVolterraAzureVnetSite() *schema.Resource {
 
 				Type:     schema.TypeInt,
 				Optional: true,
-			},
-		},
-		SchemaVersion: 1,
-		StateUpgraders: []schema.StateUpgrader{
-			{
-				Type:    statemigration.ResourceAzureVnetSiteInstanceResourceV1().CoreConfigSchema().ImpliedType(),
-				Upgrade: statemigration.ResourceAzureVnetSiteInstanceStateUpgradeV1,
-				Version: 0,
 			},
 		},
 	}
@@ -9456,6 +9739,59 @@ func resourceVolterraAzureVnetSiteCreate(d *schema.ResourceData, meta interface{
 
 																			verTypeFound := false
 
+																			if v, ok := nexthopAddressMapStrToI["dual_stack"]; ok && !isIntfNil(v) && !verTypeFound {
+
+																				verTypeFound = true
+																				verInt := &ves_io_schema.IpAddressType_DualStack{}
+																				verInt.DualStack = &ves_io_schema.DualStackAddressType{}
+																				nexthopAddress.Ver = verInt
+
+																				sl := v.([]interface{})
+																				for _, set := range sl {
+																					if set != nil {
+																						cs := set.(map[string]interface{})
+
+																						if v, ok := cs["ipv4"]; ok && !isIntfNil(v) {
+
+																							sl := v.([]interface{})
+																							ipv4 := &ves_io_schema.Ipv4AddressType{}
+																							verInt.DualStack.Ipv4 = ipv4
+																							for _, set := range sl {
+																								if set != nil {
+																									ipv4MapStrToI := set.(map[string]interface{})
+
+																									if w, ok := ipv4MapStrToI["addr"]; ok && !isIntfNil(w) {
+																										ipv4.Addr = w.(string)
+																									}
+
+																								}
+																							}
+
+																						}
+
+																						if v, ok := cs["ipv6"]; ok && !isIntfNil(v) {
+
+																							sl := v.([]interface{})
+																							ipv6 := &ves_io_schema.Ipv6AddressType{}
+																							verInt.DualStack.Ipv6 = ipv6
+																							for _, set := range sl {
+																								if set != nil {
+																									ipv6MapStrToI := set.(map[string]interface{})
+
+																									if w, ok := ipv6MapStrToI["addr"]; ok && !isIntfNil(w) {
+																										ipv6.Addr = w.(string)
+																									}
+
+																								}
+																							}
+
+																						}
+
+																					}
+																				}
+
+																			}
+
 																			if v, ok := nexthopAddressMapStrToI["ipv4"]; ok && !isIntfNil(v) && !verTypeFound {
 
 																				verTypeFound = true
@@ -9859,6 +10195,59 @@ func resourceVolterraAzureVnetSiteCreate(d *schema.ResourceData, meta interface{
 																			nexthopAddressMapStrToI := set.(map[string]interface{})
 
 																			verTypeFound := false
+
+																			if v, ok := nexthopAddressMapStrToI["dual_stack"]; ok && !isIntfNil(v) && !verTypeFound {
+
+																				verTypeFound = true
+																				verInt := &ves_io_schema.IpAddressType_DualStack{}
+																				verInt.DualStack = &ves_io_schema.DualStackAddressType{}
+																				nexthopAddress.Ver = verInt
+
+																				sl := v.([]interface{})
+																				for _, set := range sl {
+																					if set != nil {
+																						cs := set.(map[string]interface{})
+
+																						if v, ok := cs["ipv4"]; ok && !isIntfNil(v) {
+
+																							sl := v.([]interface{})
+																							ipv4 := &ves_io_schema.Ipv4AddressType{}
+																							verInt.DualStack.Ipv4 = ipv4
+																							for _, set := range sl {
+																								if set != nil {
+																									ipv4MapStrToI := set.(map[string]interface{})
+
+																									if w, ok := ipv4MapStrToI["addr"]; ok && !isIntfNil(w) {
+																										ipv4.Addr = w.(string)
+																									}
+
+																								}
+																							}
+
+																						}
+
+																						if v, ok := cs["ipv6"]; ok && !isIntfNil(v) {
+
+																							sl := v.([]interface{})
+																							ipv6 := &ves_io_schema.Ipv6AddressType{}
+																							verInt.DualStack.Ipv6 = ipv6
+																							for _, set := range sl {
+																								if set != nil {
+																									ipv6MapStrToI := set.(map[string]interface{})
+
+																									if w, ok := ipv6MapStrToI["addr"]; ok && !isIntfNil(w) {
+																										ipv6.Addr = w.(string)
+																									}
+
+																								}
+																							}
+
+																						}
+
+																					}
+																				}
+
+																			}
 
 																			if v, ok := nexthopAddressMapStrToI["ipv4"]; ok && !isIntfNil(v) && !verTypeFound {
 
@@ -11890,6 +12279,59 @@ func resourceVolterraAzureVnetSiteCreate(d *schema.ResourceData, meta interface{
 
 																			verTypeFound := false
 
+																			if v, ok := nexthopAddressMapStrToI["dual_stack"]; ok && !isIntfNil(v) && !verTypeFound {
+
+																				verTypeFound = true
+																				verInt := &ves_io_schema.IpAddressType_DualStack{}
+																				verInt.DualStack = &ves_io_schema.DualStackAddressType{}
+																				nexthopAddress.Ver = verInt
+
+																				sl := v.([]interface{})
+																				for _, set := range sl {
+																					if set != nil {
+																						cs := set.(map[string]interface{})
+
+																						if v, ok := cs["ipv4"]; ok && !isIntfNil(v) {
+
+																							sl := v.([]interface{})
+																							ipv4 := &ves_io_schema.Ipv4AddressType{}
+																							verInt.DualStack.Ipv4 = ipv4
+																							for _, set := range sl {
+																								if set != nil {
+																									ipv4MapStrToI := set.(map[string]interface{})
+
+																									if w, ok := ipv4MapStrToI["addr"]; ok && !isIntfNil(w) {
+																										ipv4.Addr = w.(string)
+																									}
+
+																								}
+																							}
+
+																						}
+
+																						if v, ok := cs["ipv6"]; ok && !isIntfNil(v) {
+
+																							sl := v.([]interface{})
+																							ipv6 := &ves_io_schema.Ipv6AddressType{}
+																							verInt.DualStack.Ipv6 = ipv6
+																							for _, set := range sl {
+																								if set != nil {
+																									ipv6MapStrToI := set.(map[string]interface{})
+
+																									if w, ok := ipv6MapStrToI["addr"]; ok && !isIntfNil(w) {
+																										ipv6.Addr = w.(string)
+																									}
+
+																								}
+																							}
+
+																						}
+
+																					}
+																				}
+
+																			}
+
 																			if v, ok := nexthopAddressMapStrToI["ipv4"]; ok && !isIntfNil(v) && !verTypeFound {
 
 																				verTypeFound = true
@@ -12505,6 +12947,59 @@ func resourceVolterraAzureVnetSiteCreate(d *schema.ResourceData, meta interface{
 																			nexthopAddressMapStrToI := set.(map[string]interface{})
 
 																			verTypeFound := false
+
+																			if v, ok := nexthopAddressMapStrToI["dual_stack"]; ok && !isIntfNil(v) && !verTypeFound {
+
+																				verTypeFound = true
+																				verInt := &ves_io_schema.IpAddressType_DualStack{}
+																				verInt.DualStack = &ves_io_schema.DualStackAddressType{}
+																				nexthopAddress.Ver = verInt
+
+																				sl := v.([]interface{})
+																				for _, set := range sl {
+																					if set != nil {
+																						cs := set.(map[string]interface{})
+
+																						if v, ok := cs["ipv4"]; ok && !isIntfNil(v) {
+
+																							sl := v.([]interface{})
+																							ipv4 := &ves_io_schema.Ipv4AddressType{}
+																							verInt.DualStack.Ipv4 = ipv4
+																							for _, set := range sl {
+																								if set != nil {
+																									ipv4MapStrToI := set.(map[string]interface{})
+
+																									if w, ok := ipv4MapStrToI["addr"]; ok && !isIntfNil(w) {
+																										ipv4.Addr = w.(string)
+																									}
+
+																								}
+																							}
+
+																						}
+
+																						if v, ok := cs["ipv6"]; ok && !isIntfNil(v) {
+
+																							sl := v.([]interface{})
+																							ipv6 := &ves_io_schema.Ipv6AddressType{}
+																							verInt.DualStack.Ipv6 = ipv6
+																							for _, set := range sl {
+																								if set != nil {
+																									ipv6MapStrToI := set.(map[string]interface{})
+
+																									if w, ok := ipv6MapStrToI["addr"]; ok && !isIntfNil(w) {
+																										ipv6.Addr = w.(string)
+																									}
+
+																								}
+																							}
+
+																						}
+
+																					}
+																				}
+
+																			}
 
 																			if v, ok := nexthopAddressMapStrToI["ipv4"]; ok && !isIntfNil(v) && !verTypeFound {
 
@@ -14589,6 +15084,59 @@ func resourceVolterraAzureVnetSiteCreate(d *schema.ResourceData, meta interface{
 
 																			verTypeFound := false
 
+																			if v, ok := nexthopAddressMapStrToI["dual_stack"]; ok && !isIntfNil(v) && !verTypeFound {
+
+																				verTypeFound = true
+																				verInt := &ves_io_schema.IpAddressType_DualStack{}
+																				verInt.DualStack = &ves_io_schema.DualStackAddressType{}
+																				nexthopAddress.Ver = verInt
+
+																				sl := v.([]interface{})
+																				for _, set := range sl {
+																					if set != nil {
+																						cs := set.(map[string]interface{})
+
+																						if v, ok := cs["ipv4"]; ok && !isIntfNil(v) {
+
+																							sl := v.([]interface{})
+																							ipv4 := &ves_io_schema.Ipv4AddressType{}
+																							verInt.DualStack.Ipv4 = ipv4
+																							for _, set := range sl {
+																								if set != nil {
+																									ipv4MapStrToI := set.(map[string]interface{})
+
+																									if w, ok := ipv4MapStrToI["addr"]; ok && !isIntfNil(w) {
+																										ipv4.Addr = w.(string)
+																									}
+
+																								}
+																							}
+
+																						}
+
+																						if v, ok := cs["ipv6"]; ok && !isIntfNil(v) {
+
+																							sl := v.([]interface{})
+																							ipv6 := &ves_io_schema.Ipv6AddressType{}
+																							verInt.DualStack.Ipv6 = ipv6
+																							for _, set := range sl {
+																								if set != nil {
+																									ipv6MapStrToI := set.(map[string]interface{})
+
+																									if w, ok := ipv6MapStrToI["addr"]; ok && !isIntfNil(w) {
+																										ipv6.Addr = w.(string)
+																									}
+
+																								}
+																							}
+
+																						}
+
+																					}
+																				}
+
+																			}
+
 																			if v, ok := nexthopAddressMapStrToI["ipv4"]; ok && !isIntfNil(v) && !verTypeFound {
 
 																				verTypeFound = true
@@ -16062,6 +16610,59 @@ func resourceVolterraAzureVnetSiteCreate(d *schema.ResourceData, meta interface{
 
 																			verTypeFound := false
 
+																			if v, ok := nexthopAddressMapStrToI["dual_stack"]; ok && !isIntfNil(v) && !verTypeFound {
+
+																				verTypeFound = true
+																				verInt := &ves_io_schema.IpAddressType_DualStack{}
+																				verInt.DualStack = &ves_io_schema.DualStackAddressType{}
+																				nexthopAddress.Ver = verInt
+
+																				sl := v.([]interface{})
+																				for _, set := range sl {
+																					if set != nil {
+																						cs := set.(map[string]interface{})
+
+																						if v, ok := cs["ipv4"]; ok && !isIntfNil(v) {
+
+																							sl := v.([]interface{})
+																							ipv4 := &ves_io_schema.Ipv4AddressType{}
+																							verInt.DualStack.Ipv4 = ipv4
+																							for _, set := range sl {
+																								if set != nil {
+																									ipv4MapStrToI := set.(map[string]interface{})
+
+																									if w, ok := ipv4MapStrToI["addr"]; ok && !isIntfNil(w) {
+																										ipv4.Addr = w.(string)
+																									}
+
+																								}
+																							}
+
+																						}
+
+																						if v, ok := cs["ipv6"]; ok && !isIntfNil(v) {
+
+																							sl := v.([]interface{})
+																							ipv6 := &ves_io_schema.Ipv6AddressType{}
+																							verInt.DualStack.Ipv6 = ipv6
+																							for _, set := range sl {
+																								if set != nil {
+																									ipv6MapStrToI := set.(map[string]interface{})
+
+																									if w, ok := ipv6MapStrToI["addr"]; ok && !isIntfNil(w) {
+																										ipv6.Addr = w.(string)
+																									}
+
+																								}
+																							}
+
+																						}
+
+																					}
+																				}
+
+																			}
+
 																			if v, ok := nexthopAddressMapStrToI["ipv4"]; ok && !isIntfNil(v) && !verTypeFound {
 
 																				verTypeFound = true
@@ -16479,6 +17080,47 @@ func resourceVolterraAzureVnetSiteCreate(d *schema.ResourceData, meta interface{
 							}
 
 						}
+					}
+
+				}
+
+			}
+		}
+
+	}
+
+	//waf_signatures
+	if v, ok := d.GetOk("waf_signatures"); ok && !isIntfNil(v) {
+
+		sl := v.([]interface{})
+		wafSignatures := &ves_io_schema_views_common_waf.LiveSignaturesUpdate{}
+		createSpec.WafSignatures = wafSignatures
+		for _, set := range sl {
+			if set != nil {
+				wafSignaturesMapStrToI := set.(map[string]interface{})
+
+				signaturesUpdateModeChoiceTypeFound := false
+
+				if v, ok := wafSignaturesMapStrToI["automatic"]; ok && !isIntfNil(v) && !signaturesUpdateModeChoiceTypeFound {
+
+					signaturesUpdateModeChoiceTypeFound = true
+
+					if v.(bool) {
+						signaturesUpdateModeChoiceInt := &ves_io_schema_views_common_waf.LiveSignaturesUpdate_Automatic{}
+						signaturesUpdateModeChoiceInt.Automatic = &ves_io_schema.Empty{}
+						wafSignatures.SignaturesUpdateModeChoice = signaturesUpdateModeChoiceInt
+					}
+
+				}
+
+				if v, ok := wafSignaturesMapStrToI["manual"]; ok && !isIntfNil(v) && !signaturesUpdateModeChoiceTypeFound {
+
+					signaturesUpdateModeChoiceTypeFound = true
+
+					if v.(bool) {
+						signaturesUpdateModeChoiceInt := &ves_io_schema_views_common_waf.LiveSignaturesUpdate_Manual{}
+						signaturesUpdateModeChoiceInt.Manual = &ves_io_schema.Empty{}
+						wafSignatures.SignaturesUpdateModeChoice = signaturesUpdateModeChoiceInt
 					}
 
 				}
@@ -18958,6 +19600,59 @@ func resourceVolterraAzureVnetSiteUpdate(d *schema.ResourceData, meta interface{
 
 																			verTypeFound := false
 
+																			if v, ok := nexthopAddressMapStrToI["dual_stack"]; ok && !isIntfNil(v) && !verTypeFound {
+
+																				verTypeFound = true
+																				verInt := &ves_io_schema.IpAddressType_DualStack{}
+																				verInt.DualStack = &ves_io_schema.DualStackAddressType{}
+																				nexthopAddress.Ver = verInt
+
+																				sl := v.([]interface{})
+																				for _, set := range sl {
+																					if set != nil {
+																						cs := set.(map[string]interface{})
+
+																						if v, ok := cs["ipv4"]; ok && !isIntfNil(v) {
+
+																							sl := v.([]interface{})
+																							ipv4 := &ves_io_schema.Ipv4AddressType{}
+																							verInt.DualStack.Ipv4 = ipv4
+																							for _, set := range sl {
+																								if set != nil {
+																									ipv4MapStrToI := set.(map[string]interface{})
+
+																									if w, ok := ipv4MapStrToI["addr"]; ok && !isIntfNil(w) {
+																										ipv4.Addr = w.(string)
+																									}
+
+																								}
+																							}
+
+																						}
+
+																						if v, ok := cs["ipv6"]; ok && !isIntfNil(v) {
+
+																							sl := v.([]interface{})
+																							ipv6 := &ves_io_schema.Ipv6AddressType{}
+																							verInt.DualStack.Ipv6 = ipv6
+																							for _, set := range sl {
+																								if set != nil {
+																									ipv6MapStrToI := set.(map[string]interface{})
+
+																									if w, ok := ipv6MapStrToI["addr"]; ok && !isIntfNil(w) {
+																										ipv6.Addr = w.(string)
+																									}
+
+																								}
+																							}
+
+																						}
+
+																					}
+																				}
+
+																			}
+
 																			if v, ok := nexthopAddressMapStrToI["ipv4"]; ok && !isIntfNil(v) && !verTypeFound {
 
 																				verTypeFound = true
@@ -19361,6 +20056,59 @@ func resourceVolterraAzureVnetSiteUpdate(d *schema.ResourceData, meta interface{
 																			nexthopAddressMapStrToI := set.(map[string]interface{})
 
 																			verTypeFound := false
+
+																			if v, ok := nexthopAddressMapStrToI["dual_stack"]; ok && !isIntfNil(v) && !verTypeFound {
+
+																				verTypeFound = true
+																				verInt := &ves_io_schema.IpAddressType_DualStack{}
+																				verInt.DualStack = &ves_io_schema.DualStackAddressType{}
+																				nexthopAddress.Ver = verInt
+
+																				sl := v.([]interface{})
+																				for _, set := range sl {
+																					if set != nil {
+																						cs := set.(map[string]interface{})
+
+																						if v, ok := cs["ipv4"]; ok && !isIntfNil(v) {
+
+																							sl := v.([]interface{})
+																							ipv4 := &ves_io_schema.Ipv4AddressType{}
+																							verInt.DualStack.Ipv4 = ipv4
+																							for _, set := range sl {
+																								if set != nil {
+																									ipv4MapStrToI := set.(map[string]interface{})
+
+																									if w, ok := ipv4MapStrToI["addr"]; ok && !isIntfNil(w) {
+																										ipv4.Addr = w.(string)
+																									}
+
+																								}
+																							}
+
+																						}
+
+																						if v, ok := cs["ipv6"]; ok && !isIntfNil(v) {
+
+																							sl := v.([]interface{})
+																							ipv6 := &ves_io_schema.Ipv6AddressType{}
+																							verInt.DualStack.Ipv6 = ipv6
+																							for _, set := range sl {
+																								if set != nil {
+																									ipv6MapStrToI := set.(map[string]interface{})
+
+																									if w, ok := ipv6MapStrToI["addr"]; ok && !isIntfNil(w) {
+																										ipv6.Addr = w.(string)
+																									}
+
+																								}
+																							}
+
+																						}
+
+																					}
+																				}
+
+																			}
 
 																			if v, ok := nexthopAddressMapStrToI["ipv4"]; ok && !isIntfNil(v) && !verTypeFound {
 
@@ -21346,6 +22094,59 @@ func resourceVolterraAzureVnetSiteUpdate(d *schema.ResourceData, meta interface{
 
 																			verTypeFound := false
 
+																			if v, ok := nexthopAddressMapStrToI["dual_stack"]; ok && !isIntfNil(v) && !verTypeFound {
+
+																				verTypeFound = true
+																				verInt := &ves_io_schema.IpAddressType_DualStack{}
+																				verInt.DualStack = &ves_io_schema.DualStackAddressType{}
+																				nexthopAddress.Ver = verInt
+
+																				sl := v.([]interface{})
+																				for _, set := range sl {
+																					if set != nil {
+																						cs := set.(map[string]interface{})
+
+																						if v, ok := cs["ipv4"]; ok && !isIntfNil(v) {
+
+																							sl := v.([]interface{})
+																							ipv4 := &ves_io_schema.Ipv4AddressType{}
+																							verInt.DualStack.Ipv4 = ipv4
+																							for _, set := range sl {
+																								if set != nil {
+																									ipv4MapStrToI := set.(map[string]interface{})
+
+																									if w, ok := ipv4MapStrToI["addr"]; ok && !isIntfNil(w) {
+																										ipv4.Addr = w.(string)
+																									}
+
+																								}
+																							}
+
+																						}
+
+																						if v, ok := cs["ipv6"]; ok && !isIntfNil(v) {
+
+																							sl := v.([]interface{})
+																							ipv6 := &ves_io_schema.Ipv6AddressType{}
+																							verInt.DualStack.Ipv6 = ipv6
+																							for _, set := range sl {
+																								if set != nil {
+																									ipv6MapStrToI := set.(map[string]interface{})
+
+																									if w, ok := ipv6MapStrToI["addr"]; ok && !isIntfNil(w) {
+																										ipv6.Addr = w.(string)
+																									}
+
+																								}
+																							}
+
+																						}
+
+																					}
+																				}
+
+																			}
+
 																			if v, ok := nexthopAddressMapStrToI["ipv4"]; ok && !isIntfNil(v) && !verTypeFound {
 
 																				verTypeFound = true
@@ -21961,6 +22762,59 @@ func resourceVolterraAzureVnetSiteUpdate(d *schema.ResourceData, meta interface{
 																			nexthopAddressMapStrToI := set.(map[string]interface{})
 
 																			verTypeFound := false
+
+																			if v, ok := nexthopAddressMapStrToI["dual_stack"]; ok && !isIntfNil(v) && !verTypeFound {
+
+																				verTypeFound = true
+																				verInt := &ves_io_schema.IpAddressType_DualStack{}
+																				verInt.DualStack = &ves_io_schema.DualStackAddressType{}
+																				nexthopAddress.Ver = verInt
+
+																				sl := v.([]interface{})
+																				for _, set := range sl {
+																					if set != nil {
+																						cs := set.(map[string]interface{})
+
+																						if v, ok := cs["ipv4"]; ok && !isIntfNil(v) {
+
+																							sl := v.([]interface{})
+																							ipv4 := &ves_io_schema.Ipv4AddressType{}
+																							verInt.DualStack.Ipv4 = ipv4
+																							for _, set := range sl {
+																								if set != nil {
+																									ipv4MapStrToI := set.(map[string]interface{})
+
+																									if w, ok := ipv4MapStrToI["addr"]; ok && !isIntfNil(w) {
+																										ipv4.Addr = w.(string)
+																									}
+
+																								}
+																							}
+
+																						}
+
+																						if v, ok := cs["ipv6"]; ok && !isIntfNil(v) {
+
+																							sl := v.([]interface{})
+																							ipv6 := &ves_io_schema.Ipv6AddressType{}
+																							verInt.DualStack.Ipv6 = ipv6
+																							for _, set := range sl {
+																								if set != nil {
+																									ipv6MapStrToI := set.(map[string]interface{})
+
+																									if w, ok := ipv6MapStrToI["addr"]; ok && !isIntfNil(w) {
+																										ipv6.Addr = w.(string)
+																									}
+
+																								}
+																							}
+
+																						}
+
+																					}
+																				}
+
+																			}
 
 																			if v, ok := nexthopAddressMapStrToI["ipv4"]; ok && !isIntfNil(v) && !verTypeFound {
 
@@ -23703,6 +24557,59 @@ func resourceVolterraAzureVnetSiteUpdate(d *schema.ResourceData, meta interface{
 
 																			verTypeFound := false
 
+																			if v, ok := nexthopAddressMapStrToI["dual_stack"]; ok && !isIntfNil(v) && !verTypeFound {
+
+																				verTypeFound = true
+																				verInt := &ves_io_schema.IpAddressType_DualStack{}
+																				verInt.DualStack = &ves_io_schema.DualStackAddressType{}
+																				nexthopAddress.Ver = verInt
+
+																				sl := v.([]interface{})
+																				for _, set := range sl {
+																					if set != nil {
+																						cs := set.(map[string]interface{})
+
+																						if v, ok := cs["ipv4"]; ok && !isIntfNil(v) {
+
+																							sl := v.([]interface{})
+																							ipv4 := &ves_io_schema.Ipv4AddressType{}
+																							verInt.DualStack.Ipv4 = ipv4
+																							for _, set := range sl {
+																								if set != nil {
+																									ipv4MapStrToI := set.(map[string]interface{})
+
+																									if w, ok := ipv4MapStrToI["addr"]; ok && !isIntfNil(w) {
+																										ipv4.Addr = w.(string)
+																									}
+
+																								}
+																							}
+
+																						}
+
+																						if v, ok := cs["ipv6"]; ok && !isIntfNil(v) {
+
+																							sl := v.([]interface{})
+																							ipv6 := &ves_io_schema.Ipv6AddressType{}
+																							verInt.DualStack.Ipv6 = ipv6
+																							for _, set := range sl {
+																								if set != nil {
+																									ipv6MapStrToI := set.(map[string]interface{})
+
+																									if w, ok := ipv6MapStrToI["addr"]; ok && !isIntfNil(w) {
+																										ipv6.Addr = w.(string)
+																									}
+
+																								}
+																							}
+
+																						}
+
+																					}
+																				}
+
+																			}
+
 																			if v, ok := nexthopAddressMapStrToI["ipv4"]; ok && !isIntfNil(v) && !verTypeFound {
 
 																				verTypeFound = true
@@ -25076,6 +25983,59 @@ func resourceVolterraAzureVnetSiteUpdate(d *schema.ResourceData, meta interface{
 
 																			verTypeFound := false
 
+																			if v, ok := nexthopAddressMapStrToI["dual_stack"]; ok && !isIntfNil(v) && !verTypeFound {
+
+																				verTypeFound = true
+																				verInt := &ves_io_schema.IpAddressType_DualStack{}
+																				verInt.DualStack = &ves_io_schema.DualStackAddressType{}
+																				nexthopAddress.Ver = verInt
+
+																				sl := v.([]interface{})
+																				for _, set := range sl {
+																					if set != nil {
+																						cs := set.(map[string]interface{})
+
+																						if v, ok := cs["ipv4"]; ok && !isIntfNil(v) {
+
+																							sl := v.([]interface{})
+																							ipv4 := &ves_io_schema.Ipv4AddressType{}
+																							verInt.DualStack.Ipv4 = ipv4
+																							for _, set := range sl {
+																								if set != nil {
+																									ipv4MapStrToI := set.(map[string]interface{})
+
+																									if w, ok := ipv4MapStrToI["addr"]; ok && !isIntfNil(w) {
+																										ipv4.Addr = w.(string)
+																									}
+
+																								}
+																							}
+
+																						}
+
+																						if v, ok := cs["ipv6"]; ok && !isIntfNil(v) {
+
+																							sl := v.([]interface{})
+																							ipv6 := &ves_io_schema.Ipv6AddressType{}
+																							verInt.DualStack.Ipv6 = ipv6
+																							for _, set := range sl {
+																								if set != nil {
+																									ipv6MapStrToI := set.(map[string]interface{})
+
+																									if w, ok := ipv6MapStrToI["addr"]; ok && !isIntfNil(w) {
+																										ipv6.Addr = w.(string)
+																									}
+
+																								}
+																							}
+
+																						}
+
+																					}
+																				}
+
+																			}
+
 																			if v, ok := nexthopAddressMapStrToI["ipv4"]; ok && !isIntfNil(v) && !verTypeFound {
 
 																				verTypeFound = true
@@ -25387,6 +26347,46 @@ func resourceVolterraAzureVnetSiteUpdate(d *schema.ResourceData, meta interface{
 							}
 
 						}
+					}
+
+				}
+
+			}
+		}
+
+	}
+
+	if v, ok := d.GetOk("waf_signatures"); ok && !isIntfNil(v) {
+
+		sl := v.([]interface{})
+		wafSignatures := &ves_io_schema_views_common_waf.LiveSignaturesUpdate{}
+		updateSpec.WafSignatures = wafSignatures
+		for _, set := range sl {
+			if set != nil {
+				wafSignaturesMapStrToI := set.(map[string]interface{})
+
+				signaturesUpdateModeChoiceTypeFound := false
+
+				if v, ok := wafSignaturesMapStrToI["automatic"]; ok && !isIntfNil(v) && !signaturesUpdateModeChoiceTypeFound {
+
+					signaturesUpdateModeChoiceTypeFound = true
+
+					if v.(bool) {
+						signaturesUpdateModeChoiceInt := &ves_io_schema_views_common_waf.LiveSignaturesUpdate_Automatic{}
+						signaturesUpdateModeChoiceInt.Automatic = &ves_io_schema.Empty{}
+						wafSignatures.SignaturesUpdateModeChoice = signaturesUpdateModeChoiceInt
+					}
+
+				}
+
+				if v, ok := wafSignaturesMapStrToI["manual"]; ok && !isIntfNil(v) && !signaturesUpdateModeChoiceTypeFound {
+
+					signaturesUpdateModeChoiceTypeFound = true
+
+					if v.(bool) {
+						signaturesUpdateModeChoiceInt := &ves_io_schema_views_common_waf.LiveSignaturesUpdate_Manual{}
+						signaturesUpdateModeChoiceInt.Manual = &ves_io_schema.Empty{}
+						wafSignatures.SignaturesUpdateModeChoice = signaturesUpdateModeChoiceInt
 					}
 
 				}

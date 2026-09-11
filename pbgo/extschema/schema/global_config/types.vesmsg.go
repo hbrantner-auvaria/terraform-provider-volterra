@@ -148,10 +148,10 @@ var DefaultBigIPConfigValidator = func() *ValidateBigIPConfig {
 
 	vrhIruleList := v.IruleListValidationRuleHandler
 	rulesIruleList := map[string]string{
-		"ves.io.schema.rules.repeated.max_items": "64",
-		"ves.io.schema.rules.repeated.unique":    "true",
-		"ves.io.schema.rules.string.max_len":     "65520",
-		"ves.io.schema.rules.string.min_len":     "1",
+		"ves.io.schema.rules.repeated.items.string.max_len": "65520",
+		"ves.io.schema.rules.repeated.items.string.min_len": "1",
+		"ves.io.schema.rules.repeated.max_items":            "64",
+		"ves.io.schema.rules.repeated.unique":               "true",
 	}
 	vFn, err = vrhIruleList(rulesIruleList)
 	if err != nil {
@@ -715,6 +715,54 @@ func (v *ValidateGlobalSpecType) TenantDedicatedVipPoolsValidationRuleHandler(ru
 
 	return validatorFn, nil
 }
+func (v *ValidateGlobalSpecType) TenantDedicatedVipPoolsIpv6ValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepStringItemRules(rules)
+	itemValFn, err := db.NewStringValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Item ValidationRuleHandler for tenant_dedicated_vip_pools_ipv6")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []string, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for tenant_dedicated_vip_pools_ipv6")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]string)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []string, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal := fmt.Sprintf("%v", elem)
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated tenant_dedicated_vip_pools_ipv6")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items tenant_dedicated_vip_pools_ipv6")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateGlobalSpecType) DefaultPublicVipV6ValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for default_public_vip_v6")
+	}
+
+	return validatorFn, nil
+}
 
 func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
 	m, ok := pm.(*GlobalSpecType)
@@ -777,6 +825,12 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["default_public_vip_v6"]; exists {
+		vOpts := append(opts, db.WithValidateField("default_public_vip_v6"))
+		if err := fv(ctx, m.GetDefaultPublicVipV6(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["feature_flags"]; exists {
 		vOpts := append(opts, db.WithValidateField("feature_flags"))
 		for key, value := range m.GetFeatureFlags() {
@@ -825,6 +879,12 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 	if fv, exists := v.FldValidators["tenant_dedicated_vip_pools"]; exists {
 		vOpts := append(opts, db.WithValidateField("tenant_dedicated_vip_pools"))
 		if err := fv(ctx, m.GetTenantDedicatedVipPools(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["tenant_dedicated_vip_pools_ipv6"]; exists {
+		vOpts := append(opts, db.WithValidateField("tenant_dedicated_vip_pools_ipv6"))
+		if err := fv(ctx, m.GetTenantDedicatedVipPoolsIpv6(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -1042,6 +1102,28 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 		panic(errMsg)
 	}
 	v.FldValidators["tenant_dedicated_vip_pools"] = vFn
+
+	vrhTenantDedicatedVipPoolsIpv6 := v.TenantDedicatedVipPoolsIpv6ValidationRuleHandler
+	rulesTenantDedicatedVipPoolsIpv6 := map[string]string{
+		"ves.io.schema.rules.string.ip_prefix": "true",
+	}
+	vFn, err = vrhTenantDedicatedVipPoolsIpv6(rulesTenantDedicatedVipPoolsIpv6)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for GlobalSpecType.tenant_dedicated_vip_pools_ipv6: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["tenant_dedicated_vip_pools_ipv6"] = vFn
+
+	vrhDefaultPublicVipV6 := v.DefaultPublicVipV6ValidationRuleHandler
+	rulesDefaultPublicVipV6 := map[string]string{
+		"ves.io.schema.rules.string.ip": "true",
+	}
+	vFn, err = vrhDefaultPublicVipV6(rulesDefaultPublicVipV6)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for GlobalSpecType.default_public_vip_v6: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["default_public_vip_v6"] = vFn
 	v.FldValidators["volterra_ipv6_prefix"] = ves_io_schema.Ipv6SubnetTypeValidator().Validate
 	v.FldValidators["vk8s_pod_prefix"] = ves_io_schema.IpSubnetTypeValidator().Validate
 	v.FldValidators["vk8s_service_prefix"] = ves_io_schema.IpSubnetTypeValidator().Validate

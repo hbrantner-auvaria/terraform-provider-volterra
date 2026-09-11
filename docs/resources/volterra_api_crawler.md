@@ -50,6 +50,7 @@ resource "volterra_api_crawler" "example" {
     }
   }
 }
+
 ```
 
 Argument Reference
@@ -158,4 +159,4 @@ Enter the password to assign credentials for the selected domain to crawl.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured api_crawler.
+-	`id` - This is the id of the configured api_crawler.

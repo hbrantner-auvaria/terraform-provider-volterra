@@ -28,43 +28,11 @@ resource "volterra_external_connector" "example" {
 
   // One of the arguments from this list "direct_connection gre ipsec" must be set
 
-  ipsec {
-    ike_parameters {
-      // One of the arguments from this list "dpd_disabled dpd_keep_alive_timer" can be set
-
-      dpd_disabled = true
-
-      ike_phase1_profile {
-        name      = "test1"
-        namespace = "staging"
-        tenant    = "acmecorp"
-      }
-
-      ike_phase2_profile {
-        name      = "test1"
-        namespace = "staging"
-        tenant    = "acmecorp"
-      }
-
-      // One of the arguments from this list "lc_hostname lc_ip_address use_default_local_ike_id" can be set
-
-      use_default_local_ike_id = true
-
-      // One of the arguments from this list "initiator responder" must be set
-
-      initiator = true
-
-      // One of the arguments from this list "rm_hostname rm_ip_address use_default_remote_ike_id" can be set
-
-      rm_hostname = "rm_hostname"
-    }
-
-    ipsec_tunnel_parameters {
+  gre {
+    gre_parameters {
       peer_ip_address {
         addr = "192.168.1.1"
       }
-
-      psk = "psk"
 
       tunnel_eps {
         interface = "interface"
@@ -78,12 +46,13 @@ resource "volterra_external_connector" "example" {
 
       tunnel_mtu = "tunnel_mtu"
 
-      // One of the arguments from this list "segment site_local_inside_network site_local_network" must be set
+      // One of the arguments from this list "segment site_local_inside_network site_local_network" can be set
 
-      site_local_network = true
+      site_local_inside_network = true
     }
   }
 }
+
 ```
 
 Argument Reference
@@ -142,6 +111,18 @@ Disabled Dead Peer Detection.
 Enable Dead Peer Detection (DPD) by setting the keepalive timer..
 
 `timeout` - (Optional) x-inlineHint: "The range is between 1 and 5 seconds." (`Int`).
+
+### Dual Stack Ipv4
+
+IPv4 Address.
+
+`addr` - (Optional) IPv4 Address in string form with dot-decimal notation (`String`).
+
+### Dual Stack Ipv6
+
+IPv6 Address.
+
+`addr` - (Optional) e.g. '2001:db8:0:0:0:0:2:1' becomes '2001:db8::2:1' or '2001:db8:0:0:0:2:0:0' becomes '2001:db8::2::' (`String`).
 
 ### Gre Gre Parameters
 
@@ -257,7 +238,9 @@ Configure tunnel parameters, local and remote IP addresses.
 
 Configure an IP address as Local IKE ID.
 
-###### One of the arguments from this list "ipv4, ipv6" can be set
+###### One of the arguments from this list "dual_stack, ipv4, ipv6" can be set
+
+`dual_stack` - (Optional) Both IPv4 and IPv6 addresses are specified together. See [Ver Dual Stack ](#ver-dual-stack) below for details.
 
 `ipv4` - (Optional) IPv4 Address. See [Ver Ipv4 ](#ver-ipv4) below for details.
 
@@ -289,7 +272,9 @@ tenant - (Optional) then tenant will hold the referred object's(e.g. route's) te
 
 Configure an IP address as Remote IKE ID.
 
-###### One of the arguments from this list "ipv4, ipv6" can be set
+###### One of the arguments from this list "dual_stack, ipv4, ipv6" can be set
+
+`dual_stack` - (Optional) Both IPv4 and IPv6 addresses are specified together. See [Ver Dual Stack ](#ver-dual-stack) below for details.
 
 `ipv4` - (Optional) IPv4 Address. See [Ver Ipv4 ](#ver-ipv4) below for details.
 
@@ -315,6 +300,14 @@ Interface belongs to site local network inside.
 
 Interface belongs to site local network (outside).
 
+### Ver Dual Stack
+
+Both IPv4 and IPv6 addresses are specified together.
+
+`ipv4` - (Optional) IPv4 Address. See [Dual Stack Ipv4 ](#dual-stack-ipv4) below for details.
+
+`ipv6` - (Optional) IPv6 Address. See [Dual Stack Ipv6 ](#dual-stack-ipv6) below for details.
+
 ### Ver Ipv4
 
 IPv4 Address.
@@ -330,4 +323,4 @@ IPv6 Address.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured external_connector.
+-	`id` - This is the id of the configured external_connector.

@@ -5096,9 +5096,30 @@ func (v *ValidateVulnEvidence) Validate(ctx context.Context, pm interface{}, opt
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["evidence_id"]; exists {
+		vOpts := append(opts, db.WithValidateField("evidence_id"))
+		if err := fv(ctx, m.GetEvidenceId(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["evidence_type"]; exists {
 		vOpts := append(opts, db.WithValidateField("evidence_type"))
 		if err := fv(ctx, m.GetEvidenceType(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["incident_ids"]; exists {
+		vOpts := append(opts, db.WithValidateField("incident_ids"))
+		for idx, item := range m.GetIncidentIds() {
+			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
+			if err := fv(ctx, item, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	if fv, exists := v.FldValidators["message"]; exists {
+		vOpts := append(opts, db.WithValidateField("message"))
+		if err := fv(ctx, m.GetMessage(), vOpts...); err != nil {
 			return err
 		}
 	}

@@ -23,7 +23,7 @@ resource "volterra_bigip_http_proxy" "example" {
   ddos_profile {
     // One of the arguments from this list "disable_ddos_mitigation enable_ddos_mitigation" can be set
 
-    disable_ddos_mitigation = true
+    enable_ddos_mitigation = true
   }
 
   origin_pools {
@@ -35,11 +35,7 @@ resource "volterra_bigip_http_proxy" "example" {
           health_check {
             // One of the arguments from this list "icmp_health_check tcp_health_check" can be set
 
-            tcp_health_check {
-              expected_response = ".*"
-
-              send_payload = "send_payload"
-            }
+            icmp_health_check = true
           }
 
           healthy_threshold = "2"
@@ -58,16 +54,36 @@ resource "volterra_bigip_http_proxy" "example" {
         origin_servers {
           // One of the arguments from this list "k8s_service private_ip public_ip public_name" must be set
 
-          public_ip {
-            // One of the arguments from this list "ip ipv6" must be set
+          k8s_service {
+            // One of the arguments from this list "inside_network outside_network vk8s_networks" must be set
 
-            ip = "8.8.8.8"
+            inside_network = true
+
+            protocol = "protocol"
+
+            // One of the arguments from this list "service_name service_selector" must be set
+
+            service_name = "matching.default:production"
+            site_locator {
+              // One of the arguments from this list "site virtual_site" must be set
+
+              site {
+                name      = "test1"
+                namespace = "staging"
+                tenant    = "acmecorp"
+              }
+            }
+            snat_pool {
+              // One of the arguments from this list "no_snat_pool snat_pool" can be set
+
+              no_snat_pool = true
+            }
           }
         }
 
         // One of the arguments from this list "automatic_port lb_port port" must be set
 
-        port = "9080"
+        automatic_port = true
       }
 
       priority = "1"
@@ -81,7 +97,7 @@ resource "volterra_bigip_http_proxy" "example" {
 
     // One of the arguments from this list "http https https_auto_cert" must be set
 
-    https {
+    https_auto_cert {
       add_hsts = true
 
       coalescing_options {
@@ -107,89 +123,36 @@ resource "volterra_bigip_http_proxy" "example" {
           header_transformation {
             // One of the arguments from this list "default_header_transformation legacy_header_transformation preserve_case_header_transformation proper_case_header_transformation" must be set
 
-            legacy_header_transformation = true
+            preserve_case_header_transformation = true
           }
         }
       }
       http_redirect = true
 
+      // One of the arguments from this list "no_mtls use_mtls" must be set
+
+      no_mtls = true
+
       // One of the arguments from this list "disable_path_normalize enable_path_normalize" must be set
 
       enable_path_normalize = true
 
-      // One of the arguments from this list "port port_ranges" must be set
+      // One of the arguments from this list "port port_ranges" can be set
 
-      port = "443"
+      port = "port"
 
       // One of the arguments from this list "append_server_name default_header pass_through server_name" can be set
 
-      append_server_name = "append_server_name"
+      default_header = true
+      tls_config {
+        // One of the arguments from this list "custom_security default_security low_security medium_security" must be set
 
-      // One of the arguments from this list "tls_cert_params tls_parameters" must be set
-
-      tls_parameters {
-        // One of the arguments from this list "no_mtls use_mtls" must be set
-
-        use_mtls {
-          client_certificate_optional = true
-
-          // One of the arguments from this list "crl no_crl" can be set
-
-          no_crl = true
-
-          // One of the arguments from this list "trusted_ca trusted_ca_url" must be set
-
-          trusted_ca_url = "trusted_ca_url"
-
-          // One of the arguments from this list "xfcc_disabled xfcc_options" can be set
-
-          xfcc_disabled = true
-        }
-
-        tls_certificates {
-          certificate_url = "value"
-
-          description = "Certificate used in production environment"
-
-          // One of the arguments from this list "custom_hash_algorithms disable_ocsp_stapling use_system_defaults" can be set
-
-          use_system_defaults {}
-          private_key {
-            blindfold_secret_info_internal {
-              decryption_provider = "value"
-
-              location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
-
-              store_provider = "value"
-            }
-
-            secret_encoding_type = "secret_encoding_type"
-
-            // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
-
-            vault_secret_info {
-              key = "key_pem"
-
-              location = "v1/data/vhost_key"
-
-              provider = "vault-vh-provider"
-
-              secret_encoding = "secret_encoding"
-
-              version = "1"
-            }
-          }
-        }
-
-        tls_config {
-          // One of the arguments from this list "custom_security default_security low_security medium_security" must be set
-
-          default_security = true
-        }
+        default_security = true
       }
     }
   }
 }
+
 ```
 
 Argument Reference
@@ -303,9 +266,13 @@ Do not advertise this proxy.
 
 Where should this load balancer be available.
 
-###### One of the arguments from this list "advertise_on_public, cloud_edge_segment, segment, site, site_segment, virtual_network, virtual_site, virtual_site_segment, virtual_site_with_vip, vk8s_service" must be set
+###### One of the arguments from this list "advertise_dualstack_on_public, advertise_on_public, advertise_v6_on_public, cloud_edge_segment, segment, site, site_segment, virtual_network, virtual_site, virtual_site_segment, virtual_site_with_vip, vk8s_service" must be set
+
+`advertise_dualstack_on_public` - (Optional) Advertise this load balancer with Dualstack VIP on public network. See [Choice Advertise Dualstack On Public ](#choice-advertise-dualstack-on-public) below for details.
 
 `advertise_on_public` - (Optional) Advertise this load balancer on public network. See [Choice Advertise On Public ](#choice-advertise-on-public) below for details.
+
+`advertise_v6_on_public` - (Optional) Advertise this load balancer with IPv6 VIP on public network. See [Choice Advertise V6 On Public ](#choice-advertise-v6-on-public) below for details.
 
 `site` - (Optional) Advertise on a customer site and a given network.. See [Choice Site ](#choice-site) below for details.
 
@@ -329,9 +296,21 @@ Where should this load balancer be available.
 
 `use_default_port` - (Optional) Inherit the Load Balancer's Listen Port. (`Bool`).
 
+### Choice Advertise Dualstack On Public
+
+Advertise this load balancer with Dualstack VIP on public network.
+
+`public_ip` - (Required) Dedicated Public IP, which is allocated by F5 Distributed Cloud on request, is used as a VIP.. See [ref](#ref) below for details.
+
 ### Choice Advertise On Public
 
 Advertise this load balancer on public network.
+
+`public_ip` - (Required) Dedicated Public IP, which is allocated by F5 Distributed Cloud on request, is used as a VIP.. See [ref](#ref) below for details.
+
+### Choice Advertise V6 On Public
+
+Advertise this load balancer with IPv6 VIP on public network.
 
 `public_ip` - (Required) Dedicated Public IP, which is allocated by F5 Distributed Cloud on request, is used as a VIP.. See [ref](#ref) below for details.
 
@@ -421,7 +400,7 @@ Specify origin server with public IP.
 
 ###### One of the arguments from this list "ip, ipv6" must be set
 
-`ip`- (Optional) Public IPV4 address (`String`).
+`ip` - (Optional) Public IPV4 address (`String`).
 
 `ipv6` - (Optional) Public IPV6 address (`String`).
 
@@ -1182,4 +1161,4 @@ X-Forwarded-Client-Cert header will be added with the configured fields.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured bigip_http_proxy.
+-	`id` - This is the id of the configured bigip_http_proxy.

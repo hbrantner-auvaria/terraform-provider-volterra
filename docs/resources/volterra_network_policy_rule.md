@@ -20,6 +20,7 @@ resource "volterra_network_policy_rule" "example" {
   name      = "acmecorp-web"
   namespace = "staging"
 }
+
 ```
 
 Argument Reference
@@ -104,4 +105,4 @@ Only first expression is selected even though LabelSelectorType can provide mult
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured network_policy_rule.
+-	`id` - This is the id of the configured network_policy_rule.

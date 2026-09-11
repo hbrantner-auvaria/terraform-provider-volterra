@@ -809,6 +809,16 @@ func (m *CreateSpecType) GetProviderChoiceDRefInfo() ([]db.DRefInfo, error) {
 			dri.DRField = "openshift_virtualization." + dri.DRField
 		}
 		return drInfos, err
+	case *CreateSpecType_EksK8S:
+		drInfos, err := m.GetEksK8S().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetEksK8S().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "eks_k8s." + dri.DRField
+		}
+		return drInfos, err
 	default:
 		return nil, nil
 	}
@@ -941,10 +951,6 @@ func (v *ValidateCreateSpecType) BlockedServicesChoiceValidationRuleHandler(rule
 		return nil, errors.Wrap(err, "ValidationRuleHandler for blocked_services_choice")
 	}
 	return validatorFn, nil
-}
-
-func (v *ValidateCreateSpecType) EnterpriseProxyChoicePrivateAdnValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
-	return PrivateADNTypeValidator().Validate, nil
 }
 func (v *ValidateCreateSpecType) LogsReceiverChoiceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
 	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
@@ -1475,6 +1481,17 @@ func (v *ValidateCreateSpecType) Validate(ctx context.Context, pm interface{}, o
 				return err
 			}
 		}
+	case *CreateSpecType_EksK8S:
+		if fv, exists := v.FldValidators["provider_choice.eks_k8s"]; exists {
+			val := m.GetProviderChoice().(*CreateSpecType_EksK8S).EksK8S
+			vOpts := append(opts,
+				db.WithValidateField("provider_choice"),
+				db.WithValidateField("eks_k8s"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 
 	switch m.GetProxyBypassChoice().(type) {
@@ -1646,16 +1663,6 @@ var DefaultCreateSpecTypeValidator = func() *ValidateCreateSpecType {
 		panic(errMsg)
 	}
 	v.FldValidators["blocked_services_choice"] = vFn
-	vrhEnterpriseProxyChoicePrivateAdn := v.EnterpriseProxyChoicePrivateAdnValidationRuleHandler
-	rulesEnterpriseProxyChoicePrivateAdn := map[string]string{
-		"ves.io.schema.rules.message.required": "true",
-	}
-	vFnMap["enterprise_proxy_choice.private_adn"], err = vrhEnterpriseProxyChoicePrivateAdn(rulesEnterpriseProxyChoicePrivateAdn)
-	if err != nil {
-		errMsg := fmt.Sprintf("ValidationRuleHandler for oneof field CreateSpecType.enterprise_proxy_choice_private_adn: %s", err)
-		panic(errMsg)
-	}
-	v.FldValidators["enterprise_proxy_choice.private_adn"] = vFnMap["enterprise_proxy_choice.private_adn"]
 	vrhLogsReceiverChoice := v.LogsReceiverChoiceValidationRuleHandler
 	rulesLogsReceiverChoice := map[string]string{
 		"ves.io.schema.rules.message.required_oneof": "true",
@@ -1701,6 +1708,7 @@ var DefaultCreateSpecTypeValidator = func() *ValidateCreateSpecType {
 	v.FldValidators["segment_vrf"] = vFn
 	v.FldValidators["blocked_services_choice.blocked_services"] = ves_io_schema_fleet.BlockedServicesListTypeValidator().Validate
 	v.FldValidators["enterprise_proxy_choice.custom_proxy"] = CustomProxyValidator().Validate
+	v.FldValidators["enterprise_proxy_choice.private_adn"] = PrivateADNTypeValidator().Validate
 	v.FldValidators["forward_proxy_choice.active_forward_proxy_policies"] = ves_io_schema_network_firewall.ActiveForwardProxyPoliciesTypeValidator().Validate
 	v.FldValidators["logs_receiver_choice.log_receiver"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["logs_receiver_choice.log_receiver_with_net"] = LogReceiverWithNetValidator().Validate
@@ -1717,6 +1725,7 @@ var DefaultCreateSpecTypeValidator = func() *ValidateCreateSpecType {
 	v.FldValidators["provider_choice.nutanix"] = NutanixProviderTypeValidator().Validate
 	v.FldValidators["provider_choice.equinix"] = EquinixProviderTypeValidator().Validate
 	v.FldValidators["provider_choice.openshift_virtualization"] = OpenShiftProviderTypeValidator().Validate
+	v.FldValidators["provider_choice.eks_k8s"] = KubernetesProviderTypeValidator().Validate
 	v.FldValidators["proxy_bypass_choice.custom_proxy_bypass"] = CustomProxyBypassSettingsValidator().Validate
 	v.FldValidators["s2s_connectivity_sli_choice.dc_cluster_group_sli"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["s2s_connectivity_slo_choice.site_mesh_group_on_slo"] = SiteMeshGroupTypeValidator().Validate
@@ -3179,6 +3188,16 @@ func (m *GetSpecType) GetProviderChoiceDRefInfo() ([]db.DRefInfo, error) {
 			dri.DRField = "openshift_virtualization." + dri.DRField
 		}
 		return drInfos, err
+	case *GetSpecType_EksK8S:
+		drInfos, err := m.GetEksK8S().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetEksK8S().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "eks_k8s." + dri.DRField
+		}
+		return drInfos, err
 	default:
 		return nil, nil
 	}
@@ -3311,10 +3330,6 @@ func (v *ValidateGetSpecType) BlockedServicesChoiceValidationRuleHandler(rules m
 		return nil, errors.Wrap(err, "ValidationRuleHandler for blocked_services_choice")
 	}
 	return validatorFn, nil
-}
-
-func (v *ValidateGetSpecType) EnterpriseProxyChoicePrivateAdnValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
-	return PrivateADNTypeValidator().Validate, nil
 }
 func (v *ValidateGetSpecType) LogsReceiverChoiceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
 	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
@@ -3867,6 +3882,17 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 				return err
 			}
 		}
+	case *GetSpecType_EksK8S:
+		if fv, exists := v.FldValidators["provider_choice.eks_k8s"]; exists {
+			val := m.GetProviderChoice().(*GetSpecType_EksK8S).EksK8S
+			vOpts := append(opts,
+				db.WithValidateField("provider_choice"),
+				db.WithValidateField("eks_k8s"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 
 	switch m.GetProxyBypassChoice().(type) {
@@ -4059,16 +4085,6 @@ var DefaultGetSpecTypeValidator = func() *ValidateGetSpecType {
 		panic(errMsg)
 	}
 	v.FldValidators["blocked_services_choice"] = vFn
-	vrhEnterpriseProxyChoicePrivateAdn := v.EnterpriseProxyChoicePrivateAdnValidationRuleHandler
-	rulesEnterpriseProxyChoicePrivateAdn := map[string]string{
-		"ves.io.schema.rules.message.required": "true",
-	}
-	vFnMap["enterprise_proxy_choice.private_adn"], err = vrhEnterpriseProxyChoicePrivateAdn(rulesEnterpriseProxyChoicePrivateAdn)
-	if err != nil {
-		errMsg := fmt.Sprintf("ValidationRuleHandler for oneof field GetSpecType.enterprise_proxy_choice_private_adn: %s", err)
-		panic(errMsg)
-	}
-	v.FldValidators["enterprise_proxy_choice.private_adn"] = vFnMap["enterprise_proxy_choice.private_adn"]
 	vrhLogsReceiverChoice := v.LogsReceiverChoiceValidationRuleHandler
 	rulesLogsReceiverChoice := map[string]string{
 		"ves.io.schema.rules.message.required_oneof": "true",
@@ -4136,6 +4152,7 @@ var DefaultGetSpecTypeValidator = func() *ValidateGetSpecType {
 	v.FldValidators["segment_vrf"] = vFn
 	v.FldValidators["blocked_services_choice.blocked_services"] = ves_io_schema_fleet.BlockedServicesListTypeValidator().Validate
 	v.FldValidators["enterprise_proxy_choice.custom_proxy"] = CustomProxyValidator().Validate
+	v.FldValidators["enterprise_proxy_choice.private_adn"] = PrivateADNTypeValidator().Validate
 	v.FldValidators["forward_proxy_choice.active_forward_proxy_policies"] = ves_io_schema_network_firewall.ActiveForwardProxyPoliciesTypeValidator().Validate
 	v.FldValidators["logs_receiver_choice.log_receiver"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["logs_receiver_choice.log_receiver_with_net"] = LogReceiverWithNetValidator().Validate
@@ -4152,6 +4169,7 @@ var DefaultGetSpecTypeValidator = func() *ValidateGetSpecType {
 	v.FldValidators["provider_choice.nutanix"] = NutanixProviderTypeValidator().Validate
 	v.FldValidators["provider_choice.equinix"] = EquinixProviderTypeValidator().Validate
 	v.FldValidators["provider_choice.openshift_virtualization"] = OpenShiftProviderTypeValidator().Validate
+	v.FldValidators["provider_choice.eks_k8s"] = KubernetesProviderTypeValidator().Validate
 	v.FldValidators["proxy_bypass_choice.custom_proxy_bypass"] = CustomProxyBypassSettingsValidator().Validate
 	v.FldValidators["s2s_connectivity_sli_choice.dc_cluster_group_sli"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["s2s_connectivity_slo_choice.site_mesh_group_on_slo"] = SiteMeshGroupTypeValidator().Validate
@@ -4506,6 +4524,16 @@ func (m *GlobalSpecType) GetProviderChoiceDRefInfo() ([]db.DRefInfo, error) {
 			dri.DRField = "openshift_virtualization." + dri.DRField
 		}
 		return drInfos, err
+	case *GlobalSpecType_EksK8S:
+		drInfos, err := m.GetEksK8S().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetEksK8S().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "eks_k8s." + dri.DRField
+		}
+		return drInfos, err
 	default:
 		return nil, nil
 	}
@@ -4683,10 +4711,6 @@ func (v *ValidateGlobalSpecType) BlockedServicesChoiceValidationRuleHandler(rule
 		return nil, errors.Wrap(err, "ValidationRuleHandler for blocked_services_choice")
 	}
 	return validatorFn, nil
-}
-
-func (v *ValidateGlobalSpecType) EnterpriseProxyChoicePrivateAdnValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
-	return PrivateADNTypeValidator().Validate, nil
 }
 func (v *ValidateGlobalSpecType) LogsReceiverChoiceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
 	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
@@ -5290,6 +5314,17 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 				return err
 			}
 		}
+	case *GlobalSpecType_EksK8S:
+		if fv, exists := v.FldValidators["provider_choice.eks_k8s"]; exists {
+			val := m.GetProviderChoice().(*GlobalSpecType_EksK8S).EksK8S
+			vOpts := append(opts,
+				db.WithValidateField("provider_choice"),
+				db.WithValidateField("eks_k8s"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 
 	switch m.GetProxyBypassChoice().(type) {
@@ -5488,16 +5523,6 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 		panic(errMsg)
 	}
 	v.FldValidators["blocked_services_choice"] = vFn
-	vrhEnterpriseProxyChoicePrivateAdn := v.EnterpriseProxyChoicePrivateAdnValidationRuleHandler
-	rulesEnterpriseProxyChoicePrivateAdn := map[string]string{
-		"ves.io.schema.rules.message.required": "true",
-	}
-	vFnMap["enterprise_proxy_choice.private_adn"], err = vrhEnterpriseProxyChoicePrivateAdn(rulesEnterpriseProxyChoicePrivateAdn)
-	if err != nil {
-		errMsg := fmt.Sprintf("ValidationRuleHandler for oneof field GlobalSpecType.enterprise_proxy_choice_private_adn: %s", err)
-		panic(errMsg)
-	}
-	v.FldValidators["enterprise_proxy_choice.private_adn"] = vFnMap["enterprise_proxy_choice.private_adn"]
 	vrhLogsReceiverChoice := v.LogsReceiverChoiceValidationRuleHandler
 	rulesLogsReceiverChoice := map[string]string{
 		"ves.io.schema.rules.message.required_oneof": "true",
@@ -5576,6 +5601,7 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 	v.FldValidators["address"] = vFn
 	v.FldValidators["blocked_services_choice.blocked_services"] = ves_io_schema_fleet.BlockedServicesListTypeValidator().Validate
 	v.FldValidators["enterprise_proxy_choice.custom_proxy"] = CustomProxyValidator().Validate
+	v.FldValidators["enterprise_proxy_choice.private_adn"] = PrivateADNTypeValidator().Validate
 	v.FldValidators["forward_proxy_choice.active_forward_proxy_policies"] = ves_io_schema_network_firewall.ActiveForwardProxyPoliciesTypeValidator().Validate
 	v.FldValidators["logs_receiver_choice.log_receiver"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["logs_receiver_choice.log_receiver_with_net"] = LogReceiverWithNetValidator().Validate
@@ -5592,6 +5618,7 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 	v.FldValidators["provider_choice.nutanix"] = NutanixProviderTypeValidator().Validate
 	v.FldValidators["provider_choice.equinix"] = EquinixProviderTypeValidator().Validate
 	v.FldValidators["provider_choice.openshift_virtualization"] = OpenShiftProviderTypeValidator().Validate
+	v.FldValidators["provider_choice.eks_k8s"] = KubernetesProviderTypeValidator().Validate
 	v.FldValidators["proxy_bypass_choice.custom_proxy_bypass"] = CustomProxyBypassSettingsValidator().Validate
 	v.FldValidators["s2s_connectivity_sli_choice.dc_cluster_group_sli"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["s2s_connectivity_slo_choice.site_mesh_group_on_slo"] = SiteMeshGroupTypeValidator().Validate
@@ -6182,7 +6209,7 @@ var DefaultInterfaceValidator = func() *ValidateInterface {
 
 	vrhMtu := v.MtuValidationRuleHandler
 	rulesMtu := map[string]string{
-		"ves.io.schema.rules.uint32.ranges": "0,512-16384",
+		"ves.io.schema.rules.uint32.ranges": "0,512-8000",
 	}
 	vFn, err = vrhMtu(rulesMtu)
 	if err != nil {
@@ -6338,6 +6365,288 @@ var DefaultKVMProviderTypeValidator = func() *ValidateKVMProviderType {
 
 func KVMProviderTypeValidator() db.Validator {
 	return DefaultKVMProviderTypeValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *KubernetesProviderType) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *KubernetesProviderType) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *KubernetesProviderType) DeepCopy() *KubernetesProviderType {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &KubernetesProviderType{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *KubernetesProviderType) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *KubernetesProviderType) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return KubernetesProviderTypeValidator().Validate(ctx, m, opts...)
+}
+
+func (m *KubernetesProviderType) GetDRefInfo() ([]db.DRefInfo, error) {
+	if m == nil {
+		return nil, nil
+	}
+
+	return m.GetNotManagedDRefInfo()
+}
+
+// GetDRefInfo for the field's type
+func (m *KubernetesProviderType) GetNotManagedDRefInfo() ([]db.DRefInfo, error) {
+	if m.GetNotManaged() == nil {
+		return nil, nil
+	}
+	drInfos, err := m.GetNotManaged().GetDRefInfo()
+	if err != nil {
+		return nil, errors.Wrap(err, "GetNotManaged().GetDRefInfo() FAILED")
+	}
+	for i := range drInfos {
+		dri := &drInfos[i]
+		dri.DRField = "not_managed." + dri.DRField
+	}
+	return drInfos, err
+}
+
+type ValidateKubernetesProviderType struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateKubernetesProviderType) AntiAffinityChoiceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for anti_affinity_choice")
+	}
+	return validatorFn, nil
+}
+func (v *ValidateKubernetesProviderType) NotManagedValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	reqdValidatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "MessageValidationRuleHandler for not_managed")
+	}
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		if err := reqdValidatorFn(ctx, val, opts...); err != nil {
+			return err
+		}
+		if err := NodeListValidator().Validate(ctx, val, opts...); err != nil {
+			return err
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateKubernetesProviderType) LabelsValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemKeyRules := db.GetMapStringKeyRules(rules)
+	itemKeyFn, err := db.NewStringValidationRuleHandler(itemKeyRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Item key ValidationRuleHandler for labels")
+	}
+	itemValRules := db.GetMapStringValueRules(rules)
+	itemValFn, err := db.NewStringValidationRuleHandler(itemValRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Item value ValidationRuleHandler for labels")
+	}
+	itemsValidatorFn := func(ctx context.Context, kv map[string]string, opts ...db.ValidateOpt) error {
+		for key, value := range kv {
+			if err := itemKeyFn(ctx, key, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element with key %v", key))
+			}
+			if err := itemValFn(ctx, value, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("value for element with key %v", key))
+			}
+		}
+		return nil
+	}
+	mapValFn, err := db.NewMapValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Map ValidationRuleHandler for labels")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.(map[string]string)
+		if !ok {
+			return fmt.Errorf("Map validation expected map[ string ]string, got %T", val)
+		}
+		if err := mapValFn(ctx, len(elems), opts...); err != nil {
+			return errors.Wrap(err, "map labels")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items labels")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateKubernetesProviderType) DeploymentSizeValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	var conv db.EnumConvFn
+	conv = func(v interface{}) int32 {
+		i := v.(KubernetesDeploymentSize)
+		return int32(i)
+	}
+	// KubernetesDeploymentSize_name is generated in .pb.go
+	validatorFn, err := db.NewEnumValidationRuleHandler(rules, KubernetesDeploymentSize_name, conv)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for deployment_size")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateKubernetesProviderType) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*KubernetesProviderType)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *KubernetesProviderType got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+
+	if fv, exists := v.FldValidators["anti_affinity_choice"]; exists {
+		val := m.GetAntiAffinityChoice()
+		vOpts := append(opts,
+			db.WithValidateField("anti_affinity_choice"),
+		)
+		if err := fv(ctx, val, vOpts...); err != nil {
+			return err
+		}
+	}
+
+	switch m.GetAntiAffinityChoice().(type) {
+	case *KubernetesProviderType_DisableAntiAffinity:
+		if fv, exists := v.FldValidators["anti_affinity_choice.disable_anti_affinity"]; exists {
+			val := m.GetAntiAffinityChoice().(*KubernetesProviderType_DisableAntiAffinity).DisableAntiAffinity
+			vOpts := append(opts,
+				db.WithValidateField("anti_affinity_choice"),
+				db.WithValidateField("disable_anti_affinity"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *KubernetesProviderType_EnableAntiAffinity:
+		if fv, exists := v.FldValidators["anti_affinity_choice.enable_anti_affinity"]; exists {
+			val := m.GetAntiAffinityChoice().(*KubernetesProviderType_EnableAntiAffinity).EnableAntiAffinity
+			vOpts := append(opts,
+				db.WithValidateField("anti_affinity_choice"),
+				db.WithValidateField("enable_anti_affinity"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	if fv, exists := v.FldValidators["deployment_size"]; exists {
+		vOpts := append(opts, db.WithValidateField("deployment_size"))
+		if err := fv(ctx, m.GetDeploymentSize(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["labels"]; exists {
+		vOpts := append(opts, db.WithValidateField("labels"))
+		if err := fv(ctx, m.GetLabels(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["not_managed"]; exists {
+		vOpts := append(opts, db.WithValidateField("not_managed"))
+		if err := fv(ctx, m.GetNotManaged(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultKubernetesProviderTypeValidator = func() *ValidateKubernetesProviderType {
+	v := &ValidateKubernetesProviderType{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+	vrhAntiAffinityChoice := v.AntiAffinityChoiceValidationRuleHandler
+	rulesAntiAffinityChoice := map[string]string{
+		"ves.io.schema.rules.message.required_oneof": "true",
+	}
+	vFn, err = vrhAntiAffinityChoice(rulesAntiAffinityChoice)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for KubernetesProviderType.anti_affinity_choice: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["anti_affinity_choice"] = vFn
+
+	vrhNotManaged := v.NotManagedValidationRuleHandler
+	rulesNotManaged := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhNotManaged(rulesNotManaged)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for KubernetesProviderType.not_managed: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["not_managed"] = vFn
+
+	vrhLabels := v.LabelsValidationRuleHandler
+	rulesLabels := map[string]string{
+		"ves.io.schema.rules.map.keys.string.max_len":   "253",
+		"ves.io.schema.rules.map.keys.string.min_len":   "1",
+		"ves.io.schema.rules.map.max_pairs":             "64",
+		"ves.io.schema.rules.map.values.string.max_len": "63",
+		"ves.io.schema.rules.map.values.string.min_len": "1",
+	}
+	vFn, err = vrhLabels(rulesLabels)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for KubernetesProviderType.labels: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["labels"] = vFn
+
+	vrhDeploymentSize := v.DeploymentSizeValidationRuleHandler
+	rulesDeploymentSize := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhDeploymentSize(rulesDeploymentSize)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for KubernetesProviderType.deployment_size: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["deployment_size"] = vFn
+	v.FldValidators["anti_affinity_choice.enable_anti_affinity"] = PodAntiAffinityConfigTypeValidator().Validate
+
+	return v
+}()
+
+func KubernetesProviderTypeValidator() db.Validator {
+	return DefaultKubernetesProviderTypeValidator
 }
 
 // augmented methods on protoc/std generated struct
@@ -7648,6 +7957,340 @@ func OpenstackProviderTypeValidator() db.Validator {
 
 // augmented methods on protoc/std generated struct
 
+func (m *PodAntiAffinityConfigType) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *PodAntiAffinityConfigType) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *PodAntiAffinityConfigType) DeepCopy() *PodAntiAffinityConfigType {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &PodAntiAffinityConfigType{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *PodAntiAffinityConfigType) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *PodAntiAffinityConfigType) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return PodAntiAffinityConfigTypeValidator().Validate(ctx, m, opts...)
+}
+
+type ValidatePodAntiAffinityConfigType struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidatePodAntiAffinityConfigType) RulesValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepMessageItemRules(rules)
+	itemValFn, err := db.NewMessageValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Message ValidationRuleHandler for rules")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []*PodAntiAffinityRule, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+			if err := PodAntiAffinityRuleValidator().Validate(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for rules")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]*PodAntiAffinityRule)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []*PodAntiAffinityRule, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal, err := codec.ToJSON(elem, codec.ToWithUseProtoFieldName())
+			if err != nil {
+				return errors.Wrapf(err, "Converting %v to JSON", elem)
+			}
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated rules")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items rules")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidatePodAntiAffinityConfigType) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*PodAntiAffinityConfigType)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *PodAntiAffinityConfigType got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["rules"]; exists {
+		vOpts := append(opts, db.WithValidateField("rules"))
+		if err := fv(ctx, m.GetRules(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultPodAntiAffinityConfigTypeValidator = func() *ValidatePodAntiAffinityConfigType {
+	v := &ValidatePodAntiAffinityConfigType{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhRules := v.RulesValidationRuleHandler
+	rulesRules := map[string]string{
+		"ves.io.schema.rules.message.required":   "true",
+		"ves.io.schema.rules.repeated.max_items": "20",
+		"ves.io.schema.rules.repeated.min_items": "1",
+		"ves.io.schema.rules.repeated.unique":    "true",
+	}
+	vFn, err = vrhRules(rulesRules)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for PodAntiAffinityConfigType.rules: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["rules"] = vFn
+
+	return v
+}()
+
+func PodAntiAffinityConfigTypeValidator() db.Validator {
+	return DefaultPodAntiAffinityConfigTypeValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *PodAntiAffinityRule) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *PodAntiAffinityRule) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *PodAntiAffinityRule) DeepCopy() *PodAntiAffinityRule {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &PodAntiAffinityRule{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *PodAntiAffinityRule) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *PodAntiAffinityRule) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return PodAntiAffinityRuleValidator().Validate(ctx, m, opts...)
+}
+
+type ValidatePodAntiAffinityRule struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidatePodAntiAffinityRule) LabelKeyValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for label_key")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidatePodAntiAffinityRule) LabelValueValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for label_value")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidatePodAntiAffinityRule) TopologyKeysValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepStringItemRules(rules)
+	itemValFn, err := db.NewStringValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Item ValidationRuleHandler for topology_keys")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []string, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for topology_keys")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]string)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []string, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal := fmt.Sprintf("%v", elem)
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated topology_keys")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items topology_keys")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidatePodAntiAffinityRule) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*PodAntiAffinityRule)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *PodAntiAffinityRule got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["label_key"]; exists {
+		vOpts := append(opts, db.WithValidateField("label_key"))
+		if err := fv(ctx, m.GetLabelKey(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["label_value"]; exists {
+		vOpts := append(opts, db.WithValidateField("label_value"))
+		if err := fv(ctx, m.GetLabelValue(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["topology_keys"]; exists {
+		vOpts := append(opts, db.WithValidateField("topology_keys"))
+		if err := fv(ctx, m.GetTopologyKeys(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultPodAntiAffinityRuleValidator = func() *ValidatePodAntiAffinityRule {
+	v := &ValidatePodAntiAffinityRule{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhLabelKey := v.LabelKeyValidationRuleHandler
+	rulesLabelKey := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+		"ves.io.schema.rules.string.max_len":   "253",
+		"ves.io.schema.rules.string.min_len":   "1",
+	}
+	vFn, err = vrhLabelKey(rulesLabelKey)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for PodAntiAffinityRule.label_key: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["label_key"] = vFn
+
+	vrhLabelValue := v.LabelValueValidationRuleHandler
+	rulesLabelValue := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+		"ves.io.schema.rules.string.max_len":   "63",
+		"ves.io.schema.rules.string.min_len":   "1",
+	}
+	vFn, err = vrhLabelValue(rulesLabelValue)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for PodAntiAffinityRule.label_value: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["label_value"] = vFn
+
+	vrhTopologyKeys := v.TopologyKeysValidationRuleHandler
+	rulesTopologyKeys := map[string]string{
+		"ves.io.schema.rules.message.required":              "true",
+		"ves.io.schema.rules.repeated.items.string.max_len": "253",
+		"ves.io.schema.rules.repeated.items.string.min_len": "1",
+		"ves.io.schema.rules.repeated.max_items":            "10",
+		"ves.io.schema.rules.repeated.min_items":            "1",
+		"ves.io.schema.rules.repeated.unique":               "true",
+	}
+	vFn, err = vrhTopologyKeys(rulesTopologyKeys)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for PodAntiAffinityRule.topology_keys: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["topology_keys"] = vFn
+
+	return v
+}()
+
+func PodAntiAffinityRuleValidator() db.Validator {
+	return DefaultPodAntiAffinityRuleValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *PrivateADNType) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
@@ -8189,6 +8832,16 @@ func (m *ReplaceSpecType) GetProviderChoiceDRefInfo() ([]db.DRefInfo, error) {
 			dri.DRField = "openshift_virtualization." + dri.DRField
 		}
 		return drInfos, err
+	case *ReplaceSpecType_EksK8S:
+		drInfos, err := m.GetEksK8S().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetEksK8S().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "eks_k8s." + dri.DRField
+		}
+		return drInfos, err
 	default:
 		return nil, nil
 	}
@@ -8321,10 +8974,6 @@ func (v *ValidateReplaceSpecType) BlockedServicesChoiceValidationRuleHandler(rul
 		return nil, errors.Wrap(err, "ValidationRuleHandler for blocked_services_choice")
 	}
 	return validatorFn, nil
-}
-
-func (v *ValidateReplaceSpecType) EnterpriseProxyChoicePrivateAdnValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
-	return PrivateADNTypeValidator().Validate, nil
 }
 func (v *ValidateReplaceSpecType) LogsReceiverChoiceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
 	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
@@ -8830,6 +9479,17 @@ func (v *ValidateReplaceSpecType) Validate(ctx context.Context, pm interface{}, 
 				return err
 			}
 		}
+	case *ReplaceSpecType_EksK8S:
+		if fv, exists := v.FldValidators["provider_choice.eks_k8s"]; exists {
+			val := m.GetProviderChoice().(*ReplaceSpecType_EksK8S).EksK8S
+			vOpts := append(opts,
+				db.WithValidateField("provider_choice"),
+				db.WithValidateField("eks_k8s"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 
 	switch m.GetProxyBypassChoice().(type) {
@@ -9001,16 +9661,6 @@ var DefaultReplaceSpecTypeValidator = func() *ValidateReplaceSpecType {
 		panic(errMsg)
 	}
 	v.FldValidators["blocked_services_choice"] = vFn
-	vrhEnterpriseProxyChoicePrivateAdn := v.EnterpriseProxyChoicePrivateAdnValidationRuleHandler
-	rulesEnterpriseProxyChoicePrivateAdn := map[string]string{
-		"ves.io.schema.rules.message.required": "true",
-	}
-	vFnMap["enterprise_proxy_choice.private_adn"], err = vrhEnterpriseProxyChoicePrivateAdn(rulesEnterpriseProxyChoicePrivateAdn)
-	if err != nil {
-		errMsg := fmt.Sprintf("ValidationRuleHandler for oneof field ReplaceSpecType.enterprise_proxy_choice_private_adn: %s", err)
-		panic(errMsg)
-	}
-	v.FldValidators["enterprise_proxy_choice.private_adn"] = vFnMap["enterprise_proxy_choice.private_adn"]
 	vrhLogsReceiverChoice := v.LogsReceiverChoiceValidationRuleHandler
 	rulesLogsReceiverChoice := map[string]string{
 		"ves.io.schema.rules.message.required_oneof": "true",
@@ -9056,6 +9706,7 @@ var DefaultReplaceSpecTypeValidator = func() *ValidateReplaceSpecType {
 	v.FldValidators["segment_vrf"] = vFn
 	v.FldValidators["blocked_services_choice.blocked_services"] = ves_io_schema_fleet.BlockedServicesListTypeValidator().Validate
 	v.FldValidators["enterprise_proxy_choice.custom_proxy"] = CustomProxyValidator().Validate
+	v.FldValidators["enterprise_proxy_choice.private_adn"] = PrivateADNTypeValidator().Validate
 	v.FldValidators["forward_proxy_choice.active_forward_proxy_policies"] = ves_io_schema_network_firewall.ActiveForwardProxyPoliciesTypeValidator().Validate
 	v.FldValidators["logs_receiver_choice.log_receiver"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["logs_receiver_choice.log_receiver_with_net"] = LogReceiverWithNetValidator().Validate
@@ -9072,6 +9723,7 @@ var DefaultReplaceSpecTypeValidator = func() *ValidateReplaceSpecType {
 	v.FldValidators["provider_choice.nutanix"] = NutanixProviderTypeValidator().Validate
 	v.FldValidators["provider_choice.equinix"] = EquinixProviderTypeValidator().Validate
 	v.FldValidators["provider_choice.openshift_virtualization"] = OpenShiftProviderTypeValidator().Validate
+	v.FldValidators["provider_choice.eks_k8s"] = KubernetesProviderTypeValidator().Validate
 	v.FldValidators["proxy_bypass_choice.custom_proxy_bypass"] = CustomProxyBypassSettingsValidator().Validate
 	v.FldValidators["s2s_connectivity_sli_choice.dc_cluster_group_sli"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["s2s_connectivity_slo_choice.site_mesh_group_on_slo"] = SiteMeshGroupTypeValidator().Validate
@@ -9911,6 +10563,12 @@ func (v *ValidateSoftwareSettingsType) Validate(ctx context.Context, pm interfac
 	if fv, exists := v.FldValidators["sw"]; exists {
 		vOpts := append(opts, db.WithValidateField("sw"))
 		if err := fv(ctx, m.GetSw(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["waf_signatures"]; exists {
+		vOpts := append(opts, db.WithValidateField("waf_signatures"))
+		if err := fv(ctx, m.GetWafSignatures(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -11219,6 +11877,9 @@ func (r *CreateSpecType) SetProviderChoiceToGlobalSpecType(o *GlobalSpecType) er
 	case *CreateSpecType_Baremetal:
 		o.ProviderChoice = &GlobalSpecType_Baremetal{Baremetal: of.Baremetal}
 
+	case *CreateSpecType_EksK8S:
+		o.ProviderChoice = &GlobalSpecType_EksK8S{EksK8S: of.EksK8S}
+
 	case *CreateSpecType_Equinix:
 		o.ProviderChoice = &GlobalSpecType_Equinix{Equinix: of.Equinix}
 
@@ -11265,6 +11926,9 @@ func (r *CreateSpecType) GetProviderChoiceFromGlobalSpecType(o *GlobalSpecType) 
 
 	case *GlobalSpecType_Baremetal:
 		r.ProviderChoice = &CreateSpecType_Baremetal{Baremetal: of.Baremetal}
+
+	case *GlobalSpecType_EksK8S:
+		r.ProviderChoice = &CreateSpecType_EksK8S{EksK8S: of.EksK8S}
 
 	case *GlobalSpecType_Equinix:
 		r.ProviderChoice = &CreateSpecType_Equinix{Equinix: of.Equinix}
@@ -11870,6 +12534,9 @@ func (r *GetSpecType) SetProviderChoiceToGlobalSpecType(o *GlobalSpecType) error
 	case *GetSpecType_Baremetal:
 		o.ProviderChoice = &GlobalSpecType_Baremetal{Baremetal: of.Baremetal}
 
+	case *GetSpecType_EksK8S:
+		o.ProviderChoice = &GlobalSpecType_EksK8S{EksK8S: of.EksK8S}
+
 	case *GetSpecType_Equinix:
 		o.ProviderChoice = &GlobalSpecType_Equinix{Equinix: of.Equinix}
 
@@ -11916,6 +12583,9 @@ func (r *GetSpecType) GetProviderChoiceFromGlobalSpecType(o *GlobalSpecType) err
 
 	case *GlobalSpecType_Baremetal:
 		r.ProviderChoice = &GetSpecType_Baremetal{Baremetal: of.Baremetal}
+
+	case *GlobalSpecType_EksK8S:
+		r.ProviderChoice = &GetSpecType_EksK8S{EksK8S: of.EksK8S}
 
 	case *GlobalSpecType_Equinix:
 		r.ProviderChoice = &GetSpecType_Equinix{Equinix: of.Equinix}
@@ -12494,6 +13164,9 @@ func (r *ReplaceSpecType) SetProviderChoiceToGlobalSpecType(o *GlobalSpecType) e
 	case *ReplaceSpecType_Baremetal:
 		o.ProviderChoice = &GlobalSpecType_Baremetal{Baremetal: of.Baremetal}
 
+	case *ReplaceSpecType_EksK8S:
+		o.ProviderChoice = &GlobalSpecType_EksK8S{EksK8S: of.EksK8S}
+
 	case *ReplaceSpecType_Equinix:
 		o.ProviderChoice = &GlobalSpecType_Equinix{Equinix: of.Equinix}
 
@@ -12540,6 +13213,9 @@ func (r *ReplaceSpecType) GetProviderChoiceFromGlobalSpecType(o *GlobalSpecType)
 
 	case *GlobalSpecType_Baremetal:
 		r.ProviderChoice = &ReplaceSpecType_Baremetal{Baremetal: of.Baremetal}
+
+	case *GlobalSpecType_EksK8S:
+		r.ProviderChoice = &ReplaceSpecType_EksK8S{EksK8S: of.EksK8S}
 
 	case *GlobalSpecType_Equinix:
 		r.ProviderChoice = &ReplaceSpecType_Equinix{Equinix: of.Equinix}

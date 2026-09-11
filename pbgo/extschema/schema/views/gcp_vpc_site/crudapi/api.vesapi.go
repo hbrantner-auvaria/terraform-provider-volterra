@@ -2576,6 +2576,29 @@ var APISwaggerJSON string = `{
         }
     },
     "definitions": {
+        "common_wafLiveSignaturesUpdate": {
+            "type": "object",
+            "description": "Select F5XC WAF Signatures update mode for the site. By default, new signatures will be applied manually.\nRefer to release notes for details about available Signatures update modes.",
+            "title": "Live Signatures Update",
+            "x-displayname": "WAF Signatures Update Mode",
+            "x-ves-displayorder": "1",
+            "x-ves-oneof-field-signatures_update_mode_choice": "[\"automatic\",\"manual\"]",
+            "x-ves-proto-message": "ves.io.schema.views.common_waf.LiveSignaturesUpdate",
+            "properties": {
+                "automatic": {
+                    "description": "Exclusive with [manual]\n New WAF signatures will be applied automatically as soon as they are released.",
+                    "title": "Automatic update mode",
+                    "$ref": "#/definitions/schemaEmpty",
+                    "x-displayname": "Automatic"
+                },
+                "manual": {
+                    "description": "Exclusive with [automatic]\n New WAF signatures will only be applied when an update is triggered manually.",
+                    "title": "Manual update mode",
+                    "$ref": "#/definitions/schemaEmpty",
+                    "x-displayname": "Manual"
+                }
+            }
+        },
         "crudapiObjectCreateReq": {
             "type": "object",
             "x-ves-proto-message": "ves.io.schema.views.gcp_vpc_site.crudapi.ObjectCreateReq",
@@ -2584,7 +2607,7 @@ var APISwaggerJSON string = `{
                     "$ref": "#/definitions/schemaObjectMetaType"
                 },
                 "spec": {
-                    "$ref": "#/definitions/gcp_vpc_siteSpecType"
+                    "$ref": "#/definitions/viewsgcp_vpc_siteSpecType"
                 },
                 "system_metadata": {
                     "$ref": "#/definitions/schemaSystemObjectMetaType"
@@ -2605,7 +2628,7 @@ var APISwaggerJSON string = `{
                     "type": "string"
                 },
                 "spec": {
-                    "$ref": "#/definitions/gcp_vpc_siteSpecType"
+                    "$ref": "#/definitions/viewsgcp_vpc_siteSpecType"
                 },
                 "system_metadata": {
                     "$ref": "#/definitions/schemaSystemObjectMetaType"
@@ -2641,7 +2664,7 @@ var APISwaggerJSON string = `{
                     "type": "string"
                 },
                 "spec": {
-                    "$ref": "#/definitions/gcp_vpc_siteSpecType"
+                    "$ref": "#/definitions/viewsgcp_vpc_siteSpecType"
                 },
                 "status": {
                     "type": "array",
@@ -2703,7 +2726,7 @@ var APISwaggerJSON string = `{
                     "type": "string"
                 },
                 "spec": {
-                    "$ref": "#/definitions/gcp_vpc_siteSpecType"
+                    "$ref": "#/definitions/viewsgcp_vpc_siteSpecType"
                 },
                 "status": {
                     "type": "array",
@@ -2733,7 +2756,7 @@ var APISwaggerJSON string = `{
                     "type": "string"
                 },
                 "spec": {
-                    "$ref": "#/definitions/gcp_vpc_siteSpecType"
+                    "$ref": "#/definitions/viewsgcp_vpc_siteSpecType"
                 }
             }
         },
@@ -2748,7 +2771,7 @@ var APISwaggerJSON string = `{
                     "$ref": "#/definitions/schemaObjectMetaType"
                 },
                 "spec": {
-                    "$ref": "#/definitions/gcp_vpc_siteSpecType"
+                    "$ref": "#/definitions/viewsgcp_vpc_siteSpecType"
                 },
                 "system_metadata": {
                     "$ref": "#/definitions/schemaSystemObjectMetaType"
@@ -2770,12 +2793,12 @@ var APISwaggerJSON string = `{
                     "x-displayname": "DNS"
                 },
                 "network_type": {
-                    "description": " Site Local VRF on which this service will be disabled\n\nValidation Rules:\n  ves.io.schema.rules.enum.in: [0,1,13]\n",
+                    "description": " Site Local VRF on which this service will be disabled\n\nValidation Rules:\n  ves.io.schema.rules.enum.in: [0,1,12,13]\n",
                     "title": "network_type",
                     "$ref": "#/definitions/schemaVirtualNetworkType",
                     "x-displayname": "Site Local VRF",
                     "x-ves-validation-rules": {
-                        "ves.io.schema.rules.enum.in": "[0,1,13]"
+                        "ves.io.schema.rules.enum.in": "[0,1,12,13]"
                     }
                 },
                 "ssh": {
@@ -2859,13 +2882,13 @@ var APISwaggerJSON string = `{
                 "active_enhanced_firewall_policies": {
                     "description": "Exclusive with [active_network_policies no_network_policy]\n Enhanced Firewall Policies active for this site.\n These policies use session-based rules and provide all options available under firewall policies\n with an additional option for service insertion.",
                     "title": "Manage Firewall Policy (V2)",
-                    "$ref": "#/definitions/network_firewallActiveEnhancedFirewallPoliciesType",
+                    "$ref": "#/definitions/schemanetwork_firewallActiveEnhancedFirewallPoliciesType",
                     "x-displayname": "Active Enhanced Firewall Policies"
                 },
                 "active_forward_proxy_policies": {
                     "description": "Exclusive with [forward_proxy_allow_all no_forward_proxy]\n Enable Forward Proxy for this site and manage policies",
                     "title": "Enable Forward Proxy and Manage Policies",
-                    "$ref": "#/definitions/network_firewallActiveForwardProxyPoliciesType",
+                    "$ref": "#/definitions/schemanetwork_firewallActiveForwardProxyPoliciesType",
                     "x-displayname": "Enable Forward Proxy and Manage Policies"
                 },
                 "active_network_policies": {
@@ -2908,7 +2931,7 @@ var APISwaggerJSON string = `{
                 },
                 "gcp_zone_names": {
                     "type": "array",
-                    "description": " x-required\n List of zones when instances will be created, needs to match with region selected.\n\nExample: - \"us-west1-a, us-west1-b, us-west1-c\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 3\n  ves.io.schema.rules.repeated.unique: true\n  ves.io.schema.rules.string.max_len: 64\n",
+                    "description": " x-required\n List of zones when instances will be created, needs to match with region selected.\n\nExample: - \"us-west1-a, us-west1-b, us-west1-c\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.items.string.max_len: 64\n  ves.io.schema.rules.repeated.max_items: 3\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "GCP zones",
                     "maxItems": 3,
                     "items": {
@@ -2920,9 +2943,9 @@ var APISwaggerJSON string = `{
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.repeated.items.string.max_len": "64",
                         "ves.io.schema.rules.repeated.max_items": "3",
-                        "ves.io.schema.rules.repeated.unique": "true",
-                        "ves.io.schema.rules.string.max_len": "64"
+                        "ves.io.schema.rules.repeated.unique": "true"
                     }
                 },
                 "global_network_list": {
@@ -3057,7 +3080,7 @@ var APISwaggerJSON string = `{
                 },
                 "gcp_zone_names": {
                     "type": "array",
-                    "description": " x-required\n List of zones when instances will be created, needs to match with region selected.\n\nExample: - \"us-west1-a, us-west1-b, us-west1-c\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 3\n  ves.io.schema.rules.repeated.unique: true\n  ves.io.schema.rules.string.max_len: 64\n",
+                    "description": " x-required\n List of zones when instances will be created, needs to match with region selected.\n\nExample: - \"us-west1-a, us-west1-b, us-west1-c\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.items.string.max_len: 64\n  ves.io.schema.rules.repeated.max_items: 3\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "GCP zones",
                     "maxItems": 3,
                     "items": {
@@ -3069,9 +3092,9 @@ var APISwaggerJSON string = `{
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.repeated.items.string.max_len": "64",
                         "ves.io.schema.rules.repeated.max_items": "3",
-                        "ves.io.schema.rules.repeated.unique": "true",
-                        "ves.io.schema.rules.string.max_len": "64"
+                        "ves.io.schema.rules.repeated.unique": "true"
                     }
                 },
                 "local_network": {
@@ -3166,13 +3189,13 @@ var APISwaggerJSON string = `{
                 "active_enhanced_firewall_policies": {
                     "description": "Exclusive with [active_network_policies no_network_policy]\n Enhanced Firewall Policies active for this site.\n These policies use session-based rules and provide all options available under firewall policies\n with an additional option for service insertion.",
                     "title": "Manage Firewall Policy (V2)",
-                    "$ref": "#/definitions/network_firewallActiveEnhancedFirewallPoliciesType",
+                    "$ref": "#/definitions/schemanetwork_firewallActiveEnhancedFirewallPoliciesType",
                     "x-displayname": "Active Enhanced Firewall Policies"
                 },
                 "active_forward_proxy_policies": {
                     "description": "Exclusive with [forward_proxy_allow_all no_forward_proxy]\n Enable Forward Proxy for this site and manage policies",
                     "title": "Enable Forward Proxy and Manage Policies",
-                    "$ref": "#/definitions/network_firewallActiveForwardProxyPoliciesType",
+                    "$ref": "#/definitions/schemanetwork_firewallActiveForwardProxyPoliciesType",
                     "x-displayname": "Enable Forward Proxy and Manage Policies"
                 },
                 "active_network_policies": {
@@ -3215,7 +3238,7 @@ var APISwaggerJSON string = `{
                 },
                 "gcp_zone_names": {
                     "type": "array",
-                    "description": " x-required\n List of zones when instances will be created, needs to match with region selected.\n\nExample: - \"us-west1-a, us-west1-b, us-west1-c\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 3\n  ves.io.schema.rules.repeated.unique: true\n  ves.io.schema.rules.string.max_len: 64\n",
+                    "description": " x-required\n List of zones when instances will be created, needs to match with region selected.\n\nExample: - \"us-west1-a, us-west1-b, us-west1-c\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.items.string.max_len: 64\n  ves.io.schema.rules.repeated.max_items: 3\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "GCP zones",
                     "maxItems": 3,
                     "items": {
@@ -3227,9 +3250,9 @@ var APISwaggerJSON string = `{
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.repeated.items.string.max_len": "64",
                         "ves.io.schema.rules.repeated.max_items": "3",
-                        "ves.io.schema.rules.repeated.unique": "true",
-                        "ves.io.schema.rules.string.max_len": "64"
+                        "ves.io.schema.rules.repeated.unique": "true"
                     }
                 },
                 "global_network_list": {
@@ -3329,17 +3352,6 @@ var APISwaggerJSON string = `{
                 }
             }
         },
-        "gcp_vpc_siteSpecType": {
-            "type": "object",
-            "x-ves-proto-message": "ves.io.schema.views.gcp_vpc_site.SpecType",
-            "properties": {
-                "gc_spec": {
-                    "title": "gc_spec",
-                    "$ref": "#/definitions/viewsgcp_vpc_siteGlobalSpecType",
-                    "x-displayname": "GC Spec"
-                }
-            }
-        },
         "gcp_vpc_siteStatusObject": {
             "type": "object",
             "description": "Most recently observed status of object",
@@ -3432,58 +3444,6 @@ var APISwaggerJSON string = `{
                     "title": "uid",
                     "x-displayname": "UID",
                     "x-ves-example": "d15f1fad-4d37-48c0-8706-df1824d76d31"
-                }
-            }
-        },
-        "network_firewallActiveEnhancedFirewallPoliciesType": {
-            "type": "object",
-            "description": "List of Enhanced Firewall Policies\nThese policies use session-based rules and provide all options available under firewall policies\nwith an additional option for service insertion.",
-            "title": "Active Enhanced Firewall Policies Type",
-            "x-displayname": "Active Enhanced Network Policies Type",
-            "x-ves-proto-message": "ves.io.schema.network_firewall.ActiveEnhancedFirewallPoliciesType",
-            "properties": {
-                "enhanced_firewall_policies": {
-                    "type": "array",
-                    "description": " Ordered List of Enhanced Firewall Policies active\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 128\n  ves.io.schema.rules.repeated.min_items: 1\n",
-                    "title": "Enhanced Firewall Policy",
-                    "minItems": 1,
-                    "maxItems": 128,
-                    "items": {
-                        "$ref": "#/definitions/schemaviewsObjectRefType"
-                    },
-                    "x-displayname": "Enhanced Firewall Policy",
-                    "x-ves-required": "true",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.message.required": "true",
-                        "ves.io.schema.rules.repeated.max_items": "128",
-                        "ves.io.schema.rules.repeated.min_items": "1"
-                    }
-                }
-            }
-        },
-        "network_firewallActiveForwardProxyPoliciesType": {
-            "type": "object",
-            "description": "Ordered List of Forward Proxy Policies active",
-            "title": "Active Forward Proxy Policies Type",
-            "x-displayname": "Active Forward Proxy Policies Type",
-            "x-ves-proto-message": "ves.io.schema.network_firewall.ActiveForwardProxyPoliciesType",
-            "properties": {
-                "forward_proxy_policies": {
-                    "type": "array",
-                    "description": " Ordered List of Forward Proxy Policies active\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 128\n  ves.io.schema.rules.repeated.min_items: 1\n",
-                    "title": "Forward Proxy Policies",
-                    "minItems": 1,
-                    "maxItems": 128,
-                    "items": {
-                        "$ref": "#/definitions/schemaviewsObjectRefType"
-                    },
-                    "x-displayname": "Forward Proxy Policies",
-                    "x-ves-required": "true",
-                    "x-ves-validation-rules": {
-                        "ves.io.schema.rules.message.required": "true",
-                        "ves.io.schema.rules.repeated.max_items": "128",
-                        "ves.io.schema.rules.repeated.min_items": "1"
-                    }
                 }
             }
         },
@@ -3697,6 +3657,27 @@ var APISwaggerJSON string = `{
                 }
             }
         },
+        "schemaDualStackAddressType": {
+            "type": "object",
+            "description": "DualStackAddressType represents both IPv4 and IPv6 together.",
+            "title": "Dualstack IPv4 and IPv6 Address",
+            "x-displayname": "Dualstack Address",
+            "x-ves-proto-message": "ves.io.schema.DualStackAddressType",
+            "properties": {
+                "ipv4": {
+                    "description": " IPv4 Address",
+                    "title": "IPv4 Address",
+                    "$ref": "#/definitions/schemaIpv4AddressType",
+                    "x-displayname": "IPv4 Address"
+                },
+                "ipv6": {
+                    "description": " IPv6 Address",
+                    "title": "IPv6 Address",
+                    "$ref": "#/definitions/schemaIpv6AddressType",
+                    "x-displayname": "IPv6 Address"
+                }
+            }
+        },
         "schemaEmpty": {
             "type": "object",
             "description": "This can be used for messages where no values are needed",
@@ -3821,17 +3802,23 @@ var APISwaggerJSON string = `{
             "title": "IP Address",
             "x-displayname": "IP Address",
             "x-ves-displayorder": "3",
-            "x-ves-oneof-field-ver": "[\"ipv4\",\"ipv6\"]",
+            "x-ves-oneof-field-ver": "[\"dual_stack\",\"ipv4\",\"ipv6\"]",
             "x-ves-proto-message": "ves.io.schema.IpAddressType",
             "properties": {
+                "dual_stack": {
+                    "description": "Exclusive with [ipv4 ipv6]\n Both IPv4 and IPv6 addresses are specified together",
+                    "title": "Dual-stack Address (IPv4 + IPv6)",
+                    "$ref": "#/definitions/schemaDualStackAddressType",
+                    "x-displayname": "Dual-stack Address"
+                },
                 "ipv4": {
-                    "description": "Exclusive with [ipv6]\n IPv4 Address",
+                    "description": "Exclusive with [dual_stack ipv6]\n IPv4 Address",
                     "title": "IPv4 Address",
                     "$ref": "#/definitions/schemaIpv4AddressType",
                     "x-displayname": "IPv4 Address"
                 },
                 "ipv6": {
-                    "description": "Exclusive with [ipv4]\n IPv6 Address",
+                    "description": "Exclusive with [dual_stack ipv4]\n IPv6 Address",
                     "title": "IPv6 ADDRESS",
                     "$ref": "#/definitions/schemaIpv6AddressType",
                     "x-displayname": "IPv6 Address"
@@ -4628,7 +4615,7 @@ var APISwaggerJSON string = `{
         },
         "schemaVirtualNetworkType": {
             "type": "string",
-            "description": "Different types of virtual networks understood by the system\n\nVirtual-network of type VIRTUAL_NETWORK_SITE_LOCAL provides connectivity to public (outside) network.\nThis is an insecure network and is connected to public internet via NAT Gateways/firwalls\nVirtual-network of this type is local to every site. Two virtual networks of this type on different\nsites are neither related nor connected.\n\nConstraints:\nThere can be atmost one virtual network of this type in a given site.\nThis network type is supported on CE sites. This network is created automatically and present on all sites\nVirtual-network of type VIRTUAL_NETWORK_SITE_LOCAL_INSIDE is a private network inside site.\nIt is a secure network and is not connected to public network.\nVirtual-network of this type is local to every site. Two virtual networks of this type on different\nsites are neither related nor connected.\n\nConstraints:\nThere can be atmost one virtual network of this type in a given site.\nThis network type is supported on CE sites. This network is created during provisioning of site\nUser defined per-site virtual network. Scope of this virtual network is limited to the site.\nThis is not yet supported\nVirtual-network of type VIRTUAL_NETWORK_PUBLIC directly conects to the public internet.\nVirtual-network of this type is local to every site. Two virtual networks of this type on different sites are neither related nor connected.\n\nConstraints:\nThere can be atmost one virtual network of this type in a given site.\nThis network type is supported on RE sites only\nIt is an internally created by the system. They must not be created by user\nVirtual Neworks with global scope across different sites in F5XC domain.\nAn example global virtual-network called \"AIN Network\" is created for every tenant.\nfor volterra fabric\n\nConstraints:\nIt is currently only supported as internally created by the system.\nvK8s service network for a given tenant. Used to advertise a virtual host only to vk8s pods for that tenant\nConstraints:\nIt is an internally created by the system. Must not be created by user\nVER internal network for the site. It can only be used for virtual hosts with SMA_PROXY type proxy\nConstraints:\nIt is an internally created by the system. Must not be created by user\nVirtual-network of type VIRTUAL_NETWORK_SITE_LOCAL_INSIDE_OUTSIDE represents both\nVIRTUAL_NETWORK_SITE_LOCAL and VIRTUAL_NETWORK_SITE_LOCAL_INSIDE\n\nConstraints:\nThis network type is only meaningful in an advertise policy\nWhen virtual-network of type VIRTUAL_NETWORK_IP_AUTO is selected for\nan endpoint, VER will try to determine the network based on the provided\nIP address\n\nConstraints:\nThis network type is only meaningful in an endpoint\n\nVoltADN Private Network is used on volterra RE(s) to connect to customer private networks\nThis network is created by opening a support ticket\n\nThis network is per site srv6 network\nVER IP Fabric network for the site.\nThis Virtual network type is used for exposing virtual host on IP Fabric network on the VER site or\nfor endpoint in IP Fabric network\nConstraints:\nIt is an internally created by the system. Must not be created by user\nNetwork internally created for a segment\nConstraints:\nIt is an internally created by the system. Must not be created by user\nVirtual-network of type VIRTUAL_NETWORK_MANAGEMENT is used for management purposes",
+            "description": "Different types of virtual networks understood by the system\n\nVirtual-network of type VIRTUAL_NETWORK_SITE_LOCAL provides connectivity to public (outside) network.\nThis is an insecure network and is connected to public internet via NAT Gateways/firwalls\nVirtual-network of this type is local to every site. Two virtual networks of this type on different\nsites are neither related nor connected.\n\nConstraints:\nThere can be atmost one virtual network of this type in a given site.\nThis network type is supported on CE sites. This network is created automatically and present on all sites\nVirtual-network of type VIRTUAL_NETWORK_SITE_LOCAL_INSIDE is a private network inside site.\nIt is a secure network and is not connected to public network.\nVirtual-network of this type is local to every site. Two virtual networks of this type on different\nsites are neither related nor connected.\n\nConstraints:\nThere can be atmost one virtual network of this type in a given site.\nThis network type is supported on CE sites. This network is created during provisioning of site\nUser defined per-site virtual network. Scope of this virtual network is limited to the site.\nThis is not yet supported\nVirtual-network of type VIRTUAL_NETWORK_PUBLIC directly conects to the public internet.\nVirtual-network of this type is local to every site. Two virtual networks of this type on different sites are neither related nor connected.\n\nConstraints:\nThere can be atmost one virtual network of this type in a given site.\nThis network type is supported on RE sites only\nIt is an internally created by the system. They must not be created by user\nVirtual Neworks with global scope across different sites in F5XC domain.\nAn example global virtual-network called \"AIN Network\" is created for every tenant.\nfor volterra fabric\n\nConstraints:\nIt is currently only supported as internally created by the system.\nvK8s service network for a given tenant. Used to advertise a virtual host only to vk8s pods for that tenant\nConstraints:\nIt is an internally created by the system. Must not be created by user\nVER internal network for the site. It can only be used for virtual hosts with SMA_PROXY type proxy\nConstraints:\nIt is an internally created by the system. Must not be created by user\nVirtual-network of type VIRTUAL_NETWORK_SITE_LOCAL_INSIDE_OUTSIDE represents both\nVIRTUAL_NETWORK_SITE_LOCAL and VIRTUAL_NETWORK_SITE_LOCAL_INSIDE\n\nConstraints:\nThis network type is only meaningful in an advertise policy\nWhen virtual-network of type VIRTUAL_NETWORK_IP_AUTO is selected for\nan endpoint, VER will try to determine the network based on the provided\nIP address\n\nConstraints:\nThis network type is only meaningful in an endpoint\n\nVoltADN Private Network is used on volterra RE(s) to connect to customer private networks\nThis network is created by opening a support ticket\n\nThis network is per site srv6 network\nVER IP Fabric network for the site.\nThis Virtual network type is used for exposing virtual host on IP Fabric network on the VER site or\nfor endpoint in IP Fabric network\nConstraints:\nIt is an internally created by the system. Must not be created by user\nVirtual-network of type VIRTUAL_NETWORK_SEGMENT for segment interface\nVirtual-network of type VIRTUAL_NETWORK_MANAGEMENT is used for management purposes",
             "title": "VirtualNetworkType",
             "enum": [
                 "VIRTUAL_NETWORK_SITE_LOCAL",
@@ -4659,6 +4646,58 @@ var APISwaggerJSON string = `{
                     "type": "string",
                     "description": "x-displayName: \"Name\"\nx-required\nx-example: \"ChargeBack-API-Key\"\nName of the secret.",
                     "title": "Name"
+                }
+            }
+        },
+        "schemanetwork_firewallActiveEnhancedFirewallPoliciesType": {
+            "type": "object",
+            "description": "List of Enhanced Firewall Policies\nThese policies use session-based rules and provide all options available under firewall policies\nwith an additional option for service insertion.",
+            "title": "Active Enhanced Firewall Policies Type",
+            "x-displayname": "Active Enhanced Network Policies Type",
+            "x-ves-proto-message": "ves.io.schema.network_firewall.ActiveEnhancedFirewallPoliciesType",
+            "properties": {
+                "enhanced_firewall_policies": {
+                    "type": "array",
+                    "description": " Ordered List of Enhanced Firewall Policies active\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 128\n  ves.io.schema.rules.repeated.min_items: 1\n",
+                    "title": "Enhanced Firewall Policy",
+                    "minItems": 1,
+                    "maxItems": 128,
+                    "items": {
+                        "$ref": "#/definitions/schemaviewsObjectRefType"
+                    },
+                    "x-displayname": "Enhanced Firewall Policy",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.repeated.max_items": "128",
+                        "ves.io.schema.rules.repeated.min_items": "1"
+                    }
+                }
+            }
+        },
+        "schemanetwork_firewallActiveForwardProxyPoliciesType": {
+            "type": "object",
+            "description": "Ordered List of Forward Proxy Policies active",
+            "title": "Active Forward Proxy Policies Type",
+            "x-displayname": "Active Forward Proxy Policies Type",
+            "x-ves-proto-message": "ves.io.schema.network_firewall.ActiveForwardProxyPoliciesType",
+            "properties": {
+                "forward_proxy_policies": {
+                    "type": "array",
+                    "description": " Ordered List of Forward Proxy Policies active\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 128\n  ves.io.schema.rules.repeated.min_items: 1\n",
+                    "title": "Forward Proxy Policies",
+                    "minItems": 1,
+                    "maxItems": 128,
+                    "items": {
+                        "$ref": "#/definitions/schemaviewsObjectRefType"
+                    },
+                    "x-displayname": "Forward Proxy Policies",
+                    "x-ves-required": "true",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.repeated.max_items": "128",
+                        "ves.io.schema.rules.repeated.min_items": "1"
+                    }
                 }
             }
         },
@@ -5880,6 +5919,23 @@ var APISwaggerJSON string = `{
                     "title": "App Stack Cluster",
                     "$ref": "#/definitions/gcp_vpc_siteGCPVPCVoltstackClusterType",
                     "x-displayname": "App Stack Cluster (One Interface)"
+                },
+                "waf_signatures": {
+                    "description": " Select WAF Signatures Update Mode for the site. By default, new signatures will be applied manually.",
+                    "title": "WAF Signatures Update Mode",
+                    "$ref": "#/definitions/common_wafLiveSignaturesUpdate",
+                    "x-displayname": "WAF Signatures Update Mode"
+                }
+            }
+        },
+        "viewsgcp_vpc_siteSpecType": {
+            "type": "object",
+            "x-ves-proto-message": "ves.io.schema.views.gcp_vpc_site.SpecType",
+            "properties": {
+                "gc_spec": {
+                    "title": "gc_spec",
+                    "$ref": "#/definitions/viewsgcp_vpc_siteGlobalSpecType",
+                    "x-displayname": "GC Spec"
                 }
             }
         }

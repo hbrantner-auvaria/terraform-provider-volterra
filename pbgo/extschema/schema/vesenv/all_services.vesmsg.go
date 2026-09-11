@@ -1079,6 +1079,23 @@ func (v *ValidateServiceChoice) Validate(ctx context.Context, pm interface{}, op
 				return err
 			}
 		}
+	case *ServiceChoice_Piper:
+		if fv, exists := v.FldValidators["choice.piper"]; exists {
+			val := m.GetChoice().(*ServiceChoice_Piper).Piper
+			vOpts := append(opts,
+				db.WithValidateField("choice"),
+				db.WithValidateField("piper"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	if fv, exists := v.FldValidators["device_intelligence"]; exists {
+		vOpts := append(opts, db.WithValidateField("device_intelligence"))
+		if err := fv(ctx, m.GetDeviceIntelligence(), vOpts...); err != nil {
+			return err
+		}
 	}
 	return nil
 }

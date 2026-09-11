@@ -3354,6 +3354,18 @@ func (v *ValidateSimpleRule) Validate(ctx context.Context, pm interface{}, opts 
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["bot_defense_request_leg_identifier"]; exists {
+		vOpts := append(opts, db.WithValidateField("bot_defense_request_leg_identifier"))
+		if err := fv(ctx, m.GetBotDefenseRequestLegIdentifier(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["bot_full_site_action"]; exists {
+		vOpts := append(opts, db.WithValidateField("bot_full_site_action"))
+		if err := fv(ctx, m.GetBotFullSiteAction(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["challenge_action"]; exists {
 		vOpts := append(opts, db.WithValidateField("challenge_action"))
 		if err := fv(ctx, m.GetChallengeAction(), vOpts...); err != nil {
@@ -3823,6 +3835,7 @@ var DefaultSimpleRuleValidator = func() *ValidateSimpleRule {
 	v.FldValidators["malware_protection_action"] = ves_io_schema_policy.ModifyActionValidator().Validate
 	v.FldValidators["malware_protection_settings"] = ves_io_schema_policy.MalwareProtectionSettingsValidator().Validate
 	v.FldValidators["bot_advanced_endpoint_matcher"] = ves_io_schema_policy.BotAdvancedEndpointMatcherTypeValidator().Validate
+	v.FldValidators["bot_full_site_action"] = ves_io_schema_policy.BotFullSiteActionValidator().Validate
 
 	return v
 }()

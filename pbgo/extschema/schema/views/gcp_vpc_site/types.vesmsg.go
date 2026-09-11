@@ -721,6 +721,12 @@ func (v *ValidateCreateSpecType) Validate(ctx context.Context, pm interface{}, o
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["waf_signatures"]; exists {
+		vOpts := append(opts, db.WithValidateField("waf_signatures"))
+		if err := fv(ctx, m.GetWafSignatures(), vOpts...); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -1861,10 +1867,10 @@ var DefaultGCPVPCIngressEgressGwReplaceTypeValidator = func() *ValidateGCPVPCIng
 
 	vrhGcpZoneNames := v.GcpZoneNamesValidationRuleHandler
 	rulesGcpZoneNames := map[string]string{
-		"ves.io.schema.rules.message.required":   "true",
-		"ves.io.schema.rules.repeated.max_items": "3",
-		"ves.io.schema.rules.repeated.unique":    "true",
-		"ves.io.schema.rules.string.max_len":     "64",
+		"ves.io.schema.rules.message.required":              "true",
+		"ves.io.schema.rules.repeated.items.string.max_len": "64",
+		"ves.io.schema.rules.repeated.max_items":            "3",
+		"ves.io.schema.rules.repeated.unique":               "true",
 	}
 	vFn, err = vrhGcpZoneNames(rulesGcpZoneNames)
 	if err != nil {
@@ -2764,10 +2770,10 @@ var DefaultGCPVPCIngressEgressGwTypeValidator = func() *ValidateGCPVPCIngressEgr
 
 	vrhGcpZoneNames := v.GcpZoneNamesValidationRuleHandler
 	rulesGcpZoneNames := map[string]string{
-		"ves.io.schema.rules.message.required":   "true",
-		"ves.io.schema.rules.repeated.max_items": "3",
-		"ves.io.schema.rules.repeated.unique":    "true",
-		"ves.io.schema.rules.string.max_len":     "64",
+		"ves.io.schema.rules.message.required":              "true",
+		"ves.io.schema.rules.repeated.items.string.max_len": "64",
+		"ves.io.schema.rules.repeated.max_items":            "3",
+		"ves.io.schema.rules.repeated.unique":               "true",
 	}
 	vFn, err = vrhGcpZoneNames(rulesGcpZoneNames)
 	if err != nil {
@@ -2945,10 +2951,10 @@ var DefaultGCPVPCIngressGwReplaceTypeValidator = func() *ValidateGCPVPCIngressGw
 
 	vrhGcpZoneNames := v.GcpZoneNamesValidationRuleHandler
 	rulesGcpZoneNames := map[string]string{
-		"ves.io.schema.rules.message.required":   "true",
-		"ves.io.schema.rules.repeated.max_items": "3",
-		"ves.io.schema.rules.repeated.unique":    "true",
-		"ves.io.schema.rules.string.max_len":     "64",
+		"ves.io.schema.rules.message.required":              "true",
+		"ves.io.schema.rules.repeated.items.string.max_len": "64",
+		"ves.io.schema.rules.repeated.max_items":            "3",
+		"ves.io.schema.rules.repeated.unique":               "true",
 	}
 	vFn, err = vrhGcpZoneNames(rulesGcpZoneNames)
 	if err != nil {
@@ -3154,10 +3160,10 @@ var DefaultGCPVPCIngressGwTypeValidator = func() *ValidateGCPVPCIngressGwType {
 
 	vrhGcpZoneNames := v.GcpZoneNamesValidationRuleHandler
 	rulesGcpZoneNames := map[string]string{
-		"ves.io.schema.rules.message.required":   "true",
-		"ves.io.schema.rules.repeated.max_items": "3",
-		"ves.io.schema.rules.repeated.unique":    "true",
-		"ves.io.schema.rules.string.max_len":     "64",
+		"ves.io.schema.rules.message.required":              "true",
+		"ves.io.schema.rules.repeated.items.string.max_len": "64",
+		"ves.io.schema.rules.repeated.max_items":            "3",
+		"ves.io.schema.rules.repeated.unique":               "true",
 	}
 	vFn, err = vrhGcpZoneNames(rulesGcpZoneNames)
 	if err != nil {
@@ -4195,10 +4201,10 @@ var DefaultGCPVPCVoltstackClusterReplaceTypeValidator = func() *ValidateGCPVPCVo
 
 	vrhGcpZoneNames := v.GcpZoneNamesValidationRuleHandler
 	rulesGcpZoneNames := map[string]string{
-		"ves.io.schema.rules.message.required":   "true",
-		"ves.io.schema.rules.repeated.max_items": "3",
-		"ves.io.schema.rules.repeated.unique":    "true",
-		"ves.io.schema.rules.string.max_len":     "64",
+		"ves.io.schema.rules.message.required":              "true",
+		"ves.io.schema.rules.repeated.items.string.max_len": "64",
+		"ves.io.schema.rules.repeated.max_items":            "3",
+		"ves.io.schema.rules.repeated.unique":               "true",
 	}
 	vFn, err = vrhGcpZoneNames(rulesGcpZoneNames)
 	if err != nil {
@@ -5114,10 +5120,10 @@ var DefaultGCPVPCVoltstackClusterTypeValidator = func() *ValidateGCPVPCVoltstack
 
 	vrhGcpZoneNames := v.GcpZoneNamesValidationRuleHandler
 	rulesGcpZoneNames := map[string]string{
-		"ves.io.schema.rules.message.required":   "true",
-		"ves.io.schema.rules.repeated.max_items": "3",
-		"ves.io.schema.rules.repeated.unique":    "true",
-		"ves.io.schema.rules.string.max_len":     "64",
+		"ves.io.schema.rules.message.required":              "true",
+		"ves.io.schema.rules.repeated.items.string.max_len": "64",
+		"ves.io.schema.rules.repeated.max_items":            "3",
+		"ves.io.schema.rules.repeated.unique":               "true",
 	}
 	vFn, err = vrhGcpZoneNames(rulesGcpZoneNames)
 	if err != nil {
@@ -5908,6 +5914,12 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 	if fv, exists := v.FldValidators["volterra_software_version"]; exists {
 		vOpts := append(opts, db.WithValidateField("volterra_software_version"))
 		if err := fv(ctx, m.GetVolterraSoftwareVersion(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["waf_signatures"]; exists {
+		vOpts := append(opts, db.WithValidateField("waf_signatures"))
+		if err := fv(ctx, m.GetWafSignatures(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -6994,6 +7006,12 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["waf_signatures"]; exists {
+		vOpts := append(opts, db.WithValidateField("waf_signatures"))
+		if err := fv(ctx, m.GetWafSignatures(), vOpts...); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -7787,6 +7805,12 @@ func (v *ValidateReplaceSpecType) Validate(ctx context.Context, pm interface{}, 
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["waf_signatures"]; exists {
+		vOpts := append(opts, db.WithValidateField("waf_signatures"))
+		if err := fv(ctx, m.GetWafSignatures(), vOpts...); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -8180,6 +8204,7 @@ func (m *CreateSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool
 	m.GetSiteTypeFromGlobalSpecType(f)
 	m.SshKey = f.GetSshKey()
 	m.Sw = f.GetSw()
+	m.WafSignatures = f.GetWafSignatures()
 }
 
 func (m *CreateSpecType) FromGlobalSpecType(f *GlobalSpecType) {
@@ -8217,6 +8242,7 @@ func (m *CreateSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) 
 	m1.SetSiteTypeToGlobalSpecType(f)
 	f.SshKey = m1.SshKey
 	f.Sw = m1.Sw
+	f.WafSignatures = m1.WafSignatures
 }
 
 func (m *CreateSpecType) ToGlobalSpecType(f *GlobalSpecType) {
@@ -9153,6 +9179,7 @@ func (m *GetSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	m.UserModificationTimestamp = f.GetUserModificationTimestamp()
 	m.ValidationState = f.GetValidationState()
 	m.VolterraSoftwareVersion = f.GetVolterraSoftwareVersion()
+	m.WafSignatures = f.GetWafSignatures()
 }
 
 func (m *GetSpecType) FromGlobalSpecType(f *GlobalSpecType) {
@@ -9197,6 +9224,7 @@ func (m *GetSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	f.UserModificationTimestamp = m1.UserModificationTimestamp
 	f.ValidationState = m1.ValidationState
 	f.VolterraSoftwareVersion = m1.VolterraSoftwareVersion
+	f.WafSignatures = m1.WafSignatures
 }
 
 func (m *GetSpecType) ToGlobalSpecType(f *GlobalSpecType) {
@@ -9434,6 +9462,7 @@ func (m *ReplaceSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy boo
 	m.GetPrivateConnectivityChoiceFromGlobalSpecType(f)
 	m.GetSiteTypeFromGlobalSpecType(f)
 	m.SshKey = f.GetSshKey()
+	m.WafSignatures = f.GetWafSignatures()
 }
 
 func (m *ReplaceSpecType) FromGlobalSpecType(f *GlobalSpecType) {
@@ -9466,6 +9495,7 @@ func (m *ReplaceSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool)
 	m1.SetPrivateConnectivityChoiceToGlobalSpecType(f)
 	m1.SetSiteTypeToGlobalSpecType(f)
 	f.SshKey = m1.SshKey
+	f.WafSignatures = m1.WafSignatures
 }
 
 func (m *ReplaceSpecType) ToGlobalSpecType(f *GlobalSpecType) {

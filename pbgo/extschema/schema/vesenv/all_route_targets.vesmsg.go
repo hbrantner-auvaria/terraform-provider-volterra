@@ -1662,6 +1662,226 @@ func (v *ValidateRouteTargetChoice) Validate(ctx context.Context, pm interface{}
 				return err
 			}
 		}
+	case *RouteTargetChoice_Rt_2036:
+		if fv, exists := v.FldValidators["choice.rt_2036"]; exists {
+			val := m.GetChoice().(*RouteTargetChoice_Rt_2036).Rt_2036
+			vOpts := append(opts,
+				db.WithValidateField("choice"),
+				db.WithValidateField("rt_2036"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *RouteTargetChoice_Rt_2037:
+		if fv, exists := v.FldValidators["choice.rt_2037"]; exists {
+			val := m.GetChoice().(*RouteTargetChoice_Rt_2037).Rt_2037
+			vOpts := append(opts,
+				db.WithValidateField("choice"),
+				db.WithValidateField("rt_2037"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *RouteTargetChoice_Rt_2038:
+		if fv, exists := v.FldValidators["choice.rt_2038"]; exists {
+			val := m.GetChoice().(*RouteTargetChoice_Rt_2038).Rt_2038
+			vOpts := append(opts,
+				db.WithValidateField("choice"),
+				db.WithValidateField("rt_2038"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *RouteTargetChoice_Rt_2039:
+		if fv, exists := v.FldValidators["choice.rt_2039"]; exists {
+			val := m.GetChoice().(*RouteTargetChoice_Rt_2039).Rt_2039
+			vOpts := append(opts,
+				db.WithValidateField("choice"),
+				db.WithValidateField("rt_2039"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *RouteTargetChoice_Rt_2040:
+		if fv, exists := v.FldValidators["choice.rt_2040"]; exists {
+			val := m.GetChoice().(*RouteTargetChoice_Rt_2040).Rt_2040
+			vOpts := append(opts,
+				db.WithValidateField("choice"),
+				db.WithValidateField("rt_2040"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *RouteTargetChoice_Rt_2041:
+		if fv, exists := v.FldValidators["choice.rt_2041"]; exists {
+			val := m.GetChoice().(*RouteTargetChoice_Rt_2041).Rt_2041
+			vOpts := append(opts,
+				db.WithValidateField("choice"),
+				db.WithValidateField("rt_2041"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *RouteTargetChoice_Rt_2042:
+		if fv, exists := v.FldValidators["choice.rt_2042"]; exists {
+			val := m.GetChoice().(*RouteTargetChoice_Rt_2042).Rt_2042
+			vOpts := append(opts,
+				db.WithValidateField("choice"),
+				db.WithValidateField("rt_2042"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *RouteTargetChoice_Rt_2043:
+		if fv, exists := v.FldValidators["choice.rt_2043"]; exists {
+			val := m.GetChoice().(*RouteTargetChoice_Rt_2043).Rt_2043
+			vOpts := append(opts,
+				db.WithValidateField("choice"),
+				db.WithValidateField("rt_2043"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *RouteTargetChoice_Rt_2044:
+		if fv, exists := v.FldValidators["choice.rt_2044"]; exists {
+			val := m.GetChoice().(*RouteTargetChoice_Rt_2044).Rt_2044
+			vOpts := append(opts,
+				db.WithValidateField("choice"),
+				db.WithValidateField("rt_2044"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *RouteTargetChoice_Rt_2045:
+		if fv, exists := v.FldValidators["choice.rt_2045"]; exists {
+			val := m.GetChoice().(*RouteTargetChoice_Rt_2045).Rt_2045
+			vOpts := append(opts,
+				db.WithValidateField("choice"),
+				db.WithValidateField("rt_2045"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *RouteTargetChoice_Rt_2046:
+		if fv, exists := v.FldValidators["choice.rt_2046"]; exists {
+			val := m.GetChoice().(*RouteTargetChoice_Rt_2046).Rt_2046
+			vOpts := append(opts,
+				db.WithValidateField("choice"),
+				db.WithValidateField("rt_2046"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *RouteTargetChoice_Rt_2047:
+		if fv, exists := v.FldValidators["choice.rt_2047"]; exists {
+			val := m.GetChoice().(*RouteTargetChoice_Rt_2047).Rt_2047
+			vOpts := append(opts,
+				db.WithValidateField("choice"),
+				db.WithValidateField("rt_2047"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *RouteTargetChoice_Rt_2048:
+		if fv, exists := v.FldValidators["choice.rt_2048"]; exists {
+			val := m.GetChoice().(*RouteTargetChoice_Rt_2048).Rt_2048
+			vOpts := append(opts,
+				db.WithValidateField("choice"),
+				db.WithValidateField("rt_2048"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *RouteTargetChoice_Rt_2049:
+		if fv, exists := v.FldValidators["choice.rt_2049"]; exists {
+			val := m.GetChoice().(*RouteTargetChoice_Rt_2049).Rt_2049
+			vOpts := append(opts,
+				db.WithValidateField("choice"),
+				db.WithValidateField("rt_2049"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *RouteTargetChoice_Rt_2050:
+		if fv, exists := v.FldValidators["choice.rt_2050"]; exists {
+			val := m.GetChoice().(*RouteTargetChoice_Rt_2050).Rt_2050
+			vOpts := append(opts,
+				db.WithValidateField("choice"),
+				db.WithValidateField("rt_2050"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *RouteTargetChoice_Rt_2051:
+		if fv, exists := v.FldValidators["choice.rt_2051"]; exists {
+			val := m.GetChoice().(*RouteTargetChoice_Rt_2051).Rt_2051
+			vOpts := append(opts,
+				db.WithValidateField("choice"),
+				db.WithValidateField("rt_2051"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *RouteTargetChoice_Rt_2052:
+		if fv, exists := v.FldValidators["choice.rt_2052"]; exists {
+			val := m.GetChoice().(*RouteTargetChoice_Rt_2052).Rt_2052
+			vOpts := append(opts,
+				db.WithValidateField("choice"),
+				db.WithValidateField("rt_2052"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *RouteTargetChoice_Rt_2053:
+		if fv, exists := v.FldValidators["choice.rt_2053"]; exists {
+			val := m.GetChoice().(*RouteTargetChoice_Rt_2053).Rt_2053
+			vOpts := append(opts,
+				db.WithValidateField("choice"),
+				db.WithValidateField("rt_2053"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *RouteTargetChoice_Rt_2054:
+		if fv, exists := v.FldValidators["choice.rt_2054"]; exists {
+			val := m.GetChoice().(*RouteTargetChoice_Rt_2054).Rt_2054
+			vOpts := append(opts,
+				db.WithValidateField("choice"),
+				db.WithValidateField("rt_2054"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *RouteTargetChoice_Rt_2055:
+		if fv, exists := v.FldValidators["choice.rt_2055"]; exists {
+			val := m.GetChoice().(*RouteTargetChoice_Rt_2055).Rt_2055
+			vOpts := append(opts,
+				db.WithValidateField("choice"),
+				db.WithValidateField("rt_2055"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	case *RouteTargetChoice_Rt_65535:
 		if fv, exists := v.FldValidators["choice.rt_65535"]; exists {
 			val := m.GetChoice().(*RouteTargetChoice_Rt_65535).Rt_65535

@@ -22,13 +22,25 @@ resource "volterra_workload" "example" {
 
   // One of the arguments from this list "job service simple_service stateful_service" must be set
 
-  simple_service {
-    // One of the arguments from this list "do_not_advertise service_port simple_advertise" must be set
+  service {
+    advertise_options {
+      // One of the arguments from this list "advertise_custom advertise_in_cluster advertise_on_public do_not_advertise" must be set
 
-    simple_advertise {
-      domains = ["www.foo.com"]
+      advertise_in_cluster {
+        // One of the arguments from this list "multi_ports port" must be set
 
-      service_port = "2048"
+        port {
+          info {
+            port = "80"
+
+            protocol = "protocol"
+
+            // One of the arguments from this list "same_as_port target_port" must be set
+
+            same_as_port = true
+          }
+        }
+      }
     }
 
     configuration {
@@ -53,7 +65,7 @@ resource "volterra_workload" "example" {
       }
     }
 
-    container {
+    containers {
       args = ["value"]
 
       command = ["value"]
@@ -68,7 +80,11 @@ resource "volterra_workload" "example" {
 
         // One of the arguments from this list "container_registry public" must be set
 
-        public = true
+        container_registry {
+          name      = "test1"
+          namespace = "staging"
+          tenant    = "acmecorp"
+        }
       }
       init_container = true
       liveness_check {
@@ -132,12 +148,47 @@ resource "volterra_workload" "example" {
       }
     }
 
-    // One of the arguments from this list "disabled enabled" must be set
+    deploy_options {
+      // One of the arguments from this list "all_res default_virtual_sites deploy_ce_sites deploy_ce_virtual_sites deploy_re_sites deploy_re_virtual_sites" must be set
 
-    disabled = true
-    scale_to_zero = true
+      deploy_re_virtual_sites {
+        virtual_site {
+          name      = "test1"
+          namespace = "staging"
+          tenant    = "acmecorp"
+        }
+      }
+    }
+
+    family {
+      // One of the arguments from this list "dual_v4_preferred dual_v6_preferred v4 v6" must be set
+
+      v6 = true
+    }
+
+    // One of the arguments from this list "num_replicas scale_to_zero" must be set
+
+    num_replicas = "2"
+    volumes {
+      name = "volume-0"
+
+      // One of the arguments from this list "empty_dir host_path persistent_volume" must be set
+
+      empty_dir {
+        mount {
+          mode = "mode"
+
+          mount_path = "value"
+
+          sub_path = "value"
+        }
+
+        size_limit = "32"
+      }
+    }
   }
 }
+
 ```
 
 Argument Reference
@@ -1878,4 +1929,4 @@ X-Forwarded-Client-Cert header will be added with the configured fields.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured workload.
+-	`id` - This is the id of the configured workload.

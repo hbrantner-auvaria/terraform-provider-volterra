@@ -17,6 +17,7 @@ import (
 
 	ves_io_schema "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema"
 	ves_io_schema_alert_policy "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/alert_policy"
+	drift "github.com/volterraedge/terraform-provider-volterra/volterra/drift_detection"
 )
 
 // resourceVolterraAlertPolicy is implementation of Volterra's AlertPolicy resources
@@ -1062,6 +1063,8 @@ func setAlertPolicyFields(client *APIClient, d *schema.ResourceData, resp vesapi
 	d.Set("name", metadata.GetName())
 
 	d.Set("namespace", metadata.GetNamespace())
+
+	drift.DriftDetectionSpec_AlertPolicy(d, resp)
 
 	return nil
 }

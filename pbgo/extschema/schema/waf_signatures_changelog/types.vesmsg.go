@@ -24,6 +24,146 @@ var (
 
 // augmented methods on protoc/std generated struct
 
+func (m *BotSignature) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *BotSignature) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *BotSignature) DeepCopy() *BotSignature {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &BotSignature{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *BotSignature) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *BotSignature) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return BotSignatureValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateBotSignature struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateBotSignature) LastUpdatedValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for last_updated")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateBotSignature) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*BotSignature)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *BotSignature got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["bot_class"]; exists {
+		vOpts := append(opts, db.WithValidateField("bot_class"))
+		if err := fv(ctx, m.GetBotClass(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["bot_name"]; exists {
+		vOpts := append(opts, db.WithValidateField("bot_name"))
+		if err := fv(ctx, m.GetBotName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["category"]; exists {
+		vOpts := append(opts, db.WithValidateField("category"))
+		if err := fv(ctx, m.GetCategory(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["hostnames"]; exists {
+		vOpts := append(opts, db.WithValidateField("hostnames"))
+		for idx, item := range m.GetHostnames() {
+			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
+			if err := fv(ctx, item, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	if fv, exists := v.FldValidators["id"]; exists {
+		vOpts := append(opts, db.WithValidateField("id"))
+		if err := fv(ctx, m.GetId(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["last_updated"]; exists {
+		vOpts := append(opts, db.WithValidateField("last_updated"))
+		if err := fv(ctx, m.GetLastUpdated(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["risk"]; exists {
+		vOpts := append(opts, db.WithValidateField("risk"))
+		if err := fv(ctx, m.GetRisk(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultBotSignatureValidator = func() *ValidateBotSignature {
+	v := &ValidateBotSignature{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhLastUpdated := v.LastUpdatedValidationRuleHandler
+	rulesLastUpdated := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhLastUpdated(rulesLastUpdated)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for BotSignature.last_updated: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["last_updated"] = vFn
+
+	return v
+}()
+
+func BotSignatureValidator() db.Validator {
+	return DefaultBotSignatureValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *CreateSpecType) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }

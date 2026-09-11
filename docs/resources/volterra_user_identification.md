@@ -26,6 +26,7 @@ resource "volterra_user_identification" "example" {
     ip_and_tls_fingerprint = true
   }
 }
+
 ```
 
 Argument Reference
@@ -128,4 +129,4 @@ User JA3 TLS Fingerprint as user identifier.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured user_identification.
+-	`id` - This is the id of the configured user_identification.

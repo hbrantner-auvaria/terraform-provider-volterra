@@ -170,6 +170,14 @@ func (v *ValidateGetSpecType) VirtualSitesValidationRuleHandler(rules map[string
 
 	return validatorFn, nil
 }
+func (v *ValidateGetSpecType) Ipv6ValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for ipv6")
+	}
+
+	return validatorFn, nil
+}
 
 func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
 	m, ok := pm.(*GetSpecType)
@@ -187,6 +195,12 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 	if fv, exists := v.FldValidators["ip"]; exists {
 		vOpts := append(opts, db.WithValidateField("ip"))
 		if err := fv(ctx, m.GetIp(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["ipv6"]; exists {
+		vOpts := append(opts, db.WithValidateField("ipv6"))
+		if err := fv(ctx, m.GetIpv6(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -212,8 +226,7 @@ var DefaultGetSpecTypeValidator = func() *ValidateGetSpecType {
 
 	vrhIp := v.IpValidationRuleHandler
 	rulesIp := map[string]string{
-		"ves.io.schema.rules.message.required": "true",
-		"ves.io.schema.rules.string.ip":        "true",
+		"ves.io.schema.rules.string.ip": "true",
 	}
 	vFn, err = vrhIp(rulesIp)
 	if err != nil {
@@ -232,6 +245,17 @@ var DefaultGetSpecTypeValidator = func() *ValidateGetSpecType {
 		panic(errMsg)
 	}
 	v.FldValidators["virtual_sites"] = vFn
+
+	vrhIpv6 := v.Ipv6ValidationRuleHandler
+	rulesIpv6 := map[string]string{
+		"ves.io.schema.rules.string.ipv6": "true",
+	}
+	vFn, err = vrhIpv6(rulesIpv6)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for GetSpecType.ipv6: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["ipv6"] = vFn
 
 	return v
 }()
@@ -386,6 +410,14 @@ func (v *ValidateGlobalSpecType) VirtualSitesValidationRuleHandler(rules map[str
 
 	return validatorFn, nil
 }
+func (v *ValidateGlobalSpecType) Ipv6ValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for ipv6")
+	}
+
+	return validatorFn, nil
+}
 
 func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
 	m, ok := pm.(*GlobalSpecType)
@@ -409,6 +441,12 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 	if fv, exists := v.FldValidators["ip"]; exists {
 		vOpts := append(opts, db.WithValidateField("ip"))
 		if err := fv(ctx, m.GetIp(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["ipv6"]; exists {
+		vOpts := append(opts, db.WithValidateField("ipv6"))
+		if err := fv(ctx, m.GetIpv6(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -446,8 +484,7 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 
 	vrhIp := v.IpValidationRuleHandler
 	rulesIp := map[string]string{
-		"ves.io.schema.rules.message.required": "true",
-		"ves.io.schema.rules.string.ip":        "true",
+		"ves.io.schema.rules.string.ip": "true",
 	}
 	vFn, err = vrhIp(rulesIp)
 	if err != nil {
@@ -466,6 +503,17 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 		panic(errMsg)
 	}
 	v.FldValidators["virtual_sites"] = vFn
+
+	vrhIpv6 := v.Ipv6ValidationRuleHandler
+	rulesIpv6 := map[string]string{
+		"ves.io.schema.rules.string.ipv6": "true",
+	}
+	vFn, err = vrhIpv6(rulesIpv6)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for GlobalSpecType.ipv6: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["ipv6"] = vFn
 	v.FldValidators["node_selector"] = ves_io_schema.LabelSelectorTypeValidator().Validate
 
 	return v
@@ -670,6 +718,7 @@ func (m *GetSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 		return
 	}
 	m.Ip = f.GetIp()
+	m.Ipv6 = f.GetIpv6()
 	m.VirtualSites = f.GetVirtualSites()
 }
 
@@ -689,6 +738,7 @@ func (m *GetSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	_ = m1
 
 	f.Ip = m1.Ip
+	f.Ipv6 = m1.Ipv6
 	f.VirtualSites = m1.VirtualSites
 }
 

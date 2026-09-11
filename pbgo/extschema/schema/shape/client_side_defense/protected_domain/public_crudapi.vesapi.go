@@ -1916,7 +1916,7 @@ var APISwaggerJSON string = `{
             "properties": {
                 "protected_domain": {
                     "type": "string",
-                    "description": " For Client-Side Defense to work on the webpages where you injected the JS,\n you need to enter the root domain below.\n Example: if you are adding Client-Side Defense JS on checkout.example.com,\n you should enter example.com here.\n\nExample: - \"example.com\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.etld_plus_one: true\n  ves.io.schema.rules.string.max_len: 256\n  ves.io.schema.rules.string.not_empty: true\n",
+                    "description": " For Client-Side Defense to work on the webpages where you injected the JS,\n you need to enter the root domain below.\n Example: if you are adding Client-Side Defense JS on checkout.example.com,\n you should enter example.com here.\n\nExample: - \"example.com\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.etld_plus_one: true\n  ves.io.schema.rules.string.max_len: 256\n",
                     "maxLength": 256,
                     "x-displayname": "Root Domain",
                     "x-ves-example": "example.com",
@@ -1924,8 +1924,7 @@ var APISwaggerJSON string = `{
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true",
                         "ves.io.schema.rules.string.etld_plus_one": "true",
-                        "ves.io.schema.rules.string.max_len": "256",
-                        "ves.io.schema.rules.string.not_empty": "true"
+                        "ves.io.schema.rules.string.max_len": "256"
                     }
                 }
             }
@@ -2059,7 +2058,7 @@ var APISwaggerJSON string = `{
                 },
                 "protected_domain": {
                     "type": "string",
-                    "description": " For Client-Side Defense to work on the webpages where you injected the JS,\n you need to enter the root domain below.\n Example: if you are adding Client-Side Defense JS on checkout.example.com,\n you should enter example.com here.\n\nExample: - \"example.com\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.etld_plus_one: true\n  ves.io.schema.rules.string.max_len: 256\n  ves.io.schema.rules.string.not_empty: true\n",
+                    "description": " For Client-Side Defense to work on the webpages where you injected the JS,\n you need to enter the root domain below.\n Example: if you are adding Client-Side Defense JS on checkout.example.com,\n you should enter example.com here.\n\nExample: - \"example.com\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.string.etld_plus_one: true\n  ves.io.schema.rules.string.max_len: 256\n",
                     "maxLength": 256,
                     "x-displayname": "Root Domain",
                     "x-ves-example": "example.com",
@@ -2067,8 +2066,7 @@ var APISwaggerJSON string = `{
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true",
                         "ves.io.schema.rules.string.etld_plus_one": "true",
-                        "ves.io.schema.rules.string.max_len": "256",
-                        "ves.io.schema.rules.string.not_empty": "true"
+                        "ves.io.schema.rules.string.max_len": "256"
                     }
                 }
             }

@@ -2924,7 +2924,7 @@ var CustomAPISwaggerJSON string = `{
             "properties": {
                 "ip_protocols": {
                     "type": "array",
-                    "description": "\nExample: - \"TCP\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.unique: true\n  ves.io.schema.rules.string.in: [\\\"TCP\\\",\\\"UDP\\\"]\n  ves.io.schema.rules.string.max_len: 3\n",
+                    "description": "\nExample: - \"TCP\"-\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.items.string.in: [\\\"TCP\\\",\\\"UDP\\\"]\n  ves.io.schema.rules.repeated.items.string.max_len: 3\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "IP Protocol",
                     "items": {
                         "type": "string",
@@ -2935,9 +2935,9 @@ var CustomAPISwaggerJSON string = `{
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true",
-                        "ves.io.schema.rules.repeated.unique": "true",
-                        "ves.io.schema.rules.string.in": "[\\\"TCP\\\",\\\"UDP\\\"]",
-                        "ves.io.schema.rules.string.max_len": "3"
+                        "ves.io.schema.rules.repeated.items.string.in": "[\\\"TCP\\\",\\\"UDP\\\"]",
+                        "ves.io.schema.rules.repeated.items.string.max_len": "3",
+                        "ves.io.schema.rules.repeated.unique": "true"
                     }
                 },
                 "operator": {

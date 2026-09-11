@@ -22,9 +22,7 @@ resource "volterra_app_firewall" "example" {
 
   // One of the arguments from this list "allow_all_response_codes allowed_response_codes" must be set
 
-  allowed_response_codes {
-    response_code = ["[200, 201, 204, 300, 302, 400, 403, 404, 500, 501, 503]"]
-  }
+  allow_all_response_codes = true
 
   // One of the arguments from this list "custom_anonymization default_anonymization disable_anonymization" must be set
 
@@ -40,22 +38,17 @@ resource "volterra_app_firewall" "example" {
 
   // One of the arguments from this list "ai_risk_based_blocking default_detection_settings detection_settings" must be set
 
-  ai_risk_based_blocking {
-    high_risk_action = "high_risk_action"
-
-    low_risk_action = "low_risk_action"
-
-    medium_risk_action = "medium_risk_action"
-  }
+  default_detection_settings = true
 
   // One of the arguments from this list "blocking monitoring use_loadbalancer_setting" must be set
 
   use_loadbalancer_setting = true
 
-  // One of the arguments from this list "disable_ai_enhancements enable_ai_enhancements" must be set
+  // One of the arguments from this list "ai_enhancements disable_ai_enhancements enable_ai_enhancements" must be set
 
   disable_ai_enhancements = true
 }
+
 ```
 
 Argument Reference
@@ -119,7 +112,9 @@ Argument Reference
 
 `use_loadbalancer_setting` - (Optional) Use the mode as specified in the load balancer (`Bool`).(Deprecated)
 
-###### One of the arguments from this list "disable_ai_enhancements, enable_ai_enhancements" must be set
+###### One of the arguments from this list "ai_enhancements, disable_ai_enhancements, enable_ai_enhancements" must be set
+
+`ai_enhancements` - (Optional) of the F5 AI Powered Risk-based analysis. See [Enhance With Ai Choice Ai Enhancements ](#enhance-with-ai-choice-ai-enhancements) below for details.(Deprecated)
 
 `disable_ai_enhancements` - (Optional) Risk-base AI evaluations will not factor into enforcement actions (`Bool`).
 
@@ -273,13 +268,19 @@ Attack Signatures are patterns that identify attacks on a web application and it
 
 `default_attack_type_settings` - (Optional) All Attack Types are enabled for detection (`Bool`).
 
+###### One of the arguments from this list "default_signature_setting, signature_settings_by_accuracy" can be set
+
+`default_signature_setting` - (Optional) High and Medium accuracy signatures will be blocked, Low accuracy signatures will be ignored. (`Bool`).
+
+`signature_settings_by_accuracy` - (Optional) Define Custom Signature Protection settings by accuracy level.. See [Signature Protection Choice Signature Settings By Accuracy ](#signature-protection-choice-signature-settings-by-accuracy) below for details.
+
 ###### One of the arguments from this list "high_medium_accuracy_signatures, high_medium_low_accuracy_signatures, only_high_accuracy_signatures" must be set
 
-`high_medium_accuracy_signatures` - (Optional) Enables high and medium accuracy signatures (`Bool`).
+`high_medium_accuracy_signatures` - (Optional) Enables high and medium accuracy signatures (`Bool`).(Deprecated)
 
-`high_medium_low_accuracy_signatures` - (Optional) Enables high, medium and low accuracy signatures (`Bool`).
+`high_medium_low_accuracy_signatures` - (Optional) Enables high, medium and low accuracy signatures (`Bool`).(Deprecated)
 
-`only_high_accuracy_signatures` - (Optional) Enables only high accuracy signatures (`Bool`).
+`only_high_accuracy_signatures` - (Optional) Enables only high accuracy signatures (`Bool`).(Deprecated)
 
 ### Detection Settings Violations View
 
@@ -294,6 +295,16 @@ List of violation checks that are performed on HTTP request to ensure the reques
 `name` - (Optional) x-displayName: "Name" (`String`).
 
 `title` - (Optional) x-displayName: "Title" (`String`).
+
+### Enhance With Ai Choice Ai Enhancements
+
+of the F5 AI Powered Risk-based analysis.
+
+`high_risk_action` - (Required) High-risk HTTP transactions are associated with attack attempts or requests that violate the application firewall policy. (`String`).
+
+`low_risk_action` - (Required) Low-risk HTTP transactions are associated with findings that do not present an actual threat to the protected application. (`String`).
+
+`medium_risk_action` - (Required) Medium-risk HTTP transactions are associated with suspicious requests. (`String`).
 
 ### Enhance With Ai Choice Enable Ai Enhancements
 
@@ -320,6 +331,20 @@ Mitigate requests if the risk score is High or Medium.
 ### Risk Score Action Choice Mitigate High Risk Action
 
 Mitigate requests only if the risk score is classified as High.
+
+### Signature Protection Choice Default Signature Setting
+
+High and Medium accuracy signatures will be blocked, Low accuracy signatures will be ignored..
+
+### Signature Protection Choice Signature Settings By Accuracy
+
+Define Custom Signature Protection settings by accuracy level..
+
+`high_accuracy_action` - (Optional) High Accuracy signatures level are associated with attack behaviors that are accurately identified and have a low false positive rate. (`String`).
+
+`low_accuracy_action` - (Optional) Low Accuracy signatures are associated with attack behaviors that have a high false positive rate. It is advisable to set low accuracy signatures to ignore to reduce false positives. (`String`).
+
+`medium_accuracy_action` - (Optional) Medium Accuracy signatures are associated with attack behaviors that are accurately identified but have a higher false positive rate than high accuracy signatures. (`String`).
 
 ### Signature Selection By Accuracy High Medium Accuracy Signatures
 
@@ -378,4 +403,4 @@ Define violations to be disabled for detection.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured app_firewall.
+-	`id` - This is the id of the configured app_firewall.

@@ -47,13 +47,7 @@ resource "volterra_nat_policy" "example" {
 
       // One of the arguments from this list "segment site_local_inside_network site_local_network virtual_network" can be set
 
-      virtual_network {
-        refs {
-          name      = "test1"
-          namespace = "staging"
-          tenant    = "acmecorp"
-        }
-      }
+      site_local_inside_network = true
       protocol = "ALL"
 
       // One of the arguments from this list "any icmp tcp udp" can be set
@@ -63,7 +57,7 @@ resource "volterra_nat_policy" "example" {
       source_port {
         // One of the arguments from this list "no_port_match port port_ranges" can be set
 
-        port = "6443"
+        port_ranges = "8080-8191"
       }
     }
 
@@ -74,7 +68,7 @@ resource "volterra_nat_policy" "example" {
 
     // One of the arguments from this list "cloud_connect network_interface node_interface segment virtual_network" must be set
 
-    network_interface {
+    cloud_connect {
       refs {
         name      = "test1"
         namespace = "staging"
@@ -83,6 +77,7 @@ resource "volterra_nat_policy" "example" {
     }
   }
 }
+
 ```
 
 Argument Reference
@@ -395,4 +390,4 @@ Source port of the packet to match.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured nat_policy.
+-	`id` - This is the id of the configured nat_policy.

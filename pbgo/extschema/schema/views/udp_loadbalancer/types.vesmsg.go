@@ -118,6 +118,30 @@ func (m *CreateSpecType) GetAdvertiseChoiceDRefInfo() ([]db.DRefInfo, error) {
 			dri.DRField = "advertise_custom." + dri.DRField
 		}
 		return drInfos, err
+	case *CreateSpecType_AdvertiseOnPublicDefaultIpv6Vip:
+		return nil, nil
+	case *CreateSpecType_AdvertiseOnPublicDefaultDualstackVip:
+		return nil, nil
+	case *CreateSpecType_AdvertiseV6OnPublic:
+		drInfos, err := m.GetAdvertiseV6OnPublic().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetAdvertiseV6OnPublic().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "advertise_v6_on_public." + dri.DRField
+		}
+		return drInfos, err
+	case *CreateSpecType_AdvertiseDualstackOnPublic:
+		drInfos, err := m.GetAdvertiseDualstackOnPublic().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetAdvertiseDualstackOnPublic().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "advertise_dualstack_on_public." + dri.DRField
+		}
+		return drInfos, err
 	default:
 		return nil, nil
 	}
@@ -382,6 +406,50 @@ func (v *ValidateCreateSpecType) Validate(ctx context.Context, pm interface{}, o
 			vOpts := append(opts,
 				db.WithValidateField("advertise_choice"),
 				db.WithValidateField("advertise_custom"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *CreateSpecType_AdvertiseOnPublicDefaultIpv6Vip:
+		if fv, exists := v.FldValidators["advertise_choice.advertise_on_public_default_ipv6_vip"]; exists {
+			val := m.GetAdvertiseChoice().(*CreateSpecType_AdvertiseOnPublicDefaultIpv6Vip).AdvertiseOnPublicDefaultIpv6Vip
+			vOpts := append(opts,
+				db.WithValidateField("advertise_choice"),
+				db.WithValidateField("advertise_on_public_default_ipv6_vip"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *CreateSpecType_AdvertiseOnPublicDefaultDualstackVip:
+		if fv, exists := v.FldValidators["advertise_choice.advertise_on_public_default_dualstack_vip"]; exists {
+			val := m.GetAdvertiseChoice().(*CreateSpecType_AdvertiseOnPublicDefaultDualstackVip).AdvertiseOnPublicDefaultDualstackVip
+			vOpts := append(opts,
+				db.WithValidateField("advertise_choice"),
+				db.WithValidateField("advertise_on_public_default_dualstack_vip"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *CreateSpecType_AdvertiseV6OnPublic:
+		if fv, exists := v.FldValidators["advertise_choice.advertise_v6_on_public"]; exists {
+			val := m.GetAdvertiseChoice().(*CreateSpecType_AdvertiseV6OnPublic).AdvertiseV6OnPublic
+			vOpts := append(opts,
+				db.WithValidateField("advertise_choice"),
+				db.WithValidateField("advertise_v6_on_public"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *CreateSpecType_AdvertiseDualstackOnPublic:
+		if fv, exists := v.FldValidators["advertise_choice.advertise_dualstack_on_public"]; exists {
+			val := m.GetAdvertiseChoice().(*CreateSpecType_AdvertiseDualstackOnPublic).AdvertiseDualstackOnPublic
+			vOpts := append(opts,
+				db.WithValidateField("advertise_choice"),
+				db.WithValidateField("advertise_dualstack_on_public"),
 			)
 			if err := fv(ctx, val, vOpts...); err != nil {
 				return err
@@ -729,6 +797,8 @@ var DefaultCreateSpecTypeValidator = func() *ValidateCreateSpecType {
 	v.FldValidators["idle_timeout"] = vFn
 	v.FldValidators["advertise_choice.advertise_on_public"] = ves_io_schema_views.AdvertisePublicValidator().Validate
 	v.FldValidators["advertise_choice.advertise_custom"] = ves_io_schema_views.AdvertiseCustomValidator().Validate
+	v.FldValidators["advertise_choice.advertise_v6_on_public"] = ves_io_schema_views.AdvertisePublicValidator().Validate
+	v.FldValidators["advertise_choice.advertise_dualstack_on_public"] = ves_io_schema_views.AdvertisePublicValidator().Validate
 	v.FldValidators["service_policy_choice.active_service_policies"] = ves_io_schema_views_common_waf.ServicePolicyListValidator().Validate
 
 	return v
@@ -827,6 +897,30 @@ func (m *GetSpecType) GetAdvertiseChoiceDRefInfo() ([]db.DRefInfo, error) {
 		for i := range drInfos {
 			dri := &drInfos[i]
 			dri.DRField = "advertise_custom." + dri.DRField
+		}
+		return drInfos, err
+	case *GetSpecType_AdvertiseOnPublicDefaultIpv6Vip:
+		return nil, nil
+	case *GetSpecType_AdvertiseOnPublicDefaultDualstackVip:
+		return nil, nil
+	case *GetSpecType_AdvertiseV6OnPublic:
+		drInfos, err := m.GetAdvertiseV6OnPublic().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetAdvertiseV6OnPublic().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "advertise_v6_on_public." + dri.DRField
+		}
+		return drInfos, err
+	case *GetSpecType_AdvertiseDualstackOnPublic:
+		drInfos, err := m.GetAdvertiseDualstackOnPublic().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetAdvertiseDualstackOnPublic().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "advertise_dualstack_on_public." + dri.DRField
 		}
 		return drInfos, err
 	default:
@@ -1093,6 +1187,50 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 			vOpts := append(opts,
 				db.WithValidateField("advertise_choice"),
 				db.WithValidateField("advertise_custom"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *GetSpecType_AdvertiseOnPublicDefaultIpv6Vip:
+		if fv, exists := v.FldValidators["advertise_choice.advertise_on_public_default_ipv6_vip"]; exists {
+			val := m.GetAdvertiseChoice().(*GetSpecType_AdvertiseOnPublicDefaultIpv6Vip).AdvertiseOnPublicDefaultIpv6Vip
+			vOpts := append(opts,
+				db.WithValidateField("advertise_choice"),
+				db.WithValidateField("advertise_on_public_default_ipv6_vip"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *GetSpecType_AdvertiseOnPublicDefaultDualstackVip:
+		if fv, exists := v.FldValidators["advertise_choice.advertise_on_public_default_dualstack_vip"]; exists {
+			val := m.GetAdvertiseChoice().(*GetSpecType_AdvertiseOnPublicDefaultDualstackVip).AdvertiseOnPublicDefaultDualstackVip
+			vOpts := append(opts,
+				db.WithValidateField("advertise_choice"),
+				db.WithValidateField("advertise_on_public_default_dualstack_vip"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *GetSpecType_AdvertiseV6OnPublic:
+		if fv, exists := v.FldValidators["advertise_choice.advertise_v6_on_public"]; exists {
+			val := m.GetAdvertiseChoice().(*GetSpecType_AdvertiseV6OnPublic).AdvertiseV6OnPublic
+			vOpts := append(opts,
+				db.WithValidateField("advertise_choice"),
+				db.WithValidateField("advertise_v6_on_public"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *GetSpecType_AdvertiseDualstackOnPublic:
+		if fv, exists := v.FldValidators["advertise_choice.advertise_dualstack_on_public"]; exists {
+			val := m.GetAdvertiseChoice().(*GetSpecType_AdvertiseDualstackOnPublic).AdvertiseDualstackOnPublic
+			vOpts := append(opts,
+				db.WithValidateField("advertise_choice"),
+				db.WithValidateField("advertise_dualstack_on_public"),
 			)
 			if err := fv(ctx, val, vOpts...); err != nil {
 				return err
@@ -1464,6 +1602,8 @@ var DefaultGetSpecTypeValidator = func() *ValidateGetSpecType {
 	v.FldValidators["idle_timeout"] = vFn
 	v.FldValidators["advertise_choice.advertise_on_public"] = ves_io_schema_views.AdvertisePublicValidator().Validate
 	v.FldValidators["advertise_choice.advertise_custom"] = ves_io_schema_views.AdvertiseCustomValidator().Validate
+	v.FldValidators["advertise_choice.advertise_v6_on_public"] = ves_io_schema_views.AdvertisePublicValidator().Validate
+	v.FldValidators["advertise_choice.advertise_dualstack_on_public"] = ves_io_schema_views.AdvertisePublicValidator().Validate
 	v.FldValidators["service_policy_choice.active_service_policies"] = ves_io_schema_views_common_waf.ServicePolicyListValidator().Validate
 	v.FldValidators["dns_info"] = ves_io_schema_virtual_host_dns_info.DnsInfoValidator().Validate
 
@@ -1568,6 +1708,30 @@ func (m *GlobalSpecType) GetAdvertiseChoiceDRefInfo() ([]db.DRefInfo, error) {
 		for i := range drInfos {
 			dri := &drInfos[i]
 			dri.DRField = "advertise_custom." + dri.DRField
+		}
+		return drInfos, err
+	case *GlobalSpecType_AdvertiseOnPublicDefaultIpv6Vip:
+		return nil, nil
+	case *GlobalSpecType_AdvertiseOnPublicDefaultDualstackVip:
+		return nil, nil
+	case *GlobalSpecType_AdvertiseV6OnPublic:
+		drInfos, err := m.GetAdvertiseV6OnPublic().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetAdvertiseV6OnPublic().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "advertise_v6_on_public." + dri.DRField
+		}
+		return drInfos, err
+	case *GlobalSpecType_AdvertiseDualstackOnPublic:
+		drInfos, err := m.GetAdvertiseDualstackOnPublic().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetAdvertiseDualstackOnPublic().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "advertise_dualstack_on_public." + dri.DRField
 		}
 		return drInfos, err
 	default:
@@ -1879,6 +2043,50 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 			vOpts := append(opts,
 				db.WithValidateField("advertise_choice"),
 				db.WithValidateField("advertise_custom"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *GlobalSpecType_AdvertiseOnPublicDefaultIpv6Vip:
+		if fv, exists := v.FldValidators["advertise_choice.advertise_on_public_default_ipv6_vip"]; exists {
+			val := m.GetAdvertiseChoice().(*GlobalSpecType_AdvertiseOnPublicDefaultIpv6Vip).AdvertiseOnPublicDefaultIpv6Vip
+			vOpts := append(opts,
+				db.WithValidateField("advertise_choice"),
+				db.WithValidateField("advertise_on_public_default_ipv6_vip"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *GlobalSpecType_AdvertiseOnPublicDefaultDualstackVip:
+		if fv, exists := v.FldValidators["advertise_choice.advertise_on_public_default_dualstack_vip"]; exists {
+			val := m.GetAdvertiseChoice().(*GlobalSpecType_AdvertiseOnPublicDefaultDualstackVip).AdvertiseOnPublicDefaultDualstackVip
+			vOpts := append(opts,
+				db.WithValidateField("advertise_choice"),
+				db.WithValidateField("advertise_on_public_default_dualstack_vip"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *GlobalSpecType_AdvertiseV6OnPublic:
+		if fv, exists := v.FldValidators["advertise_choice.advertise_v6_on_public"]; exists {
+			val := m.GetAdvertiseChoice().(*GlobalSpecType_AdvertiseV6OnPublic).AdvertiseV6OnPublic
+			vOpts := append(opts,
+				db.WithValidateField("advertise_choice"),
+				db.WithValidateField("advertise_v6_on_public"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *GlobalSpecType_AdvertiseDualstackOnPublic:
+		if fv, exists := v.FldValidators["advertise_choice.advertise_dualstack_on_public"]; exists {
+			val := m.GetAdvertiseChoice().(*GlobalSpecType_AdvertiseDualstackOnPublic).AdvertiseDualstackOnPublic
+			vOpts := append(opts,
+				db.WithValidateField("advertise_choice"),
+				db.WithValidateField("advertise_dualstack_on_public"),
 			)
 			if err := fv(ctx, val, vOpts...); err != nil {
 				return err
@@ -2256,6 +2464,8 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 	v.FldValidators["idle_timeout"] = vFn
 	v.FldValidators["advertise_choice.advertise_on_public"] = ves_io_schema_views.AdvertisePublicValidator().Validate
 	v.FldValidators["advertise_choice.advertise_custom"] = ves_io_schema_views.AdvertiseCustomValidator().Validate
+	v.FldValidators["advertise_choice.advertise_v6_on_public"] = ves_io_schema_views.AdvertisePublicValidator().Validate
+	v.FldValidators["advertise_choice.advertise_dualstack_on_public"] = ves_io_schema_views.AdvertisePublicValidator().Validate
 	v.FldValidators["service_policy_choice.active_service_policies"] = ves_io_schema_views_common_waf.ServicePolicyListValidator().Validate
 	v.FldValidators["view_internal"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["dns_info"] = ves_io_schema_virtual_host_dns_info.DnsInfoValidator().Validate
@@ -2356,6 +2566,30 @@ func (m *ReplaceSpecType) GetAdvertiseChoiceDRefInfo() ([]db.DRefInfo, error) {
 		for i := range drInfos {
 			dri := &drInfos[i]
 			dri.DRField = "advertise_custom." + dri.DRField
+		}
+		return drInfos, err
+	case *ReplaceSpecType_AdvertiseOnPublicDefaultIpv6Vip:
+		return nil, nil
+	case *ReplaceSpecType_AdvertiseOnPublicDefaultDualstackVip:
+		return nil, nil
+	case *ReplaceSpecType_AdvertiseV6OnPublic:
+		drInfos, err := m.GetAdvertiseV6OnPublic().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetAdvertiseV6OnPublic().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "advertise_v6_on_public." + dri.DRField
+		}
+		return drInfos, err
+	case *ReplaceSpecType_AdvertiseDualstackOnPublic:
+		drInfos, err := m.GetAdvertiseDualstackOnPublic().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetAdvertiseDualstackOnPublic().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "advertise_dualstack_on_public." + dri.DRField
 		}
 		return drInfos, err
 	default:
@@ -2622,6 +2856,50 @@ func (v *ValidateReplaceSpecType) Validate(ctx context.Context, pm interface{}, 
 			vOpts := append(opts,
 				db.WithValidateField("advertise_choice"),
 				db.WithValidateField("advertise_custom"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *ReplaceSpecType_AdvertiseOnPublicDefaultIpv6Vip:
+		if fv, exists := v.FldValidators["advertise_choice.advertise_on_public_default_ipv6_vip"]; exists {
+			val := m.GetAdvertiseChoice().(*ReplaceSpecType_AdvertiseOnPublicDefaultIpv6Vip).AdvertiseOnPublicDefaultIpv6Vip
+			vOpts := append(opts,
+				db.WithValidateField("advertise_choice"),
+				db.WithValidateField("advertise_on_public_default_ipv6_vip"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *ReplaceSpecType_AdvertiseOnPublicDefaultDualstackVip:
+		if fv, exists := v.FldValidators["advertise_choice.advertise_on_public_default_dualstack_vip"]; exists {
+			val := m.GetAdvertiseChoice().(*ReplaceSpecType_AdvertiseOnPublicDefaultDualstackVip).AdvertiseOnPublicDefaultDualstackVip
+			vOpts := append(opts,
+				db.WithValidateField("advertise_choice"),
+				db.WithValidateField("advertise_on_public_default_dualstack_vip"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *ReplaceSpecType_AdvertiseV6OnPublic:
+		if fv, exists := v.FldValidators["advertise_choice.advertise_v6_on_public"]; exists {
+			val := m.GetAdvertiseChoice().(*ReplaceSpecType_AdvertiseV6OnPublic).AdvertiseV6OnPublic
+			vOpts := append(opts,
+				db.WithValidateField("advertise_choice"),
+				db.WithValidateField("advertise_v6_on_public"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *ReplaceSpecType_AdvertiseDualstackOnPublic:
+		if fv, exists := v.FldValidators["advertise_choice.advertise_dualstack_on_public"]; exists {
+			val := m.GetAdvertiseChoice().(*ReplaceSpecType_AdvertiseDualstackOnPublic).AdvertiseDualstackOnPublic
+			vOpts := append(opts,
+				db.WithValidateField("advertise_choice"),
+				db.WithValidateField("advertise_dualstack_on_public"),
 			)
 			if err := fv(ctx, val, vOpts...); err != nil {
 				return err
@@ -2969,6 +3247,8 @@ var DefaultReplaceSpecTypeValidator = func() *ValidateReplaceSpecType {
 	v.FldValidators["idle_timeout"] = vFn
 	v.FldValidators["advertise_choice.advertise_on_public"] = ves_io_schema_views.AdvertisePublicValidator().Validate
 	v.FldValidators["advertise_choice.advertise_custom"] = ves_io_schema_views.AdvertiseCustomValidator().Validate
+	v.FldValidators["advertise_choice.advertise_v6_on_public"] = ves_io_schema_views.AdvertisePublicValidator().Validate
+	v.FldValidators["advertise_choice.advertise_dualstack_on_public"] = ves_io_schema_views.AdvertisePublicValidator().Validate
 	v.FldValidators["service_policy_choice.active_service_policies"] = ves_io_schema_views_common_waf.ServicePolicyListValidator().Validate
 
 	return v
@@ -2987,11 +3267,23 @@ func (r *CreateSpecType) SetAdvertiseChoiceToGlobalSpecType(o *GlobalSpecType) e
 	case *CreateSpecType_AdvertiseCustom:
 		o.AdvertiseChoice = &GlobalSpecType_AdvertiseCustom{AdvertiseCustom: of.AdvertiseCustom}
 
+	case *CreateSpecType_AdvertiseDualstackOnPublic:
+		o.AdvertiseChoice = &GlobalSpecType_AdvertiseDualstackOnPublic{AdvertiseDualstackOnPublic: of.AdvertiseDualstackOnPublic}
+
 	case *CreateSpecType_AdvertiseOnPublic:
 		o.AdvertiseChoice = &GlobalSpecType_AdvertiseOnPublic{AdvertiseOnPublic: of.AdvertiseOnPublic}
 
+	case *CreateSpecType_AdvertiseOnPublicDefaultDualstackVip:
+		o.AdvertiseChoice = &GlobalSpecType_AdvertiseOnPublicDefaultDualstackVip{AdvertiseOnPublicDefaultDualstackVip: of.AdvertiseOnPublicDefaultDualstackVip}
+
+	case *CreateSpecType_AdvertiseOnPublicDefaultIpv6Vip:
+		o.AdvertiseChoice = &GlobalSpecType_AdvertiseOnPublicDefaultIpv6Vip{AdvertiseOnPublicDefaultIpv6Vip: of.AdvertiseOnPublicDefaultIpv6Vip}
+
 	case *CreateSpecType_AdvertiseOnPublicDefaultVip:
 		o.AdvertiseChoice = &GlobalSpecType_AdvertiseOnPublicDefaultVip{AdvertiseOnPublicDefaultVip: of.AdvertiseOnPublicDefaultVip}
+
+	case *CreateSpecType_AdvertiseV6OnPublic:
+		o.AdvertiseChoice = &GlobalSpecType_AdvertiseV6OnPublic{AdvertiseV6OnPublic: of.AdvertiseV6OnPublic}
 
 	case *CreateSpecType_DoNotAdvertise:
 		o.AdvertiseChoice = &GlobalSpecType_DoNotAdvertise{DoNotAdvertise: of.DoNotAdvertise}
@@ -3010,11 +3302,23 @@ func (r *CreateSpecType) GetAdvertiseChoiceFromGlobalSpecType(o *GlobalSpecType)
 	case *GlobalSpecType_AdvertiseCustom:
 		r.AdvertiseChoice = &CreateSpecType_AdvertiseCustom{AdvertiseCustom: of.AdvertiseCustom}
 
+	case *GlobalSpecType_AdvertiseDualstackOnPublic:
+		r.AdvertiseChoice = &CreateSpecType_AdvertiseDualstackOnPublic{AdvertiseDualstackOnPublic: of.AdvertiseDualstackOnPublic}
+
 	case *GlobalSpecType_AdvertiseOnPublic:
 		r.AdvertiseChoice = &CreateSpecType_AdvertiseOnPublic{AdvertiseOnPublic: of.AdvertiseOnPublic}
 
+	case *GlobalSpecType_AdvertiseOnPublicDefaultDualstackVip:
+		r.AdvertiseChoice = &CreateSpecType_AdvertiseOnPublicDefaultDualstackVip{AdvertiseOnPublicDefaultDualstackVip: of.AdvertiseOnPublicDefaultDualstackVip}
+
+	case *GlobalSpecType_AdvertiseOnPublicDefaultIpv6Vip:
+		r.AdvertiseChoice = &CreateSpecType_AdvertiseOnPublicDefaultIpv6Vip{AdvertiseOnPublicDefaultIpv6Vip: of.AdvertiseOnPublicDefaultIpv6Vip}
+
 	case *GlobalSpecType_AdvertiseOnPublicDefaultVip:
 		r.AdvertiseChoice = &CreateSpecType_AdvertiseOnPublicDefaultVip{AdvertiseOnPublicDefaultVip: of.AdvertiseOnPublicDefaultVip}
+
+	case *GlobalSpecType_AdvertiseV6OnPublic:
+		r.AdvertiseChoice = &CreateSpecType_AdvertiseV6OnPublic{AdvertiseV6OnPublic: of.AdvertiseV6OnPublic}
 
 	case *GlobalSpecType_DoNotAdvertise:
 		r.AdvertiseChoice = &CreateSpecType_DoNotAdvertise{DoNotAdvertise: of.DoNotAdvertise}
@@ -3274,11 +3578,23 @@ func (r *GetSpecType) SetAdvertiseChoiceToGlobalSpecType(o *GlobalSpecType) erro
 	case *GetSpecType_AdvertiseCustom:
 		o.AdvertiseChoice = &GlobalSpecType_AdvertiseCustom{AdvertiseCustom: of.AdvertiseCustom}
 
+	case *GetSpecType_AdvertiseDualstackOnPublic:
+		o.AdvertiseChoice = &GlobalSpecType_AdvertiseDualstackOnPublic{AdvertiseDualstackOnPublic: of.AdvertiseDualstackOnPublic}
+
 	case *GetSpecType_AdvertiseOnPublic:
 		o.AdvertiseChoice = &GlobalSpecType_AdvertiseOnPublic{AdvertiseOnPublic: of.AdvertiseOnPublic}
 
+	case *GetSpecType_AdvertiseOnPublicDefaultDualstackVip:
+		o.AdvertiseChoice = &GlobalSpecType_AdvertiseOnPublicDefaultDualstackVip{AdvertiseOnPublicDefaultDualstackVip: of.AdvertiseOnPublicDefaultDualstackVip}
+
+	case *GetSpecType_AdvertiseOnPublicDefaultIpv6Vip:
+		o.AdvertiseChoice = &GlobalSpecType_AdvertiseOnPublicDefaultIpv6Vip{AdvertiseOnPublicDefaultIpv6Vip: of.AdvertiseOnPublicDefaultIpv6Vip}
+
 	case *GetSpecType_AdvertiseOnPublicDefaultVip:
 		o.AdvertiseChoice = &GlobalSpecType_AdvertiseOnPublicDefaultVip{AdvertiseOnPublicDefaultVip: of.AdvertiseOnPublicDefaultVip}
+
+	case *GetSpecType_AdvertiseV6OnPublic:
+		o.AdvertiseChoice = &GlobalSpecType_AdvertiseV6OnPublic{AdvertiseV6OnPublic: of.AdvertiseV6OnPublic}
 
 	case *GetSpecType_DoNotAdvertise:
 		o.AdvertiseChoice = &GlobalSpecType_DoNotAdvertise{DoNotAdvertise: of.DoNotAdvertise}
@@ -3297,11 +3613,23 @@ func (r *GetSpecType) GetAdvertiseChoiceFromGlobalSpecType(o *GlobalSpecType) er
 	case *GlobalSpecType_AdvertiseCustom:
 		r.AdvertiseChoice = &GetSpecType_AdvertiseCustom{AdvertiseCustom: of.AdvertiseCustom}
 
+	case *GlobalSpecType_AdvertiseDualstackOnPublic:
+		r.AdvertiseChoice = &GetSpecType_AdvertiseDualstackOnPublic{AdvertiseDualstackOnPublic: of.AdvertiseDualstackOnPublic}
+
 	case *GlobalSpecType_AdvertiseOnPublic:
 		r.AdvertiseChoice = &GetSpecType_AdvertiseOnPublic{AdvertiseOnPublic: of.AdvertiseOnPublic}
 
+	case *GlobalSpecType_AdvertiseOnPublicDefaultDualstackVip:
+		r.AdvertiseChoice = &GetSpecType_AdvertiseOnPublicDefaultDualstackVip{AdvertiseOnPublicDefaultDualstackVip: of.AdvertiseOnPublicDefaultDualstackVip}
+
+	case *GlobalSpecType_AdvertiseOnPublicDefaultIpv6Vip:
+		r.AdvertiseChoice = &GetSpecType_AdvertiseOnPublicDefaultIpv6Vip{AdvertiseOnPublicDefaultIpv6Vip: of.AdvertiseOnPublicDefaultIpv6Vip}
+
 	case *GlobalSpecType_AdvertiseOnPublicDefaultVip:
 		r.AdvertiseChoice = &GetSpecType_AdvertiseOnPublicDefaultVip{AdvertiseOnPublicDefaultVip: of.AdvertiseOnPublicDefaultVip}
+
+	case *GlobalSpecType_AdvertiseV6OnPublic:
+		r.AdvertiseChoice = &GetSpecType_AdvertiseV6OnPublic{AdvertiseV6OnPublic: of.AdvertiseV6OnPublic}
 
 	case *GlobalSpecType_DoNotAdvertise:
 		r.AdvertiseChoice = &GetSpecType_DoNotAdvertise{DoNotAdvertise: of.DoNotAdvertise}
@@ -3567,11 +3895,23 @@ func (r *ReplaceSpecType) SetAdvertiseChoiceToGlobalSpecType(o *GlobalSpecType) 
 	case *ReplaceSpecType_AdvertiseCustom:
 		o.AdvertiseChoice = &GlobalSpecType_AdvertiseCustom{AdvertiseCustom: of.AdvertiseCustom}
 
+	case *ReplaceSpecType_AdvertiseDualstackOnPublic:
+		o.AdvertiseChoice = &GlobalSpecType_AdvertiseDualstackOnPublic{AdvertiseDualstackOnPublic: of.AdvertiseDualstackOnPublic}
+
 	case *ReplaceSpecType_AdvertiseOnPublic:
 		o.AdvertiseChoice = &GlobalSpecType_AdvertiseOnPublic{AdvertiseOnPublic: of.AdvertiseOnPublic}
 
+	case *ReplaceSpecType_AdvertiseOnPublicDefaultDualstackVip:
+		o.AdvertiseChoice = &GlobalSpecType_AdvertiseOnPublicDefaultDualstackVip{AdvertiseOnPublicDefaultDualstackVip: of.AdvertiseOnPublicDefaultDualstackVip}
+
+	case *ReplaceSpecType_AdvertiseOnPublicDefaultIpv6Vip:
+		o.AdvertiseChoice = &GlobalSpecType_AdvertiseOnPublicDefaultIpv6Vip{AdvertiseOnPublicDefaultIpv6Vip: of.AdvertiseOnPublicDefaultIpv6Vip}
+
 	case *ReplaceSpecType_AdvertiseOnPublicDefaultVip:
 		o.AdvertiseChoice = &GlobalSpecType_AdvertiseOnPublicDefaultVip{AdvertiseOnPublicDefaultVip: of.AdvertiseOnPublicDefaultVip}
+
+	case *ReplaceSpecType_AdvertiseV6OnPublic:
+		o.AdvertiseChoice = &GlobalSpecType_AdvertiseV6OnPublic{AdvertiseV6OnPublic: of.AdvertiseV6OnPublic}
 
 	case *ReplaceSpecType_DoNotAdvertise:
 		o.AdvertiseChoice = &GlobalSpecType_DoNotAdvertise{DoNotAdvertise: of.DoNotAdvertise}
@@ -3590,11 +3930,23 @@ func (r *ReplaceSpecType) GetAdvertiseChoiceFromGlobalSpecType(o *GlobalSpecType
 	case *GlobalSpecType_AdvertiseCustom:
 		r.AdvertiseChoice = &ReplaceSpecType_AdvertiseCustom{AdvertiseCustom: of.AdvertiseCustom}
 
+	case *GlobalSpecType_AdvertiseDualstackOnPublic:
+		r.AdvertiseChoice = &ReplaceSpecType_AdvertiseDualstackOnPublic{AdvertiseDualstackOnPublic: of.AdvertiseDualstackOnPublic}
+
 	case *GlobalSpecType_AdvertiseOnPublic:
 		r.AdvertiseChoice = &ReplaceSpecType_AdvertiseOnPublic{AdvertiseOnPublic: of.AdvertiseOnPublic}
 
+	case *GlobalSpecType_AdvertiseOnPublicDefaultDualstackVip:
+		r.AdvertiseChoice = &ReplaceSpecType_AdvertiseOnPublicDefaultDualstackVip{AdvertiseOnPublicDefaultDualstackVip: of.AdvertiseOnPublicDefaultDualstackVip}
+
+	case *GlobalSpecType_AdvertiseOnPublicDefaultIpv6Vip:
+		r.AdvertiseChoice = &ReplaceSpecType_AdvertiseOnPublicDefaultIpv6Vip{AdvertiseOnPublicDefaultIpv6Vip: of.AdvertiseOnPublicDefaultIpv6Vip}
+
 	case *GlobalSpecType_AdvertiseOnPublicDefaultVip:
 		r.AdvertiseChoice = &ReplaceSpecType_AdvertiseOnPublicDefaultVip{AdvertiseOnPublicDefaultVip: of.AdvertiseOnPublicDefaultVip}
+
+	case *GlobalSpecType_AdvertiseV6OnPublic:
+		r.AdvertiseChoice = &ReplaceSpecType_AdvertiseV6OnPublic{AdvertiseV6OnPublic: of.AdvertiseV6OnPublic}
 
 	case *GlobalSpecType_DoNotAdvertise:
 		r.AdvertiseChoice = &ReplaceSpecType_DoNotAdvertise{DoNotAdvertise: of.DoNotAdvertise}

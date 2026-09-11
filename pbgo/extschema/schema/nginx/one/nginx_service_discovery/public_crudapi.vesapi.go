@@ -2701,7 +2701,7 @@ var APISwaggerJSON string = `{
                 },
                 "port_ranges": {
                     "type": "string",
-                    "description": " A string containing a comma separated list of individual service ports or port ranges.\n Each port range consists of a single port or two ports separated by \"-\". For example, 8000-8191.\n Maximum number of ports allowed is 1024.\n\nExample: - \"80,443,8080-8191,9080\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.max_len: 512\n  ves.io.schema.rules.string.max_ports: 1024\n  ves.io.schema.rules.string.port_range_list: true\n  ves.io.schema.rules.string.unique_port_range_list: true\n",
+                    "description": " A string containing a comma separated list of individual service ports or port ranges.\n Each port range consists of a single port or two ports separated by \"-\". For example, 8000-8191.\n Maximum number of ports allowed is 1024.\n\nExample: - \"80,443,8080-8191,9080\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.max_len: 512\n  ves.io.schema.rules.string.max_ports: 1024\n  ves.io.schema.rules.string.unique_port_range_list: true\n",
                     "title": "Port Ranges",
                     "maxLength": 512,
                     "x-displayname": "Port Ranges",
@@ -2709,7 +2709,6 @@ var APISwaggerJSON string = `{
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.string.max_len": "512",
                         "ves.io.schema.rules.string.max_ports": "1024",
-                        "ves.io.schema.rules.string.port_range_list": "true",
                         "ves.io.schema.rules.string.unique_port_range_list": "true"
                     }
                 }

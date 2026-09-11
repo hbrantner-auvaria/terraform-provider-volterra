@@ -66,6 +66,8 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.namespace.NGINXOneServerResultType"] = NGINXOneServerResultTypeValidator()
 	vr["ves.io.schema.namespace.NetworkingInventoryRequest"] = NetworkingInventoryRequestValidator()
 	vr["ves.io.schema.namespace.NetworkingInventoryResponse"] = NetworkingInventoryResponseValidator()
+	vr["ves.io.schema.namespace.OIDCOAuthDiscoveryReq"] = OIDCOAuthDiscoveryReqValidator()
+	vr["ves.io.schema.namespace.OIDCOAuthDiscoveryResp"] = OIDCOAuthDiscoveryRespValidator()
 	vr["ves.io.schema.namespace.SetActiveAlertPoliciesRequest"] = SetActiveAlertPoliciesRequestValidator()
 	vr["ves.io.schema.namespace.SetActiveAlertPoliciesResponse"] = SetActiveAlertPoliciesResponseValidator()
 	vr["ves.io.schema.namespace.SetActiveNetworkPoliciesRequest"] = SetActiveNetworkPoliciesRequestValidator()
@@ -92,7 +94,9 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.namespace.VirtualServerResultType"] = VirtualServerResultTypeValidator()
 	vr["ves.io.schema.namespace.VirtualServerSpecsInventoryType"] = VirtualServerSpecsInventoryTypeValidator()
 	vr["ves.io.schema.namespace.VirtualServiceInventoryFilterType"] = VirtualServiceInventoryFilterTypeValidator()
+	vr["ves.io.schema.namespace.ApiEndpointsStats"] = ApiEndpointsStatsValidator()
 	vr["ves.io.schema.namespace.ApiEndpointsStatsAllNSReq"] = ApiEndpointsStatsAllNSReqValidator()
+	vr["ves.io.schema.namespace.ApiEndpointsStatsList"] = ApiEndpointsStatsListValidator()
 	vr["ves.io.schema.namespace.ApiEndpointsStatsNSReq"] = ApiEndpointsStatsNSReqValidator()
 	vr["ves.io.schema.namespace.ApiEndpointsStatsNSRsp"] = ApiEndpointsStatsNSRspValidator()
 	vr["ves.io.schema.namespace.CascadeDeleteItemType"] = CascadeDeleteItemTypeValidator()
@@ -109,7 +113,6 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.namespace.PendingFinalizers"] = PendingFinalizersValidator()
 	vr["ves.io.schema.namespace.PendingInitializerInfo"] = PendingInitializerInfoValidator()
 	vr["ves.io.schema.namespace.PendingInitializers"] = PendingInitializersValidator()
-	vr["ves.io.schema.namespace.RemoveNamespaceFinalizerReq"] = RemoveNamespaceFinalizerReqValidator()
 	vr["ves.io.schema.namespace.RemoveNamespaceFinalizerResp"] = RemoveNamespaceFinalizerRespValidator()
 	vr["ves.io.schema.namespace.RemoveNamespaceFinalizerRestrictedReq"] = RemoveNamespaceFinalizerRestrictedReqValidator()
 	vr["ves.io.schema.namespace.ReplaceSpecType"] = ReplaceSpecTypeValidator()
@@ -154,6 +157,20 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 			FieldPath:           "virtual_servers",
 			AllowedEnvironments: []string{"demo1", "test"},
 		},
+	}
+	mdr.RPCDeprecatedResponseFieldsRegistry["ves.io.schema.namespace.NamespaceMLCustomAPI.GetApiEndpointsStats"] = []string{
+		"discovered",
+		"inventory",
+		"pii_detected",
+		"shadow",
+		"total_endpoints",
+	}
+	mdr.RPCDeprecatedResponseFieldsRegistry["ves.io.schema.namespace.NamespaceMLCustomAPI.GetApiEndpointsStatsAllNamespaces"] = []string{
+		"discovered",
+		"inventory",
+		"pii_detected",
+		"shadow",
+		"total_endpoints",
 	}
 }
 

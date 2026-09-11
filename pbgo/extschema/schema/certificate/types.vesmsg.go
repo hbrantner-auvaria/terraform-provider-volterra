@@ -802,6 +802,11 @@ func (m *GlobalSpecType) GetDRefInfo() ([]db.DRefInfo, error) {
 	} else {
 		drInfos = append(drInfos, fdrInfos...)
 	}
+	if fdrInfos, err := m.GetVirtualServersDRefInfo(); err != nil {
+		return nil, errors.Wrap(err, "GetVirtualServersDRefInfo() FAILED")
+	} else {
+		drInfos = append(drInfos, fdrInfos...)
+	}
 	return drInfos, nil
 }
 
@@ -979,6 +984,59 @@ func (m *GlobalSpecType) GetTcpLoadbalancersDBEntries(ctx context.Context, d db.
 	return entries, nil
 }
 
+func (m *GlobalSpecType) GetVirtualServersDRefInfo() ([]db.DRefInfo, error) {
+	vrefs := m.GetVirtualServers()
+	if len(vrefs) == 0 {
+		return nil, nil
+	}
+	drInfos := make([]db.DRefInfo, 0, len(vrefs))
+	for i, vref := range vrefs {
+		if vref == nil {
+			return nil, fmt.Errorf("GlobalSpecType.virtual_servers[%d] has a nil value", i)
+		}
+		vdRef := db.NewDirectRefForView(vref)
+		vdRef.SetKind("virtual_server.Object")
+		// resolve kind to type if needed at DBObject.GetDRefInfo()
+		drInfos = append(drInfos, db.DRefInfo{
+			RefdType:   "virtual_server.Object",
+			RefdTenant: vref.Tenant,
+			RefdNS:     vref.Namespace,
+			RefdName:   vref.Name,
+			DRField:    "virtual_servers",
+			Ref:        vdRef,
+		})
+	}
+	return drInfos, nil
+}
+
+// GetVirtualServersDBEntries returns the db.Entry corresponding to the ObjRefType from the default Table
+func (m *GlobalSpecType) GetVirtualServersDBEntries(ctx context.Context, d db.Interface) ([]db.Entry, error) {
+	var entries []db.Entry
+	refdType, err := d.TypeForEntryKind("", "", "virtual_server.Object")
+	if err != nil {
+		return nil, errors.Wrap(err, "Cannot find type for kind: virtual_server")
+	}
+	for i, vref := range m.GetVirtualServers() {
+		if vref == nil {
+			return nil, fmt.Errorf("GlobalSpecType.virtual_servers[%d] has a nil value", i)
+		}
+		ref := &ves_io_schema.ObjectRefType{
+			Kind:      "virtual_server.Object",
+			Tenant:    vref.Tenant,
+			Namespace: vref.Namespace,
+			Name:      vref.Name,
+		}
+		refdEnt, err := d.GetReferredEntry(ctx, refdType, ref, db.WithRefOpOptions(db.OpWithReadRefFromInternalTable()))
+		if err != nil {
+			return nil, errors.Wrap(err, "Getting referred entry")
+		}
+		if refdEnt != nil {
+			entries = append(entries, refdEnt)
+		}
+	}
+	return entries, nil
+}
+
 type ValidateGlobalSpecType struct {
 	FldValidators map[string]db.ValidatorFunc
 }
@@ -1128,6 +1186,15 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 			}
 		}
 	}
+	if fv, exists := v.FldValidators["virtual_servers"]; exists {
+		vOpts := append(opts, db.WithValidateField("virtual_servers"))
+		for idx, item := range m.GetVirtualServers() {
+			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
+			if err := fv(ctx, item, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
 	return nil
 }
 
@@ -1171,6 +1238,7 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 	v.FldValidators["certificate_chain"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["http_loadbalancers"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 	v.FldValidators["tcp_loadbalancers"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
+	v.FldValidators["virtual_servers"] = ves_io_schema_views.ObjectRefTypeValidator().Validate
 
 	return v
 }()

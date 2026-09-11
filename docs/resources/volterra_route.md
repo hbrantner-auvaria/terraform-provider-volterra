@@ -59,7 +59,7 @@ resource "volterra_route" "example" {
       path {
         // One of the arguments from this list "path prefix regex" must be set
 
-        regex = "regex"
+        path = "/logout"
       }
 
       query_params {
@@ -67,7 +67,7 @@ resource "volterra_route" "example" {
 
         // One of the arguments from this list "exact regex" can be set
 
-        exact = "exact"
+        regex = "regex"
       }
     }
 
@@ -98,7 +98,7 @@ resource "volterra_route" "example" {
     response_cookies_to_add {
       // One of the arguments from this list "add_domain ignore_domain" can be set
 
-      add_domain = "add_domain"
+      ignore_domain = true
 
       // One of the arguments from this list "add_expiry ignore_expiry" can be set
 
@@ -124,7 +124,7 @@ resource "volterra_route" "example" {
 
       // One of the arguments from this list "ignore_samesite samesite_lax samesite_none samesite_strict" can be set
 
-      samesite_strict = true
+      ignore_samesite = true
 
       // One of the arguments from this list "add_secure ignore_secure" can be set
 
@@ -162,7 +162,7 @@ resource "volterra_route" "example" {
 
       // One of the arguments from this list "do_not_retract_cluster retract_cluster" can be set
 
-      do_not_retract_cluster = true
+      retract_cluster = true
       cors_policy {
         allow_credentials = true
 
@@ -283,10 +283,17 @@ resource "volterra_route" "example" {
     waf_type {
       // One of the arguments from this list "app_firewall disable_waf inherit_waf" must be set
 
-      inherit_waf = true
+      app_firewall {
+        app_firewall {
+          name      = "test1"
+          namespace = "staging"
+          tenant    = "acmecorp"
+        }
+      }
     }
   }
 }
+
 ```
 
 Argument Reference
@@ -1030,7 +1037,7 @@ Vault Secret is used for the secrets managed by Hashicorp Vault.
 
 `provider` - (Required) Name of the Secret Management Access object that contains information about the backend Vault. (`String`).
 
-`secret_encoding` - (Optional) This field defines the encoding type of the secret BEFORE the secret is put into Hashicorp Vault. (`String`).
+
 
 `version` - (Optional) If not provided latest version will be returned. (`Int`).
 
@@ -1080,9 +1087,11 @@ Ignore value of cookie.
 
 Secret Value of the Cookie header.
 
+
+
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 
-`blindfold_secret_info` - (Optional) Blindfold Secret is used for the secrets managed by F5XC Secret Management Service. See [Secret Info Oneof Blindfold Secret Info ](#secret-info-oneof-blindfold-secret-info) below for details.
+
 
 `clear_secret_info` - (Optional) Clear Secret is used for the secrets that are not encrypted. See [Secret Info Oneof Clear Secret Info ](#secret-info-oneof-clear-secret-info) below for details.
 
@@ -1097,4 +1106,4 @@ Any WAF Exclusion configuration that was configured on a higher level will be en
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured route.
+-	`id` - This is the id of the configured route.

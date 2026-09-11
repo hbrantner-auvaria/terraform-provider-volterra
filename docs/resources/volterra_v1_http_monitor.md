@@ -34,12 +34,15 @@ resource "volterra_v1_http_monitor" "example" {
 
   // One of the arguments from this list "delete get head options patch post put" must be set
 
-  get              = true
+  delete {
+    request_body = "request_body"
+  }
   on_failure_count = ["2"]
   response_codes   = ["[\"2**\", \"3**\"]"]
   source_critical_threshold = ["1"]
   url                       = ["https://www.f5.com"]
 }
+
 ```
 
 Argument Reference
@@ -236,4 +239,4 @@ x-displayName: "Disable".
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured v1_http_monitor.
+-	`id` - This is the id of the configured v1_http_monitor.

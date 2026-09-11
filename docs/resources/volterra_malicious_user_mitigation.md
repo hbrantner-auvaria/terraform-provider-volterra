@@ -20,6 +20,7 @@ resource "volterra_malicious_user_mitigation" "example" {
   name      = "acmecorp-web"
   namespace = "staging"
 }
+
 ```
 
 Argument Reference
@@ -120,4 +121,4 @@ The threat level at which mitigation actions will be taken.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured malicious_user_mitigation.
+-	`id` - This is the id of the configured malicious_user_mitigation.

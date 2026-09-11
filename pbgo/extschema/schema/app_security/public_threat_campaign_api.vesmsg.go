@@ -24,6 +24,142 @@ var (
 
 // augmented methods on protoc/std generated struct
 
+func (m *CVEIDList) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *CVEIDList) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *CVEIDList) DeepCopy() *CVEIDList {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &CVEIDList{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *CVEIDList) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *CVEIDList) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return CVEIDListValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateCVEIDList struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateCVEIDList) IdsValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	itemRules := db.GetRepStringItemRules(rules)
+	itemValFn, err := db.NewStringValidationRuleHandler(itemRules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Item ValidationRuleHandler for ids")
+	}
+	itemsValidatorFn := func(ctx context.Context, elems []string, opts ...db.ValidateOpt) error {
+		for i, el := range elems {
+			if err := itemValFn(ctx, el, opts...); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("element %d", i))
+			}
+		}
+		return nil
+	}
+	repValFn, err := db.NewRepeatedValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "Repeated ValidationRuleHandler for ids")
+	}
+
+	validatorFn := func(ctx context.Context, val interface{}, opts ...db.ValidateOpt) error {
+		elems, ok := val.([]string)
+		if !ok {
+			return fmt.Errorf("Repeated validation expected []string, got %T", val)
+		}
+		l := []string{}
+		for _, elem := range elems {
+			strVal := fmt.Sprintf("%v", elem)
+			l = append(l, strVal)
+		}
+		if err := repValFn(ctx, l, opts...); err != nil {
+			return errors.Wrap(err, "repeated ids")
+		}
+		if err := itemsValidatorFn(ctx, elems, opts...); err != nil {
+			return errors.Wrap(err, "items ids")
+		}
+		return nil
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateCVEIDList) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*CVEIDList)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *CVEIDList got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["ids"]; exists {
+		vOpts := append(opts, db.WithValidateField("ids"))
+		if err := fv(ctx, m.GetIds(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultCVEIDListValidator = func() *ValidateCVEIDList {
+	v := &ValidateCVEIDList{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhIds := v.IdsValidationRuleHandler
+	rulesIds := map[string]string{
+		"ves.io.schema.rules.message.required":   "true",
+		"ves.io.schema.rules.repeated.max_items": "16",
+		"ves.io.schema.rules.repeated.min_items": "1",
+		"ves.io.schema.rules.repeated.unique":    "true",
+	}
+	vFn, err = vrhIds(rulesIds)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for CVEIDList.ids: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["ids"] = vFn
+
+	return v
+}()
+
+func CVEIDListValidator() db.Validator {
+	return DefaultCVEIDListValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *ThreatCampaign) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
@@ -439,4 +575,242 @@ var DefaultThreatCampaignRequestValidator = func() *ValidateThreatCampaignReques
 
 func ThreatCampaignRequestValidator() db.Validator {
 	return DefaultThreatCampaignRequestValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *ThreatsRequest) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *ThreatsRequest) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *ThreatsRequest) DeepCopy() *ThreatsRequest {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &ThreatsRequest{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *ThreatsRequest) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *ThreatsRequest) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return ThreatsRequestValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateThreatsRequest struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateThreatsRequest) ThreatsFilterValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewMessageValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for threats_filter")
+	}
+	return validatorFn, nil
+}
+
+func (v *ValidateThreatsRequest) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*ThreatsRequest)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *ThreatsRequest got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["cursor"]; exists {
+		vOpts := append(opts, db.WithValidateField("cursor"))
+		if err := fv(ctx, m.GetCursor(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["report_fields"]; exists {
+		vOpts := append(opts, db.WithValidateField("report_fields"))
+		for idx, item := range m.GetReportFields() {
+			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
+			if err := fv(ctx, item, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+
+	if fv, exists := v.FldValidators["threats_filter"]; exists {
+		val := m.GetThreatsFilter()
+		vOpts := append(opts,
+			db.WithValidateField("threats_filter"),
+		)
+		if err := fv(ctx, val, vOpts...); err != nil {
+			return err
+		}
+	}
+
+	switch m.GetThreatsFilter().(type) {
+	case *ThreatsRequest_CveIds:
+		if fv, exists := v.FldValidators["threats_filter.cve_ids"]; exists {
+			val := m.GetThreatsFilter().(*ThreatsRequest_CveIds).CveIds
+			vOpts := append(opts,
+				db.WithValidateField("threats_filter"),
+				db.WithValidateField("cve_ids"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *ThreatsRequest_WafSecEventId:
+		if fv, exists := v.FldValidators["threats_filter.waf_sec_event_id"]; exists {
+			val := m.GetThreatsFilter().(*ThreatsRequest_WafSecEventId).WafSecEventId
+			vOpts := append(opts,
+				db.WithValidateField("threats_filter"),
+				db.WithValidateField("waf_sec_event_id"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *ThreatsRequest_PrimaryTag:
+		if fv, exists := v.FldValidators["threats_filter.primary_tag"]; exists {
+			val := m.GetThreatsFilter().(*ThreatsRequest_PrimaryTag).PrimaryTag
+			vOpts := append(opts,
+				db.WithValidateField("threats_filter"),
+				db.WithValidateField("primary_tag"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultThreatsRequestValidator = func() *ValidateThreatsRequest {
+	v := &ValidateThreatsRequest{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+	vrhThreatsFilter := v.ThreatsFilterValidationRuleHandler
+	rulesThreatsFilter := map[string]string{
+		"ves.io.schema.rules.message.required_oneof": "true",
+	}
+	vFn, err = vrhThreatsFilter(rulesThreatsFilter)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for ThreatsRequest.threats_filter: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["threats_filter"] = vFn
+	v.FldValidators["threats_filter.cve_ids"] = CVEIDListValidator().Validate
+
+	return v
+}()
+
+func ThreatsRequestValidator() db.Validator {
+	return DefaultThreatsRequestValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *ThreatsResponse) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *ThreatsResponse) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *ThreatsResponse) DeepCopy() *ThreatsResponse {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &ThreatsResponse{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *ThreatsResponse) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *ThreatsResponse) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return ThreatsResponseValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateThreatsResponse struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateThreatsResponse) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*ThreatsResponse)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *ThreatsResponse got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["next_cursor"]; exists {
+		vOpts := append(opts, db.WithValidateField("next_cursor"))
+		if err := fv(ctx, m.GetNextCursor(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["threats"]; exists {
+		vOpts := append(opts, db.WithValidateField("threats"))
+		for idx, item := range m.GetThreats() {
+			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
+			if err := fv(ctx, item, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultThreatsResponseValidator = func() *ValidateThreatsResponse {
+	v := &ValidateThreatsResponse{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func ThreatsResponseValidator() db.Validator {
+	return DefaultThreatsResponseValidator
 }

@@ -7,6 +7,7 @@ import (
 	"reflect"
 
 	"gopkg.volterra.us/stdlib/db"
+	"gopkg.volterra.us/stdlib/server"
 	"gopkg.volterra.us/stdlib/store"
 	"gopkg.volterra.us/stdlib/svcfw"
 )
@@ -25,6 +26,9 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.certificate.ListResponseItem"] = ListResponseItemValidator()
 	vr["ves.io.schema.certificate.ReplaceRequest"] = ReplaceRequestValidator()
 	vr["ves.io.schema.certificate.ReplaceResponse"] = ReplaceResponseValidator()
+	vr["ves.io.schema.certificate.CertificateHealthStatusListRequest"] = CertificateHealthStatusListRequestValidator()
+	vr["ves.io.schema.certificate.CertificateHealthStatusListResponse"] = CertificateHealthStatusListResponseValidator()
+	vr["ves.io.schema.certificate.CertificateHealthStatusListResponseItem"] = CertificateHealthStatusListResponseItemValidator()
 	vr["ves.io.schema.certificate.CreateSpecType"] = CreateSpecTypeValidator()
 	vr["ves.io.schema.certificate.GetSpecType"] = GetSpecTypeValidator()
 	vr["ves.io.schema.certificate.GlobalSpecType"] = GlobalSpecTypeValidator()
@@ -62,6 +66,7 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 
 func initializeAPIGwServiceSlugsRegistry(sm map[string]string) {
 	sm["ves.io.schema.certificate.API"] = "config"
+	sm["ves.io.schema.certificate.CustomAPI"] = "config"
 }
 
 func initializeP0PolicyRegistry(sm map[string]svcfw.P0PolicyInfo) {
@@ -91,6 +96,21 @@ func initializeCRUDServiceRegistry(mdr *svcfw.MDRegistry, isExternal bool) {
 		mdr.SvcRegisterHandlers["ves.io.schema.certificate.API"] = RegisterAPIServer
 		mdr.SvcGwRegisterHandlers["ves.io.schema.certificate.API"] = RegisterGwAPIHandler
 		csr.CRUDServerRegistry["ves.io.schema.certificate.Object"] = NewCRUDAPIServer
+	}()
+	customCSR = mdr.PubCustomServiceRegistry
+	func() {
+		// set swagger jsons for our and external schemas
+		customCSR.SwaggerRegistry["ves.io.schema.certificate.Object"] = CustomAPISwaggerJSON
+		customCSR.GrpcClientRegistry["ves.io.schema.certificate.CustomAPI"] = NewCustomAPIGrpcClient
+		customCSR.RestClientRegistry["ves.io.schema.certificate.CustomAPI"] = NewCustomAPIRestClient
+		if isExternal {
+			return
+		}
+		mdr.SvcRegisterHandlers["ves.io.schema.certificate.CustomAPI"] = RegisterCustomAPIServer
+		mdr.SvcGwRegisterHandlers["ves.io.schema.certificate.CustomAPI"] = RegisterGwCustomAPIHandler
+		customCSR.ServerRegistry["ves.io.schema.certificate.CustomAPI"] = func(svc svcfw.Service) server.APIHandler {
+			return NewCustomAPIServer(svc)
+		}
 	}()
 }
 

@@ -7255,6 +7255,99 @@ func JWTValidationValidator() db.Validator {
 
 // augmented methods on protoc/std generated struct
 
+func (m *LiveSignaturesUpdate) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *LiveSignaturesUpdate) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *LiveSignaturesUpdate) DeepCopy() *LiveSignaturesUpdate {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &LiveSignaturesUpdate{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *LiveSignaturesUpdate) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *LiveSignaturesUpdate) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return LiveSignaturesUpdateValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateLiveSignaturesUpdate struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateLiveSignaturesUpdate) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*LiveSignaturesUpdate)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *LiveSignaturesUpdate got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+
+	switch m.GetSignaturesUpdateModeChoice().(type) {
+	case *LiveSignaturesUpdate_Automatic:
+		if fv, exists := v.FldValidators["signatures_update_mode_choice.automatic"]; exists {
+			val := m.GetSignaturesUpdateModeChoice().(*LiveSignaturesUpdate_Automatic).Automatic
+			vOpts := append(opts,
+				db.WithValidateField("signatures_update_mode_choice"),
+				db.WithValidateField("automatic"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *LiveSignaturesUpdate_Manual:
+		if fv, exists := v.FldValidators["signatures_update_mode_choice.manual"]; exists {
+			val := m.GetSignaturesUpdateModeChoice().(*LiveSignaturesUpdate_Manual).Manual
+			vOpts := append(opts,
+				db.WithValidateField("signatures_update_mode_choice"),
+				db.WithValidateField("manual"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultLiveSignaturesUpdateValidator = func() *ValidateLiveSignaturesUpdate {
+	v := &ValidateLiveSignaturesUpdate{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func LiveSignaturesUpdateValidator() db.Validator {
+	return DefaultLiveSignaturesUpdateValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *MandatoryClaims) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
@@ -10495,10 +10588,10 @@ var DefaultSimpleClientSrcRuleValidator = func() *ValidateSimpleClientSrcRule {
 
 	vrhActions := v.ActionsValidationRuleHandler
 	rulesActions := map[string]string{
-		"ves.io.schema.rules.enum.defined_only":  "true",
-		"ves.io.schema.rules.message.required":   "true",
-		"ves.io.schema.rules.repeated.max_items": "10",
-		"ves.io.schema.rules.repeated.unique":    "true",
+		"ves.io.schema.rules.message.required":                 "true",
+		"ves.io.schema.rules.repeated.items.enum.defined_only": "true",
+		"ves.io.schema.rules.repeated.max_items":               "10",
+		"ves.io.schema.rules.repeated.unique":                  "true",
 	}
 	vFn, err = vrhActions(rulesActions)
 	if err != nil {

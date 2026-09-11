@@ -44,6 +44,7 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.views.common_waf.InlineRateLimiter"] = InlineRateLimiterValidator()
 	vr["ves.io.schema.views.common_waf.JWKS"] = JWKSValidator()
 	vr["ves.io.schema.views.common_waf.JWTValidation"] = JWTValidationValidator()
+	vr["ves.io.schema.views.common_waf.LiveSignaturesUpdate"] = LiveSignaturesUpdateValidator()
 	vr["ves.io.schema.views.common_waf.MandatoryClaims"] = MandatoryClaimsValidator()
 	vr["ves.io.schema.views.common_waf.OpenApiFallThroughMode"] = OpenApiFallThroughModeValidator()
 	vr["ves.io.schema.views.common_waf.OpenApiValidationAllSpecEndpointsSettings"] = OpenApiValidationAllSpecEndpointsSettingsValidator()

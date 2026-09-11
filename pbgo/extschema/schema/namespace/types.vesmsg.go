@@ -1284,107 +1284,6 @@ func PendingInitializersValidator() db.Validator {
 
 // augmented methods on protoc/std generated struct
 
-func (m *RemoveNamespaceFinalizerReq) ToJSON() (string, error) {
-	return codec.ToJSON(m)
-}
-
-func (m *RemoveNamespaceFinalizerReq) ToYAML() (string, error) {
-	return codec.ToYAML(m)
-}
-
-func (m *RemoveNamespaceFinalizerReq) DeepCopy() *RemoveNamespaceFinalizerReq {
-	if m == nil {
-		return nil
-	}
-	ser, err := m.Marshal()
-	if err != nil {
-		return nil
-	}
-	c := &RemoveNamespaceFinalizerReq{}
-	err = c.Unmarshal(ser)
-	if err != nil {
-		return nil
-	}
-	return c
-}
-
-func (m *RemoveNamespaceFinalizerReq) DeepCopyProto() proto.Message {
-	if m == nil {
-		return nil
-	}
-	return m.DeepCopy()
-}
-
-func (m *RemoveNamespaceFinalizerReq) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
-	return RemoveNamespaceFinalizerReqValidator().Validate(ctx, m, opts...)
-}
-
-type ValidateRemoveNamespaceFinalizerReq struct {
-	FldValidators map[string]db.ValidatorFunc
-}
-
-func (v *ValidateRemoveNamespaceFinalizerReq) NamespaceValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
-	validatorFn, err := db.NewStringValidationRuleHandler(rules)
-	if err != nil {
-		return nil, errors.Wrap(err, "ValidationRuleHandler for namespace")
-	}
-
-	return validatorFn, nil
-}
-
-func (v *ValidateRemoveNamespaceFinalizerReq) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
-	m, ok := pm.(*RemoveNamespaceFinalizerReq)
-	if !ok {
-		switch t := pm.(type) {
-		case nil:
-			return nil
-		default:
-			return fmt.Errorf("Expected type *RemoveNamespaceFinalizerReq got type %s", t)
-		}
-	}
-	if m == nil {
-		return nil
-	}
-	if fv, exists := v.FldValidators["namespace"]; exists {
-		vOpts := append(opts, db.WithValidateField("namespace"))
-		if err := fv(ctx, m.GetNamespace(), vOpts...); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-// Well-known symbol for default validator implementation
-var DefaultRemoveNamespaceFinalizerReqValidator = func() *ValidateRemoveNamespaceFinalizerReq {
-	v := &ValidateRemoveNamespaceFinalizerReq{FldValidators: map[string]db.ValidatorFunc{}}
-	var (
-		err error
-		vFn db.ValidatorFunc
-	)
-	_, _ = err, vFn
-	vFnMap := map[string]db.ValidatorFunc{}
-	_ = vFnMap
-
-	vrhNamespace := v.NamespaceValidationRuleHandler
-	rulesNamespace := map[string]string{
-		"ves.io.schema.rules.message.required": "true",
-	}
-	vFn, err = vrhNamespace(rulesNamespace)
-	if err != nil {
-		errMsg := fmt.Sprintf("ValidationRuleHandler for RemoveNamespaceFinalizerReq.namespace: %s", err)
-		panic(errMsg)
-	}
-	v.FldValidators["namespace"] = vFn
-
-	return v
-}()
-
-func RemoveNamespaceFinalizerReqValidator() db.Validator {
-	return DefaultRemoveNamespaceFinalizerReqValidator
-}
-
-// augmented methods on protoc/std generated struct
-
 func (m *RemoveNamespaceFinalizerResp) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
@@ -1528,6 +1427,14 @@ func (v *ValidateRemoveNamespaceFinalizerRestrictedReq) ServiceValidationRuleHan
 
 	return validatorFn, nil
 }
+func (v *ValidateRemoveNamespaceFinalizerRestrictedReq) ForceRemoveValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewBoolValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for force_remove")
+	}
+
+	return validatorFn, nil
+}
 
 func (v *ValidateRemoveNamespaceFinalizerRestrictedReq) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
 	m, ok := pm.(*RemoveNamespaceFinalizerRestrictedReq)
@@ -1541,6 +1448,12 @@ func (v *ValidateRemoveNamespaceFinalizerRestrictedReq) Validate(ctx context.Con
 	}
 	if m == nil {
 		return nil
+	}
+	if fv, exists := v.FldValidators["force_remove"]; exists {
+		vOpts := append(opts, db.WithValidateField("force_remove"))
+		if err := fv(ctx, m.GetForceRemove(), vOpts...); err != nil {
+			return err
+		}
 	}
 	if fv, exists := v.FldValidators["namespace"]; exists {
 		vOpts := append(opts, db.WithValidateField("namespace"))
@@ -1606,6 +1519,17 @@ var DefaultRemoveNamespaceFinalizerRestrictedReqValidator = func() *ValidateRemo
 		panic(errMsg)
 	}
 	v.FldValidators["service"] = vFn
+
+	vrhForceRemove := v.ForceRemoveValidationRuleHandler
+	rulesForceRemove := map[string]string{
+		"ves.io.schema.rules.message.required": "true",
+	}
+	vFn, err = vrhForceRemove(rulesForceRemove)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for RemoveNamespaceFinalizerRestrictedReq.force_remove: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["force_remove"] = vFn
 
 	return v
 }()

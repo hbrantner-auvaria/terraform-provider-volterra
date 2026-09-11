@@ -2673,6 +2673,15 @@ var APISwaggerJSON string = `{
                     "title": "Virtual Host Auto Cert",
                     "$ref": "#/definitions/certificateVirtualHostAutoCert",
                     "x-displayname": "Virtual Host Auto Cert"
+                },
+                "virtual_servers": {
+                    "type": "array",
+                    "description": " Virtual Servers using this certificate.",
+                    "title": "Virtual Servers",
+                    "items": {
+                        "$ref": "#/definitions/schemaviewsObjectRefType"
+                    },
+                    "x-displayname": "Virtual Servers"
                 }
             }
         },

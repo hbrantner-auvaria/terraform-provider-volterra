@@ -26,11 +26,12 @@ resource "volterra_filter_set" "example" {
 
     // One of the arguments from this list "date_field filter_expression_field label_selector_field string_field" must be set
 
-    label_selector_field {
-      expressions = ["region in (us-west1, us-west2),tier in (staging)"]
+    string_field {
+      field_values = ["field_values"]
     }
   }
 }
+
 ```
 
 Argument Reference
@@ -111,4 +112,4 @@ absolute start and end timestamps.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured filter_set.
+-	`id` - This is the id of the configured filter_set.

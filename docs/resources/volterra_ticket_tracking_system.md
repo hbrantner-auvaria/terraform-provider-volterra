@@ -31,12 +31,16 @@ resource "volterra_ticket_tracking_system" "example" {
       api_token = "api_token"
 
       encrypted_api_token {
+
+
         // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
 
-        clear_secret_info {
-          provider = "box-provider"
+        blindfold_secret_info {
+          decryption_provider = "value"
 
-          url = "string:///U2VjcmV0SW5mb3JtYXRpb24="
+          location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
+
+          store_provider = "value"
         }
       }
 
@@ -44,6 +48,7 @@ resource "volterra_ticket_tracking_system" "example" {
     }
   }
 }
+
 ```
 
 Argument Reference
@@ -72,6 +77,8 @@ Argument Reference
 ### Adhoc Rest Api Encrypted Api Token
 
 Encrypted / blindfolded value of api_token to be persisted in the database using Eywa's policy.
+
+
 
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 
@@ -154,4 +161,4 @@ Secret is given as bootstrap secret in F5XC Security Sidecar.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured ticket_tracking_system.
+-	`id` - This is the id of the configured ticket_tracking_system.

@@ -20,6 +20,7 @@ resource "volterra_cluster" "example" {
   name      = "acmecorp-web"
   namespace = "staging"
 }
+
 ```
 
 Argument Reference
@@ -361,6 +362,30 @@ Secret is given as bootstrap secret in F5XC Security Sidecar.
 
 `name` - (Required) Name of the secret. (`String`).
 
+### Server Validation Choice Skip Server Verification
+
+Skip server verification.
+
+### Server Validation Choice Tls Validation Params
+
+and list of Subject Alt Names for verification.
+
+`skip_hostname_verification` - (Optional) is not matched to the connecting hostname (`Bool`).
+
+###### One of the arguments from this list "trusted_ca, trusted_ca_url" must be set
+
+`trusted_ca` - (Optional) Root CA Certificate. See [Trusted Ca Choice Trusted Ca ](#trusted-ca-choice-trusted-ca) below for details.
+
+`trusted_ca_url` - (Optional) Inline Root CA Certificate (`String`).
+
+`use_volterra_trusted_ca_url` - (Optional) Use the F5XC default Root CA URL from the global config for hostname verification. (`Bool`).(Deprecated)
+
+`verify_subject_alt_names` - (Optional) the hostname of the peer will be used for matching against SAN/CN of peer's certificate (`String`).
+
+### Server Validation Choice Volterra Trusted Ca
+
+Perform origin server verification using F5XC Default Root CA Certificate.
+
 ### Sni Choice Disable Sni
 
 Do not use SNI..
@@ -399,7 +424,15 @@ TLS certificate parameters for upstream connections.
 
 `minimum_protocol_version` - (Optional) Minimum TLS protocol version. (`String`).
 
-`validation_params` - (Optional) and list of Subject Alt Names for verification. See [Cert Params Validation Params ](#cert-params-validation-params) below for details.
+###### One of the arguments from this list "skip_server_verification, tls_validation_params, volterra_trusted_ca" can be set
+
+`skip_server_verification` - (Optional) Skip server verification (`Bool`).
+
+`tls_validation_params` - (Optional) and list of Subject Alt Names for verification. See [Server Validation Choice Tls Validation Params ](#server-validation-choice-tls-validation-params) below for details.
+
+`volterra_trusted_ca` - (Optional) Perform origin server verification using F5XC Default Root CA Certificate (`Bool`).
+
+`validation_params` - (Optional) and list of Subject Alt Names for verification. See [Cert Params Validation Params ](#cert-params-validation-params) below for details.(Deprecated)
 
 ### Tls Params Choice Common Params
 
@@ -426,4 +459,4 @@ Root CA Certificate.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured cluster.
+-	`id` - This is the id of the configured cluster.

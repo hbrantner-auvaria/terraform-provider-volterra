@@ -2614,6 +2614,12 @@ func (v *ValidateStringRules) Validate(ctx context.Context, pm interface{}, opts
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["not_empty"]; exists {
+		vOpts := append(opts, db.WithValidateField("not_empty"))
+		if err := fv(ctx, m.GetNotEmpty(), vOpts...); err != nil {
+			return err
+		}
+	}
 	if fv, exists := v.FldValidators["not_in"]; exists {
 		vOpts := append(opts, db.WithValidateField("not_in"))
 		for idx, item := range m.GetNotIn() {
@@ -2781,17 +2787,6 @@ func (v *ValidateStringRules) Validate(ctx context.Context, pm interface{}, opts
 			vOpts := append(opts,
 				db.WithValidateField("well_known"),
 				db.WithValidateField("k8s_label_value"),
-			)
-			if err := fv(ctx, val, vOpts...); err != nil {
-				return err
-			}
-		}
-	case *StringRules_NotEmpty:
-		if fv, exists := v.FldValidators["well_known.not_empty"]; exists {
-			val := m.GetWellKnown().(*StringRules_NotEmpty).NotEmpty
-			vOpts := append(opts,
-				db.WithValidateField("well_known"),
-				db.WithValidateField("not_empty"),
 			)
 			if err := fv(ctx, val, vOpts...); err != nil {
 				return err

@@ -2364,7 +2364,7 @@ var CustomPrivateAPISwaggerJSON string = `{
                 },
                 "group_by": {
                     "type": "array",
-                    "description": " Aggregate data by none or more labels\n\n Optional: If not specified, then the billing data will be aggregated without any label.\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 5\n  ves.io.schema.rules.repeated.unique: true\n  ves.io.schema.rules.string.in: [\\\"site\\\"]\n",
+                    "description": " Aggregate data by none or more labels\n\n Optional: If not specified, then the billing data will be aggregated without any label.\n\nValidation Rules:\n  ves.io.schema.rules.repeated.items.string.in: [\\\"site\\\"]\n  ves.io.schema.rules.repeated.max_items: 5\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "Group by",
                     "maxItems": 5,
                     "items": {
@@ -2372,14 +2372,14 @@ var CustomPrivateAPISwaggerJSON string = `{
                     },
                     "x-displayname": "Group By",
                     "x-ves-validation-rules": {
+                        "ves.io.schema.rules.repeated.items.string.in": "[\\\"site\\\"]",
                         "ves.io.schema.rules.repeated.max_items": "5",
-                        "ves.io.schema.rules.repeated.unique": "true",
-                        "ves.io.schema.rules.string.in": "[\\\"site\\\"]"
+                        "ves.io.schema.rules.repeated.unique": "true"
                     }
                 },
                 "metric_selector": {
                     "type": "array",
-                    "description": " List of metrics to be returned in the response\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 5\n  ves.io.schema.rules.repeated.min_items: 1\n  ves.io.schema.rules.repeated.unique: true\n  ves.io.schema.rules.string.in: [\\\"good_requests\\\"]\n",
+                    "description": " List of metrics to be returned in the response\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.items.string.in: [\\\"good_requests\\\"]\n  ves.io.schema.rules.repeated.max_items: 5\n  ves.io.schema.rules.repeated.min_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "Metric Selector",
                     "minItems": 1,
                     "maxItems": 5,
@@ -2390,10 +2390,10 @@ var CustomPrivateAPISwaggerJSON string = `{
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.repeated.items.string.in": "[\\\"good_requests\\\"]",
                         "ves.io.schema.rules.repeated.max_items": "5",
                         "ves.io.schema.rules.repeated.min_items": "1",
-                        "ves.io.schema.rules.repeated.unique": "true",
-                        "ves.io.schema.rules.string.in": "[\\\"good_requests\\\"]"
+                        "ves.io.schema.rules.repeated.unique": "true"
                     }
                 },
                 "namespace": {
@@ -2948,7 +2948,7 @@ var CustomPrivateAPISwaggerJSON string = `{
             "properties": {
                 "field_selector": {
                     "type": "array",
-                    "description": " List of objects/resources for which usage is requested.\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.min_items: 1\n  ves.io.schema.rules.repeated.unique: true\n  ves.io.schema.rules.string.in: [\\\"app_setting\\\",\\\"dns_domain\\\",\\\"dns_load_balancer\\\",\\\"dns_load_balancer.health_check\\\",\\\"fast_acl\\\",\\\"http_loadbalancer\\\",\\\"http_loadbalancer.public\\\",\\\"http_loadbalancer.public.app_firewall\\\",\\\"k8s_cluster\\\",\\\"public_ip\\\",\\\"site\\\",\\\"tcp_loadbalancer\\\",\\\"tcp_loadbalancer.public\\\",\\\"token\\\",\\\"virtual_host\\\",\\\"virtual_k8s\\\",\\\"waf\\\",\\\"udp_loadbalancer\\\",\\\"udp_loadbalancer.public\\\"]\n",
+                    "description": " List of objects/resources for which usage is requested.\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n  ves.io.schema.rules.repeated.items.string.in: [\\\"app_setting\\\",\\\"dns_domain\\\",\\\"dns_load_balancer\\\",\\\"dns_load_balancer.health_check\\\",\\\"fast_acl\\\",\\\"http_loadbalancer\\\",\\\"http_loadbalancer.public\\\",\\\"http_loadbalancer.public.app_firewall\\\",\\\"k8s_cluster\\\",\\\"public_ip\\\",\\\"site\\\",\\\"tcp_loadbalancer\\\",\\\"tcp_loadbalancer.public\\\",\\\"token\\\",\\\"virtual_host\\\",\\\"virtual_k8s\\\",\\\"waf\\\",\\\"udp_loadbalancer\\\",\\\"udp_loadbalancer.public\\\"]\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.min_items: 1\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "Field Selector",
                     "minItems": 1,
                     "maxItems": 32,
@@ -2959,10 +2959,10 @@ var CustomPrivateAPISwaggerJSON string = `{
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true",
+                        "ves.io.schema.rules.repeated.items.string.in": "[\\\"app_setting\\\",\\\"dns_domain\\\",\\\"dns_load_balancer\\\",\\\"dns_load_balancer.health_check\\\",\\\"fast_acl\\\",\\\"http_loadbalancer\\\",\\\"http_loadbalancer.public\\\",\\\"http_loadbalancer.public.app_firewall\\\",\\\"k8s_cluster\\\",\\\"public_ip\\\",\\\"site\\\",\\\"tcp_loadbalancer\\\",\\\"tcp_loadbalancer.public\\\",\\\"token\\\",\\\"virtual_host\\\",\\\"virtual_k8s\\\",\\\"waf\\\",\\\"udp_loadbalancer\\\",\\\"udp_loadbalancer.public\\\"]",
                         "ves.io.schema.rules.repeated.max_items": "32",
                         "ves.io.schema.rules.repeated.min_items": "1",
-                        "ves.io.schema.rules.repeated.unique": "true",
-                        "ves.io.schema.rules.string.in": "[\\\"app_setting\\\",\\\"dns_domain\\\",\\\"dns_load_balancer\\\",\\\"dns_load_balancer.health_check\\\",\\\"fast_acl\\\",\\\"http_loadbalancer\\\",\\\"http_loadbalancer.public\\\",\\\"http_loadbalancer.public.app_firewall\\\",\\\"k8s_cluster\\\",\\\"public_ip\\\",\\\"site\\\",\\\"tcp_loadbalancer\\\",\\\"tcp_loadbalancer.public\\\",\\\"token\\\",\\\"virtual_host\\\",\\\"virtual_k8s\\\",\\\"waf\\\",\\\"udp_loadbalancer\\\",\\\"udp_loadbalancer.public\\\"]"
+                        "ves.io.schema.rules.repeated.unique": "true"
                     }
                 },
                 "namespace": {

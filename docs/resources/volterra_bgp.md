@@ -24,7 +24,7 @@ resource "volterra_bgp" "example" {
     asn = "64512"
 
     bgp_router_id {
-      // One of the arguments from this list "ipv4 ipv6" can be set
+      // One of the arguments from this list "dual_stack ipv4 ipv6" can be set
 
       ipv4 {
         addr = "192.168.1.1"
@@ -67,11 +67,11 @@ resource "volterra_bgp" "example" {
     external {
       // One of the arguments from this list "address default_gateway disable external_connector from_site subnet_begin_offset subnet_end_offset" must be set
 
-      disable = true
+      subnet_begin_offset = "subnet_begin_offset"
 
       // One of the arguments from this list "address_ipv6 default_gateway_v6 disable_v6 from_site_v6 subnet_begin_offset_v6 subnet_end_offset_v6" must be set
 
-      from_site_v6 = true
+      address_ipv6 = "address_ipv6"
       asn = "64512"
 
       // One of the arguments from this list "md5_auth_key no_authentication" can be set
@@ -80,21 +80,37 @@ resource "volterra_bgp" "example" {
       family_inet {
         // One of the arguments from this list "disable enable" must be set
 
-        disable = true
+        enable {
+          aggregation {
+            ip_prefix = "ip_prefix"
+
+            options {
+              // One of the arguments from this list "summary_only" must be set
+
+              summary_only = true
+            }
+          }
+        }
       }
       family_inet_v6 {
         // One of the arguments from this list "disable enable" must be set
 
-        disable = true
+        enable {
+          aggregation {
+            ip_prefix = "ip_prefix"
+
+            options {
+              // One of the arguments from this list "summary_only" must be set
+
+              summary_only = true
+            }
+          }
+        }
       }
 
       // One of the arguments from this list "inside_interfaces interface interface_list outside_interfaces" must be set
 
-      interface {
-        name      = "test1"
-        namespace = "staging"
-        tenant    = "acmecorp"
-      }
+      outside_interfaces = true
       port = "179"
     }
   }
@@ -105,7 +121,7 @@ resource "volterra_bgp" "example" {
     site {
       // One of the arguments from this list "disable_internet_vip enable_internet_vip" must be set
 
-      enable_internet_vip = true
+      disable_internet_vip = true
 
       network_type = "network_type"
 
@@ -123,6 +139,7 @@ resource "volterra_bgp" "example" {
     }
   }
 }
+
 ```
 
 Argument Reference
@@ -276,7 +293,9 @@ x-displayName: "Enabled".
 
 If Router ID Type is set to "From IP Address", this is used as Router ID. Else, this is ignored..
 
-###### One of the arguments from this list "ipv4, ipv6" can be set
+###### One of the arguments from this list "dual_stack, ipv4, ipv6" can be set
+
+`dual_stack` - (Optional) Both IPv4 and IPv6 addresses are specified together. See [Ver Dual Stack ](#ver-dual-stack) below for details.
 
 `ipv4` - (Optional) IPv4 Address. See [Ver Ipv4 ](#ver-ipv4) below for details.
 
@@ -289,6 +308,18 @@ Apply policy on routes being imported.
 ### Direction Outbound
 
 Apply policy on routes being exported.
+
+### Dual Stack Ipv4
+
+IPv4 Address.
+
+`addr` - (Optional) IPv4 Address in string form with dot-decimal notation (`String`).
+
+### Dual Stack Ipv6
+
+IPv6 Address.
+
+`addr` - (Optional) e.g. '2001:db8:0:0:0:0:2:1' becomes '2001:db8::2:1' or '2001:db8:0:0:0:2:0:0' becomes '2001:db8::2::' (`String`).
 
 ### Enable Aggregation
 
@@ -622,6 +653,14 @@ Internal BGP peer..
 
 `port` - (Optional) Local Peer TCP Port Number. (`Int`).
 
+### Ver Dual Stack
+
+Both IPv4 and IPv6 addresses are specified together.
+
+`ipv4` - (Optional) IPv4 Address. See [Dual Stack Ipv4 ](#dual-stack-ipv4) below for details.
+
+`ipv6` - (Optional) IPv6 Address. See [Dual Stack Ipv6 ](#dual-stack-ipv6) below for details.
+
 ### Ver Ipv4
 
 IPv4 Address.
@@ -637,4 +676,4 @@ IPv6 Address.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured bgp.
+-	`id` - This is the id of the configured bgp.

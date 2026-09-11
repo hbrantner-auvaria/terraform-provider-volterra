@@ -2378,7 +2378,6 @@ var DefaultBotDefenseTransactionResultConditionValidator = func() *ValidateBotDe
 	vrhRegexValues := v.RegexValuesValidationRuleHandler
 	rulesRegexValues := map[string]string{
 		"ves.io.schema.rules.repeated.items.string.max_bytes": "256",
-		"ves.io.schema.rules.repeated.items.string.not_empty": "true",
 		"ves.io.schema.rules.repeated.items.string.regex":     "true",
 		"ves.io.schema.rules.repeated.max_items":              "16",
 		"ves.io.schema.rules.repeated.unique":                 "true",
@@ -9046,7 +9045,6 @@ var DefaultHeaderMatcherTypeValidator = func() *ValidateHeaderMatcherType {
 	vrhValueMatchRegex := v.ValueMatchRegexValidationRuleHandler
 	rulesValueMatchRegex := map[string]string{
 		"ves.io.schema.rules.string.max_bytes": "256",
-		"ves.io.schema.rules.string.not_empty": "true",
 		"ves.io.schema.rules.string.regex":     "true",
 	}
 	vFnMap["value_match.regex"], err = vrhValueMatchRegex(rulesValueMatchRegex)
@@ -10553,7 +10551,6 @@ var DefaultL4DestTypeValidator = func() *ValidateL4DestType {
 	vrhPrefixes := v.PrefixesValidationRuleHandler
 	rulesPrefixes := map[string]string{
 		"ves.io.schema.rules.repeated.items.string.ipv4_prefix": "true",
-		"ves.io.schema.rules.repeated.items.string.not_empty":   "true",
 		"ves.io.schema.rules.repeated.max_items":                "32",
 		"ves.io.schema.rules.repeated.unique":                   "true",
 	}
@@ -10581,7 +10578,6 @@ var DefaultL4DestTypeValidator = func() *ValidateL4DestType {
 	vrhIpv6Prefixes := v.Ipv6PrefixesValidationRuleHandler
 	rulesIpv6Prefixes := map[string]string{
 		"ves.io.schema.rules.repeated.items.string.ipv6_prefix": "true",
-		"ves.io.schema.rules.repeated.items.string.not_empty":   "true",
 		"ves.io.schema.rules.repeated.max_items":                "32",
 		"ves.io.schema.rules.repeated.unique":                   "true",
 	}

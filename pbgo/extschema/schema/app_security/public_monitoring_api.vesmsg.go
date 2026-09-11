@@ -1625,6 +1625,283 @@ func SecurityEventsScrollRequestValidator() db.Validator {
 
 // augmented methods on protoc/std generated struct
 
+func (m *SecurityEvidenceRequest) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *SecurityEvidenceRequest) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *SecurityEvidenceRequest) DeepCopy() *SecurityEvidenceRequest {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &SecurityEvidenceRequest{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *SecurityEvidenceRequest) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *SecurityEvidenceRequest) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return SecurityEvidenceRequestValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateSecurityEvidenceRequest struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateSecurityEvidenceRequest) StartTimeValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for start_time")
+	}
+
+	return validatorFn, nil
+}
+func (v *ValidateSecurityEvidenceRequest) EndTimeValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for end_time")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateSecurityEvidenceRequest) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*SecurityEvidenceRequest)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *SecurityEvidenceRequest got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["aggs"]; exists {
+		vOpts := append(opts, db.WithValidateField("aggs"))
+		for key, value := range m.GetAggs() {
+			vOpts := append(vOpts, db.WithValidateMapKey(key))
+			if err := fv(ctx, value, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	if fv, exists := v.FldValidators["end_time"]; exists {
+		vOpts := append(opts, db.WithValidateField("end_time"))
+		if err := fv(ctx, m.GetEndTime(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["limit"]; exists {
+		vOpts := append(opts, db.WithValidateField("limit"))
+		if err := fv(ctx, m.GetLimit(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["namespace"]; exists {
+		vOpts := append(opts, db.WithValidateField("namespace"))
+		if err := fv(ctx, m.GetNamespace(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["query"]; exists {
+		vOpts := append(opts, db.WithValidateField("query"))
+		if err := fv(ctx, m.GetQuery(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["search_after"]; exists {
+		vOpts := append(opts, db.WithValidateField("search_after"))
+		if err := fv(ctx, m.GetSearchAfter(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["sort"]; exists {
+		vOpts := append(opts, db.WithValidateField("sort"))
+		if err := fv(ctx, m.GetSort(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["sort_by"]; exists {
+		vOpts := append(opts, db.WithValidateField("sort_by"))
+		if err := fv(ctx, m.GetSortBy(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["sort_values"]; exists {
+		vOpts := append(opts, db.WithValidateField("sort_values"))
+		if err := fv(ctx, m.GetSortValues(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["start_time"]; exists {
+		vOpts := append(opts, db.WithValidateField("start_time"))
+		if err := fv(ctx, m.GetStartTime(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultSecurityEvidenceRequestValidator = func() *ValidateSecurityEvidenceRequest {
+	v := &ValidateSecurityEvidenceRequest{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhStartTime := v.StartTimeValidationRuleHandler
+	rulesStartTime := map[string]string{
+		"ves.io.schema.rules.string.query_time": "true",
+	}
+	vFn, err = vrhStartTime(rulesStartTime)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for SecurityEvidenceRequest.start_time: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["start_time"] = vFn
+
+	vrhEndTime := v.EndTimeValidationRuleHandler
+	rulesEndTime := map[string]string{
+		"ves.io.schema.rules.string.query_time": "true",
+	}
+	vFn, err = vrhEndTime(rulesEndTime)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for SecurityEvidenceRequest.end_time: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["end_time"] = vFn
+	v.FldValidators["aggs"] = AggregationRequestValidator().Validate
+
+	return v
+}()
+
+func SecurityEvidenceRequestValidator() db.Validator {
+	return DefaultSecurityEvidenceRequestValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *SecurityEvidenceResponse) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *SecurityEvidenceResponse) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *SecurityEvidenceResponse) DeepCopy() *SecurityEvidenceResponse {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &SecurityEvidenceResponse{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *SecurityEvidenceResponse) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *SecurityEvidenceResponse) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return SecurityEvidenceResponseValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateSecurityEvidenceResponse struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateSecurityEvidenceResponse) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*SecurityEvidenceResponse)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *SecurityEvidenceResponse got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["aggs"]; exists {
+		vOpts := append(opts, db.WithValidateField("aggs"))
+		for key, value := range m.GetAggs() {
+			vOpts := append(vOpts, db.WithValidateMapKey(key))
+			if err := fv(ctx, value, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	if fv, exists := v.FldValidators["evidences"]; exists {
+		vOpts := append(opts, db.WithValidateField("evidences"))
+		for idx, item := range m.GetEvidences() {
+			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
+			if err := fv(ctx, item, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	if fv, exists := v.FldValidators["last_sort_values"]; exists {
+		vOpts := append(opts, db.WithValidateField("last_sort_values"))
+		if err := fv(ctx, m.GetLastSortValues(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["total_hits"]; exists {
+		vOpts := append(opts, db.WithValidateField("total_hits"))
+		if err := fv(ctx, m.GetTotalHits(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultSecurityEvidenceResponseValidator = func() *ValidateSecurityEvidenceResponse {
+	v := &ValidateSecurityEvidenceResponse{FldValidators: map[string]db.ValidatorFunc{}}
+	v.FldValidators["aggs"] = ves_io_schema_log.LogAggregationDataValidator().Validate
+
+	return v
+}()
+
+func SecurityEvidenceResponseValidator() db.Validator {
+	return DefaultSecurityEvidenceResponseValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *SecurityIncidentsAggregationRequest) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }

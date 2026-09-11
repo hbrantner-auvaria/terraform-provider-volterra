@@ -3741,12 +3741,22 @@ var APISwaggerJSON string = `{
                 },
                 "public_vip": {
                     "type": "string",
-                    "description": " VIP to be used for all listeners for this tenant in public network.\n\nExample: - \"72.19.3.128\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.ip: true\n",
+                    "description": " IPv4 VIP to be used for all listeners for this tenant in public network.\n legacy: IPv4 only\n\nExample: - \"72.19.3.128\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.ip: true\n",
                     "title": "public_vip",
-                    "x-displayname": "Dedicated Public VIP",
+                    "x-displayname": "Dedicated Public IPv4 VIP",
                     "x-ves-example": "72.19.3.128",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.string.ip": "true"
+                    }
+                },
+                "public_vip_v6": {
+                    "type": "string",
+                    "description": " IPv6 VIP to be used for all listeners for this tenant in public network.\n\nExample: - \"2001:db8::1\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.ipv6: true\n",
+                    "title": "public_vip_v6",
+                    "x-displayname": "Dedicated Public IPv6 VIP",
+                    "x-ves-example": "2001:db8::1",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.string.ipv6": "true"
                     }
                 },
                 "shape_shared_instance_auth_key": {

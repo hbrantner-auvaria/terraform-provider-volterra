@@ -8414,6 +8414,26 @@ func (m *WhereType) GetChoiceDRefInfo() ([]db.DRefInfo, error) {
 			dri.DRField = "advertise_on_public." + dri.DRField
 		}
 		return drInfos, err
+	case *WhereType_AdvertiseV6OnPublic:
+		drInfos, err := m.GetAdvertiseV6OnPublic().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetAdvertiseV6OnPublic().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "advertise_v6_on_public." + dri.DRField
+		}
+		return drInfos, err
+	case *WhereType_AdvertiseDualstackOnPublic:
+		drInfos, err := m.GetAdvertiseDualstackOnPublic().GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetAdvertiseDualstackOnPublic().GetDRefInfo() FAILED")
+		}
+		for i := range drInfos {
+			dri := &drInfos[i]
+			dri.DRField = "advertise_dualstack_on_public." + dri.DRField
+		}
+		return drInfos, err
 	default:
 		return nil, nil
 	}
@@ -8589,6 +8609,28 @@ func (v *ValidateWhereType) Validate(ctx context.Context, pm interface{}, opts .
 				return err
 			}
 		}
+	case *WhereType_AdvertiseV6OnPublic:
+		if fv, exists := v.FldValidators["choice.advertise_v6_on_public"]; exists {
+			val := m.GetChoice().(*WhereType_AdvertiseV6OnPublic).AdvertiseV6OnPublic
+			vOpts := append(opts,
+				db.WithValidateField("choice"),
+				db.WithValidateField("advertise_v6_on_public"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *WhereType_AdvertiseDualstackOnPublic:
+		if fv, exists := v.FldValidators["choice.advertise_dualstack_on_public"]; exists {
+			val := m.GetChoice().(*WhereType_AdvertiseDualstackOnPublic).AdvertiseDualstackOnPublic
+			vOpts := append(opts,
+				db.WithValidateField("choice"),
+				db.WithValidateField("advertise_dualstack_on_public"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 
 	if fv, exists := v.FldValidators["port_choice"]; exists {
@@ -8703,6 +8745,8 @@ var DefaultWhereTypeValidator = func() *ValidateWhereType {
 	v.FldValidators["choice.cloud_edge_segment"] = WhereCloudEdgeSegmentValidator().Validate
 	v.FldValidators["choice.virtual_site_with_vip"] = WhereVirtualSiteSpecifiedVIPValidator().Validate
 	v.FldValidators["choice.advertise_on_public"] = AdvertisePublicValidator().Validate
+	v.FldValidators["choice.advertise_v6_on_public"] = AdvertisePublicValidator().Validate
+	v.FldValidators["choice.advertise_dualstack_on_public"] = AdvertisePublicValidator().Validate
 
 	return v
 }()

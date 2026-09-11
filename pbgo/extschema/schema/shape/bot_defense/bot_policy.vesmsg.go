@@ -1580,6 +1580,114 @@ func CookiesValidator() db.Validator {
 
 // augmented methods on protoc/std generated struct
 
+func (m *CosseBotInfraWithDeliveredVersion) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *CosseBotInfraWithDeliveredVersion) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *CosseBotInfraWithDeliveredVersion) DeepCopy() *CosseBotInfraWithDeliveredVersion {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &CosseBotInfraWithDeliveredVersion{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *CosseBotInfraWithDeliveredVersion) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *CosseBotInfraWithDeliveredVersion) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return CosseBotInfraWithDeliveredVersionValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateCosseBotInfraWithDeliveredVersion struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateCosseBotInfraWithDeliveredVersion) CosseBotInfraNameValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	validatorFn, err := db.NewStringValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for cosse_bot_infra_name")
+	}
+
+	return validatorFn, nil
+}
+
+func (v *ValidateCosseBotInfraWithDeliveredVersion) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*CosseBotInfraWithDeliveredVersion)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *CosseBotInfraWithDeliveredVersion got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["cosse_bot_infra_name"]; exists {
+		vOpts := append(opts, db.WithValidateField("cosse_bot_infra_name"))
+		if err := fv(ctx, m.GetCosseBotInfraName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["delivered_version"]; exists {
+		vOpts := append(opts, db.WithValidateField("delivered_version"))
+		if err := fv(ctx, m.GetDeliveredVersion(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultCosseBotInfraWithDeliveredVersionValidator = func() *ValidateCosseBotInfraWithDeliveredVersion {
+	v := &ValidateCosseBotInfraWithDeliveredVersion{FldValidators: map[string]db.ValidatorFunc{}}
+	var (
+		err error
+		vFn db.ValidatorFunc
+	)
+	_, _ = err, vFn
+	vFnMap := map[string]db.ValidatorFunc{}
+	_ = vFnMap
+
+	vrhCosseBotInfraName := v.CosseBotInfraNameValidationRuleHandler
+	rulesCosseBotInfraName := map[string]string{
+		"ves.io.schema.rules.string.min_len":         "1",
+		"ves.io.schema.rules.string.ves_object_name": "true",
+	}
+	vFn, err = vrhCosseBotInfraName(rulesCosseBotInfraName)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for CosseBotInfraWithDeliveredVersion.cosse_bot_infra_name: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["cosse_bot_infra_name"] = vFn
+
+	return v
+}()
+
+func CosseBotInfraWithDeliveredVersionValidator() db.Validator {
+	return DefaultCosseBotInfraWithDeliveredVersionValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *DomainField) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
@@ -4486,6 +4594,98 @@ func MatcherValueValidator() db.Validator {
 
 // augmented methods on protoc/std generated struct
 
+func (m *MobileConfigFetchPaths) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *MobileConfigFetchPaths) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *MobileConfigFetchPaths) DeepCopy() *MobileConfigFetchPaths {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &MobileConfigFetchPaths{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *MobileConfigFetchPaths) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *MobileConfigFetchPaths) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return MobileConfigFetchPathsValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateMobileConfigFetchPaths struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateMobileConfigFetchPaths) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*MobileConfigFetchPaths)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *MobileConfigFetchPaths got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["path_android"]; exists {
+		vOpts := append(opts, db.WithValidateField("path_android"))
+		if err := fv(ctx, m.GetPathAndroid(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["path_ios"]; exists {
+		vOpts := append(opts, db.WithValidateField("path_ios"))
+		if err := fv(ctx, m.GetPathIos(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["status"]; exists {
+		vOpts := append(opts, db.WithValidateField("status"))
+		if err := fv(ctx, m.GetStatus(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["unavailable_text"]; exists {
+		vOpts := append(opts, db.WithValidateField("unavailable_text"))
+		if err := fv(ctx, m.GetUnavailableText(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultMobileConfigFetchPathsValidator = func() *ValidateMobileConfigFetchPaths {
+	v := &ValidateMobileConfigFetchPaths{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func MobileConfigFetchPathsValidator() db.Validator {
+	return DefaultMobileConfigFetchPathsValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *NetworkPolicyContent) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
@@ -5317,6 +5517,18 @@ func (v *ValidateProtectedEndpoints) Validate(ctx context.Context, pm interface{
 	if fv, exists := v.FldValidators["js_download_path"]; exists {
 		vOpts := append(opts, db.WithValidateField("js_download_path"))
 		if err := fv(ctx, m.GetJsDownloadPath(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["mobile_config_fetch_paths"]; exists {
+		vOpts := append(opts, db.WithValidateField("mobile_config_fetch_paths"))
+		if err := fv(ctx, m.GetMobileConfigFetchPaths(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["telemetry_prefix"]; exists {
+		vOpts := append(opts, db.WithValidateField("telemetry_prefix"))
+		if err := fv(ctx, m.GetTelemetryPrefix(), vOpts...); err != nil {
 			return err
 		}
 	}

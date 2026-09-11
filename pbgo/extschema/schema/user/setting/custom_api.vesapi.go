@@ -4745,52 +4745,44 @@ var CustomAPISwaggerJSON string = `{
         },
         "settingPersonaPreferences": {
             "type": "object",
-            "description": "Preferences to display appropriate content to appropriate audience",
+            "description": "x-displayName: \"Persona type\"\nPreferences to display appropriate content to appropriate audience\nDEPRECATED: This message is deprecated. Do not use for new implementations.",
             "title": "Persona type",
-            "x-displayname": "Persona type",
-            "x-ves-proto-message": "ves.io.schema.user.setting.PersonaPreferences",
             "properties": {
                 "billing": {
                     "type": "boolean",
-                    "description": " Audience is a billing admin",
+                    "description": "x-displayName: \"Billing\"\nAudience is a billing admin",
                     "title": "Billing",
-                    "format": "boolean",
-                    "x-displayname": "Billing"
+                    "format": "boolean"
                 },
                 "dev_ops": {
                     "type": "boolean",
-                    "description": " Audience is DevOps",
+                    "description": "x-displayName: \"DevOps\"\nAudience is DevOps",
                     "title": "DevOps",
-                    "format": "boolean",
-                    "x-displayname": "DevOps"
+                    "format": "boolean"
                 },
                 "developer": {
                     "type": "boolean",
-                    "description": " Audience is a developer",
+                    "description": "x-displayName: \"Developer\"\nAudience is a developer",
                     "title": "Developer",
-                    "format": "boolean",
-                    "x-displayname": "Developer"
+                    "format": "boolean"
                 },
                 "master": {
                     "type": "boolean",
-                    "description": " Audience is an admin",
+                    "description": "x-displayName: \"Admin\"\nAudience is an admin",
                     "title": "Admin",
-                    "format": "boolean",
-                    "x-displayname": "Admin"
+                    "format": "boolean"
                 },
                 "net_ops": {
                     "type": "boolean",
-                    "description": " Audience is NetOps",
+                    "description": "x-displayName: \"NetOps\"\nAudience is NetOps",
                     "title": "NetOps",
-                    "format": "boolean",
-                    "x-displayname": "NetOps"
+                    "format": "boolean"
                 },
                 "sec_ops": {
                     "type": "boolean",
-                    "description": " Audience is SecOps",
+                    "description": "x-displayName: \"SecOps\"\nAudience is SecOps",
                     "title": "SecOps",
-                    "format": "boolean",
-                    "x-displayname": "SecOps"
+                    "format": "boolean"
                 }
             }
         },
@@ -4801,19 +4793,6 @@ var CustomAPISwaggerJSON string = `{
             "x-displayname": "View preference",
             "x-ves-proto-message": "ves.io.schema.user.setting.SetViewPreferenceRequest",
             "properties": {
-                "advanced_view": {
-                    "type": "boolean",
-                    "description": " If true then more options are displayed, otherwise a simplified view is displayed",
-                    "title": "Advanced view",
-                    "format": "boolean",
-                    "x-displayname": "Advanced view"
-                },
-                "persona_preferences": {
-                    "description": " View preferences based on user's speciality",
-                    "title": "Persona preferences",
-                    "$ref": "#/definitions/settingPersonaPreferences",
-                    "x-displayname": "Persona preferences"
-                },
                 "wizard_advanced_auto_expand": {
                     "type": "boolean",
                     "description": " If true then all advanced configuration fields are automatically expanded when creating a new object",
@@ -5018,25 +4997,12 @@ var CustomAPISwaggerJSON string = `{
             "x-displayname": "View preference",
             "x-ves-proto-message": "ves.io.schema.user.setting.ViewPreference",
             "properties": {
-                "advanced_view": {
-                    "type": "boolean",
-                    "description": " If true then more options are displayed, otherwise a simplified view is displayed",
-                    "title": "Advanced view",
-                    "format": "boolean",
-                    "x-displayname": "Advanced view"
-                },
                 "initialized": {
                     "type": "boolean",
                     "description": " If true then the user picked their preference",
                     "title": "Initialized",
                     "format": "boolean",
                     "x-displayname": "Initialized"
-                },
-                "persona_preferences": {
-                    "description": " View preferences based on user's speciality",
-                    "title": "Persona preferences",
-                    "$ref": "#/definitions/settingPersonaPreferences",
-                    "x-displayname": "Persona preferences"
                 },
                 "wizard_advanced_auto_expand": {
                     "type": "boolean",

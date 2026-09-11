@@ -22,42 +22,53 @@ resource "volterra_global_log_receiver" "example" {
 
   // One of the arguments from this list "ns_all ns_current ns_list ns_system" must be set
 
-  ns_current = true
+  ns_system = true
 
   // One of the arguments from this list "audit_logs dns_logs request_logs security_events" must be set
 
-  dns_logs = true
+  audit_logs = true
 
   // One of the arguments from this list "aws_cloud_watch_receiver azure_event_hubs_receiver azure_receiver datadog_receiver elastic_receiver file_receiver gcp_bucket_receiver http_receiver kafka_receiver new_relic_receiver qradar_receiver s3_receiver splunk_receiver sumo_logic_receiver" must be set
 
-  new_relic_receiver {
-    api_key {
-      blindfold_secret_info_internal {
-        decryption_provider = "value"
-
-        location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
-
-        store_provider = "value"
-      }
-
-      secret_encoding_type = "secret_encoding_type"
-
-      // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
-
-      blindfold_secret_info {
-        decryption_provider = "value"
-
-        location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
-
-        store_provider = "value"
-      }
+  s3_receiver {
+    aws_cred {
+      name      = "test1"
+      namespace = "staging"
+      tenant    = "acmecorp"
     }
 
-    // One of the arguments from this list "eu us" must be set
+    aws_region = "us-east-1"
 
-    us = true
+    batch {
+      // One of the arguments from this list "max_bytes max_bytes_disabled" can be set
+
+      max_bytes_disabled = true
+
+      // One of the arguments from this list "max_events max_events_disabled" can be set
+
+      max_events_disabled = true
+
+      // One of the arguments from this list "timeout_seconds timeout_seconds_default" can be set
+
+      timeout_seconds = "600"
+    }
+
+    bucket = "my-log-bucket"
+
+    compression {
+      // One of the arguments from this list "compression_default compression_gzip compression_none" must be set
+
+      compression_none = true
+    }
+
+    filename_options {
+      // One of the arguments from this list "custom_folder log_type_folder no_folder" can be set
+
+      no_folder = true
+    }
   }
 }
+
 ```
 
 Argument Reference
@@ -205,7 +216,7 @@ Batch Options allow tuning of the conditions for how batches of logs are sent to
 
 ###### One of the arguments from this list "max_events, max_events_disabled" can be set
 
-`max_events`- (Optional) Send batch to endpoint after this many log messages are in the batch (`Int`).
+`max_events` - (Optional) Send batch to endpoint after this many log messages are in the batch (`Int`).
 
 `max_events_disabled` - (Optional) Max Events Disabled (`Bool`).
 
@@ -257,7 +268,7 @@ Batch Options allow tuning of the conditions for how batches of logs are sent to
 
 ###### One of the arguments from this list "max_events, max_events_disabled" can be set
 
-`max_events`- (Optional) Send batch to endpoint after this many log messages are in the batch (`Int`).
+`max_events` - (Optional) Send batch to endpoint after this many log messages are in the batch (`Int`).
 
 `max_events_disabled` - (Optional) Max Events Disabled (`Bool`).
 
@@ -421,7 +432,7 @@ Batch Options allow tuning of the conditions for how batches of logs are sent to
 
 ###### One of the arguments from this list "max_events, max_events_disabled" can be set
 
-`max_events`- (Optional) Send batch to endpoint after this many log messages are in the batch (`Int`).
+`max_events` - (Optional) Send batch to endpoint after this many log messages are in the batch (`Int`).
 
 `max_events_disabled` - (Optional) Max Events Disabled (`Bool`).
 
@@ -477,7 +488,7 @@ Batch Options allow tuning of the conditions for how batches of logs are sent to
 
 ###### One of the arguments from this list "max_events, max_events_disabled" can be set
 
-`max_events`- (Optional) Send batch to endpoint after this many log messages are in the batch (`Int`).
+`max_events` - (Optional) Send batch to endpoint after this many log messages are in the batch (`Int`).
 
 `max_events_disabled` - (Optional) Max Events Disabled (`Bool`).
 
@@ -595,9 +606,9 @@ Allows selection between sampled or unsampled (full) logs..
 
 ###### One of the arguments from this list "sampled, unsampled" must be set
 
-`sampled` - (Optional) Sampled request logs delivered via Kafka pipeline (default) (`Bool`).
+`sampled` - (Optional) Forward a sample of logs. Recommended for trend analysis and troubleshooting. (`Bool`).
 
-`unsampled` - (Optional) Note: Unsampled logs require additional infrastructure and may have higher latency. (`Bool`).
+`unsampled` - (Optional) Forward all logs. Recommended for deep analysis and compliance, but will increase cost due to higher log volume. (`Bool`).
 
 ### Mtls Choice Mtls Disabled
 
@@ -669,7 +680,7 @@ Batch Options allow tuning of the conditions for how batches of logs are sent to
 
 ###### One of the arguments from this list "max_events, max_events_disabled" can be set
 
-`max_events`- (Optional) Send batch to endpoint after this many log messages are in the batch (`Int`).
+`max_events` - (Optional) Send batch to endpoint after this many log messages are in the batch (`Int`).
 
 `max_events_disabled` - (Optional) Max Events Disabled (`Bool`).
 
@@ -959,11 +970,11 @@ Filename Options allow customization of filename and folder paths for the bucket
 
 ### Sampling Choice Sampled
 
-Sampled request logs delivered via Kafka pipeline (default).
+Forward a sample of logs. Recommended for trend analysis and troubleshooting..
 
 ### Sampling Choice Unsampled
 
-Note: Unsampled logs require additional infrastructure and may have higher latency..
+Forward all logs. Recommended for deep analysis and compliance, but will increase cost due to higher log volume..
 
 ### Secret Info Oneof Blindfold Secret Info
 
@@ -1154,4 +1165,4 @@ x-displayName: "Enable Server Hostname Verification".
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured global_log_receiver.
+-	`id` - This is the id of the configured global_log_receiver.

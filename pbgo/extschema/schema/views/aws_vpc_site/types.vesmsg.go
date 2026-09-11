@@ -4967,6 +4967,12 @@ func (v *ValidateCreateSpecType) Validate(ctx context.Context, pm interface{}, o
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["waf_signatures"]; exists {
+		vOpts := append(opts, db.WithValidateField("waf_signatures"))
+		if err := fv(ctx, m.GetWafSignatures(), vOpts...); err != nil {
+			return err
+		}
+	}
 
 	if fv, exists := v.FldValidators["worker_nodes"]; exists {
 		val := m.GetWorkerNodes()
@@ -6277,6 +6283,12 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 	if fv, exists := v.FldValidators["vpc"]; exists {
 		vOpts := append(opts, db.WithValidateField("vpc"))
 		if err := fv(ctx, m.GetVpc(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["waf_signatures"]; exists {
+		vOpts := append(opts, db.WithValidateField("waf_signatures"))
+		if err := fv(ctx, m.GetWafSignatures(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -7751,6 +7763,12 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["waf_signatures"]; exists {
+		vOpts := append(opts, db.WithValidateField("waf_signatures"))
+		if err := fv(ctx, m.GetWafSignatures(), vOpts...); err != nil {
+			return err
+		}
+	}
 
 	if fv, exists := v.FldValidators["worker_nodes"]; exists {
 		val := m.GetWorkerNodes()
@@ -8829,6 +8847,12 @@ func (v *ValidateReplaceSpecType) Validate(ctx context.Context, pm interface{}, 
 	if fv, exists := v.FldValidators["vpc"]; exists {
 		vOpts := append(opts, db.WithValidateField("vpc"))
 		if err := fv(ctx, m.GetVpc(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["waf_signatures"]; exists {
+		vOpts := append(opts, db.WithValidateField("waf_signatures"))
+		if err := fv(ctx, m.GetWafSignatures(), vOpts...); err != nil {
 			return err
 		}
 	}
@@ -10181,6 +10205,7 @@ func (m *CreateSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool
 	m.Sw = f.GetSw()
 	m.Tags = f.GetTags()
 	m.Vpc = f.GetVpc()
+	m.WafSignatures = f.GetWafSignatures()
 	m.GetWorkerNodesFromGlobalSpecType(f)
 }
 
@@ -10223,6 +10248,7 @@ func (m *CreateSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) 
 	f.Sw = m1.Sw
 	f.Tags = m1.Tags
 	f.Vpc = m1.Vpc
+	f.WafSignatures = m1.WafSignatures
 	m1.SetWorkerNodesToGlobalSpecType(f)
 }
 
@@ -10686,6 +10712,7 @@ func (m *GetSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	m.VipParamsPerAz = f.GetVipParamsPerAz()
 	m.VolterraSoftwareVersion = f.GetVolterraSoftwareVersion()
 	m.Vpc = f.GetVpc()
+	m.WafSignatures = f.GetWafSignatures()
 	m.GetWorkerNodesFromGlobalSpecType(f)
 }
 
@@ -10737,6 +10764,7 @@ func (m *GetSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	f.VipParamsPerAz = m1.VipParamsPerAz
 	f.VolterraSoftwareVersion = m1.VolterraSoftwareVersion
 	f.Vpc = m1.Vpc
+	f.WafSignatures = m1.WafSignatures
 	m1.SetWorkerNodesToGlobalSpecType(f)
 }
 
@@ -11136,6 +11164,7 @@ func (m *ReplaceSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy boo
 	m.GetSiteTypeFromGlobalSpecType(f)
 	m.SshKey = f.GetSshKey()
 	m.Vpc = f.GetVpc()
+	m.WafSignatures = f.GetWafSignatures()
 	m.GetWorkerNodesFromGlobalSpecType(f)
 }
 
@@ -11172,6 +11201,7 @@ func (m *ReplaceSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool)
 	m1.SetSiteTypeToGlobalSpecType(f)
 	f.SshKey = m1.SshKey
 	f.Vpc = m1.Vpc
+	f.WafSignatures = m1.WafSignatures
 	m1.SetWorkerNodesToGlobalSpecType(f)
 }
 

@@ -22,25 +22,16 @@ resource "volterra_securemesh_site_v2" "example" {
 
   // One of the arguments from this list "block_all_services blocked_services" must be set
 
-  blocked_services {
-    blocked_sevice {
-      // One of the arguments from this list "dns ssh web_user_interface" can be set
-
-      web_user_interface = true
-
-      network_type = "network_type"
-    }
-  }
+  block_all_services = true
 
   // One of the arguments from this list "log_receiver log_receiver_with_net logs_streaming_disabled" must be set
 
   logs_streaming_disabled = true
 
-  // One of the arguments from this list "aws azure baremetal equinix gcp kvm nutanix oci openshift_virtualization openstack rseries vmware" must be set
+  // One of the arguments from this list "aws azure baremetal eks_k8s equinix gcp kvm nutanix oci openshift_virtualization openstack rseries vmware" must be set
 
-   gcp {
+  gcp {
     // "not_managed" must be set
-
     not_managed {
       node_list {
         hostname = "control"
@@ -63,21 +54,21 @@ resource "volterra_securemesh_site_v2" "example" {
           // One of the arguments from this list "ipv6_auto_config no_ipv6_address static_ipv6_address" can be set
 
           no_ipv6_address = true
-          is_management = true
-          is_primary = true
+          is_management   = true
+          is_primary      = true
           labels = {
             "key1" = "value1"
           }
 
           // One of the arguments from this list "monitor monitor_disabled" can be set
 
-          monitor_disabled = true
-          mtu = "1450"
+          monitor {}
+          mtu  = "1450"
           name = "value"
           network_option {
             // One of the arguments from this list "segment_network site_local_inside_network site_local_network" can be set
 
-           site_local_network = true
+            site_local_network = true
           }
           priority = "42"
 
@@ -92,7 +83,6 @@ resource "volterra_securemesh_site_v2" "example" {
       }
     }
   }
-
   // lifecycle is a Terraform meta-argument — it controls resource behavior through
   // settings such as ignore_changes, create_before_destroy, and prevent_destroy.
   lifecycle {
@@ -156,9 +146,9 @@ Argument Reference
 
 ###### One of the arguments from this list "disable_log_anonymization, enable_log_anonymization" can be set
 
-`disable_log_anonymization` - (Optional) Disable Log Anonymization for this site. (`Bool`).(Deprecated)
+`disable_log_anonymization` - (Optional) Disable Log Anonymization for this site. (`Bool`).
 
-`enable_log_anonymization` - (Optional) Enable Log Anonymization for this site. Traffic will be processed in the order that Log Anonymize. (`Bool`).(Deprecated)
+`enable_log_anonymization` - (Optional) Enable Log Anonymization for this site. Traffic will be processed in the order that Log Anonymize. (`Bool`).
 
 ###### One of the arguments from this list "log_receiver, log_receiver_with_net, logs_streaming_disabled" must be set
 
@@ -190,13 +180,15 @@ Argument Reference
 
 `performance_enhancement_mode` - (Optional) Optimize the site for L3 or L7 traffic processing. By default, the site is optimized for L7 traffic processing.. See [Performance Enhancement Mode ](#performance-enhancement-mode) below for details.
 
-###### One of the arguments from this list "aws, azure, baremetal, equinix, gcp, kvm, nutanix, oci, openshift_virtualization, openstack, rseries, vmware" must be set
+###### One of the arguments from this list "aws, azure, baremetal, eks_k8s, equinix, gcp, kvm, nutanix, oci, openshift_virtualization, openstack, rseries, vmware" must be set
 
 `aws` - (Optional) x-displayName: "AWS". See [Provider Choice Aws ](#provider-choice-aws) below for details.
 
 `azure` - (Optional) x-displayName: "Azure". See [Provider Choice Azure ](#provider-choice-azure) below for details.
 
 `baremetal` - (Optional) x-displayName: "Baremetal". See [Provider Choice Baremetal ](#provider-choice-baremetal) below for details.
+
+`eks_k8s` - (Optional) x-displayName: "EKS (AWS Based Kubernetes)". See [Provider Choice Eks K8s ](#provider-choice-eks-k8s) below for details.
 
 `equinix` - (Optional) x-displayName: "Equinix". See [Provider Choice Equinix ](#provider-choice-equinix) below for details.
 
@@ -348,6 +340,8 @@ Select OS and Software version for the site. All nodes in the site will run the 
 
 `sw` - (Optional) Refer to release notes to find required released SW versions.. See [Software Settings Sw ](#software-settings-sw) below for details.
 
+`waf_signatures` - (Optional) Select WAF Signatures Update Mode for the site. By default, new signatures will be applied manually.. See [Software Settings Waf Signatures ](#software-settings-waf-signatures) below for details.
+
 ### Upgrade Settings
 
 Specify how a site will be upgraded..
@@ -441,6 +435,16 @@ When provided, customers can either ssh to the nodes of this Customer Edge site 
 `vault_secret_info` - (Optional) Vault Secret is used for the secrets managed by Hashicorp Vault. See [Secret Info Oneof Vault Secret Info ](#secret-info-oneof-vault-secret-info) below for details.(Deprecated)
 
 `wingman_secret_info` - (Optional) Secret is given as bootstrap secret in F5XC Security Sidecar. See [Secret Info Oneof Wingman Secret Info ](#secret-info-oneof-wingman-secret-info) below for details.(Deprecated)
+
+### Anti Affinity Choice Disable Anti Affinity
+
+Pod anti-affinity is disabled. Pods may run on the same node..
+
+### Anti Affinity Choice Enable Anti Affinity
+
+Pod anti-affinity is enabled. Kubernetes scheduler will distribute pods across different nodes..
+
+`rules` - (Required) Example: Rule 1 - Distribute VPM pods across nodes, Rule 2 - Distribute Prometheus pods across zones.. See [Enable Anti Affinity Rules ](#enable-anti-affinity-rules) below for details.
 
 ### Autoconfig Choice Host
 
@@ -756,6 +760,22 @@ Choose your NAT Gateway.
 
 `nat_gw_id` - (Required) Choose your NAT Gateway (`String`).
 
+### Eks K8s Not Managed
+
+At this time, Secure Mesh Site only supports the 'Not Managed by F5XC' mode..
+
+`node_list` - (Optional) Once a node is created and registers with the site, it will be shown in this section.. See [Not Managed Node List ](#not-managed-node-list) below for details.
+
+### Enable Anti Affinity Rules
+
+Example: Rule 1 - Distribute VPM pods across nodes, Rule 2 - Distribute Prometheus pods across zones..
+
+`label_key` - (Required) Example: "app" to match pods with the app label. (`String`).
+
+`label_value` - (Required) Example: "vpm" to match pods with app=vpm label. (`String`).
+
+`topology_keys` - (Required) Example: ["kubernetes.io/hostname"] ensures VPM pods run on different nodes. (`String`).
+
 ### Enable Private Workload Routing List Enable Private Workload Routing To Ce
 
 Enable Private Workload Routing to CE.
@@ -870,7 +890,7 @@ x-displayName: "VLAN Interface".
 
 ### Interface List Network Option
 
-Global VRFs are configured via Networking > Segments. A site can have multiple Network Segments (global VRFs)..
+Global VRFs are configured via Networking > Segments. A site can have multple Network Segments (global VRFs)..
 
 ###### One of the arguments from this list "segment_network, site_local_inside_network, site_local_network" can be set
 
@@ -1164,7 +1184,7 @@ Interfaces in this CE node.
 
 `interface_name` - (Optional) The interface is not configurable and is autogenerated, it is used to identify the interface (`String`).
 
-`mtu` - (Optional) When configured, mtu must be between 512 and 16384 (`Int`).
+`mtu` - (Optional) When configured, mtu must be between 512 and 8000 (`Int`).
 
 `network_option` - (Required) Global VRFs are configured via Networking > Segments. A site can have multiple Network Segments (global VRFs).. See [Interface List Network Option ](#interface-list-network-option) below for details.
 
@@ -1178,7 +1198,7 @@ Interfaces in this CE node.
 
 Interfaces belonging to this node.
 
-`mtu` - (Optional) When configured, mtu must be between 512 and 16384 (`Int`).
+`mtu` - (Optional) When configured, mtu must be between 512 and 8000 (`Int`).
 
 `network_option` - (Required) Global VRFs are configured via Networking > Segments. A site can have multple Network Segments (global VRFs).. See [Interface List Network Option ](#interface-list-network-option) below for details.
 
@@ -1194,7 +1214,7 @@ Interfaces belonging to this node.
 
 Configure Interfaces for this node.
 
-`mtu` - (Optional) When configured, mtu must be between 512 and 16384 (`Int`).
+`mtu` - (Optional) When configured, mtu must be between 512 and 8000 (`Int`).
 
 `network_option` - (Required) Global VRFs are configured via Networking > Segments. A site can have multple Network Segments (global VRFs).. See [Interface List Network Option ](#interface-list-network-option) below for details.
 
@@ -1252,7 +1272,7 @@ Manage interfaces belonging to this node.
 
 `monitor_disabled` - (Optional) x-displayName: "Disabled" (`Bool`).
 
-`mtu` - (Optional) When configured, mtu must be between 512 and 16384 (`Int`).
+`mtu` - (Optional) When configured, mtu must be between 512 and 8000 (`Int`).
 
 `name` - (Optional) Name of this Interface (`String`).
 
@@ -1570,6 +1590,22 @@ x-displayName: "Baremetal".
 
 `not_managed` - (Optional) or by using automation tools such as Terraform.. See [Orchestration Choice Not Managed ](#orchestration-choice-not-managed) below for details.
 
+### Provider Choice Eks K8s
+
+x-displayName: "EKS (AWS Based Kubernetes)".
+
+###### One of the arguments from this list "disable_anti_affinity, enable_anti_affinity" must be set
+
+`disable_anti_affinity` - (Optional) Pod anti-affinity is disabled. Pods may run on the same node. (`Bool`).
+
+`enable_anti_affinity` - (Optional) Pod anti-affinity is enabled. Kubernetes scheduler will distribute pods across different nodes.. See [Anti Affinity Choice Enable Anti Affinity ](#anti-affinity-choice-enable-anti-affinity) below for details.
+
+`deployment_size` - (Required) Medium (8 vCPU, 24 GB memory) is suitable for most deployments, Large (12 vCPU, 48 GB memory) for workloads requiring additional resources. (`String`).
+
+`labels` - (Optional) This uses Kubernetes nodeSelector to schedule pods only on nodes with matching labels. (`String`).
+
+`not_managed` - (Required) At this time, Secure Mesh Site only supports the 'Not Managed by F5XC' mode.. See [Eks K8s Not Managed ](#eks-k8s-not-managed) below for details.
+
 ### Provider Choice Equinix
 
 x-displayName: "Equinix".
@@ -1780,6 +1816,14 @@ Select this option when you want a new VPC to be created..
 
 `name_tag` - (Optional) With this option, user can specify a unique name for VPC. (`String`).
 
+### Signatures Update Mode Choice Automatic
+
+New WAF signatures will be applied automatically as soon as they are released..
+
+### Signatures Update Mode Choice Manual
+
+New WAF signatures will only be applied when an update is triggered manually..
+
 ### Single Interface Node List
 
 This section will show nodes associated with this site..
@@ -1924,6 +1968,16 @@ Refer to release notes to find required released SW versions..
 
 `volterra_software_version` - (Optional) Specify a F5XC Software Version to be used e.g. crt-20210329-1002. (`String`).
 
+### Software Settings Waf Signatures
+
+Select WAF Signatures Update Mode for the site. By default, new signatures will be applied manually..
+
+###### One of the arguments from this list "automatic, manual" can be set
+
+`automatic` - (Optional) New WAF signatures will be applied automatically as soon as they are released. (`Bool`).
+
+`manual` - (Optional) New WAF signatures will only be applied when an update is triggered manually. (`Bool`).
+
 ### Stateful Dhcp Networks
 
 List of networks from which DHCP server can allocate ip addresses.
@@ -2028,7 +2082,7 @@ This will disable Network Load Balancer creation..
 
 This will enable Network Load Balancer automation..
 
-`dns_connector_ref` - (Required) Choose the DNS Connector object.. See [ref](#ref) below for details.
+`dns_connector_ref` - (Optional) Choose the DNS Connector object.. See [ref](#ref) below for details.
 
 ### Volterra Sw Version Choice Default Sw Version
 
@@ -2037,6 +2091,6 @@ Will assign latest available F5XC Software Version.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured securemesh_site_v2.
+-	`id` - This is the id of the configured securemesh_site_v2.
 
 ~> **Note:**`lifecycle`is a Terraform meta-argument and is not specific to this provider resource. It controls resource behavior through settings such as `ignore_changes`, `create_before_destroy`, and `prevent_destroy`. In the example above, the `lifecycle` block is used to ignore external changes to `labels`, so Terraform will not plan updates when those labels are changed outside of the configuration.

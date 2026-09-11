@@ -2906,7 +2906,7 @@ var APISwaggerJSON string = `{
                 },
                 "disabled_predefined_data_types": {
                     "type": "array",
-                    "description": " Select which pre-configured data types to disable, disabled data types will not be shown as sensitive in the API discovery\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 100\n  ves.io.schema.rules.repeated.unique: true\n  ves.io.schema.rules.string.max_len: 64\n",
+                    "description": " Select which pre-configured data types to disable, disabled data types will not be shown as sensitive in the API discovery\n\nValidation Rules:\n  ves.io.schema.rules.repeated.items.string.max_len: 64\n  ves.io.schema.rules.repeated.max_items: 100\n  ves.io.schema.rules.repeated.unique: true\n",
                     "maxItems": 100,
                     "items": {
                         "type": "string",
@@ -2914,9 +2914,9 @@ var APISwaggerJSON string = `{
                     },
                     "x-displayname": "Disabled Built-In Sensitive Data Types",
                     "x-ves-validation-rules": {
+                        "ves.io.schema.rules.repeated.items.string.max_len": "64",
                         "ves.io.schema.rules.repeated.max_items": "100",
-                        "ves.io.schema.rules.repeated.unique": "true",
-                        "ves.io.schema.rules.string.max_len": "64"
+                        "ves.io.schema.rules.repeated.unique": "true"
                     }
                 }
             }
@@ -2956,7 +2956,7 @@ var APISwaggerJSON string = `{
                 },
                 "disabled_predefined_data_types": {
                     "type": "array",
-                    "description": " Select which pre-configured data types to disable, disabled data types will not be shown as sensitive in the API discovery\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 100\n  ves.io.schema.rules.repeated.unique: true\n  ves.io.schema.rules.string.max_len: 64\n",
+                    "description": " Select which pre-configured data types to disable, disabled data types will not be shown as sensitive in the API discovery\n\nValidation Rules:\n  ves.io.schema.rules.repeated.items.string.max_len: 64\n  ves.io.schema.rules.repeated.max_items: 100\n  ves.io.schema.rules.repeated.unique: true\n",
                     "maxItems": 100,
                     "items": {
                         "type": "string",
@@ -2964,9 +2964,9 @@ var APISwaggerJSON string = `{
                     },
                     "x-displayname": "Disabled Built-In Sensitive Data Types",
                     "x-ves-validation-rules": {
+                        "ves.io.schema.rules.repeated.items.string.max_len": "64",
                         "ves.io.schema.rules.repeated.max_items": "100",
-                        "ves.io.schema.rules.repeated.unique": "true",
-                        "ves.io.schema.rules.string.max_len": "64"
+                        "ves.io.schema.rules.repeated.unique": "true"
                     }
                 }
             }
@@ -3006,7 +3006,7 @@ var APISwaggerJSON string = `{
                 },
                 "disabled_predefined_data_types": {
                     "type": "array",
-                    "description": " Select which pre-configured data types to disable, disabled data types will not be shown as sensitive in the API discovery\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 100\n  ves.io.schema.rules.repeated.unique: true\n  ves.io.schema.rules.string.max_len: 64\n",
+                    "description": " Select which pre-configured data types to disable, disabled data types will not be shown as sensitive in the API discovery\n\nValidation Rules:\n  ves.io.schema.rules.repeated.items.string.max_len: 64\n  ves.io.schema.rules.repeated.max_items: 100\n  ves.io.schema.rules.repeated.unique: true\n",
                     "maxItems": 100,
                     "items": {
                         "type": "string",
@@ -3014,9 +3014,9 @@ var APISwaggerJSON string = `{
                     },
                     "x-displayname": "Disabled Built-In Sensitive Data Types",
                     "x-ves-validation-rules": {
+                        "ves.io.schema.rules.repeated.items.string.max_len": "64",
                         "ves.io.schema.rules.repeated.max_items": "100",
-                        "ves.io.schema.rules.repeated.unique": "true",
-                        "ves.io.schema.rules.string.max_len": "64"
+                        "ves.io.schema.rules.repeated.unique": "true"
                     }
                 }
             }

@@ -2454,7 +2454,7 @@ var DefaultDedicatedInterfaceTypeValidator = func() *ValidateDedicatedInterfaceT
 
 	vrhMtu := v.MtuValidationRuleHandler
 	rulesMtu := map[string]string{
-		"ves.io.schema.rules.uint32.ranges": "0,512-16384",
+		"ves.io.schema.rules.uint32.ranges": "0,512-8000",
 	}
 	vFn, err = vrhMtu(rulesMtu)
 	if err != nil {
@@ -2665,7 +2665,7 @@ var DefaultDedicatedManagementInterfaceTypeValidator = func() *ValidateDedicated
 
 	vrhMtu := v.MtuValidationRuleHandler
 	rulesMtu := map[string]string{
-		"ves.io.schema.rules.uint32.ranges": "0,512-16384",
+		"ves.io.schema.rules.uint32.ranges": "0,512-8000",
 	}
 	vFn, err = vrhMtu(rulesMtu)
 	if err != nil {
@@ -3465,7 +3465,7 @@ var DefaultEthernetInterfaceTypeValidator = func() *ValidateEthernetInterfaceTyp
 
 	vrhMtu := v.MtuValidationRuleHandler
 	rulesMtu := map[string]string{
-		"ves.io.schema.rules.uint32.ranges": "0,512-16384",
+		"ves.io.schema.rules.uint32.ranges": "0,512-8000",
 	}
 	vFn, err = vrhMtu(rulesMtu)
 	if err != nil {
@@ -4332,7 +4332,7 @@ var DefaultGetSpecTypeValidator = func() *ValidateGetSpecType {
 
 	vrhMtu := v.MtuValidationRuleHandler
 	rulesMtu := map[string]string{
-		"ves.io.schema.rules.uint32.ranges": "0,512-16384",
+		"ves.io.schema.rules.uint32.ranges": "0,512-8000",
 	}
 	vFn, err = vrhMtu(rulesMtu)
 	if err != nil {
@@ -5515,7 +5515,7 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 
 	vrhMtu := v.MtuValidationRuleHandler
 	rulesMtu := map[string]string{
-		"ves.io.schema.rules.uint32.ranges": "0,512-16384",
+		"ves.io.schema.rules.uint32.ranges": "0,512-8000",
 	}
 	vFn, err = vrhMtu(rulesMtu)
 	if err != nil {
@@ -6264,11 +6264,11 @@ var DefaultIPV6DnsListValidator = func() *ValidateIPV6DnsList {
 
 	vrhDnsList := v.DnsListValidationRuleHandler
 	rulesDnsList := map[string]string{
-		"ves.io.schema.rules.message.required":   "true",
-		"ves.io.schema.rules.repeated.max_items": "4",
-		"ves.io.schema.rules.repeated.min_items": "1",
-		"ves.io.schema.rules.repeated.unique":    "true",
-		"ves.io.schema.rules.string.ipv6":        "true",
+		"ves.io.schema.rules.message.required":           "true",
+		"ves.io.schema.rules.repeated.items.string.ipv6": "true",
+		"ves.io.schema.rules.repeated.max_items":         "4",
+		"ves.io.schema.rules.repeated.min_items":         "1",
+		"ves.io.schema.rules.repeated.unique":            "true",
 	}
 	vFn, err = vrhDnsList(rulesDnsList)
 	if err != nil {
@@ -7477,7 +7477,7 @@ var DefaultLegacyInterfaceTypeValidator = func() *ValidateLegacyInterfaceType {
 
 	vrhMtu := v.MtuValidationRuleHandler
 	rulesMtu := map[string]string{
-		"ves.io.schema.rules.uint32.ranges": "0,512-16384",
+		"ves.io.schema.rules.uint32.ranges": "0,512-8000",
 	}
 	vFn, err = vrhMtu(rulesMtu)
 	if err != nil {
@@ -8053,7 +8053,7 @@ var DefaultLoopbackInterfaceTypeValidator = func() *ValidateLoopbackInterfaceTyp
 
 	vrhMtu := v.MtuValidationRuleHandler
 	rulesMtu := map[string]string{
-		"ves.io.schema.rules.uint32.ranges": "0,512-16384",
+		"ves.io.schema.rules.uint32.ranges": "0,512-8000",
 	}
 	vFn, err = vrhMtu(rulesMtu)
 	if err != nil {
@@ -9993,7 +9993,7 @@ var DefaultTunnelInterfaceTypeValidator = func() *ValidateTunnelInterfaceType {
 
 	vrhMtu := v.MtuValidationRuleHandler
 	rulesMtu := map[string]string{
-		"ves.io.schema.rules.uint32.ranges": "0,512-16384",
+		"ves.io.schema.rules.uint32.ranges": "0,512-8000",
 	}
 	vFn, err = vrhMtu(rulesMtu)
 	if err != nil {

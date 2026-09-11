@@ -1347,6 +1347,15 @@ func NewObjectGetRsp(r *ObjectGetReq, rsrcRsp *server.ResourceGetResponse) (*Obj
 		return nil, err
 	}
 	rspo.EntBackrefs = entBackrefs
+	d, err := o.GetDB()
+	if err != nil {
+		return nil, errors.Wrap(err, "GetRsp")
+	}
+	statusObjs, err := object.FindObjectStatus(context.Background(), d, o.GetObjUid())
+	if err != nil {
+		return nil, errors.Wrap(err, "GetRsp")
+	}
+	rspo.Status = statusObjs
 	return rspo, nil
 }
 func NewObjectListRsp(req *ObjectListReq, rsrcRspItems []*server.ResourceListResponseItem) (*ObjectListRsp, error) {
@@ -2645,6 +2654,12 @@ var APISwaggerJSON string = `{
                 "spec": {
                     "$ref": "#/definitions/ssl_client_profileSpecType"
                 },
+                "status": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ssl_client_profileStatusObject"
+                    }
+                },
                 "system_metadata": {
                     "$ref": "#/definitions/schemaSystemObjectMetaType"
                 }
@@ -2700,6 +2715,12 @@ var APISwaggerJSON string = `{
                 },
                 "spec": {
                     "$ref": "#/definitions/ssl_client_profileSpecType"
+                },
+                "status": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ssl_client_profileStatusObject"
+                    }
                 },
                 "system_metadata": {
                     "$ref": "#/definitions/schemaSystemObjectMetaType"
@@ -2782,6 +2803,61 @@ var APISwaggerJSON string = `{
                 },
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "schemaConditionType": {
+            "type": "object",
+            "description": "Conditions are used in the object status to describe the current state of the\nobject, e.g. Ready, Succeeded, etc.",
+            "title": "ConditionType",
+            "x-displayname": "Status Condition",
+            "x-ves-proto-message": "ves.io.schema.ConditionType",
+            "properties": {
+                "hostname": {
+                    "type": "string",
+                    "description": " Hostname of the instance of the site that sent the status",
+                    "title": "hostname",
+                    "x-displayname": "Hostname"
+                },
+                "last_update_time": {
+                    "type": "string",
+                    "description": " Last time the condition was updated",
+                    "title": "last_update_time",
+                    "format": "date-time",
+                    "x-displayname": "Last Updated"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": " A human readable string explaining the reason for reaching this condition\n\nExample: - \"Insufficient memory in data plane\"-",
+                    "title": "reason",
+                    "x-displayname": "Reason",
+                    "x-ves-example": "Insufficient memory in data plane"
+                },
+                "service_name": {
+                    "type": "string",
+                    "description": " Name of the service that sent the status",
+                    "title": "service name",
+                    "x-displayname": "Service Name"
+                },
+                "status": {
+                    "type": "string",
+                    "description": " Status of the condition\n \"Success\" Validtion has succeded. Requested operation was successful.\n \"Failed\"  Validation has failed.\n \"Incomplete\" Validation of configuration has failed due to missing configuration.\n \"Installed\" Validation has passed and configuration has been installed in data path or K8s\n \"Down\" Configuration is operationally down. e.g. down interface\n \"Disabled\" Configuration is administratively disabled i.e. ObjectMetaType.Disable = true.\n \"NotApplicable\" Configuration is not applicable e.g. tenant service_policy_set(s) in system namespace are not applicable on REs\n\nExample: - \"Failed\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.in: [\\\"Success\\\",\\\"Failed\\\",\\\"Incomplete\\\",\\\"Installed\\\",\\\"Down\\\",\\\"Disabled\\\",\\\"NotApplicable\\\"]\n",
+                    "title": "status",
+                    "x-displayname": "Status",
+                    "x-ves-example": "Failed",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.string.in": "[\\\"Success\\\",\\\"Failed\\\",\\\"Incomplete\\\",\\\"Installed\\\",\\\"Down\\\",\\\"Disabled\\\",\\\"NotApplicable\\\"]"
+                    }
+                },
+                "type": {
+                    "type": "string",
+                    "description": " Type of the condition\n \"Validation\" represents validation user given configuration object\n \"Operational\" represents operational status of a given configuration object\n\nExample: - \"Operational\"-\n\nValidation Rules:\n  ves.io.schema.rules.string.in: [\\\"Validation\\\",\\\"Operational\\\"]\n",
+                    "title": "type",
+                    "x-displayname": "Type",
+                    "x-ves-example": "Operational",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.string.in": "[\\\"Validation\\\",\\\"Operational\\\"]"
+                    }
                 }
             }
         },
@@ -2947,6 +3023,80 @@ var APISwaggerJSON string = `{
                     "x-ves-example": "d15f1fad-4d37-48c0-8706-df1824d76d31"
                 }
             }
+        },
+        "schemaStatusMetaType": {
+            "type": "object",
+            "description": "StatusMetaType is metadata that all status must have.",
+            "title": "StatusMetaType",
+            "x-displayname": "Metadata",
+            "x-ves-proto-message": "ves.io.schema.StatusMetaType",
+            "properties": {
+                "creation_timestamp": {
+                    "type": "string",
+                    "description": " creation_timestamp is when the status object was created. It is used to find/tie-break\n for latest status object from same origin",
+                    "title": "creation_timestamp",
+                    "format": "date-time",
+                    "x-displayname": "Creation Timestamp"
+                },
+                "creator_class": {
+                    "type": "string",
+                    "description": " Class of creator which created this StatusObject. This will be service's DNS FQDN.\n This will be set by the system based on client certificate information.\n\nExample: - \"ver.re1.int.ves.io\"-",
+                    "title": "creator_class",
+                    "x-displayname": "Creator Class",
+                    "x-ves-example": "ver.re1.int.ves.io"
+                },
+                "creator_id": {
+                    "type": "string",
+                    "description": " ID of creator which created this StatusObject. This will be a concrete identifier for service (e.g.\n identifying the environment also). This will be set by the system based on client certificate\n information\n\nExample: - \"ver-instance-1\"-",
+                    "title": "creator_id",
+                    "x-displayname": "Creator ID",
+                    "x-ves-example": "ver-instance-1"
+                },
+                "publish": {
+                    "description": " Decides wether this status object will be propagated to user.",
+                    "title": "publish",
+                    "$ref": "#/definitions/schemaStatusPublishType",
+                    "x-displayname": "Publish"
+                },
+                "status_id": {
+                    "type": "string",
+                    "description": " status_id is a field used by the generator to distinguish (if necessary) between two status\n objects for the same config object from the same site and same service and potentially same\n daemon(creator-id)",
+                    "title": "status_id",
+                    "x-displayname": "Status ID"
+                },
+                "uid": {
+                    "type": "string",
+                    "description": " uid is the unique in time and space value for a StatusObject.\n\nExample: - \"d15f1fad-4d37-48c0-8706-df1824d76d31\"-",
+                    "title": "uid",
+                    "x-displayname": "UID",
+                    "x-ves-example": "d15f1fad-4d37-48c0-8706-df1824d76d31"
+                },
+                "vtrp_id": {
+                    "type": "string",
+                    "description": " Origin of this status exchanged by VTRP.",
+                    "title": "vtrp_id",
+                    "x-displayname": "VTRP ID"
+                },
+                "vtrp_stale": {
+                    "type": "boolean",
+                    "description": " Indicate whether mars deems this object to be stale via graceful restart timer information",
+                    "title": "vtrp_stale",
+                    "format": "boolean",
+                    "x-displayname": "VTRP Stale"
+                }
+            }
+        },
+        "schemaStatusPublishType": {
+            "type": "string",
+            "description": "StatusPublishType is all possible publish operations on a StatusObject\n\n - STATUS_DO_NOT_PUBLISH: Do Not Publish\n\nDo not propagate this status to user. This could be because status is only informational\n - STATUS_PUBLISH: Publish\n\nPropagate this status up to user as it might be actionable",
+            "title": "StatusPublishType",
+            "enum": [
+                "STATUS_DO_NOT_PUBLISH",
+                "STATUS_PUBLISH"
+            ],
+            "default": "STATUS_DO_NOT_PUBLISH",
+            "x-displayname": "Status Publish Type",
+            "x-ves-proto-enum": "ves.io.schema.StatusPublishType"
         },
         "schemaStatusType": {
             "type": "object",
@@ -3186,6 +3336,29 @@ var APISwaggerJSON string = `{
             "x-displayname": "C3d Drop Unknown Ocsp Status Choice",
             "x-ves-proto-enum": "ves.io.schema.vs_profiles.ssl.ssl_client_profile.C3dDropUnknownOcspStatusChoice"
         },
+        "ssl_client_profileCertificateList": {
+            "type": "object",
+            "description": "List of certificates",
+            "title": "CertificateList",
+            "x-displayname": "Certificate List",
+            "x-ves-proto-message": "ves.io.schema.vs_profiles.ssl.ssl_client_profile.CertificateList",
+            "properties": {
+                "certificates": {
+                    "type": "array",
+                    "description": " List of certificate references\n\nValidation Rules:\n  ves.io.schema.rules.repeated.max_items: 32\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "title": "certificates",
+                    "maxItems": 32,
+                    "items": {
+                        "$ref": "#/definitions/schemaObjectRefType"
+                    },
+                    "x-displayname": "Certificates",
+                    "x-ves-validation-rules": {
+                        "ves.io.schema.rules.repeated.max_items": "32",
+                        "ves.io.schema.rules.repeated.unique": "true"
+                    }
+                }
+            }
+        },
         "ssl_client_profileData0rttChoice": {
             "type": "string",
             "description": "\n - DATA_0RTT_UNSPECIFIED: Unspecified\n - DATA_0RTT_DISABLED: Disabled\n - DATA_0RTT_ENABLED_WITH_ANTI_REPLAY: Enabled With Anti Replay\n - DATA_0RTT_ENABLED_NO_ANTI_REPLAY: Enabled No Anti Replay",
@@ -3205,6 +3378,7 @@ var APISwaggerJSON string = `{
             "description": "Virtual server client-side proxy SSL profile configuration",
             "title": "Configuration",
             "x-displayname": "Virtual server client-side proxy SSL profile",
+            "x-ves-oneof-field-certificates_choice": "[\"certificates\"]",
             "x-ves-oneof-field-cipher_config": "[\"cipher_group\",\"ciphers\"]",
             "x-ves-proto-message": "ves.io.schema.vs_profiles.ssl.ssl_client_profile.GlobalSpecType",
             "properties": {
@@ -3285,6 +3459,12 @@ var APISwaggerJSON string = `{
                     "title": "cert_lookup_by_ipaddr_port",
                     "$ref": "#/definitions/vs_profilesEnableDisableChoice",
                     "x-displayname": "Cert Lookup By Ipaddr Port"
+                },
+                "certificates": {
+                    "description": "Exclusive with []\n Select one or more certificates with any domain names.",
+                    "title": "certificates",
+                    "$ref": "#/definitions/ssl_client_profileCertificateList",
+                    "x-displayname": "Certificates"
                 },
                 "cipher_group": {
                     "type": "string",
@@ -3611,6 +3791,45 @@ var APISwaggerJSON string = `{
                     "title": "gc_spec",
                     "$ref": "#/definitions/ssl_client_profileGlobalSpecType",
                     "x-displayname": "GC Spec"
+                }
+            }
+        },
+        "ssl_client_profileStatusObject": {
+            "type": "object",
+            "description": "Most recently observed status of object",
+            "title": "StatusObject",
+            "x-displayname": "Status",
+            "x-ves-proto-message": "ves.io.schema.vs_profiles.ssl.ssl_client_profile.StatusObject",
+            "properties": {
+                "conditions": {
+                    "type": "array",
+                    "description": " Conditions represent the normalized status values for configuration object",
+                    "title": "conditions",
+                    "items": {
+                        "$ref": "#/definitions/schemaConditionType"
+                    },
+                    "x-displayname": "Conditions"
+                },
+                "metadata": {
+                    "description": " Standard status's metadata",
+                    "title": "metadata",
+                    "$ref": "#/definitions/schemaStatusMetaType",
+                    "x-displayname": "Metadata"
+                },
+                "object_refs": {
+                    "type": "array",
+                    "description": " SSL Client Profile object direct reference",
+                    "title": "object_refs",
+                    "items": {
+                        "$ref": "#/definitions/schemaObjectRefType"
+                    },
+                    "x-displayname": "Config Object"
+                },
+                "status": {
+                    "type": "string",
+                    "description": " Depicts Success or Failure from control plane",
+                    "title": "status",
+                    "x-displayname": "Status"
                 }
             }
         },

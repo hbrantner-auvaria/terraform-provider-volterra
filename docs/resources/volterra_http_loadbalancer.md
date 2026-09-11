@@ -20,23 +20,19 @@ resource "volterra_http_loadbalancer" "example" {
   name      = "acmecorp-web"
   namespace = "staging"
 
-  // One of the arguments from this list "advertise_custom advertise_on_public advertise_on_public_default_vip do_not_advertise" must be set
+  // One of the arguments from this list "advertise_custom advertise_dualstack_on_public advertise_on_public advertise_on_public_default_dualstack_vip advertise_on_public_default_ipv6_vip advertise_on_public_default_vip advertise_v6_on_public do_not_advertise" must be set
 
-  do_not_advertise = true
-
-  // One of the arguments from this list "api_definition api_definitions api_specification disable_api_definition" must be set
-
-  api_specification {
-    api_definition {
+  advertise_dualstack_on_public {
+    public_ip {
       name      = "test1"
       namespace = "staging"
       tenant    = "acmecorp"
     }
-
-    // One of the arguments from this list "validation_all_spec_endpoints validation_custom_list validation_disabled" must be set
-
-    validation_disabled = true
   }
+
+  // One of the arguments from this list "api_definition api_definitions api_specification disable_api_definition" must be set
+
+  disable_api_definition = true
 
   // One of the arguments from this list "disable_api_discovery enable_api_discovery" must be set
 
@@ -88,10 +84,18 @@ resource "volterra_http_loadbalancer" "example" {
 
           // One of the arguments from this list "key_pattern key_value_pattern value_pattern" must be set
 
-          value_pattern {
-            // One of the arguments from this list "exact_value regex_value" must be set
+          key_value_pattern {
+            key_pattern {
+              // One of the arguments from this list "exact_value regex_value" must be set
 
-            exact_value = "x-volt-header"
+              exact_value = "x-volt-header"
+            }
+
+            value_pattern {
+              // One of the arguments from this list "exact_value regex_value" must be set
+
+              regex_value = "'^new.*$', 'san f.*', '.* del .*'"
+            }
           }
 
           // One of the arguments from this list "all_request_sections all_response_sections all_sections custom_sections" must be set
@@ -120,162 +124,24 @@ resource "volterra_http_loadbalancer" "example" {
 
   // One of the arguments from this list "captcha_challenge enable_challenge js_challenge no_challenge policy_based_challenge" must be set
 
-  policy_based_challenge {
+  enable_challenge {
     // One of the arguments from this list "captcha_challenge_parameters default_captcha_challenge_parameters" can be set
 
     default_captcha_challenge_parameters = true
 
-    // One of the arguments from this list "always_enable_captcha_challenge always_enable_js_challenge no_challenge" must be set
-
-    no_challenge = true
-
     // One of the arguments from this list "default_js_challenge_parameters js_challenge_parameters" can be set
 
-    js_challenge_parameters {
-      cookie_expiry = "1000"
-
-      custom_page = "string:///PHA+IFBsZWFzZSBXYWl0IDwvcD4="
-
-      js_script_delay = "1000"
-    }
+    default_js_challenge_parameters = true
 
     // One of the arguments from this list "default_mitigation_settings malicious_user_mitigation" can be set
 
     default_mitigation_settings = true
-    rule_list {
-      rules {
-        metadata {
-          description = "Virtual Host for acmecorp website"
-
-          disable = true
-
-          name = "acmecorp-web"
-        }
-
-        spec {
-          arg_matchers {
-            invert_matcher = true
-
-            // One of the arguments from this list "check_not_present check_present item presence" must be set
-
-            presence = true
-            name = "name"
-          }
-
-          // One of the arguments from this list "any_asn asn_list asn_matcher" can be set
-
-          any_asn = true
-          body_matcher {
-            exact_values = ["['new york', 'london', 'sydney', 'tokyo', 'cairo']"]
-
-            regex_values = ["['^new .*$', 'san f.*', '.* del .*']"]
-
-            transformers = ["transformers"]
-          }
-
-          // One of the arguments from this list "disable_challenge enable_captcha_challenge enable_javascript_challenge" must be set
-
-          disable_challenge = true
-
-          // One of the arguments from this list "any_client client_name client_name_matcher client_selector" can be set
-
-          any_client = true
-          cookie_matchers {
-            invert_matcher = true
-
-            // One of the arguments from this list "check_not_present check_present item presence" must be set
-
-            presence = true
-            name = "Session"
-          }
-          domain_matcher {
-            exact_values = ["['new york', 'london', 'sydney', 'tokyo', 'cairo']"]
-
-            regex_values = ["['^new .*$', 'san f.*', '.* del .*']"]
-          }
-          expiration_timestamp = "0001-01-01T00:00:00Z"
-          headers {
-            invert_matcher = true
-
-            // One of the arguments from this list "check_not_present check_present item presence" must be set
-
-            item {
-              exact_values = ["['new york', 'london', 'sydney', 'tokyo', 'cairo']"]
-
-              regex_values = ["['^new .*$', 'san f.*', '.* del .*']"]
-
-              transformers = ["transformers"]
-            }
-            name = "Accept-Encoding"
-          }
-          http_method {
-            invert_matcher = true
-
-            methods = ["['GET', 'POST', 'DELETE']"]
-          }
-
-          // One of the arguments from this list "any_ip ip_matcher ip_prefix_list" can be set
-
-          ip_matcher {
-            invert_matcher = true
-
-            prefix_sets {
-              name      = "test1"
-              namespace = "staging"
-              tenant    = "acmecorp"
-            }
-          }
-          path {
-            encoded_path_matcher = true
-
-            exact_values = ["['/api/web/namespaces/project179/users/user1', '/api/config/namespaces/accounting/bgps', '/api/data/namespaces/project443/virtual_host_101']"]
-
-            invert_matcher = true
-
-            prefix_values = ["['/api/web/namespaces/project179/users/', '/api/config/namespaces/', '/api/data/namespaces/']"]
-
-            regex_values = ["['^/api/web/namespaces/abc/users/([a-z]([-a-z0-9]*[a-z0-9])?)$', '/api/data/namespaces/proj404/virtual_hosts/([a-z]([-a-z0-9]*[a-z0-9])?)$']"]
-
-            suffix_values = ["['.exe', '.shtml', '.wmz']"]
-
-            transformers = ["transformers"]
-          }
-          query_params {
-            invert_matcher = true
-
-            key = "sourceid"
-
-            // One of the arguments from this list "check_not_present check_present item presence" must be set
-
-            presence = true
-          }
-
-          // One of the arguments from this list "ja4_tls_fingerprint tls_fingerprint_matcher" can be set
-
-          ja4_tls_fingerprint {
-            exact_values = ["exact_values"]
-          }
-        }
-      }
-    }
-
-    // One of the arguments from this list "default_temporary_blocking_parameters temporary_user_blocking" can be set
-
-    default_temporary_blocking_parameters = true
   }
   domains = ["www.foo.com"]
 
   // One of the arguments from this list "cookie_stickiness least_active random ring_hash round_robin source_ip_stickiness" must be set
 
-  ring_hash {
-    hash_policy {
-      // One of the arguments from this list "cookie header_name source_ip" must be set
-
-      header_name = "host"
-
-      terminal = true
-    }
-  }
+  source_ip_stickiness = true
 
   // One of the arguments from this list "http https https_auto_cert" must be set
 
@@ -317,16 +183,13 @@ resource "volterra_http_loadbalancer" "example" {
 
   // One of the arguments from this list "user_id_client_ip user_identification" must be set
 
-  user_identification {
-    name      = "test1"
-    namespace = "staging"
-    tenant    = "acmecorp"
-  }
+  user_id_client_ip = true
 
   // One of the arguments from this list "app_firewall disable_waf" must be set
 
   disable_waf = true
 }
+
 ```
 
 Argument Reference
@@ -350,13 +213,21 @@ Argument Reference
 
 `add_location` - (Optional) is ignored on CE sites. (`Bool`).
 
-###### One of the arguments from this list "advertise_custom, advertise_on_public, advertise_on_public_default_vip, do_not_advertise" must be set
+###### One of the arguments from this list "advertise_custom, advertise_dualstack_on_public, advertise_on_public, advertise_on_public_default_dualstack_vip, advertise_on_public_default_ipv6_vip, advertise_on_public_default_vip, advertise_v6_on_public, do_not_advertise" must be set
 
 `advertise_custom` - (Optional) Advertise this load balancer on specific sites. See [Advertise Choice Advertise Custom ](#advertise-choice-advertise-custom) below for details.
 
-`advertise_on_public` - (Optional) Advertise this load balancer on public network. See [Advertise Choice Advertise On Public ](#advertise-choice-advertise-on-public) below for details.
+`advertise_dualstack_on_public` - (Optional) Advertise this Dualstack load balancer address on public network. See [Advertise Choice Advertise Dualstack On Public ](#advertise-choice-advertise-dualstack-on-public) below for details.
 
-`advertise_on_public_default_vip` - (Optional) Advertise this load balancer on public network with default VIP (`Bool`).
+`advertise_on_public` - (Optional) Advertise this load balancer on specified IPv4 on public network. See [Advertise Choice Advertise On Public ](#advertise-choice-advertise-on-public) below for details.
+
+`advertise_on_public_default_dualstack_vip` - (Optional) Advertise this load balancer on public network with default Dualstack VIP (`Bool`).
+
+`advertise_on_public_default_ipv6_vip` - (Optional) Advertise this load balancer on public network with default IPv6 VIP (`Bool`).
+
+`advertise_on_public_default_vip` - (Optional) Advertise this load balancer on public network with default IPv4 VIP (`Bool`).
+
+`advertise_v6_on_public` - (Optional) Advertise this IPv6 load balancer address on public network. See [Advertise Choice Advertise V6 On Public ](#advertise-choice-advertise-v6-on-public) below for details.
 
 `do_not_advertise` - (Optional) Do not advertise this load balancer (`Bool`).
 
@@ -388,11 +259,13 @@ Argument Reference
 
 `blocked_clients` - (Optional) Define rules to block IP Prefixes or AS numbers.. See [Blocked Clients ](#blocked-clients) below for details.
 
-###### One of the arguments from this list "bot_defense, bot_defense_advanced, disable_bot_defense" can be set
+###### One of the arguments from this list "bot_defense, bot_defense_advanced, bot_defense_advanced_protection, disable_bot_defense" can be set
 
 `bot_defense` - (Optional) Select Bot Defense Standard. See [Bot Defense Choice Bot Defense ](#bot-defense-choice-bot-defense) below for details.
 
-`bot_defense_advanced` - (Optional) Select Bot Defense. See [Bot Defense Choice Bot Defense Advanced ](#bot-defense-choice-bot-defense-advanced) below for details.
+`bot_defense_advanced` - (Optional) x-displayName: "Enable Bot Defense". See [Bot Defense Choice Bot Defense Advanced ](#bot-defense-choice-bot-defense-advanced) below for details.(Deprecated)
+
+`bot_defense_advanced_protection` - (Optional) Select Bot Defense. See [Bot Defense Choice Bot Defense Advanced Protection ](#bot-defense-choice-bot-defense-advanced-protection) below for details.
 
 `disable_bot_defense` - (Optional) No Bot Defense configuration for this load balancer (`Bool`).
 
@@ -850,7 +723,7 @@ More options like header manipulation, compression etc..
 
 ###### One of the arguments from this list "additional_domains, enable_strict_sni_host_header_check" can be set
 
-`additional_domains`- (Optional) Wildcard names are supported in the suffix or prefix form. See [Strict Sni Host Header Check Choice Additional Domains ](#strict-sni-host-header-check-choice-additional-domains) below for details.(Deprecated)
+`additional_domains` - (Optional) Wildcard names are supported in the suffix or prefix form. See [Strict Sni Host Header Check Choice Additional Domains ](#strict-sni-host-header-check-choice-additional-domains) below for details.(Deprecated)
 
 `enable_strict_sni_host_header_check` - (Optional) Enable strict SNI and Host header check (`Bool`).(Deprecated)
 
@@ -1272,9 +1145,21 @@ Advertise this load balancer on specific sites.
 
 `advertise_where` - (Required) Where should this load balancer be available. See [Advertise Custom Advertise Where ](#advertise-custom-advertise-where) below for details.
 
+### Advertise Choice Advertise Dualstack On Public
+
+Advertise this Dualstack load balancer address on public network.
+
+`public_ip` - (Required) Dedicated Public IP, which is allocated by F5 Distributed Cloud on request, is used as a VIP.. See [ref](#ref) below for details.
+
 ### Advertise Choice Advertise On Public
 
-Advertise this load balancer on public network.
+Advertise this load balancer on specified IPv4 on public network.
+
+`public_ip` - (Required) Dedicated Public IP, which is allocated by F5 Distributed Cloud on request, is used as a VIP.. See [ref](#ref) below for details.
+
+### Advertise Choice Advertise V6 On Public
+
+Advertise this IPv6 load balancer address on public network.
 
 `public_ip` - (Required) Dedicated Public IP, which is allocated by F5 Distributed Cloud on request, is used as a VIP.. See [ref](#ref) below for details.
 
@@ -1282,9 +1167,13 @@ Advertise this load balancer on public network.
 
 Where should this load balancer be available.
 
-###### One of the arguments from this list "advertise_on_public, cloud_edge_segment, segment, site, site_segment, virtual_network, virtual_site, virtual_site_segment, virtual_site_with_vip, vk8s_service" must be set
+###### One of the arguments from this list "advertise_dualstack_on_public, advertise_on_public, advertise_v6_on_public, cloud_edge_segment, segment, site, site_segment, virtual_network, virtual_site, virtual_site_segment, virtual_site_with_vip, vk8s_service" must be set
+
+`advertise_dualstack_on_public` - (Optional) Advertise this load balancer with Dualstack VIP on public network. See [Choice Advertise Dualstack On Public ](#choice-advertise-dualstack-on-public) below for details.
 
 `advertise_on_public` - (Optional) Advertise this load balancer on public network. See [Choice Advertise On Public ](#choice-advertise-on-public) below for details.
+
+`advertise_v6_on_public` - (Optional) Advertise this load balancer with IPv6 VIP on public network. See [Choice Advertise V6 On Public ](#choice-advertise-v6-on-public) below for details.
 
 `site` - (Optional) Advertise on a customer site and a given network.. See [Choice Site ](#choice-site) below for details.
 
@@ -1960,7 +1849,7 @@ Select Bot Defense Standard.
 
 ### Bot Defense Choice Bot Defense Advanced
 
-Select Bot Defense.
+x-displayName: "Enable Bot Defense".
 
 ###### One of the arguments from this list "disable_js_insert, js_insert_all_pages, js_insert_all_pages_except, js_insertion_rules" must be set
 
@@ -1972,7 +1861,7 @@ Select Bot Defense.
 
 `js_insertion_rules` - (Optional) Specify custom JavaScript insertion rules.. See [Java Script Choice Js Insertion Rules ](#java-script-choice-js-insertion-rules) below for details.
 
-`mobile` - (Optional) Select infrastructure for mobile.. See [ref](#ref) below for details.
+`mobile` - (Optional) Select an infrastructure to process mobile traffic. Be sure to add your web app FQDN to the Bot Network Policy, and the infrastructure domain to the infrastructure ACL.. See [ref](#ref) below for details.
 
 ###### One of the arguments from this list "disable_mobile_sdk, mobile_sdk_config" must be set
 
@@ -1980,7 +1869,19 @@ Select Bot Defense.
 
 `mobile_sdk_config` - (Optional). See [Mobile Sdk Choice Mobile Sdk Config ](#mobile-sdk-choice-mobile-sdk-config) below for details.
 
-`web` - (Optional) Select infrastructure for web.. See [ref](#ref) below for details.
+`web` - (Optional) Select an infrastructure to process web traffic. Be sure to add your web app FQDN to the Bot Network Policy, and the infrastructure domain to the infrastructure ACL.. See [ref](#ref) below for details.
+
+### Bot Defense Choice Bot Defense Advanced Protection
+
+Select Bot Defense.
+
+###### One of the arguments from this list "both_web_and_mobile, mobile_only, web_only" must be set
+
+`both_web_and_mobile` - (Optional) devices, is routed through this Bot Defense Infrastructure.. See [Client Type Choice Both Web And Mobile ](#client-type-choice-both-web-and-mobile) below for details.
+
+`mobile_only` - (Optional) is routed through this Bot Defense Infrastructure.. See [Client Type Choice Mobile Only ](#client-type-choice-mobile-only) below for details.
+
+`web_only` - (Optional) is routed through this Bot Defense Infrastructure.. See [Client Type Choice Web Only ](#client-type-choice-web-only) below for details.
 
 ### Bot Defense Javascript Injection Javascript Tags
 
@@ -2026,7 +1927,7 @@ This category defines rules per URL or API group. If request matches any of thes
 
 `any_url` - (Optional) Any URL (`Bool`).
 
-`api_endpoint` - (Required) The endpoint (path) of the request.. See [Destination Type Api Endpoint ](#destination-type-api-endpoint) below for details.
+`api_endpoint` - (Optional) The endpoint (path) of the request.. See [Destination Type Api Endpoint ](#destination-type-api-endpoint) below for details.
 
 `api_groups` - (Optional) Validation will be performed for the endpoints mentioned in the API Groups. See [Destination Type Api Groups ](#destination-type-api-groups) below for details.
 
@@ -2238,9 +2139,21 @@ Specifies the settings for policy rule based challenge.
 
 `temporary_user_blocking` - (Optional) Specifies configuration for temporary user blocking resulting from malicious user detection. See [Temporary Blocking Parameters Choice Temporary User Blocking ](#temporary-blocking-parameters-choice-temporary-user-blocking) below for details.(Deprecated)
 
+### Choice Advertise Dualstack On Public
+
+Advertise this load balancer with Dualstack VIP on public network.
+
+`public_ip` - (Required) Dedicated Public IP, which is allocated by F5 Distributed Cloud on request, is used as a VIP.. See [ref](#ref) below for details.
+
 ### Choice Advertise On Public
 
 Advertise this load balancer on public network.
+
+`public_ip` - (Required) Dedicated Public IP, which is allocated by F5 Distributed Cloud on request, is used as a VIP.. See [ref](#ref) below for details.
+
+### Choice Advertise V6 On Public
+
+Advertise this load balancer with IPv6 VIP on public network.
 
 `public_ip` - (Required) Dedicated Public IP, which is allocated by F5 Distributed Cloud on request, is used as a VIP.. See [ref](#ref) below for details.
 
@@ -2392,7 +2305,7 @@ Specify origin server with public IP.
 
 ###### One of the arguments from this list "ip, ipv6" must be set
 
-`ip`- (Optional) Public IPV4 address (`String`).
+`ip` - (Optional) Public IPV4 address (`String`).
 
 `ipv6` - (Optional) Public IPV6 address (`String`).
 
@@ -2639,6 +2552,52 @@ Client-Side Defense configuration for JavaScript insertion.
 Request header name and value pairs.
 
 `headers` - (Required) List of HTTP header name and value pairs. See [Http Header Headers ](#http-header-headers) below for details.
+
+### Client Type Choice Both Web And Mobile
+
+devices, is routed through this Bot Defense Infrastructure..
+
+###### One of the arguments from this list "disable_js_insert, js_insert_all_pages, js_insert_all_pages_except, js_insertion_rules" must be set
+
+`disable_js_insert` - (Optional) x-displayName: "Disable JavaScript Insertion" (`Bool`).
+
+`js_insert_all_pages` - (Optional) x-displayName: "Insert JavaScript in All Pages". See [Java Script Choice Js Insert All Pages ](#java-script-choice-js-insert-all-pages) below for details.
+
+`js_insert_all_pages_except` - (Optional) x-displayName: "Insert JavaScript in All Pages with the Exceptions". See [Java Script Choice Js Insert All Pages Except ](#java-script-choice-js-insert-all-pages-except) below for details.
+
+`js_insertion_rules` - (Optional) x-displayName: "Custom JavaScript Insertion Rules". See [Java Script Choice Js Insertion Rules ](#java-script-choice-js-insertion-rules) below for details.
+
+`mobile` - (Required) Select an infrastructure to process mobile traffic. Be sure to add your web app FQDN to the Bot Network Policy, and the infrastructure domain to the infrastructure ACL.. See [ref](#ref) below for details.
+
+###### One of the arguments from this list "disable_mobile_sdk, mobile_sdk_config" must be set
+
+`disable_mobile_sdk` - (Optional) x-displayName: "Mobile SDK Not Configured" (`Bool`).
+
+`mobile_sdk_config` - (Optional) x-displayName: "Mobile SDK Configuration". See [Mobile Sdk Choice Mobile Sdk Config ](#mobile-sdk-choice-mobile-sdk-config) below for details.
+
+`web` - (Required) Select an infrastructure to process web traffic. Be sure to add your web app FQDN to the Bot Network Policy, and the infrastructure domain to the infrastructure ACL.. See [ref](#ref) below for details.
+
+### Client Type Choice Mobile Only
+
+is routed through this Bot Defense Infrastructure..
+
+`mobile` - (Required) Select an infrastructure to process mobile traffic. Be sure to add your web app FQDN to the Bot Network Policy, and the infrastructure domain to the infrastructure ACL.. See [ref](#ref) below for details.
+
+### Client Type Choice Web Only
+
+is routed through this Bot Defense Infrastructure..
+
+###### One of the arguments from this list "disable_js_insert, js_insert_all_pages, js_insert_all_pages_except, js_insertion_rules" must be set
+
+`disable_js_insert` - (Optional) x-displayName: "Disable JavaScript Insertion" (`Bool`).
+
+`js_insert_all_pages` - (Optional) x-displayName: "Insert JavaScript in All Pages". See [Java Script Choice Js Insert All Pages ](#java-script-choice-js-insert-all-pages) below for details.
+
+`js_insert_all_pages_except` - (Optional) x-displayName: "Insert JavaScript in All Pages with the Exceptions". See [Java Script Choice Js Insert All Pages Except ](#java-script-choice-js-insert-all-pages-except) below for details.
+
+`js_insertion_rules` - (Optional) x-displayName: "Custom JavaScript Insertion Rules". See [Java Script Choice Js Insertion Rules ](#java-script-choice-js-insertion-rules) below for details.
+
+`web` - (Required) Select an infrastructure to process web traffic. Be sure to add your web app FQDN to the Bot Network Policy, and the infrastructure domain to the infrastructure ACL.. See [ref](#ref) below for details.
 
 ### Clientside Action Choice Clientside Action Captcha Challenge
 
@@ -3446,7 +3405,7 @@ GraphQL configuration..
 
 `max_total_length` - (Required) Specify maximum length in bytes for the GraphQL query. (`Int`).
 
-`max_value_length` - (Optional) Specify maximum value length in bytes for the GraphQL query. (`Int`).(Deprecated)
+`max_value_length` - (Required) Specify maximum value length in bytes for the GraphQL query. (`Int`).(Deprecated)
 
 `policy_name` - (Optional) Sets the BD Policy to use (`String`).(Deprecated)
 
@@ -5932,7 +5891,7 @@ Apply custom sensitive data discovery.
 
 x-displayName: "JSON Path".
 
-`fields` - (Required) List of JSON Path field values. Use square brackets with an underscore [*] to indicate array elements (e.g., person.emails[*]). To reference JSON keys that contain spaces, enclose the entire path in double quotes. For example: "person.first name". (`String`).
+`fields` - (Required) List of JSON Path field values. Use square brackets with an underscore \[*] to indicate array elements (e.g., person.emails\[*]). To reference JSON keys that contain spaces, enclose the entire path in double quotes. For example: "person.first name". (`String`).
 
 ### Server Header Choice Default Header
 
@@ -6090,7 +6049,7 @@ Configure Advanced per route options.
 
 ###### One of the arguments from this list "default_retry_policy, no_retry_policy, retry_policy" must be set
 
-`default_retry_policy`- (Optional) Use system default retry policy (`Bool`).
+`default_retry_policy` - (Optional) Use system default retry policy (`Bool`).
 
 `no_retry_policy` - (Optional) Do not configure retry policy (`Bool`).
 
@@ -7025,5 +6984,5 @@ X-Forwarded-Client-Cert header will be added with the configured fields.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured http_loadbalancer.
-*   `cname` - This is the hostname of the configured http_loadbalancer.
+-	`id` - This is the id of the configured http_loadbalancer.
+-	`cname` - This is the hostname of the configured http_loadbalancer.

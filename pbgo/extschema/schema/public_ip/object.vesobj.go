@@ -162,7 +162,22 @@ func GetObjectIndexers() store.Indexers {
 			if !ok {
 				return nil, fmt.Errorf("Index spec.gc_spec.ip expected *ves.io.schema.public_ip.Object, got %T: %#v", e, e)
 			}
-			return []string{obj.GetSpec().GetGcSpec().GetIp()}, nil
+			value := obj.GetSpec().GetGcSpec().GetIp()
+			if value == "" {
+				return []string{}, nil
+			}
+			return []string{value}, nil
+		})),
+		"spec.gc_spec.ipv6": store.NewIndexInfo(store.WithUniqueSecondaryIndex(func(e store.Entry) ([]string, error) {
+			obj, ok := e.(*Object)
+			if !ok {
+				return nil, fmt.Errorf("Index spec.gc_spec.ipv6 expected *ves.io.schema.public_ip.Object, got %T: %#v", e, e)
+			}
+			value := obj.GetSpec().GetGcSpec().GetIpv6()
+			if value == "" {
+				return []string{}, nil
+			}
+			return []string{value}, nil
 		})),
 	}
 	return indexers

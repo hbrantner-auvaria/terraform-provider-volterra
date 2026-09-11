@@ -15,16 +15,17 @@ import (
 
 	"gopkg.volterra.us/stdlib/client/vesapi"
 
-statemigration "github.com/volterraedge/terraform-provider-volterra/volterra/state_migration"
-
 	ves_io_schema "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema"
 	ves_io_schema_fleet "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/fleet"
 	ves_io_schema_network_firewall "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/network_firewall"
 	ves_io_schema_network_interface "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/network_interface"
 	ves_io_schema_site "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/site"
 	ves_io_schema_views "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/views"
+	ves_io_schema_views_common_waf "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/views/common_waf"
 	ves_io_schema_views_securemesh_site "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/views/securemesh_site"
 	ves_io_schema_virtual_network "github.com/volterraedge/terraform-provider-volterra/pbgo/extschema/schema/virtual_network"
+
+	statemigration "github.com/volterraedge/terraform-provider-volterra/volterra/state_migration"
 )
 
 // resourceVolterraSecuremeshSite is implementation of Volterra's SecuremeshSite resources
@@ -34,6 +35,15 @@ func resourceVolterraSecuremeshSite() *schema.Resource {
 		Read:   resourceVolterraSecuremeshSiteRead,
 		Update: resourceVolterraSecuremeshSiteUpdate,
 		Delete: resourceVolterraSecuremeshSiteDelete,
+
+		SchemaVersion: 1,
+		StateUpgraders: []schema.StateUpgrader{
+			{
+				Type:    statemigration.ResourceSecureMeshSiteInstanceResourceV1().CoreConfigSchema().ImpliedType(),
+				Upgrade: statemigration.ResourceSecureMeshSiteInstanceStateUpgradeV1,
+				Version: 0,
+			},
+		},
 
 		Schema: map[string]*schema.Schema{
 
@@ -3414,6 +3424,29 @@ func resourceVolterraSecuremeshSite() *schema.Resource {
 				Required: true,
 			},
 
+			"waf_signatures": {
+
+				Type:     schema.TypeList,
+				MaxItems: 1,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+
+						"automatic": {
+
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+
+						"manual": {
+
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+					},
+				},
+			},
+
 			"worker_nodes": {
 
 				Type: schema.TypeList,
@@ -3422,14 +3455,6 @@ func resourceVolterraSecuremeshSite() *schema.Resource {
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
-			},
-		},
-		SchemaVersion: 1,
-		StateUpgraders: []schema.StateUpgrader{
-			{
-				Type:    statemigration.ResourceSecureMeshSiteInstanceResourceV1().CoreConfigSchema().ImpliedType(),
-				Upgrade: statemigration.ResourceSecureMeshSiteInstanceStateUpgradeV1,
-				Version: 0,
 			},
 		},
 	}
@@ -8294,6 +8319,47 @@ func resourceVolterraSecuremeshSiteCreate(d *schema.ResourceData, meta interface
 
 		createSpec.VolterraCertifiedHw =
 			v.(string)
+
+	}
+
+	//waf_signatures
+	if v, ok := d.GetOk("waf_signatures"); ok && !isIntfNil(v) {
+
+		sl := v.([]interface{})
+		wafSignatures := &ves_io_schema_views_common_waf.LiveSignaturesUpdate{}
+		createSpec.WafSignatures = wafSignatures
+		for _, set := range sl {
+			if set != nil {
+				wafSignaturesMapStrToI := set.(map[string]interface{})
+
+				signaturesUpdateModeChoiceTypeFound := false
+
+				if v, ok := wafSignaturesMapStrToI["automatic"]; ok && !isIntfNil(v) && !signaturesUpdateModeChoiceTypeFound {
+
+					signaturesUpdateModeChoiceTypeFound = true
+
+					if v.(bool) {
+						signaturesUpdateModeChoiceInt := &ves_io_schema_views_common_waf.LiveSignaturesUpdate_Automatic{}
+						signaturesUpdateModeChoiceInt.Automatic = &ves_io_schema.Empty{}
+						wafSignatures.SignaturesUpdateModeChoice = signaturesUpdateModeChoiceInt
+					}
+
+				}
+
+				if v, ok := wafSignaturesMapStrToI["manual"]; ok && !isIntfNil(v) && !signaturesUpdateModeChoiceTypeFound {
+
+					signaturesUpdateModeChoiceTypeFound = true
+
+					if v.(bool) {
+						signaturesUpdateModeChoiceInt := &ves_io_schema_views_common_waf.LiveSignaturesUpdate_Manual{}
+						signaturesUpdateModeChoiceInt.Manual = &ves_io_schema.Empty{}
+						wafSignatures.SignaturesUpdateModeChoice = signaturesUpdateModeChoiceInt
+					}
+
+				}
+
+			}
+		}
 
 	}
 
@@ -13202,6 +13268,46 @@ func resourceVolterraSecuremeshSiteUpdate(d *schema.ResourceData, meta interface
 
 		updateSpec.VolterraCertifiedHw =
 			v.(string)
+
+	}
+
+	if v, ok := d.GetOk("waf_signatures"); ok && !isIntfNil(v) {
+
+		sl := v.([]interface{})
+		wafSignatures := &ves_io_schema_views_common_waf.LiveSignaturesUpdate{}
+		updateSpec.WafSignatures = wafSignatures
+		for _, set := range sl {
+			if set != nil {
+				wafSignaturesMapStrToI := set.(map[string]interface{})
+
+				signaturesUpdateModeChoiceTypeFound := false
+
+				if v, ok := wafSignaturesMapStrToI["automatic"]; ok && !isIntfNil(v) && !signaturesUpdateModeChoiceTypeFound {
+
+					signaturesUpdateModeChoiceTypeFound = true
+
+					if v.(bool) {
+						signaturesUpdateModeChoiceInt := &ves_io_schema_views_common_waf.LiveSignaturesUpdate_Automatic{}
+						signaturesUpdateModeChoiceInt.Automatic = &ves_io_schema.Empty{}
+						wafSignatures.SignaturesUpdateModeChoice = signaturesUpdateModeChoiceInt
+					}
+
+				}
+
+				if v, ok := wafSignaturesMapStrToI["manual"]; ok && !isIntfNil(v) && !signaturesUpdateModeChoiceTypeFound {
+
+					signaturesUpdateModeChoiceTypeFound = true
+
+					if v.(bool) {
+						signaturesUpdateModeChoiceInt := &ves_io_schema_views_common_waf.LiveSignaturesUpdate_Manual{}
+						signaturesUpdateModeChoiceInt.Manual = &ves_io_schema.Empty{}
+						wafSignatures.SignaturesUpdateModeChoice = signaturesUpdateModeChoiceInt
+					}
+
+				}
+
+			}
+		}
 
 	}
 

@@ -40,6 +40,7 @@ resource "volterra_subnet" "example" {
     }
   }
 }
+
 ```
 
 Argument Reference
@@ -132,4 +133,4 @@ List of networks from which DHCP server can allocate IP addresses.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured subnet.
+-	`id` - This is the id of the configured subnet.

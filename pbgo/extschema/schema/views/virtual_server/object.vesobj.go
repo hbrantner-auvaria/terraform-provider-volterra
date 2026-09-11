@@ -1287,6 +1287,12 @@ func (v *ValidateStatusObject) Validate(ctx context.Context, pm interface{}, opt
 			}
 		}
 	}
+	if fv, exists := v.FldValidators["status"]; exists {
+		vOpts := append(opts, db.WithValidateField("status"))
+		if err := fv(ctx, e.GetStatus(), vOpts...); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 

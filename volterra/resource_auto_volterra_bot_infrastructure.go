@@ -83,7 +83,7 @@ func resourceVolterraBotInfrastructure() *schema.Resource {
 
 							Type:     schema.TypeList,
 							MaxItems: 1,
-							Required: true,
+							Optional: true,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 
@@ -104,7 +104,7 @@ func resourceVolterraBotInfrastructure() *schema.Resource {
 
 							Type:     schema.TypeList,
 							MaxItems: 1,
-							Required: true,
+							Optional: true,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 

@@ -148,9 +148,9 @@ var DefaultAWSRegionsValidator = func() *ValidateAWSRegions {
 
 	vrhRegions := v.RegionsValidationRuleHandler
 	rulesRegions := map[string]string{
-		"ves.io.schema.rules.message.required": "true",
-		"ves.io.schema.rules.repeated.unique":  "true",
-		"ves.io.schema.rules.string.not_empty": "true",
+		"ves.io.schema.rules.message.required":                "true",
+		"ves.io.schema.rules.repeated.items.string.not_empty": "true",
+		"ves.io.schema.rules.repeated.unique":                 "true",
 	}
 	vFn, err = vrhRegions(rulesRegions)
 	if err != nil {
@@ -283,9 +283,9 @@ var DefaultAWSRegionsExternalValidator = func() *ValidateAWSRegionsExternal {
 
 	vrhRegions := v.RegionsValidationRuleHandler
 	rulesRegions := map[string]string{
-		"ves.io.schema.rules.message.required": "true",
-		"ves.io.schema.rules.repeated.unique":  "true",
-		"ves.io.schema.rules.string.not_empty": "true",
+		"ves.io.schema.rules.message.required":                "true",
+		"ves.io.schema.rules.repeated.items.string.not_empty": "true",
+		"ves.io.schema.rules.repeated.unique":                 "true",
 	}
 	vFn, err = vrhRegions(rulesRegions)
 	if err != nil {
@@ -791,9 +791,9 @@ var DefaultRegionalEdgeExternalValidator = func() *ValidateRegionalEdgeExternal 
 
 	vrhRegions := v.RegionsValidationRuleHandler
 	rulesRegions := map[string]string{
-		"ves.io.schema.rules.message.required": "true",
-		"ves.io.schema.rules.repeated.unique":  "true",
-		"ves.io.schema.rules.string.not_empty": "true",
+		"ves.io.schema.rules.message.required":                "true",
+		"ves.io.schema.rules.repeated.items.string.not_empty": "true",
+		"ves.io.schema.rules.repeated.unique":                 "true",
 	}
 	vFn, err = vrhRegions(rulesRegions)
 	if err != nil {
@@ -935,9 +935,9 @@ var DefaultRegionalEdgeRegionsValidator = func() *ValidateRegionalEdgeRegions {
 
 	vrhRegions := v.RegionsValidationRuleHandler
 	rulesRegions := map[string]string{
-		"ves.io.schema.rules.message.required": "true",
-		"ves.io.schema.rules.repeated.unique":  "true",
-		"ves.io.schema.rules.string.not_empty": "true",
+		"ves.io.schema.rules.message.required":                "true",
+		"ves.io.schema.rules.repeated.items.string.not_empty": "true",
+		"ves.io.schema.rules.repeated.unique":                 "true",
 	}
 	vFn, err = vrhRegions(rulesRegions)
 	if err != nil {

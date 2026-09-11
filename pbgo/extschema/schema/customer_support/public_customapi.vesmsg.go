@@ -793,6 +793,169 @@ func GetAttachmentRequestValidator() db.Validator {
 
 // augmented methods on protoc/std generated struct
 
+func (m *GetCommentsRequest) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *GetCommentsRequest) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *GetCommentsRequest) DeepCopy() *GetCommentsRequest {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &GetCommentsRequest{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *GetCommentsRequest) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *GetCommentsRequest) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return GetCommentsRequestValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateGetCommentsRequest struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateGetCommentsRequest) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*GetCommentsRequest)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *GetCommentsRequest got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["created_until_timestamp"]; exists {
+		vOpts := append(opts, db.WithValidateField("created_until_timestamp"))
+		if err := fv(ctx, m.GetCreatedUntilTimestamp(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["name"]; exists {
+		vOpts := append(opts, db.WithValidateField("name"))
+		if err := fv(ctx, m.GetName(), vOpts...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultGetCommentsRequestValidator = func() *ValidateGetCommentsRequest {
+	v := &ValidateGetCommentsRequest{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func GetCommentsRequestValidator() db.Validator {
+	return DefaultGetCommentsRequestValidator
+}
+
+// augmented methods on protoc/std generated struct
+
+func (m *GetCommentsResponse) ToJSON() (string, error) {
+	return codec.ToJSON(m)
+}
+
+func (m *GetCommentsResponse) ToYAML() (string, error) {
+	return codec.ToYAML(m)
+}
+
+func (m *GetCommentsResponse) DeepCopy() *GetCommentsResponse {
+	if m == nil {
+		return nil
+	}
+	ser, err := m.Marshal()
+	if err != nil {
+		return nil
+	}
+	c := &GetCommentsResponse{}
+	err = c.Unmarshal(ser)
+	if err != nil {
+		return nil
+	}
+	return c
+}
+
+func (m *GetCommentsResponse) DeepCopyProto() proto.Message {
+	if m == nil {
+		return nil
+	}
+	return m.DeepCopy()
+}
+
+func (m *GetCommentsResponse) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
+	return GetCommentsResponseValidator().Validate(ctx, m, opts...)
+}
+
+type ValidateGetCommentsResponse struct {
+	FldValidators map[string]db.ValidatorFunc
+}
+
+func (v *ValidateGetCommentsResponse) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
+	m, ok := pm.(*GetCommentsResponse)
+	if !ok {
+		switch t := pm.(type) {
+		case nil:
+			return nil
+		default:
+			return fmt.Errorf("Expected type *GetCommentsResponse got type %s", t)
+		}
+	}
+	if m == nil {
+		return nil
+	}
+	if fv, exists := v.FldValidators["all_comments_returned"]; exists {
+		vOpts := append(opts, db.WithValidateField("all_comments_returned"))
+		if err := fv(ctx, m.GetAllCommentsReturned(), vOpts...); err != nil {
+			return err
+		}
+	}
+	if fv, exists := v.FldValidators["comments"]; exists {
+		vOpts := append(opts, db.WithValidateField("comments"))
+		for idx, item := range m.GetComments() {
+			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
+			if err := fv(ctx, item, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Well-known symbol for default validator implementation
+var DefaultGetCommentsResponseValidator = func() *ValidateGetCommentsResponse {
+	v := &ValidateGetCommentsResponse{FldValidators: map[string]db.ValidatorFunc{}}
+
+	return v
+}()
+
+func GetCommentsResponseValidator() db.Validator {
+	return DefaultGetCommentsResponseValidator
+}
+
+// augmented methods on protoc/std generated struct
+
 func (m *ListSupportRequest) ToJSON() (string, error) {
 	return codec.ToJSON(m)
 }
@@ -1301,169 +1464,6 @@ var DefaultPriorityResponseValidator = func() *ValidatePriorityResponse {
 
 func PriorityResponseValidator() db.Validator {
 	return DefaultPriorityResponseValidator
-}
-
-// augmented methods on protoc/std generated struct
-
-func (m *RaiseTaxExemptVerificationSupportTicketRequest) ToJSON() (string, error) {
-	return codec.ToJSON(m)
-}
-
-func (m *RaiseTaxExemptVerificationSupportTicketRequest) ToYAML() (string, error) {
-	return codec.ToYAML(m)
-}
-
-func (m *RaiseTaxExemptVerificationSupportTicketRequest) DeepCopy() *RaiseTaxExemptVerificationSupportTicketRequest {
-	if m == nil {
-		return nil
-	}
-	ser, err := m.Marshal()
-	if err != nil {
-		return nil
-	}
-	c := &RaiseTaxExemptVerificationSupportTicketRequest{}
-	err = c.Unmarshal(ser)
-	if err != nil {
-		return nil
-	}
-	return c
-}
-
-func (m *RaiseTaxExemptVerificationSupportTicketRequest) DeepCopyProto() proto.Message {
-	if m == nil {
-		return nil
-	}
-	return m.DeepCopy()
-}
-
-func (m *RaiseTaxExemptVerificationSupportTicketRequest) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
-	return RaiseTaxExemptVerificationSupportTicketRequestValidator().Validate(ctx, m, opts...)
-}
-
-type ValidateRaiseTaxExemptVerificationSupportTicketRequest struct {
-	FldValidators map[string]db.ValidatorFunc
-}
-
-func (v *ValidateRaiseTaxExemptVerificationSupportTicketRequest) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
-	m, ok := pm.(*RaiseTaxExemptVerificationSupportTicketRequest)
-	if !ok {
-		switch t := pm.(type) {
-		case nil:
-			return nil
-		default:
-			return fmt.Errorf("Expected type *RaiseTaxExemptVerificationSupportTicketRequest got type %s", t)
-		}
-	}
-	if m == nil {
-		return nil
-	}
-	if fv, exists := v.FldValidators["attachments"]; exists {
-		vOpts := append(opts, db.WithValidateField("attachments"))
-		for idx, item := range m.GetAttachments() {
-			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
-			if err := fv(ctx, item, vOpts...); err != nil {
-				return err
-			}
-		}
-	}
-	if fv, exists := v.FldValidators["request_description"]; exists {
-		vOpts := append(opts, db.WithValidateField("request_description"))
-		if err := fv(ctx, m.GetRequestDescription(), vOpts...); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-// Well-known symbol for default validator implementation
-var DefaultRaiseTaxExemptVerificationSupportTicketRequestValidator = func() *ValidateRaiseTaxExemptVerificationSupportTicketRequest {
-	v := &ValidateRaiseTaxExemptVerificationSupportTicketRequest{FldValidators: map[string]db.ValidatorFunc{}}
-
-	return v
-}()
-
-func RaiseTaxExemptVerificationSupportTicketRequestValidator() db.Validator {
-	return DefaultRaiseTaxExemptVerificationSupportTicketRequestValidator
-}
-
-// augmented methods on protoc/std generated struct
-
-func (m *RaiseTaxExemptVerificationSupportTicketResponse) ToJSON() (string, error) {
-	return codec.ToJSON(m)
-}
-
-func (m *RaiseTaxExemptVerificationSupportTicketResponse) ToYAML() (string, error) {
-	return codec.ToYAML(m)
-}
-
-func (m *RaiseTaxExemptVerificationSupportTicketResponse) DeepCopy() *RaiseTaxExemptVerificationSupportTicketResponse {
-	if m == nil {
-		return nil
-	}
-	ser, err := m.Marshal()
-	if err != nil {
-		return nil
-	}
-	c := &RaiseTaxExemptVerificationSupportTicketResponse{}
-	err = c.Unmarshal(ser)
-	if err != nil {
-		return nil
-	}
-	return c
-}
-
-func (m *RaiseTaxExemptVerificationSupportTicketResponse) DeepCopyProto() proto.Message {
-	if m == nil {
-		return nil
-	}
-	return m.DeepCopy()
-}
-
-func (m *RaiseTaxExemptVerificationSupportTicketResponse) Validate(ctx context.Context, opts ...db.ValidateOpt) error {
-	return RaiseTaxExemptVerificationSupportTicketResponseValidator().Validate(ctx, m, opts...)
-}
-
-type ValidateRaiseTaxExemptVerificationSupportTicketResponse struct {
-	FldValidators map[string]db.ValidatorFunc
-}
-
-func (v *ValidateRaiseTaxExemptVerificationSupportTicketResponse) Validate(ctx context.Context, pm interface{}, opts ...db.ValidateOpt) error {
-	m, ok := pm.(*RaiseTaxExemptVerificationSupportTicketResponse)
-	if !ok {
-		switch t := pm.(type) {
-		case nil:
-			return nil
-		default:
-			return fmt.Errorf("Expected type *RaiseTaxExemptVerificationSupportTicketResponse got type %s", t)
-		}
-	}
-	if m == nil {
-		return nil
-	}
-	if fv, exists := v.FldValidators["err"]; exists {
-		vOpts := append(opts, db.WithValidateField("err"))
-		if err := fv(ctx, m.GetErr(), vOpts...); err != nil {
-			return err
-		}
-	}
-	if fv, exists := v.FldValidators["name"]; exists {
-		vOpts := append(opts, db.WithValidateField("name"))
-		if err := fv(ctx, m.GetName(), vOpts...); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-// Well-known symbol for default validator implementation
-var DefaultRaiseTaxExemptVerificationSupportTicketResponseValidator = func() *ValidateRaiseTaxExemptVerificationSupportTicketResponse {
-	v := &ValidateRaiseTaxExemptVerificationSupportTicketResponse{FldValidators: map[string]db.ValidatorFunc{}}
-
-	return v
-}()
-
-func RaiseTaxExemptVerificationSupportTicketResponseValidator() db.Validator {
-	return DefaultRaiseTaxExemptVerificationSupportTicketResponseValidator
 }
 
 // augmented methods on protoc/std generated struct

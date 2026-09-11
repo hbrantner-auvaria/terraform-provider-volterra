@@ -22,13 +22,7 @@ resource "volterra_network_firewall" "example" {
 
   // One of the arguments from this list "active_fast_acls disable_fast_acl fast_acl_set" must be set
 
-  active_fast_acls {
-    fast_acls {
-      name      = "test1"
-      namespace = "staging"
-      tenant    = "acmecorp"
-    }
-  }
+  disable_fast_acl = true
 
   // One of the arguments from this list "active_forward_proxy_policies disable_forward_proxy_policy forward_proxy_policy_set" must be set
 
@@ -42,8 +36,13 @@ resource "volterra_network_firewall" "example" {
 
   // One of the arguments from this list "active_enhanced_firewall_policies active_network_policies disable_network_policy network_policy_set" must be set
 
-  disable_network_policy = true
+  network_policy_set {
+    name      = "test1"
+    namespace = "staging"
+    tenant    = "acmecorp"
+  }
 }
+
 ```
 
 Argument Reference
@@ -128,4 +127,4 @@ tenant - (Optional) then tenant will hold the referred object's(e.g. route's) te
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured network_firewall.
+-	`id` - This is the id of the configured network_firewall.

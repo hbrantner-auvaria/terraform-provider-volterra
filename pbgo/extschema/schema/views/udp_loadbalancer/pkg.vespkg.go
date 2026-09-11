@@ -48,6 +48,14 @@ func initializeEntryRegistry(mdr *svcfw.MDRegistry) {
 func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 	mdr.RPCSubscriptionFieldsRegistry["ves.io.schema.views.udp_loadbalancer.API.Create"] = []svcfw.SubscriptionField{
 		{
+			FieldPath:     "ves.io.schema.views.udp_loadbalancer.CreateRequest.spec.advertise_choice.advertise_custom.advertise_where.choice.advertise_dualstack_on_public",
+			AddonServices: []string{"f5xc-ipv6-standard"},
+		},
+		{
+			FieldPath:     "ves.io.schema.views.udp_loadbalancer.CreateRequest.spec.advertise_choice.advertise_custom.advertise_where.choice.advertise_v6_on_public",
+			AddonServices: []string{"f5xc-ipv6-standard"},
+		},
+		{
 			FieldPath:     "ves.io.schema.views.udp_loadbalancer.CreateRequest.spec.advertise_choice.advertise_custom.advertise_where.choice.cloud_edge_segment.ipv6",
 			AddonServices: []string{"f5xc-ipv6-standard"},
 		},
@@ -67,6 +75,22 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 			FieldPath:     "ves.io.schema.views.udp_loadbalancer.CreateRequest.spec.advertise_choice.advertise_custom.advertise_where.choice.virtual_site_segment.ipv6",
 			AddonServices: []string{"f5xc-ipv6-standard"},
 		},
+		{
+			FieldPath:     "ves.io.schema.views.udp_loadbalancer.CreateRequest.spec.advertise_choice.advertise_dualstack_on_public",
+			AddonServices: []string{"f5xc-ipv6-standard"},
+		},
+		{
+			FieldPath:     "ves.io.schema.views.udp_loadbalancer.CreateRequest.spec.advertise_choice.advertise_on_public_default_dualstack_vip",
+			AddonServices: []string{"f5xc-ipv6-standard"},
+		},
+		{
+			FieldPath:     "ves.io.schema.views.udp_loadbalancer.CreateRequest.spec.advertise_choice.advertise_on_public_default_ipv6_vip",
+			AddonServices: []string{"f5xc-ipv6-standard"},
+		},
+		{
+			FieldPath:     "ves.io.schema.views.udp_loadbalancer.CreateRequest.spec.advertise_choice.advertise_v6_on_public",
+			AddonServices: []string{"f5xc-ipv6-standard"},
+		},
 	}
 	mdr.RPCHiddenInternalFieldsRegistry["ves.io.schema.views.udp_loadbalancer.API.Create"] = []string{
 		"spec.do_not_retract_cluster",
@@ -81,10 +105,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:           "spec.advertise_custom.advertise_where.#.site.ipv6",
-			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
-		},
-		{
-			FieldPath:           "spec.advertise_custom.advertise_where.#.site_segment.ipv6",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
@@ -110,10 +130,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
-			FieldPath:           "spec.advertise_custom.advertise_where.#.site_segment.ipv6",
-			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
-		},
-		{
 			FieldPath:           "spec.advertise_custom.advertise_where.#.virtual_network.v6_vip_choice",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
@@ -133,10 +149,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:           "create_form.spec.advertise_custom.advertise_where.#.site.ipv6",
-			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
-		},
-		{
-			FieldPath:           "create_form.spec.advertise_custom.advertise_where.#.site_segment.ipv6",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
@@ -160,10 +172,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
-			FieldPath:           "replace_form.spec.advertise_custom.advertise_where.#.site_segment.ipv6",
-			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
-		},
-		{
 			FieldPath:           "replace_form.spec.advertise_custom.advertise_where.#.virtual_network.v6_vip_choice",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
@@ -181,10 +189,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:           "spec.advertise_custom.advertise_where.#.site.ipv6",
-			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
-		},
-		{
-			FieldPath:           "spec.advertise_custom.advertise_where.#.site_segment.ipv6",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
@@ -210,10 +214,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{
-			FieldPath:           "items.#.get_spec.advertise_custom.advertise_where.#.site_segment.ipv6",
-			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
-		},
-		{
 			FieldPath:           "items.#.get_spec.advertise_custom.advertise_where.#.virtual_network.v6_vip_choice",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
@@ -227,6 +227,14 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 	}
 	mdr.RPCSubscriptionFieldsRegistry["ves.io.schema.views.udp_loadbalancer.API.Replace"] = []svcfw.SubscriptionField{
+		{
+			FieldPath:     "ves.io.schema.views.udp_loadbalancer.ReplaceRequest.spec.advertise_choice.advertise_custom.advertise_where.choice.advertise_dualstack_on_public",
+			AddonServices: []string{"f5xc-ipv6-standard"},
+		},
+		{
+			FieldPath:     "ves.io.schema.views.udp_loadbalancer.ReplaceRequest.spec.advertise_choice.advertise_custom.advertise_where.choice.advertise_v6_on_public",
+			AddonServices: []string{"f5xc-ipv6-standard"},
+		},
 		{
 			FieldPath:     "ves.io.schema.views.udp_loadbalancer.ReplaceRequest.spec.advertise_choice.advertise_custom.advertise_where.choice.cloud_edge_segment.ipv6",
 			AddonServices: []string{"f5xc-ipv6-standard"},
@@ -247,6 +255,22 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 			FieldPath:     "ves.io.schema.views.udp_loadbalancer.ReplaceRequest.spec.advertise_choice.advertise_custom.advertise_where.choice.virtual_site_segment.ipv6",
 			AddonServices: []string{"f5xc-ipv6-standard"},
 		},
+		{
+			FieldPath:     "ves.io.schema.views.udp_loadbalancer.ReplaceRequest.spec.advertise_choice.advertise_dualstack_on_public",
+			AddonServices: []string{"f5xc-ipv6-standard"},
+		},
+		{
+			FieldPath:     "ves.io.schema.views.udp_loadbalancer.ReplaceRequest.spec.advertise_choice.advertise_on_public_default_dualstack_vip",
+			AddonServices: []string{"f5xc-ipv6-standard"},
+		},
+		{
+			FieldPath:     "ves.io.schema.views.udp_loadbalancer.ReplaceRequest.spec.advertise_choice.advertise_on_public_default_ipv6_vip",
+			AddonServices: []string{"f5xc-ipv6-standard"},
+		},
+		{
+			FieldPath:     "ves.io.schema.views.udp_loadbalancer.ReplaceRequest.spec.advertise_choice.advertise_v6_on_public",
+			AddonServices: []string{"f5xc-ipv6-standard"},
+		},
 	}
 	mdr.RPCHiddenInternalFieldsRegistry["ves.io.schema.views.udp_loadbalancer.API.Replace"] = []string{
 		"spec.do_not_retract_cluster",
@@ -261,10 +285,6 @@ func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
 		},
 		{
 			FieldPath:           "spec.advertise_custom.advertise_where.#.site.ipv6",
-			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
-		},
-		{
-			FieldPath:           "spec.advertise_custom.advertise_where.#.site_segment.ipv6",
 			AllowedEnvironments: []string{"crt", "demo1", "prod", "softbank_mec", "staging", "test"},
 		},
 		{

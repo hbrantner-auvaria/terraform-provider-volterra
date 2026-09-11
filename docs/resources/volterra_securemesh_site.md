@@ -43,9 +43,46 @@ resource "volterra_securemesh_site" "example" {
 
   // One of the arguments from this list "custom_network_config default_network_config" must be set
 
-  default_network_config = true
-  volterra_certified_hw  = ["isv-8000-series-voltmesh"]
+  custom_network_config {
+    bgp_peer_address = "10.1.1.1"
+
+    bgp_peer_address_v6 = "3c0f:7554:352a:a2dc:333f:67c5:c2b5:7326"
+
+    bgp_router_id = "10.1.1.1"
+
+    // One of the arguments from this list "active_forward_proxy_policies forward_proxy_allow_all no_forward_proxy" must be set
+
+    no_forward_proxy = true
+
+    // One of the arguments from this list "global_network_list no_global_network" must be set
+
+    no_global_network = true
+
+    // One of the arguments from this list "default_interface_config interface_list" must be set
+
+    default_interface_config = true
+
+    // One of the arguments from this list "active_enhanced_firewall_policies active_network_policies no_network_policy" must be set
+
+    no_network_policy = true
+
+    // One of the arguments from this list "sm_connection_public_ip sm_connection_pvt_ip" must be set
+
+    sm_connection_public_ip = true
+
+    // One of the arguments from this list "default_sli_config sli_config" can be set
+
+    default_sli_config = true
+
+    // One of the arguments from this list "default_config slo_config" must be set
+
+    default_config = true
+    tunnel_dead_timeout = "0"
+    vip_vrrp_mode = "vip_vrrp_mode"
+  }
+  volterra_certified_hw = ["isv-8000-series-voltmesh"]
 }
+
 ```
 
 Argument Reference
@@ -108,6 +145,8 @@ Argument Reference
 `sw` - (Optional) F5XC Software Details. See [Sw ](#sw) below for details.
 
 `volterra_certified_hw` - (Required) Name for generic server certified hardware to form this Secure Mesh site. (`String`).
+
+`waf_signatures` - (Optional) Select WAF Signatures Update Mode for the site. By default, new signatures will be applied manually.. See [Waf Signatures ](#waf-signatures) below for details.
 
 `worker_nodes` - (Optional) Names of worker nodes (`List of String`).
 
@@ -176,6 +215,16 @@ F5XC Software Details.
 `default_sw_version` - (Optional) Will assign latest available F5XC Software Version (`Bool`).
 
 `volterra_software_version` - (Optional) Specify a F5XC Software Version to be used e.g. crt-20210329-1002. (`String`).
+
+### Waf Signatures
+
+Select WAF Signatures Update Mode for the site. By default, new signatures will be applied manually..
+
+###### One of the arguments from this list "automatic, manual" can be set
+
+`automatic` - (Optional) New WAF signatures will be applied automatically as soon as they are released. (`Bool`).
+
+`manual` - (Optional) New WAF signatures will only be applied when an update is triggered manually. (`Bool`).
 
 ### Address Choice Dhcp Client
 
@@ -533,7 +582,7 @@ Networking configuration for dedicated interface is configured locally on site e
 
 `monitor_disabled` - (Optional) Link quality monitoring disabled on the interface. (`Bool`).
 
-`mtu` - (Optional) When configured, mtu must be between 512 and 16384 (`Int`).
+`mtu` - (Optional) When configured, mtu must be between 512 and 8000 (`Int`).
 
 ###### One of the arguments from this list "cluster, node" must be set
 
@@ -555,7 +604,7 @@ Fallback management interfaces can be made into dedicated management interface.
 
 `device` - (Required) Name of the device for which interface is configured (`String`).
 
-`mtu` - (Optional) When configured, mtu must be between 512 and 16384 (`Int`).
+`mtu` - (Optional) When configured, mtu must be between 512 and 8000 (`Int`).
 
 ###### One of the arguments from this list "cluster, node" must be set
 
@@ -595,7 +644,7 @@ Ethernet interface configuration..
 
 `monitor_disabled` - (Optional) Link quality monitoring disabled on the interface. (`Bool`).
 
-`mtu` - (Optional) When configured, mtu must be between 512 and 16384 (`Int`).
+`mtu` - (Optional) When configured, mtu must be between 512 and 8000 (`Int`).
 
 ###### One of the arguments from this list "inside_network, ip_fabric_network, segment_network, site_local_inside_network, site_local_network, srv6_network, storage_network" must be set
 
@@ -659,7 +708,7 @@ Loopback device..
 
 `static_ipv6_address` - (Optional) Interface IP is configured statically. See [Ipv6 Address Choice Static Ipv6 Address ](#ipv6-address-choice-static-ipv6-address) below for details.
 
-`mtu` - (Optional) When configured, mtu must be between 512 and 16384 (`Int`).
+`mtu` - (Optional) When configured, mtu must be between 512 and 8000 (`Int`).
 
 ###### One of the arguments from this list "ip_fabric_network, site_local_inside_network, site_local_network" must be set
 
@@ -1083,6 +1132,14 @@ Secret is given as bootstrap secret in F5XC Security Sidecar.
 
 `name` - (Required) Name of the secret. (`String`).
 
+### Signatures Update Mode Choice Automatic
+
+New WAF signatures will be applied automatically as soon as they are released..
+
+### Signatures Update Mode Choice Manual
+
+New WAF signatures will only be applied when an update is triggered manually..
+
 ### Signing Cert Choice Custom Certificate
 
 Certificates for generating intermediate certificate for TLS interception..
@@ -1308,4 +1365,4 @@ Will assign latest available F5XC Software Version.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured securemesh_site.
+-	`id` - This is the id of the configured securemesh_site.

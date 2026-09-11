@@ -1104,15 +1104,13 @@ var CustomAPISwaggerJSON string = `{
         },
         "customer_supportSupportService": {
             "type": "string",
-            "description": "Indicates the list of support service\n\nUnknown Support Service\nAccount Protection Support Service\nAdministration Support Service\nApplication Traffic Insight Support Service\nAudit Logs \u0026 Alerts Support Service\nAuthentication Intelligence Support Service\nBilling Support Service\nClient Side Defense Support Service\nCloud \u0026 Edge Sites Support Service\ndeprecated: use SS_MULTI_CLOUD_NETWORK_CONNECT instead\nDDOS \u0026 Transit Support Service\nDeprecated: use SS_ROUTED_DDOS instead\nDistributed Apps Support Service\nDNS Management Support Service\nLoadBalancers Support Service\ndeprecated: use SS_MULTI_CLOUD_APP_CONNECT instead\nShared Configuration Support Service\nWeb App \u0026 API Protection Support Service\nOther Support Service\nBot Defense Support Service\nContent delivery network Support Service\nObservability Support Service\nDelegated Access Support Service\nNetworking \u0026 security across clouds, edge and on-premises\nConnect apps across clouds, edge and on-premises using Load Balancers\nData Intelligence Support Service\nNGINX One Support Service\nWeb App Scanning Support Service\nRouted DDoS Support Service\nMobile App Shield protects mobile apps from reverse engineering, tampering and malware\nDefault for deprecated services\nAutomation Support Service for Terraform Provider",
+            "description": "Indicates the list of support service\n\nUnknown Support Service\nAccount Protection Support Service\nAdministration Support Service\nApplication Traffic Insight Support Service\nAudit Logs \u0026 Alerts Support Service\nAuthentication Intelligence Support Service\nBilling Support Service\nClient Side Defense Support Service\nCloud \u0026 Edge Sites Support Service\ndeprecated: use SS_MULTI_CLOUD_NETWORK_CONNECT instead\nDDOS \u0026 Transit Support Service\nDeprecated: use SS_ROUTED_DDOS instead\nDistributed Apps Support Service\nDNS Management Support Service\nLoadBalancers Support Service\ndeprecated: use SS_MULTI_CLOUD_APP_CONNECT instead\nShared Configuration Support Service\nWeb App \u0026 API Protection Support Service\nOther Support Service\nBot Defense Support Service\nContent delivery network Support Service\nObservability Support Service\nDelegated Access Support Service\nNetworking \u0026 security across clouds, edge and on-premises\nConnect apps across clouds, edge and on-premises using Load Balancers\nData Intelligence Support Service\nNGINX One Support Service\nWeb App Scanning Support Service\nRouted DDoS Support Service\nMobile App Shield protects mobile apps from reverse engineering, tampering and malware\nDevice Intelligence Support Service\nDefault for deprecated services\nAutomation Support Service for Terraform Provider",
             "title": "SupportService",
             "enum": [
                 "SS_UNKNOWN",
-                "SS_ACCOUNT_PROTECTION",
                 "SS_ADMINISTRATION",
                 "SS_APPLICATION_TRAFFIC_INSIGHT",
                 "SS_AUDIT_LOGS_AND_ALERTS",
-                "SS_AUTHENTICATION_INTELLIGENCE",
                 "SS_BILLING",
                 "SS_CLIENT_SIDE_DEFENSE",
                 "SS_CLOUD_AND_EDGE_SITES",
@@ -1134,6 +1132,7 @@ var CustomAPISwaggerJSON string = `{
                 "SS_WEB_APP_SCANNING",
                 "SS_ROUTED_DDOS",
                 "SS_MOBILE_APP_SHIELD",
+                "SS_DEVICE_INTELLIGENCE",
                 "SS_DEPRECATED",
                 "SS_AUTOMATION"
             ],
@@ -1187,7 +1186,7 @@ var CustomAPISwaggerJSON string = `{
         },
         "schemaAddonServiceAccess": {
             "type": "string",
-            "description": "x-displayName: \"Addon Service Access\"\nState of access into service\n\n - AS_AC_NONE: x-displayName: \"None\"\ndefault state\nThis can mean that addon service is not subscribed or is in pending subscription.\n - AS_AC_ALLOWED: x-displayName: \"Allow\"\naccess is allowed\n - AS_AC_PBAC_DENY: x-displayName: \"PBAC Deny\"\nAddon service is not allowed as part of current plan\n - AS_AC_PBAC_DENY_UPGRADE_PLAN: x-displayName: \"PBAC Deny - Upgrade plan\"\nAddon service is not allowed as part of current plan. To enable it, user is requested to uprade the plan\n - AS_AC_PBAC_DENY_CONTACT_SALES: x-displayName: \"PBAC Deny - Contact Sales\"\nAddon service is not allowed as part of current plan. To enable or to find out more, user is requested to contact sales\n - AS_AC_PBAC_DENY_AS_AC_EOL: x-displayName: \"PBAC Deny - End of  Life\"\nAddon service is not allowed as part of current plan as it is discontinued. User is requested to contact sales discuss alternatives",
+            "description": "x-displayName: \"Addon Service Access\"\nState of access into service\n\n - AS_AC_NONE: x-displayName: \"None\"\ndefault state\nThis can mean that addon service is not subscribed or is in pending subscription.\n - AS_AC_ALLOWED: x-displayName: \"Allow\"\naccess is allowed\n - AS_AC_PBAC_DENY: x-displayName: \"PBAC Deny\"\nAddon service is not allowed as part of current plan\n - AS_AC_PBAC_DENY_UPGRADE_PLAN: x-displayName: \"PBAC Deny - Upgrade plan\"\nAddon service is not allowed as part of current plan. To enable it, user is requested to uprade the plan\n - AS_AC_PBAC_DENY_CONTACT_SALES: x-displayName: \"PBAC Deny - Contact Sales\"\nAddon service is not allowed as part of current plan. To enable or to find out more, user is requested to contact sales\n - AS_AC_PBAC_DENY_AS_AC_EOL: x-displayName: \"PBAC Deny - End of Life\"\nAddon service is not allowed as part of current plan as it is discontinued. User is requested to contact sales discuss alternatives\n - AS_AC_UNAVAILABLE: x-displayName: \"Unavailable\"\nAddon service is not available as part of current plan",
             "title": "AddonServiceAccess",
             "enum": [
                 "AS_AC_NONE",
@@ -1195,7 +1194,8 @@ var CustomAPISwaggerJSON string = `{
                 "AS_AC_PBAC_DENY",
                 "AS_AC_PBAC_DENY_UPGRADE_PLAN",
                 "AS_AC_PBAC_DENY_CONTACT_SALES",
-                "AS_AC_PBAC_DENY_AS_AC_EOL"
+                "AS_AC_PBAC_DENY_AS_AC_EOL",
+                "AS_AC_UNAVAILABLE"
             ],
             "default": "AS_AC_NONE"
         },

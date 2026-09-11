@@ -2036,6 +2036,17 @@ func (v *ValidateServiceSlugChoice) Validate(ctx context.Context, pm interface{}
 				return err
 			}
 		}
+	case *ServiceSlugChoice_DeviceIntelligence:
+		if fv, exists := v.FldValidators["choice.device_intelligence"]; exists {
+			val := m.GetChoice().(*ServiceSlugChoice_DeviceIntelligence).DeviceIntelligence
+			vOpts := append(opts,
+				db.WithValidateField("choice"),
+				db.WithValidateField("device_intelligence"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
 	}
 	return nil
 }

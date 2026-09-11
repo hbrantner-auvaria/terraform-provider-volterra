@@ -60,7 +60,6 @@ Attribute Reference
 
 ---
 
--   `id` - This is the id of Volterra registration object.
+-	`id` - This is the id of Volterra registration object.
 
--   `registration_name` - (Optional) Name of the registration object
-
+-	`registration_name` - (Optional) Name of the registration object

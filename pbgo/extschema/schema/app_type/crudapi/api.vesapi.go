@@ -2789,7 +2789,7 @@ var APISwaggerJSON string = `{
                     "description": " Feature type to be enabled\n\nRequired: YES\n\nValidation Rules:\n  ves.io.schema.rules.message.required: true\n",
                     "title": "Enable type of Feature",
                     "$ref": "#/definitions/app_typeFeatureType",
-                    "x-displayname": "AI/ML Feature Type",
+                    "x-displayname": "Advanced Security Feature Type",
                     "x-ves-required": "true",
                     "x-ves-validation-rules": {
                         "ves.io.schema.rules.message.required": "true"
@@ -2799,7 +2799,7 @@ var APISwaggerJSON string = `{
         },
         "app_typeFeatureType": {
             "type": "string",
-            "description": "Enumeration for AI/ML features supported\n\nAPI Discovery enables generation of model for various API interactions between services of App type.\nEnable analysis of timeseries for various metric collected like requests, errors, latency etc.\nEnable anomaly detection per API request, i.e. the probability density function (PDF) charts generation for API endpoints\nEnable user behavior analysis",
+            "description": "Enumeration for advanced security features supported\n\nAPI Discovery enables generation of model for various API interactions between services of App type.\nEnable analysis of timeseries for various metric collected like requests, errors, latency etc.\nEnable anomaly detection per API request, i.e. the probability density function (PDF) charts generation for API endpoints\nEnable user behavior analysis",
             "title": "FeatureType",
             "enum": [
                 "BUSINESS_LOGIC_MARKUP",
@@ -2808,7 +2808,7 @@ var APISwaggerJSON string = `{
                 "USER_BEHAVIOR_ANALYSIS"
             ],
             "default": "BUSINESS_LOGIC_MARKUP",
-            "x-displayname": "AI/ML Features",
+            "x-displayname": "Advanced Security Features",
             "x-ves-proto-enum": "ves.io.schema.app_type.FeatureType"
         },
         "app_typeGlobalSpecType": {
@@ -2825,7 +2825,7 @@ var APISwaggerJSON string = `{
                 },
                 "features": {
                     "type": "array",
-                    "description": " List of various AI/ML features enabled\n\nValidation Rules:\n  ves.io.schema.rules.repeated.unique: true\n",
+                    "description": " List of various advanced security features enabled\n\nValidation Rules:\n  ves.io.schema.rules.repeated.unique: true\n",
                     "title": "Features",
                     "items": {
                         "$ref": "#/definitions/app_typeFeature"

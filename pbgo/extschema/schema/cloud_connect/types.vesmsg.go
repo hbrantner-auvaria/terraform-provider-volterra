@@ -1191,9 +1191,9 @@ var DefaultAWSDefaultRoutesRouteTableValidator = func() *ValidateAWSDefaultRoute
 
 	vrhRouteTableId := v.RouteTableIdValidationRuleHandler
 	rulesRouteTableId := map[string]string{
-		"ves.io.schema.rules.repeated.unique": "true",
-		"ves.io.schema.rules.string.max_len":  "64",
-		"ves.io.schema.rules.string.pattern":  "^(rtb-)([a-z0-9]{8}|[a-z0-9]{17})$",
+		"ves.io.schema.rules.repeated.items.string.max_len": "64",
+		"ves.io.schema.rules.repeated.items.string.pattern": "^(rtb-)([a-z0-9]{8}|[a-z0-9]{17})$",
+		"ves.io.schema.rules.repeated.unique":               "true",
 	}
 	vFn, err = vrhRouteTableId(rulesRouteTableId)
 	if err != nil {
@@ -4665,8 +4665,8 @@ var DefaultAzureRouteTablesValidator = func() *ValidateAzureRouteTables {
 
 	vrhRouteTableId := v.RouteTableIdValidationRuleHandler
 	rulesRouteTableId := map[string]string{
-		"ves.io.schema.rules.repeated.unique": "true",
-		"ves.io.schema.rules.string.max_len":  "256",
+		"ves.io.schema.rules.repeated.items.string.max_len": "256",
+		"ves.io.schema.rules.repeated.unique":               "true",
 	}
 	vFn, err = vrhRouteTableId(rulesRouteTableId)
 	if err != nil {

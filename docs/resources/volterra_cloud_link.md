@@ -34,28 +34,14 @@ resource "volterra_cloud_link" "example" {
     byoc {
       connections {
         auth_key {
-          blindfold_secret_info_internal {
+          // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
+
+          blindfold_secret_info {
             decryption_provider = "value"
 
             location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
 
             store_provider = "value"
-          }
-
-          secret_encoding_type = "secret_encoding_type"
-
-          // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
-
-          vault_secret_info {
-            key = "key_pem"
-
-            location = "v1/data/vhost_key"
-
-            provider = "vault-vh-provider"
-
-            secret_encoding = "secret_encoding"
-
-            version = "1"
           }
         }
 
@@ -108,6 +94,7 @@ resource "volterra_cloud_link" "example" {
 
   disabled = true
 }
+
 ```
 
 Argument Reference
@@ -374,4 +361,4 @@ Secret is given as bootstrap secret in F5XC Security Sidecar.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured cloud_link.
+-	`id` - This is the id of the configured cloud_link.

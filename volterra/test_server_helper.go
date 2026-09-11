@@ -567,6 +567,11 @@ func (n *namespaceCustomAPIServer) DynamicData(context.Context, *ves_io_schema_n
 	return &ves_io_schema_ns.DynamicDataResp{}, nil
 }
 
+func (n *namespaceCustomAPIServer) OIDCOAuthDiscovery(context.Context,
+	*ves_io_schema_ns.OIDCOAuthDiscoveryReq) (*ves_io_schema_ns.OIDCOAuthDiscoveryResp, error) {
+	return &ves_io_schema_ns.OIDCOAuthDiscoveryResp{}, nil
+}
+
 var _ ves_io_schema_ns.NamespaceCustomAPIServer = &namespaceCustomAPIServer{}
 
 // ves.io.schema.views.gcp_vpc_site.CustomAPI handling - start

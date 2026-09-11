@@ -31,6 +31,7 @@ resource "volterra_api_testing" "example" {
       basic_auth {
         password {
 
+
           // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
 
           blindfold_secret_info {
@@ -57,6 +58,7 @@ resource "volterra_api_testing" "example" {
 
   every_week = true
 }
+
 ```
 
 Argument Reference
@@ -104,6 +106,8 @@ Add and configure testing domains and credentials.
 
 x-displayName: "Value".
 
+
+
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 
 `blindfold_secret_info` - (Optional) Blindfold Secret is used for the secrets managed by F5XC Secret Management Service. See [Secret Info Oneof Blindfold Secret Info ](#secret-info-oneof-blindfold-secret-info) below for details.
@@ -118,6 +122,8 @@ x-displayName: "Value".
 
 x-displayName: "Password".
 
+
+
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 
 `blindfold_secret_info` - (Optional) Blindfold Secret is used for the secrets managed by F5XC Secret Management Service. See [Secret Info Oneof Blindfold Secret Info ](#secret-info-oneof-blindfold-secret-info) below for details.
@@ -131,6 +137,8 @@ x-displayName: "Password".
 ### Bearer Token Token
 
 x-displayName: "Token".
+
+
 
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 
@@ -211,6 +219,8 @@ Blindfold Secret Internal is used for the putting re-encrypted blindfold secret.
 ### Login Endpoint Json Payload
 
 x-displayName: "JSON Payload".
+
+
 
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 
@@ -301,4 +311,4 @@ Blindfold Secret Internal is used for the putting re-encrypted blindfold secret.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured api_testing.
+-	`id` - This is the id of the configured api_testing.

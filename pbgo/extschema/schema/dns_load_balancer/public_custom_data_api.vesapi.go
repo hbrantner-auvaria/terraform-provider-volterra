@@ -1877,7 +1877,7 @@ var CustomDataAPISwaggerJSON string = `{
         },
         "schemadns_load_balancerErrorCode": {
             "type": "string",
-            "description": "All possible error-codes for dns load balancer pool member health check failure\n\n - ERR_NIL: No error\n - ERR_UNDEFINED: Undefined error\n - ERR_RECEIVE_STRING_MISMATCH: Received string mismatch error\n - ERR_INTERNAL: Encountered internal error\n - ERR_MSG_SEND: Message send error\n - ERR_TIMEOUT: Waithing response timeout error\n - ERR_MSG_RECEIVE: Message receive error\n - ERR_MAX_RECEIVE_BYTES: Bytes limit exceeded error\n - ERR_ICMP_PING: ICMP ping failure\n - ERR_CONNECTION_REFUSED: Connection refused error\n - ERR_CONNECTION_ABORTED: Connection aborted error\n - ERR_CONNECTION_RESET: Connection reset error\n - ERR_NET_UN_REACHABLE: Network not reachable\n - ERR_HOST_UN_REACHABLE: Host not reachable\n - ERR_UNKNOWN: Unknown error\n - ERR_TLS_HANDSHAKE_FAILURE: TLS handshake failure\n - ERR_CONNECTION_TIMEDOUT: Connection timeout error",
+            "description": "All possible error-codes for dns load balancer pool member health check failure\n\n - ERR_NIL: No error\n - ERR_UNDEFINED: Undefined error\n - ERR_RECEIVE_STRING_MISMATCH: Received string mismatch error\n - ERR_INTERNAL: Encountered internal error\n - ERR_MSG_SEND: Message send error\n - ERR_TIMEOUT: Waithing response timeout error\n - ERR_MSG_RECEIVE: Message receive error\n - ERR_MAX_RECEIVE_BYTES: Bytes limit exceeded error\n - ERR_ICMP_PING: ICMP ping failure\n - ERR_CONNECTION_REFUSED: Connection refused error\n - ERR_CONNECTION_ABORTED: Connection aborted error\n - ERR_CONNECTION_RESET: Connection reset error\n - ERR_NET_UN_REACHABLE: Network not reachable\n - ERR_HOST_UN_REACHABLE: Host not reachable\n - ERR_UNKNOWN: Unknown error\n - ERR_TLS_HANDSHAKE_FAILURE: TLS handshake failure\n - ERR_CONNECTION_TIMEDOUT: Connection timeout error\n - ERR_INVALID_MONITOR_CONFIGURATION: Invalid monitor configuration error",
             "title": "ErrorCode",
             "enum": [
                 "ERR_NIL",
@@ -1896,7 +1896,8 @@ var CustomDataAPISwaggerJSON string = `{
                 "ERR_HOST_UN_REACHABLE",
                 "ERR_UNKNOWN",
                 "ERR_TLS_HANDSHAKE_FAILURE",
-                "ERR_CONNECTION_TIMEDOUT"
+                "ERR_CONNECTION_TIMEDOUT",
+                "ERR_INVALID_MONITOR_CONFIGURATION"
             ],
             "default": "ERR_NIL",
             "x-displayname": "Error Code",

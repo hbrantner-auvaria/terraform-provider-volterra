@@ -385,22 +385,57 @@ func resourceVolterraAppFirewall() *schema.Resource {
 										Optional: true,
 									},
 
-									"high_medium_accuracy_signatures": {
+									"default_signature_setting": {
 
 										Type:     schema.TypeBool,
 										Optional: true,
+									},
+
+									"signature_settings_by_accuracy": {
+
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"high_accuracy_action": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+
+												"low_accuracy_action": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+
+												"medium_accuracy_action": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+
+									"high_medium_accuracy_signatures": {
+
+										Type:       schema.TypeBool,
+										Optional:   true,
+										Deprecated: "This field is deprecated and will be removed in future release.",
 									},
 
 									"high_medium_low_accuracy_signatures": {
 
-										Type:     schema.TypeBool,
-										Optional: true,
+										Type:       schema.TypeBool,
+										Optional:   true,
+										Deprecated: "This field is deprecated and will be removed in future release.",
 									},
 
 									"only_high_accuracy_signatures": {
 
-										Type:     schema.TypeBool,
-										Optional: true,
+										Type:       schema.TypeBool,
+										Optional:   true,
+										Deprecated: "This field is deprecated and will be removed in future release.",
 									},
 								},
 							},
@@ -540,6 +575,36 @@ func resourceVolterraAppFirewall() *schema.Resource {
 				Type:       schema.TypeBool,
 				Optional:   true,
 				Deprecated: "This field is deprecated and will be removed in future release.",
+			},
+
+			"ai_enhancements": {
+
+				Type:       schema.TypeList,
+				MaxItems:   1,
+				Optional:   true,
+				Deprecated: "This field is deprecated and will be removed in future release.",
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+
+						"high_risk_action": {
+							Type:       schema.TypeString,
+							Required:   true,
+							Deprecated: "This field is deprecated and will be removed in future release.",
+						},
+
+						"low_risk_action": {
+							Type:       schema.TypeString,
+							Required:   true,
+							Deprecated: "This field is deprecated and will be removed in future release.",
+						},
+
+						"medium_risk_action": {
+							Type:       schema.TypeString,
+							Required:   true,
+							Deprecated: "This field is deprecated and will be removed in future release.",
+						},
+					},
+				},
 			},
 
 			"disable_ai_enhancements": {
@@ -1133,6 +1198,55 @@ func resourceVolterraAppFirewallCreate(d *schema.ResourceData, meta interface{})
 
 							}
 
+							signatureProtectionChoiceTypeFound := false
+
+							if v, ok := signatureSelectionSettingMapStrToI["default_signature_setting"]; ok && !isIntfNil(v) && !signatureProtectionChoiceTypeFound {
+
+								signatureProtectionChoiceTypeFound = true
+
+								if v.(bool) {
+									signatureProtectionChoiceInt := &ves_io_schema_app_firewall.SignatureSelectionSetting_DefaultSignatureSetting{}
+									signatureProtectionChoiceInt.DefaultSignatureSetting = &ves_io_schema.Empty{}
+									signatureSelectionSetting.SignatureProtectionChoice = signatureProtectionChoiceInt
+								}
+
+							}
+
+							if v, ok := signatureSelectionSettingMapStrToI["signature_settings_by_accuracy"]; ok && !isIntfNil(v) && !signatureProtectionChoiceTypeFound {
+
+								signatureProtectionChoiceTypeFound = true
+								signatureProtectionChoiceInt := &ves_io_schema_app_firewall.SignatureSelectionSetting_SignatureSettingsByAccuracy{}
+								signatureProtectionChoiceInt.SignatureSettingsByAccuracy = &ves_io_schema_app_firewall.SignatureProtectionSetting{}
+								signatureSelectionSetting.SignatureProtectionChoice = signatureProtectionChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["high_accuracy_action"]; ok && !isIntfNil(v) {
+
+											signatureProtectionChoiceInt.SignatureSettingsByAccuracy.HighAccuracyAction = ves_io_schema_app_firewall.SignatureAction(ves_io_schema_app_firewall.SignatureAction_value[v.(string)])
+
+										}
+
+										if v, ok := cs["low_accuracy_action"]; ok && !isIntfNil(v) {
+
+											signatureProtectionChoiceInt.SignatureSettingsByAccuracy.LowAccuracyAction = ves_io_schema_app_firewall.SignatureAction(ves_io_schema_app_firewall.SignatureAction_value[v.(string)])
+
+										}
+
+										if v, ok := cs["medium_accuracy_action"]; ok && !isIntfNil(v) {
+
+											signatureProtectionChoiceInt.SignatureSettingsByAccuracy.MediumAccuracyAction = ves_io_schema_app_firewall.SignatureAction(ves_io_schema_app_firewall.SignatureAction_value[v.(string)])
+
+										}
+
+									}
+								}
+
+							}
+
 							signatureSelectionByAccuracyTypeFound := false
 
 							if v, ok := signatureSelectionSettingMapStrToI["high_medium_accuracy_signatures"]; ok && !isIntfNil(v) && !signatureSelectionByAccuracyTypeFound {
@@ -1389,6 +1503,41 @@ func resourceVolterraAppFirewallCreate(d *schema.ResourceData, meta interface{})
 	//enhance_with_ai_choice
 
 	enhanceWithAiChoiceTypeFound := false
+
+	if v, ok := d.GetOk("ai_enhancements"); ok && !isIntfNil(v) && !enhanceWithAiChoiceTypeFound {
+
+		enhanceWithAiChoiceTypeFound = true
+		enhanceWithAiChoiceInt := &ves_io_schema_app_firewall.CreateSpecType_AiEnhancements{}
+		enhanceWithAiChoiceInt.AiEnhancements = &ves_io_schema_app_firewall.AiRiskBasedBlocking{}
+		createSpec.EnhanceWithAiChoice = enhanceWithAiChoiceInt
+
+		sl := v.([]interface{})
+		for _, set := range sl {
+			if set != nil {
+				cs := set.(map[string]interface{})
+
+				if v, ok := cs["high_risk_action"]; ok && !isIntfNil(v) {
+
+					enhanceWithAiChoiceInt.AiEnhancements.HighRiskAction = ves_io_schema_app_firewall.RiskBasedBlockingAction(ves_io_schema_app_firewall.RiskBasedBlockingAction_value[v.(string)])
+
+				}
+
+				if v, ok := cs["low_risk_action"]; ok && !isIntfNil(v) {
+
+					enhanceWithAiChoiceInt.AiEnhancements.LowRiskAction = ves_io_schema_app_firewall.RiskBasedBlockingAction(ves_io_schema_app_firewall.RiskBasedBlockingAction_value[v.(string)])
+
+				}
+
+				if v, ok := cs["medium_risk_action"]; ok && !isIntfNil(v) {
+
+					enhanceWithAiChoiceInt.AiEnhancements.MediumRiskAction = ves_io_schema_app_firewall.RiskBasedBlockingAction(ves_io_schema_app_firewall.RiskBasedBlockingAction_value[v.(string)])
+
+				}
+
+			}
+		}
+
+	}
 
 	if v, ok := d.GetOk("disable_ai_enhancements"); ok && !enhanceWithAiChoiceTypeFound {
 
@@ -2041,6 +2190,55 @@ func resourceVolterraAppFirewallUpdate(d *schema.ResourceData, meta interface{})
 
 							}
 
+							signatureProtectionChoiceTypeFound := false
+
+							if v, ok := signatureSelectionSettingMapStrToI["default_signature_setting"]; ok && !isIntfNil(v) && !signatureProtectionChoiceTypeFound {
+
+								signatureProtectionChoiceTypeFound = true
+
+								if v.(bool) {
+									signatureProtectionChoiceInt := &ves_io_schema_app_firewall.SignatureSelectionSetting_DefaultSignatureSetting{}
+									signatureProtectionChoiceInt.DefaultSignatureSetting = &ves_io_schema.Empty{}
+									signatureSelectionSetting.SignatureProtectionChoice = signatureProtectionChoiceInt
+								}
+
+							}
+
+							if v, ok := signatureSelectionSettingMapStrToI["signature_settings_by_accuracy"]; ok && !isIntfNil(v) && !signatureProtectionChoiceTypeFound {
+
+								signatureProtectionChoiceTypeFound = true
+								signatureProtectionChoiceInt := &ves_io_schema_app_firewall.SignatureSelectionSetting_SignatureSettingsByAccuracy{}
+								signatureProtectionChoiceInt.SignatureSettingsByAccuracy = &ves_io_schema_app_firewall.SignatureProtectionSetting{}
+								signatureSelectionSetting.SignatureProtectionChoice = signatureProtectionChoiceInt
+
+								sl := v.([]interface{})
+								for _, set := range sl {
+									if set != nil {
+										cs := set.(map[string]interface{})
+
+										if v, ok := cs["high_accuracy_action"]; ok && !isIntfNil(v) {
+
+											signatureProtectionChoiceInt.SignatureSettingsByAccuracy.HighAccuracyAction = ves_io_schema_app_firewall.SignatureAction(ves_io_schema_app_firewall.SignatureAction_value[v.(string)])
+
+										}
+
+										if v, ok := cs["low_accuracy_action"]; ok && !isIntfNil(v) {
+
+											signatureProtectionChoiceInt.SignatureSettingsByAccuracy.LowAccuracyAction = ves_io_schema_app_firewall.SignatureAction(ves_io_schema_app_firewall.SignatureAction_value[v.(string)])
+
+										}
+
+										if v, ok := cs["medium_accuracy_action"]; ok && !isIntfNil(v) {
+
+											signatureProtectionChoiceInt.SignatureSettingsByAccuracy.MediumAccuracyAction = ves_io_schema_app_firewall.SignatureAction(ves_io_schema_app_firewall.SignatureAction_value[v.(string)])
+
+										}
+
+									}
+								}
+
+							}
+
 							signatureSelectionByAccuracyTypeFound := false
 
 							if v, ok := signatureSelectionSettingMapStrToI["high_medium_accuracy_signatures"]; ok && !isIntfNil(v) && !signatureSelectionByAccuracyTypeFound {
@@ -2293,6 +2491,41 @@ func resourceVolterraAppFirewallUpdate(d *schema.ResourceData, meta interface{})
 	}
 
 	enhanceWithAiChoiceTypeFound := false
+
+	if v, ok := d.GetOk("ai_enhancements"); ok && !isIntfNil(v) && !enhanceWithAiChoiceTypeFound {
+
+		enhanceWithAiChoiceTypeFound = true
+		enhanceWithAiChoiceInt := &ves_io_schema_app_firewall.ReplaceSpecType_AiEnhancements{}
+		enhanceWithAiChoiceInt.AiEnhancements = &ves_io_schema_app_firewall.AiRiskBasedBlocking{}
+		updateSpec.EnhanceWithAiChoice = enhanceWithAiChoiceInt
+
+		sl := v.([]interface{})
+		for _, set := range sl {
+			if set != nil {
+				cs := set.(map[string]interface{})
+
+				if v, ok := cs["high_risk_action"]; ok && !isIntfNil(v) {
+
+					enhanceWithAiChoiceInt.AiEnhancements.HighRiskAction = ves_io_schema_app_firewall.RiskBasedBlockingAction(ves_io_schema_app_firewall.RiskBasedBlockingAction_value[v.(string)])
+
+				}
+
+				if v, ok := cs["low_risk_action"]; ok && !isIntfNil(v) {
+
+					enhanceWithAiChoiceInt.AiEnhancements.LowRiskAction = ves_io_schema_app_firewall.RiskBasedBlockingAction(ves_io_schema_app_firewall.RiskBasedBlockingAction_value[v.(string)])
+
+				}
+
+				if v, ok := cs["medium_risk_action"]; ok && !isIntfNil(v) {
+
+					enhanceWithAiChoiceInt.AiEnhancements.MediumRiskAction = ves_io_schema_app_firewall.RiskBasedBlockingAction(ves_io_schema_app_firewall.RiskBasedBlockingAction_value[v.(string)])
+
+				}
+
+			}
+		}
+
+	}
 
 	if v, ok := d.GetOk("disable_ai_enhancements"); ok && !enhanceWithAiChoiceTypeFound {
 

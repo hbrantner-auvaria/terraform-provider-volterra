@@ -2630,6 +2630,51 @@ var APISwaggerJSON string = `{
                 }
             }
         },
+        "addon_serviceEntitlementConfig": {
+            "type": "object",
+            "description": "EntitlementConfig represents data such as service usage type, quota mapping required for entitlement feature",
+            "title": "EntitlementConfig",
+            "x-displayname": "Entitlement Config",
+            "x-ves-proto-message": "ves.io.schema.pbac.addon_service.EntitlementConfig",
+            "properties": {
+                "entitlement_features": {
+                    "type": "object",
+                    "description": " Map of entitlement feature name and feature details\n\nExample: - \"{re_public_loadbalancer_in_qty{usage_type: public-loadbalancer-usage, quota_mapping: {object_limits: {http_loadbalancer.public: {operator: EQUAL}}}}, dns_loadbalancer_in_qty: {usage_type: dns-loadbalancer-usage, quota_mapping: {object_limits: {dns_loadbalancer.public: {operator: EQUAL}}}}}\"-",
+                    "title": "EntitlementFeatures",
+                    "x-displayname": "Entitlement Features",
+                    "x-ves-example": "{re_public_loadbalancer_in_qty: {usage_type: public-loadbalancer-usage, quota_mapping: {object_limits: {http_loadbalancer.public: {operator: EQUAL}}}}, dns_loadbalancer_in_qty: {usage_type: dns-loadbalancer-usage, quota_mapping: {object_limits: {dns_loadbalancer.public: {operator: EQUAL}}}}}"
+                }
+            }
+        },
+        "addon_serviceEntitlementFeatureDetails": {
+            "type": "object",
+            "description": "x-displayName: \"Entitlement Feature Details\"\nEntitlementFeatureDetails holds the details required for entitlement ingestion",
+            "title": "EntitlementFeatureDetails",
+            "properties": {
+                "quota_mapping": {
+                    "description": "x-displayName: \"Quota Mapping\"\nx-example: \"{object_limits: {http_loadbalancer.public: {operator: EQUAL}}}\"\nQuotaMapping holds the quota details for the entitlement feature",
+                    "title": "Quota Mapping",
+                    "$ref": "#/definitions/addon_serviceQuotaMapping"
+                },
+                "usage_type": {
+                    "type": "string",
+                    "description": "x-displayName: \"Usage Type\"\nx-example: \"public-loadbalancer-usage\"\nUsageType represents the name of the telemetry config usage metric",
+                    "title": "Usage Type"
+                }
+            }
+        },
+        "addon_serviceFormula": {
+            "type": "object",
+            "description": "x-displayName: \"Formula\"\nFormula holds the operator details for the entitlement feature",
+            "title": "Formula",
+            "properties": {
+                "operator": {
+                    "description": "x-displayName: \"Operator\"\nOperator for the quota mapping",
+                    "title": "Operator",
+                    "$ref": "#/definitions/addon_serviceOperator"
+                }
+            }
+        },
         "addon_serviceFullyManagedActivationType": {
             "type": "object",
             "description": "Managed Activation and require complete manual intervention.",
@@ -2667,12 +2712,33 @@ var APISwaggerJSON string = `{
                 }
             }
         },
+        "addon_serviceOperator": {
+            "type": "string",
+            "description": "x-displayName: \"Equal\"\nEQUAL",
+            "title": "- EQUAL: EQUAL",
+            "enum": [
+                "EQUAL"
+            ],
+            "default": "EQUAL"
+        },
         "addon_servicePartiallyManagedActivationType": {
             "type": "object",
             "description": "Addon service activation will require partial management from backend or SRE.",
             "title": "PartiallyManagedActivationType",
             "x-displayname": "Partially Managed Activation",
             "x-ves-proto-message": "ves.io.schema.pbac.addon_service.PartiallyManagedActivationType"
+        },
+        "addon_serviceQuotaMapping": {
+            "type": "object",
+            "description": "x-displayName: \"Quota Mapping\"\nQuotaMapping holds the quota mapping details for the usage type",
+            "title": "QuotaMapping",
+            "properties": {
+                "object_limits": {
+                    "type": "object",
+                    "description": "x-displayName: \"Object Limits\"\nx-example: \"{http_loadbalancer.public: {operator: EQUAL}}\"\nObjectLimits holds the object limits for the entitlement feature",
+                    "title": "Object Limits"
+                }
+            }
         },
         "addon_serviceSelfActivationType": {
             "type": "object",
@@ -2963,15 +3029,13 @@ var APISwaggerJSON string = `{
         },
         "customer_supportSupportService": {
             "type": "string",
-            "description": "Indicates the list of support service\n\nUnknown Support Service\nAccount Protection Support Service\nAdministration Support Service\nApplication Traffic Insight Support Service\nAudit Logs \u0026 Alerts Support Service\nAuthentication Intelligence Support Service\nBilling Support Service\nClient Side Defense Support Service\nCloud \u0026 Edge Sites Support Service\ndeprecated: use SS_MULTI_CLOUD_NETWORK_CONNECT instead\nDDOS \u0026 Transit Support Service\nDeprecated: use SS_ROUTED_DDOS instead\nDistributed Apps Support Service\nDNS Management Support Service\nLoadBalancers Support Service\ndeprecated: use SS_MULTI_CLOUD_APP_CONNECT instead\nShared Configuration Support Service\nWeb App \u0026 API Protection Support Service\nOther Support Service\nBot Defense Support Service\nContent delivery network Support Service\nObservability Support Service\nDelegated Access Support Service\nNetworking \u0026 security across clouds, edge and on-premises\nConnect apps across clouds, edge and on-premises using Load Balancers\nData Intelligence Support Service\nNGINX One Support Service\nWeb App Scanning Support Service\nRouted DDoS Support Service\nMobile App Shield protects mobile apps from reverse engineering, tampering and malware\nDefault for deprecated services\nAutomation Support Service for Terraform Provider",
+            "description": "Indicates the list of support service\n\nUnknown Support Service\nAccount Protection Support Service\nAdministration Support Service\nApplication Traffic Insight Support Service\nAudit Logs \u0026 Alerts Support Service\nAuthentication Intelligence Support Service\nBilling Support Service\nClient Side Defense Support Service\nCloud \u0026 Edge Sites Support Service\ndeprecated: use SS_MULTI_CLOUD_NETWORK_CONNECT instead\nDDOS \u0026 Transit Support Service\nDeprecated: use SS_ROUTED_DDOS instead\nDistributed Apps Support Service\nDNS Management Support Service\nLoadBalancers Support Service\ndeprecated: use SS_MULTI_CLOUD_APP_CONNECT instead\nShared Configuration Support Service\nWeb App \u0026 API Protection Support Service\nOther Support Service\nBot Defense Support Service\nContent delivery network Support Service\nObservability Support Service\nDelegated Access Support Service\nNetworking \u0026 security across clouds, edge and on-premises\nConnect apps across clouds, edge and on-premises using Load Balancers\nData Intelligence Support Service\nNGINX One Support Service\nWeb App Scanning Support Service\nRouted DDoS Support Service\nMobile App Shield protects mobile apps from reverse engineering, tampering and malware\nDevice Intelligence Support Service\nDefault for deprecated services\nAutomation Support Service for Terraform Provider",
             "title": "SupportService",
             "enum": [
                 "SS_UNKNOWN",
-                "SS_ACCOUNT_PROTECTION",
                 "SS_ADMINISTRATION",
                 "SS_APPLICATION_TRAFFIC_INSIGHT",
                 "SS_AUDIT_LOGS_AND_ALERTS",
-                "SS_AUTHENTICATION_INTELLIGENCE",
                 "SS_BILLING",
                 "SS_CLIENT_SIDE_DEFENSE",
                 "SS_CLOUD_AND_EDGE_SITES",
@@ -2993,6 +3057,7 @@ var APISwaggerJSON string = `{
                 "SS_WEB_APP_SCANNING",
                 "SS_ROUTED_DDOS",
                 "SS_MOBILE_APP_SHIELD",
+                "SS_DEVICE_INTELLIGENCE",
                 "SS_DEPRECATED",
                 "SS_AUTOMATION"
             ],
@@ -3090,6 +3155,13 @@ var APISwaggerJSON string = `{
                         "ves.io.schema.rules.message.required": "true",
                         "ves.io.schema.rules.string.max_len": "512"
                     }
+                },
+                "entitlement_config": {
+                    "description": " EntitlementConfig contains the details of each entitlement feature and data associated with it\n\nExample: - \"{entitlement_features{re_public_loadbalancer_in_qty: {usage_type: public-loadbalancer-usage, quota_mapping: {object_limits: {http_loadbalancer.public: {operator: EQUAL}}}}, dns_loadbalancer_in_qty: {usage_type: dns-loadbalancer-usage, quota_mapping: {object_limits: {dns_loadbalancer.public: {operator: EQUAL}}}}}}\"-",
+                    "title": "Entitlement Config",
+                    "$ref": "#/definitions/addon_serviceEntitlementConfig",
+                    "x-displayname": "Entitlement Config",
+                    "x-ves-example": "{entitlement_features: {re_public_loadbalancer_in_qty: {usage_type: public-loadbalancer-usage, quota_mapping: {object_limits: {http_loadbalancer.public: {operator: EQUAL}}}}, dns_loadbalancer_in_qty: {usage_type: dns-loadbalancer-usage, quota_mapping: {object_limits: {dns_loadbalancer.public: {operator: EQUAL}}}}}}"
                 },
                 "included_services": {
                     "type": "array",
@@ -3335,13 +3407,14 @@ var APISwaggerJSON string = `{
         },
         "schemaFeatureTag": {
             "type": "string",
-            "description": "FeatureTag is for identifying the tag of feature of an offering (new, preview)\n\nUnknown (undefined) feature tag\nNew feature tag\nPreview feature tag\nPrivate preview feature tag",
+            "description": "FeatureTag is for identifying the tag of feature of an offering (new, preview)\n\nUnknown (undefined) feature tag\nNew feature tag\nPreview feature tag\nPrivate preview feature tag\nUnavailable feature tag",
             "title": "FeatureTag",
             "enum": [
                 "NONE",
                 "NEW",
                 "PREVIEW",
-                "PRIVATE_PREVIEW"
+                "PRIVATE_PREVIEW",
+                "UNAVAILABLE"
             ],
             "default": "NONE",
             "x-displayname": "Feature Tag",

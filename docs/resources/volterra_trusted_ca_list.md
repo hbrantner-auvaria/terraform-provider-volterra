@@ -20,6 +20,7 @@ resource "volterra_trusted_ca_list" "example" {
   name      = "acmecorp-web"
   namespace = "staging"
 }
+
 ```
 
 Argument Reference
@@ -46,4 +47,4 @@ Argument Reference
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured trusted_ca_list.
+-	`id` - This is the id of the configured trusted_ca_list.

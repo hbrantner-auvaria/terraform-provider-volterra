@@ -1597,6 +1597,23 @@ var APISwaggerJSON string = `{
                 }
             }
         },
+        "bot_defenseCosseBotInfraWithDeliveredVersion": {
+            "type": "object",
+            "description": "x-displayName: \"CoSSE Bot Infrastructure with Delivered version\"\nCoSSE Bot Infra Name with its delivered version",
+            "title": "CoSSE Bot Infrastructure with Delivered Version",
+            "properties": {
+                "cosse_bot_infra_name": {
+                    "type": "string",
+                    "description": "x-displayName: \"CoSSE Bot Infra name\"\nx-example: \"cosse-cluster-1\"\nThe cosse cluster id delivered this policy",
+                    "title": "CoSSE Bot Infra Name"
+                },
+                "delivered_version": {
+                    "type": "string",
+                    "description": "x-displayName: \"Delivered Version\"\nx-example: \"1.0\"\nThe version of policy delivered to cluster\nThe version format should be X.0",
+                    "title": "Delivered Version"
+                }
+            }
+        },
         "bot_defenseManualRoutingDetail": {
             "type": "object",
             "description": "Manual Routing value",

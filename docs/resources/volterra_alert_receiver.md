@@ -22,8 +22,9 @@ resource "volterra_alert_receiver" "example" {
 
   // One of the arguments from this list "email opsgenie pagerduty slack sms webhook" must be set
 
-  pagerduty {
-    routing_key {
+  opsgenie {
+    api_key {
+
 
       // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
 
@@ -39,6 +40,7 @@ resource "volterra_alert_receiver" "example" {
     url = "value"
   }
 }
+
 ```
 
 Argument Reference
@@ -112,6 +114,8 @@ Do not use authentication to the HTTP(s) server.
 
 F5XC Secret. URL for token, needs to be fetched from this path.
 
+
+
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 
 `blindfold_secret_info` - (Optional) Blindfold Secret is used for the secrets managed by F5XC Secret Management Service. See [Secret Info Oneof Blindfold Secret Info ](#secret-info-oneof-blindfold-secret-info) below for details.
@@ -125,6 +129,8 @@ F5XC Secret. URL for token, needs to be fetched from this path.
 ### Basic Auth Password
 
 HTTP Basic Auth Password.
+
+
 
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 
@@ -140,6 +146,8 @@ HTTP Basic Auth Password.
 
 API integration key to send alert notifications using REST API to OpsGenie service..
 
+
+
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 
 `blindfold_secret_info` - (Optional) Blindfold Secret is used for the secrets managed by F5XC Secret Management Service. See [Secret Info Oneof Blindfold Secret Info ](#secret-info-oneof-blindfold-secret-info) below for details.
@@ -153,6 +161,8 @@ API integration key to send alert notifications using REST API to OpsGenie servi
 ### Pagerduty Routing Key
 
 PagerDuty integration key (choose Integration Type: Events API v2).
+
+
 
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 
@@ -290,6 +300,8 @@ Perform server verification using F5XC default trusted CA list.
 
 API Key is embedded in the webhook URL..
 
+
+
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 
 `blindfold_secret_info` - (Optional) Blindfold Secret is used for the secrets managed by F5XC Secret Management Service. See [Secret Info Oneof Blindfold Secret Info ](#secret-info-oneof-blindfold-secret-info) below for details.
@@ -382,6 +394,8 @@ Configuration for HTTP endpoint.
 
 Incoming webhook url to send alert notifications..
 
+
+
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 
 `blindfold_secret_info` - (Optional) Blindfold Secret is used for the secrets managed by F5XC Secret Management Service. See [Secret Info Oneof Blindfold Secret Info ](#secret-info-oneof-blindfold-secret-info) below for details.
@@ -395,4 +409,4 @@ Incoming webhook url to send alert notifications..
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured alert_receiver.
+-	`id` - This is the id of the configured alert_receiver.

@@ -412,6 +412,12 @@ var TenantSummaryCustomAPISwaggerJSON string = `{
                     "description": " Default VIP",
                     "title": "VIP",
                     "x-displayname": "Default VIP"
+                },
+                "vip_v6": {
+                    "type": "string",
+                    "description": " Default VIP IPv6",
+                    "title": "VIP IPv6",
+                    "x-displayname": "Default VIP IPv6"
                 }
             }
         }

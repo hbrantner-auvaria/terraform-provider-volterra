@@ -22,22 +22,11 @@ resource "volterra_k8s_cluster_role" "example" {
 
   // One of the arguments from this list "k8s_cluster_role_selector policy_rule_list yaml" must be set
 
-  policy_rule_list {
-    policy_rule {
-      // One of the arguments from this list "non_resource_url_list resource_list" must be set
-
-      resource_list {
-        api_groups = ["rbac.authorization.k8s.io"]
-
-        resource_instances = ["admin"]
-
-        resource_types = ["role"]
-
-        verbs = ["get"]
-      }
-    }
+  k8s_cluster_role_selector {
+    expressions = ["region in (us-west1, us-west2),tier in (staging)"]
   }
 }
+
 ```
 
 Argument Reference
@@ -112,4 +101,4 @@ Policy in terms of rule list..
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured k8s_cluster_role.
+-	`id` - This is the id of the configured k8s_cluster_role.

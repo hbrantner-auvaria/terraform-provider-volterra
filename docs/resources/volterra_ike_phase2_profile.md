@@ -25,8 +25,11 @@ resource "volterra_ike_phase2_profile" "example" {
 
   // One of the arguments from this list "ike_keylifetime_hours ike_keylifetime_minutes use_default_keylifetime" must be set
 
-  use_default_keylifetime = true
+  ike_keylifetime_minutes {
+    duration = "duration"
+  }
 }
+
 ```
 
 Argument Reference
@@ -87,4 +90,4 @@ Choose the acceptable Diffie Hellman(DH) Group or Groups that you are willing to
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured ike_phase2_profile.
+-	`id` - This is the id of the configured ike_phase2_profile.

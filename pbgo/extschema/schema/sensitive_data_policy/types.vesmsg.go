@@ -289,9 +289,9 @@ var DefaultCreateSpecTypeValidator = func() *ValidateCreateSpecType {
 
 	vrhDisabledPredefinedDataTypes := v.DisabledPredefinedDataTypesValidationRuleHandler
 	rulesDisabledPredefinedDataTypes := map[string]string{
-		"ves.io.schema.rules.repeated.max_items": "100",
-		"ves.io.schema.rules.repeated.unique":    "true",
-		"ves.io.schema.rules.string.max_len":     "64",
+		"ves.io.schema.rules.repeated.items.string.max_len": "64",
+		"ves.io.schema.rules.repeated.max_items":            "100",
+		"ves.io.schema.rules.repeated.unique":               "true",
 	}
 	vFn, err = vrhDisabledPredefinedDataTypes(rulesDisabledPredefinedDataTypes)
 	if err != nil {
@@ -744,9 +744,9 @@ var DefaultGetSpecTypeValidator = func() *ValidateGetSpecType {
 
 	vrhDisabledPredefinedDataTypes := v.DisabledPredefinedDataTypesValidationRuleHandler
 	rulesDisabledPredefinedDataTypes := map[string]string{
-		"ves.io.schema.rules.repeated.max_items": "100",
-		"ves.io.schema.rules.repeated.unique":    "true",
-		"ves.io.schema.rules.string.max_len":     "64",
+		"ves.io.schema.rules.repeated.items.string.max_len": "64",
+		"ves.io.schema.rules.repeated.max_items":            "100",
+		"ves.io.schema.rules.repeated.unique":               "true",
 	}
 	vFn, err = vrhDisabledPredefinedDataTypes(rulesDisabledPredefinedDataTypes)
 	if err != nil {
@@ -1036,9 +1036,9 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 
 	vrhDisabledPredefinedDataTypes := v.DisabledPredefinedDataTypesValidationRuleHandler
 	rulesDisabledPredefinedDataTypes := map[string]string{
-		"ves.io.schema.rules.repeated.max_items": "100",
-		"ves.io.schema.rules.repeated.unique":    "true",
-		"ves.io.schema.rules.string.max_len":     "64",
+		"ves.io.schema.rules.repeated.items.string.max_len": "64",
+		"ves.io.schema.rules.repeated.max_items":            "100",
+		"ves.io.schema.rules.repeated.unique":               "true",
 	}
 	vFn, err = vrhDisabledPredefinedDataTypes(rulesDisabledPredefinedDataTypes)
 	if err != nil {
@@ -1328,9 +1328,9 @@ var DefaultReplaceSpecTypeValidator = func() *ValidateReplaceSpecType {
 
 	vrhDisabledPredefinedDataTypes := v.DisabledPredefinedDataTypesValidationRuleHandler
 	rulesDisabledPredefinedDataTypes := map[string]string{
-		"ves.io.schema.rules.repeated.max_items": "100",
-		"ves.io.schema.rules.repeated.unique":    "true",
-		"ves.io.schema.rules.string.max_len":     "64",
+		"ves.io.schema.rules.repeated.items.string.max_len": "64",
+		"ves.io.schema.rules.repeated.max_items":            "100",
+		"ves.io.schema.rules.repeated.unique":               "true",
 	}
 	vFn, err = vrhDisabledPredefinedDataTypes(rulesDisabledPredefinedDataTypes)
 	if err != nil {

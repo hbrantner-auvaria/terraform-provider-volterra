@@ -20,6 +20,7 @@ resource "volterra_app_type" "example" {
   name      = "acmecorp-web"
   namespace = "staging"
 }
+
 ```
 
 Argument Reference
@@ -43,7 +44,7 @@ Argument Reference
 
 `business_logic_markup_setting` - (Optional) Setting specifying how API Discovery will be performed. See [Business Logic Markup Setting ](#business-logic-markup-setting) below for details.
 
-`features` - (Optional) List of various AI/ML features enabled. See [Features ](#features) below for details.
+`features` - (Optional) List of various advanced security features enabled. See [Features ](#features) below for details.
 
 ### Business Logic Markup Setting
 
@@ -61,7 +62,7 @@ Setting specifying how API Discovery will be performed.
 
 ### Features
 
-List of various AI/ML features enabled.
+List of various advanced security features enabled.
 
 `type` - (Required) Feature type to be enabled (`String`).
 
@@ -242,4 +243,4 @@ The rule is applied only for the specified api endpoints..
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured app_type.
+-	`id` - This is the id of the configured app_type.

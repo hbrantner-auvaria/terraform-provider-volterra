@@ -258,10 +258,10 @@ var DefaultCreateSpecTypeValidator = func() *ValidateCreateSpecType {
 
 	vrhDomainDenylist := v.DomainDenylistValidationRuleHandler
 	rulesDomainDenylist := map[string]string{
-		"ves.io.schema.rules.message.required":     "true",
-		"ves.io.schema.rules.repeated.max_items":   "30",
-		"ves.io.schema.rules.repeated.unique":      "true",
-		"ves.io.schema.rules.string.etld_plus_one": "true",
+		"ves.io.schema.rules.message.required":                    "true",
+		"ves.io.schema.rules.repeated.items.string.etld_plus_one": "true",
+		"ves.io.schema.rules.repeated.max_items":                  "30",
+		"ves.io.schema.rules.repeated.unique":                     "true",
 	}
 	vFn, err = vrhDomainDenylist(rulesDomainDenylist)
 	if err != nil {
@@ -592,10 +592,10 @@ var DefaultGetSpecTypeValidator = func() *ValidateGetSpecType {
 
 	vrhDomainDenylist := v.DomainDenylistValidationRuleHandler
 	rulesDomainDenylist := map[string]string{
-		"ves.io.schema.rules.message.required":     "true",
-		"ves.io.schema.rules.repeated.max_items":   "30",
-		"ves.io.schema.rules.repeated.unique":      "true",
-		"ves.io.schema.rules.string.etld_plus_one": "true",
+		"ves.io.schema.rules.message.required":                    "true",
+		"ves.io.schema.rules.repeated.items.string.etld_plus_one": "true",
+		"ves.io.schema.rules.repeated.max_items":                  "30",
+		"ves.io.schema.rules.repeated.unique":                     "true",
 	}
 	vFn, err = vrhDomainDenylist(rulesDomainDenylist)
 	if err != nil {
@@ -927,10 +927,10 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 
 	vrhDomainDenylist := v.DomainDenylistValidationRuleHandler
 	rulesDomainDenylist := map[string]string{
-		"ves.io.schema.rules.message.required":     "true",
-		"ves.io.schema.rules.repeated.max_items":   "30",
-		"ves.io.schema.rules.repeated.unique":      "true",
-		"ves.io.schema.rules.string.etld_plus_one": "true",
+		"ves.io.schema.rules.message.required":                    "true",
+		"ves.io.schema.rules.repeated.items.string.etld_plus_one": "true",
+		"ves.io.schema.rules.repeated.max_items":                  "30",
+		"ves.io.schema.rules.repeated.unique":                     "true",
 	}
 	vFn, err = vrhDomainDenylist(rulesDomainDenylist)
 	if err != nil {
@@ -1192,10 +1192,10 @@ var DefaultReplaceSpecTypeValidator = func() *ValidateReplaceSpecType {
 
 	vrhDomainDenylist := v.DomainDenylistValidationRuleHandler
 	rulesDomainDenylist := map[string]string{
-		"ves.io.schema.rules.message.required":     "true",
-		"ves.io.schema.rules.repeated.max_items":   "30",
-		"ves.io.schema.rules.repeated.unique":      "true",
-		"ves.io.schema.rules.string.etld_plus_one": "true",
+		"ves.io.schema.rules.message.required":                    "true",
+		"ves.io.schema.rules.repeated.items.string.etld_plus_one": "true",
+		"ves.io.schema.rules.repeated.max_items":                  "30",
+		"ves.io.schema.rules.repeated.unique":                     "true",
 	}
 	vFn, err = vrhDomainDenylist(rulesDomainDenylist)
 	if err != nil {

@@ -34,11 +34,15 @@ func initializeValidatorRegistry(vr map[string]db.Validator) {
 	vr["ves.io.schema.pbac.addon_service.GetAllServiceTiersActivationStatusResp"] = GetAllServiceTiersActivationStatusRespValidator()
 	vr["ves.io.schema.pbac.addon_service.Content"] = ContentValidator()
 	vr["ves.io.schema.pbac.addon_service.CustomSupportTicket"] = CustomSupportTicketValidator()
+	vr["ves.io.schema.pbac.addon_service.EntitlementConfig"] = EntitlementConfigValidator()
+	vr["ves.io.schema.pbac.addon_service.EntitlementFeatureDetails"] = EntitlementFeatureDetailsValidator()
+	vr["ves.io.schema.pbac.addon_service.Formula"] = FormulaValidator()
 	vr["ves.io.schema.pbac.addon_service.FullyManagedActivationType"] = FullyManagedActivationTypeValidator()
 	vr["ves.io.schema.pbac.addon_service.GetSpecType"] = GetSpecTypeValidator()
 	vr["ves.io.schema.pbac.addon_service.GlobalSpecType"] = GlobalSpecTypeValidator()
 	vr["ves.io.schema.pbac.addon_service.NotificationPreference"] = NotificationPreferenceValidator()
 	vr["ves.io.schema.pbac.addon_service.PartiallyManagedActivationType"] = PartiallyManagedActivationTypeValidator()
+	vr["ves.io.schema.pbac.addon_service.QuotaMapping"] = QuotaMappingValidator()
 	vr["ves.io.schema.pbac.addon_service.SelfActivationType"] = SelfActivationTypeValidator()
 	vr["ves.io.schema.pbac.addon_service.ServiceUsageType"] = ServiceUsageTypeValidator()
 	vr["ves.io.schema.pbac.addon_service.SupportTicketOptions"] = SupportTicketOptionsValidator()
@@ -57,6 +61,18 @@ func initializeEntryRegistry(mdr *svcfw.MDRegistry) {
 }
 
 func initializeRPCRegistry(mdr *svcfw.MDRegistry) {
+	mdr.RPCAvailableInResFieldRegistry["ves.io.schema.pbac.addon_service.API.Get"] = []svcfw.EnvironmentField{
+		{
+			FieldPath:           "spec.entitlement_config",
+			AllowedEnvironments: []string{"test"},
+		},
+	}
+	mdr.RPCAvailableInResFieldRegistry["ves.io.schema.pbac.addon_service.API.List"] = []svcfw.EnvironmentField{
+		{
+			FieldPath:           "items.#.get_spec.entitlement_config",
+			AllowedEnvironments: []string{"test"},
+		},
+	}
 }
 
 func initializeAPIGwServiceSlugsRegistry(sm map[string]string) {

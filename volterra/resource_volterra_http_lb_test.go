@@ -139,7 +139,8 @@ func TestHTTPLB(t *testing.T) {
 				HostName: "ves-io-082258df-c45e-4163-8884-7878453eeb2a",
 				DnsInfo: []*vh_dns_info.DnsInfo{
 					{
-						IpAddress: "1.1.1.1",
+						IpAddress:   "1.1.1.1",
+						Ipv6Address: "2001:db8::1",
 					},
 				},
 			},
@@ -492,7 +493,8 @@ func TestHTTPLBWithAutoCert(t *testing.T) {
 				HostName: "ves-io-082258df-c45e-4163-8884-7878453eeb2a",
 				DnsInfo: []*vh_dns_info.DnsInfo{
 					{
-						IpAddress: "1.1.1.1",
+						IpAddress:   "1.1.1.1",
+						Ipv6Address: "2001:db8::1",
 					},
 				},
 			},

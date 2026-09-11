@@ -23,18 +23,15 @@ resource "volterra_aws_tgw_site" "example" {
   aws_parameters {
     admin_password {
 
+
       // One of the arguments from this list "blindfold_secret_info clear_secret_info vault_secret_info wingman_secret_info" must be set
 
-      vault_secret_info {
-        key = "key_pem"
+      blindfold_secret_info {
+        decryption_provider = "value"
 
-        location = "v1/data/vhost_key"
+        location = "string:///U2VjcmV0SW5mb3JtYXRpb24="
 
-        provider = "vault-vh-provider"
-
-        secret_encoding = "secret_encoding"
-
-        version = "1"
+        store_provider = "value"
       }
     }
 
@@ -71,7 +68,11 @@ resource "volterra_aws_tgw_site" "example" {
 
     // One of the arguments from this list "assisted aws_cred" must be set
 
-    assisted = true
+    aws_cred {
+      name      = "test1"
+      namespace = "staging"
+      tenant    = "acmecorp"
+    }
     disk_size = "80"
 
     // One of the arguments from this list "disable_encryption enable_encryption" can be set
@@ -96,17 +97,19 @@ resource "volterra_aws_tgw_site" "example" {
 
       // One of the arguments from this list "autogenerate name_tag" must be set
 
-      autogenerate = true
+      name_tag = "name_tag"
       primary_ipv4 = "10.1.0.0/16"
     }
     ssh_key = "ssh-rsa AAAAB..."
 
     // One of the arguments from this list "existing_tgw new_tgw" must be set
 
-    new_tgw {
-      // One of the arguments from this list "system_generated user_assigned" must be set
+    existing_tgw {
+      tgw_asn = "64500"
 
-      system_generated = true
+      tgw_id = "tgw-12345678901234567"
+
+      volterra_site_asn = "64501"
     }
 
     // One of the arguments from this list "reserved_tgw_cidr tgw_cidr" must be set
@@ -124,12 +127,35 @@ resource "volterra_aws_tgw_site" "example" {
 
   // One of the arguments from this list "direct_connect_disabled direct_connect_enabled private_connectivity" must be set
 
-  direct_connect_disabled = true
+  direct_connect_enabled {
+    // One of the arguments from this list "auto_asn custom_asn" must be set
+
+    auto_asn = true
+
+    // One of the arguments from this list "hosted_vifs manual_gw standard_vifs" must be set
+
+    hosted_vifs {
+      // One of the arguments from this list "site_registration_over_direct_connect site_registration_over_internet" can be set
+
+      site_registration_over_internet = true
+
+      vif_list {
+        vif_id = "dxvif-fgwtckim"
+
+        // One of the arguments from this list "other_region same_as_site_region" must be set
+
+        same_as_site_region = true
+      }
+
+      vifs = ["value"]
+    }
+  }
 
   // One of the arguments from this list "log_receiver logs_streaming_disabled" must be set
 
   logs_streaming_disabled = true
 }
+
 ```
 
 Argument Reference
@@ -196,6 +222,8 @@ Argument Reference
 `vn_config` - (Optional) Site Network related details will be configured. See [Vn Config ](#vn-config) below for details.
 
 `vpc_attachments` - (Optional) Note that this choice would be deprecated in the near release.. See [Vpc Attachments ](#vpc-attachments) below for details.
+
+`waf_signatures` - (Optional) Select WAF Signatures Update Mode for the site. By default, new signatures will be applied manually.. See [Waf Signatures ](#waf-signatures) below for details.
 
 ### Aws Parameters
 
@@ -381,7 +409,7 @@ Site Network related details will be configured.
 
 ###### One of the arguments from this list "global_network_list, no_global_network" must be set
 
-`global_network_list`- (Optional) List of global network connections. See [Global Network Choice Global Network List ](#global-network-choice-global-network-list) below for details.
+`global_network_list` - (Optional) List of global network connections. See [Global Network Choice Global Network List ](#global-network-choice-global-network-list) below for details.
 
 `no_global_network` - (Optional) No global network to connect (`Bool`).
 
@@ -408,6 +436,16 @@ Site Network related details will be configured.
 Note that this choice would be deprecated in the near release..
 
 `vpc_list` - (Optional) List of VPC attachments to transit gateway. See [Vpc Attachments Vpc List ](#vpc-attachments-vpc-list) below for details.
+
+### Waf Signatures
+
+Select WAF Signatures Update Mode for the site. By default, new signatures will be applied manually..
+
+###### One of the arguments from this list "automatic, manual" can be set
+
+`automatic` - (Optional) New WAF signatures will be applied automatically as soon as they are released. (`Bool`).
+
+`manual` - (Optional) New WAF signatures will only be applied when an update is triggered manually. (`Bool`).
 
 ### Admin Password Blindfold Secret Info Internal
 
@@ -438,6 +476,8 @@ User is managing the ASN for TGW and F5XC Site..
 ### Aws Parameters Admin Password
 
 Admin password user for accessing site through serial console ..
+
+
 
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 
@@ -579,6 +619,8 @@ Site Registration and Site to RE tunnels go over the internet gateway.
 
 TLS Private Key data in unencrypted PEM format including the PEM headers. The data may be optionally secured using BlindFold. TLS key has to match the accompanying certificate..
 
+
+
 ###### One of the arguments from this list "blindfold_secret_info, clear_secret_info, vault_secret_info, wingman_secret_info" must be set
 
 `blindfold_secret_info` - (Optional) Blindfold Secret is used for the secrets managed by F5XC Secret Management Service. See [Secret Info Oneof Blindfold Secret Info ](#secret-info-oneof-blindfold-secret-info) below for details.
@@ -646,6 +688,18 @@ Enable Private Connectivity to Site via CloudLink.
 `inside` - (Optional) CloudLink will be associated, and routes will be propagated with the Site Local Inside Network of this Site (`Bool`).
 
 `outside` - (Optional) CloudLink will be associated, and routes will be propagated with the Site Local Outside Network of this Site (`Bool`).
+
+### Dual Stack Ipv4
+
+IPv4 Address.
+
+`addr` - (Optional) IPv4 Address in string form with dot-decimal notation (`String`).
+
+### Dual Stack Ipv6
+
+IPv6 Address.
+
+`addr` - (Optional) e.g. '2001:db8:0:0:0:0:2:1' becomes '2001:db8::2:1' or '2001:db8:0:0:0:2:0:0' becomes '2001:db8::2::' (`String`).
 
 ### East West Service Policy Choice Active East West Service Policies
 
@@ -857,7 +911,9 @@ Firewall Policy is disabled for this site..
 
 Nexthop address when type is "Use-Configured".
 
-###### One of the arguments from this list "ipv4, ipv6" can be set
+###### One of the arguments from this list "dual_stack, ipv4, ipv6" can be set
+
+`dual_stack` - (Optional) Both IPv4 and IPv6 addresses are specified together. See [Ver Dual Stack ](#ver-dual-stack) below for details.
 
 `ipv4` - (Optional) IPv4 Address. See [Ver Ipv4 ](#ver-ipv4) below for details.
 
@@ -1063,6 +1119,14 @@ Details needed to create new VPC.
 
 `primary_ipv4` - (Required) The Primary IPv4 block cannot be modified. All subnets prefixes in this VPC must be part of this CIDR block. (`String`).
 
+### Signatures Update Mode Choice Automatic
+
+New WAF signatures will be applied automatically as soon as they are released..
+
+### Signatures Update Mode Choice Manual
+
+New WAF signatures will only be applied when an update is triggered manually..
+
 ### Signing Cert Choice Custom Certificate
 
 Certificates for generating intermediate certificate for TLS interception..
@@ -1162,6 +1226,14 @@ Disable Vega Upgrade Mode.
 ### Vega Upgrade Mode Toggle Choice Enable Vega Upgrade Mode
 
 When enabled, vega will inform RE to stop traffic to the specific node..
+
+### Ver Dual Stack
+
+Both IPv4 and IPv6 addresses are specified together.
+
+`ipv4` - (Optional) IPv4 Address. See [Dual Stack Ipv4 ](#dual-stack-ipv4) below for details.
+
+`ipv6` - (Optional) IPv6 Address. See [Dual Stack Ipv6 ](#dual-stack-ipv6) below for details.
 
 ### Ver Ipv4
 
@@ -1268,4 +1340,4 @@ Worker nodes is set to zero.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured aws_tgw_site.
+-	`id` - This is the id of the configured aws_tgw_site.

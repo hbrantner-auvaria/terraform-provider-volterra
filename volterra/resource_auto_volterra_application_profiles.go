@@ -169,6 +169,33 @@ func resourceVolterraApplicationProfiles() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 
+						"access_profile": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"kind": {
+										Type:     schema.TypeString,
+										Computed: true,
+									},
+
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"namespace": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"tenant": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
+
 						"address_translation": {
 
 							Type:     schema.TypeList,
@@ -2210,6 +2237,39 @@ func resourceVolterraApplicationProfilesCreate(d *schema.ResourceData, meta inte
 		for _, set := range sl {
 			if set != nil {
 				virtualServerMapStrToI := set.(map[string]interface{})
+
+				if v, ok := virtualServerMapStrToI["access_profile"]; ok && !isIntfNil(v) {
+					sl := v.([]interface{})
+					accessProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+					virtualServer.AccessProfile = accessProfileInt
+					for i, ps := range sl {
+						if ps != nil {
+
+							apMapToStrVal := ps.(map[string]interface{})
+							accessProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+							accessProfileInt[i].Kind = "access_profile"
+
+							if v, ok := apMapToStrVal["name"]; ok && !isIntfNil(v) {
+								accessProfileInt[i].Name = v.(string)
+							}
+
+							if v, ok := apMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								accessProfileInt[i].Namespace = v.(string)
+							}
+
+							if v, ok := apMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								accessProfileInt[i].Tenant = v.(string)
+							}
+
+							if v, ok := apMapToStrVal["uid"]; ok && !isIntfNil(v) {
+								accessProfileInt[i].Uid = v.(string)
+							}
+
+						}
+					}
+
+				}
 
 				if v, ok := virtualServerMapStrToI["address_translation"]; ok && !isIntfNil(v) {
 
@@ -4736,6 +4796,39 @@ func resourceVolterraApplicationProfilesUpdate(d *schema.ResourceData, meta inte
 		for _, set := range sl {
 			if set != nil {
 				virtualServerMapStrToI := set.(map[string]interface{})
+
+				if v, ok := virtualServerMapStrToI["access_profile"]; ok && !isIntfNil(v) {
+					sl := v.([]interface{})
+					accessProfileInt := make([]*ves_io_schema.ObjectRefType, len(sl))
+					virtualServer.AccessProfile = accessProfileInt
+					for i, ps := range sl {
+						if ps != nil {
+
+							apMapToStrVal := ps.(map[string]interface{})
+							accessProfileInt[i] = &ves_io_schema.ObjectRefType{}
+
+							accessProfileInt[i].Kind = "access_profile"
+
+							if v, ok := apMapToStrVal["name"]; ok && !isIntfNil(v) {
+								accessProfileInt[i].Name = v.(string)
+							}
+
+							if v, ok := apMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+								accessProfileInt[i].Namespace = v.(string)
+							}
+
+							if v, ok := apMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+								accessProfileInt[i].Tenant = v.(string)
+							}
+
+							if v, ok := apMapToStrVal["uid"]; ok && !isIntfNil(v) {
+								accessProfileInt[i].Uid = v.(string)
+							}
+
+						}
+					}
+
+				}
 
 				if v, ok := virtualServerMapStrToI["address_translation"]; ok && !isIntfNil(v) {
 

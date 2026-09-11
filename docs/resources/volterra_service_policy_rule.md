@@ -23,8 +23,12 @@ resource "volterra_service_policy_rule" "example" {
 
   // One of the arguments from this list "any_asn asn_list asn_matcher" must be set
 
-  asn_list {
-    as_numbers = ["[713, 7932, 847325, 4683, 15269, 1000001]"]
+  asn_matcher {
+    asn_sets {
+      name      = "test1"
+      namespace = "staging"
+      tenant    = "acmecorp"
+    }
   }
   challenge_action = ["challenge_action"]
 
@@ -38,9 +42,10 @@ resource "volterra_service_policy_rule" "example" {
   waf_action {
     // One of the arguments from this list "app_firewall_detection_control data_guard_control jwt_claims_validation jwt_validation none waf_in_monitoring_mode waf_skip_processing" must be set
 
-    none = true
+    jwt_claims_validation = true
   }
 }
+
 ```
 
 Argument Reference
@@ -66,7 +71,7 @@ Argument Reference
 
 `api_group_matcher` - (Optional) The predicate evaluates to true if any of the actual API group names for the request is equal to any of the values in the api group matcher.. See [Api Group Matcher ](#api-group-matcher) below for details.
 
-`arg_matchers` - (Optional) Note that all specified arg matcher predicates must evaluate to true.. See [Arg Matchers ](#arg-matchers) below for details.
+`arg_matchers` - (Optional) Note that all specified arg matcher predicates must evaluate to true. A request body greater than 64KB will not be evaluated.. See [Arg Matchers ](#arg-matchers) below for details.
 
 ###### One of the arguments from this list "any_asn, asn_list, asn_matcher" must be set
 
@@ -76,11 +81,11 @@ Argument Reference
 
 `asn_matcher` - (Optional) The predicate evaluates to true if the origin ASN is present in one of the BGP ASN Set objects.. See [Asn Choice Asn Matcher ](#asn-choice-asn-matcher) below for details.
 
-`body_matcher` - (Optional) The actual request body value is extracted from the request API as a string.. See [Body Matcher ](#body-matcher) below for details.
+`body_matcher` - (Optional) The actual request body value is extracted from the request API as a string. A request body greater than 64KB will not be evaluated.. See [Body Matcher ](#body-matcher) below for details.
 
 `bot_action` - (Optional) Bot action to be enforced if the input request matches the rule.. See [Bot Action ](#bot-action) below for details.
 
-`challenge_action` - (Optinal) Select challenge action, enable javascript/captcha challenge or disable challenge (`String`).(Deprecated)
+`challenge_action` - (Required) Select challenge action, enable javascript/captcha challenge or disable challenge (`String`).(Deprecated)
 
 ###### One of the arguments from this list "any_client, client_name, client_name_matcher, client_selector, ip_threat_category_list" must be set
 
@@ -188,7 +193,7 @@ The predicate evaluates to true if any of the actual API group names for the req
 
 ### Arg Matchers
 
-Note that all specified arg matcher predicates must evaluate to true..
+Note that all specified arg matcher predicates must evaluate to true. A request body greater than 64KB will not be evaluated..
 
 `invert_matcher` - (Optional) Invert Match of the expression defined (`Bool`).
 
@@ -206,7 +211,7 @@ Note that all specified arg matcher predicates must evaluate to true..
 
 ### Body Matcher
 
-The actual request body value is extracted from the request API as a string..
+The actual request body value is extracted from the request API as a string. A request body greater than 64KB will not be evaluated..
 
 `exact_values` - (Optional) A list of exact values to match the input against. (`String`).
 
@@ -500,7 +505,7 @@ The predicate evaluates to true if the expressions in the label selector are tru
 
 Shape Protected Endpoint Action that include application traffic type and mitigation.
 
-`allow_goodbot` - (Optional) Good bot (`Bool`).(Deprecated)
+`allow_goodbot` - (Required) Good bot (`Bool`).(Deprecated)
 
 `app_traffic_type` - (Required) Traffic type (`String`).
 
@@ -510,7 +515,7 @@ Shape Protected Endpoint Action that include application traffic type and mitiga
 
 `transaction_result` - (Optional) Success/failure Criteria for transaction result. See [Shape Protected Endpoint Action Transaction Result ](#shape-protected-endpoint-action-transaction-result) below for details.
 
-`web_scraping` - (Optional) Web scraping protection enabled for protected endpoint (`Bool`).(Deprecated)
+`web_scraping` - (Required) Web scraping protection enabled for protected endpoint (`Bool`).(Deprecated)
 
 ### Url Matcher
 
@@ -935,4 +940,4 @@ A list of URL items used as match criteria. The match is considered successful i
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured service_policy_rule.
+-	`id` - This is the id of the configured service_policy_rule.

@@ -70,6 +70,14 @@ func (v *ValidateCreateSpecType) HealthCheckValidationRuleHandler(rules map[stri
 	}
 	return validatorFn, nil
 }
+
+func (v *ValidateCreateSpecType) JitterChoiceJitterPercentValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	oValidatorFn_JitterPercent, err := db.NewUint32ValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for jitter_percent")
+	}
+	return oValidatorFn_JitterPercent, nil
+}
 func (v *ValidateCreateSpecType) TimeoutValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
 	validatorFn, err := db.NewUint32ValidationRuleHandler(rules)
 	if err != nil {
@@ -98,14 +106,6 @@ func (v *ValidateCreateSpecType) HealthyThresholdValidationRuleHandler(rules map
 	validatorFn, err := db.NewUint32ValidationRuleHandler(rules)
 	if err != nil {
 		return nil, errors.Wrap(err, "ValidationRuleHandler for healthy_threshold")
-	}
-
-	return validatorFn, nil
-}
-func (v *ValidateCreateSpecType) JitterPercentValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
-	validatorFn, err := db.NewUint32ValidationRuleHandler(rules)
-	if err != nil {
-		return nil, errors.Wrap(err, "ValidationRuleHandler for jitter_percent")
 	}
 
 	return validatorFn, nil
@@ -226,10 +226,29 @@ func (v *ValidateCreateSpecType) Validate(ctx context.Context, pm interface{}, o
 			return err
 		}
 	}
-	if fv, exists := v.FldValidators["jitter_percent"]; exists {
-		vOpts := append(opts, db.WithValidateField("jitter_percent"))
-		if err := fv(ctx, m.GetJitterPercent(), vOpts...); err != nil {
-			return err
+
+	switch m.GetJitterChoice().(type) {
+	case *CreateSpecType_JitterPercent:
+		if fv, exists := v.FldValidators["jitter_choice.jitter_percent"]; exists {
+			val := m.GetJitterChoice().(*CreateSpecType_JitterPercent).JitterPercent
+			vOpts := append(opts,
+				db.WithValidateField("jitter_choice"),
+				db.WithValidateField("jitter_percent"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *CreateSpecType_DefaultJitter:
+		if fv, exists := v.FldValidators["jitter_choice.default_jitter"]; exists {
+			val := m.GetJitterChoice().(*CreateSpecType_DefaultJitter).DefaultJitter
+			vOpts := append(opts,
+				db.WithValidateField("jitter_choice"),
+				db.WithValidateField("default_jitter"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
 		}
 	}
 	if fv, exists := v.FldValidators["timeout"]; exists {
@@ -267,6 +286,16 @@ var DefaultCreateSpecTypeValidator = func() *ValidateCreateSpecType {
 		panic(errMsg)
 	}
 	v.FldValidators["health_check"] = vFn
+	vrhJitterChoiceJitterPercent := v.JitterChoiceJitterPercentValidationRuleHandler
+	rulesJitterChoiceJitterPercent := map[string]string{
+		"ves.io.schema.rules.uint32.ranges": "0,10-50",
+	}
+	vFnMap["jitter_choice.jitter_percent"], err = vrhJitterChoiceJitterPercent(rulesJitterChoiceJitterPercent)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for oneof field CreateSpecType.jitter_choice_jitter_percent: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["jitter_choice.jitter_percent"] = vFnMap["jitter_choice.jitter_percent"]
 
 	vrhTimeout := v.TimeoutValidationRuleHandler
 	rulesTimeout := map[string]string{
@@ -319,17 +348,6 @@ var DefaultCreateSpecTypeValidator = func() *ValidateCreateSpecType {
 		panic(errMsg)
 	}
 	v.FldValidators["healthy_threshold"] = vFn
-
-	vrhJitterPercent := v.JitterPercentValidationRuleHandler
-	rulesJitterPercent := map[string]string{
-		"ves.io.schema.rules.uint32.ranges": "0,10-50",
-	}
-	vFn, err = vrhJitterPercent(rulesJitterPercent)
-	if err != nil {
-		errMsg := fmt.Sprintf("ValidationRuleHandler for CreateSpecType.jitter_percent: %s", err)
-		panic(errMsg)
-	}
-	v.FldValidators["jitter_percent"] = vFn
 	v.FldValidators["health_check.http_health_check"] = HttpHealthCheckValidator().Validate
 	v.FldValidators["health_check.tcp_health_check"] = TcpHealthCheckValidator().Validate
 	v.FldValidators["health_check.dns_proxy_tcp_health_check"] = DnsProxyTcpHealthCheckValidator().Validate
@@ -875,6 +893,14 @@ func (v *ValidateGetSpecType) HealthCheckValidationRuleHandler(rules map[string]
 	}
 	return validatorFn, nil
 }
+
+func (v *ValidateGetSpecType) JitterChoiceJitterPercentValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	oValidatorFn_JitterPercent, err := db.NewUint32ValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for jitter_percent")
+	}
+	return oValidatorFn_JitterPercent, nil
+}
 func (v *ValidateGetSpecType) TimeoutValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
 	validatorFn, err := db.NewUint32ValidationRuleHandler(rules)
 	if err != nil {
@@ -911,14 +937,6 @@ func (v *ValidateGetSpecType) HealthyThresholdValidationRuleHandler(rules map[st
 	validatorFn, err := db.NewUint32ValidationRuleHandler(rules)
 	if err != nil {
 		return nil, errors.Wrap(err, "ValidationRuleHandler for healthy_threshold")
-	}
-
-	return validatorFn, nil
-}
-func (v *ValidateGetSpecType) JitterPercentValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
-	validatorFn, err := db.NewUint32ValidationRuleHandler(rules)
-	if err != nil {
-		return nil, errors.Wrap(err, "ValidationRuleHandler for jitter_percent")
 	}
 
 	return validatorFn, nil
@@ -1045,10 +1063,29 @@ func (v *ValidateGetSpecType) Validate(ctx context.Context, pm interface{}, opts
 			return err
 		}
 	}
-	if fv, exists := v.FldValidators["jitter_percent"]; exists {
-		vOpts := append(opts, db.WithValidateField("jitter_percent"))
-		if err := fv(ctx, m.GetJitterPercent(), vOpts...); err != nil {
-			return err
+
+	switch m.GetJitterChoice().(type) {
+	case *GetSpecType_JitterPercent:
+		if fv, exists := v.FldValidators["jitter_choice.jitter_percent"]; exists {
+			val := m.GetJitterChoice().(*GetSpecType_JitterPercent).JitterPercent
+			vOpts := append(opts,
+				db.WithValidateField("jitter_choice"),
+				db.WithValidateField("jitter_percent"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *GetSpecType_DefaultJitter:
+		if fv, exists := v.FldValidators["jitter_choice.default_jitter"]; exists {
+			val := m.GetJitterChoice().(*GetSpecType_DefaultJitter).DefaultJitter
+			vOpts := append(opts,
+				db.WithValidateField("jitter_choice"),
+				db.WithValidateField("default_jitter"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
 		}
 	}
 	if fv, exists := v.FldValidators["timeout"]; exists {
@@ -1086,6 +1123,16 @@ var DefaultGetSpecTypeValidator = func() *ValidateGetSpecType {
 		panic(errMsg)
 	}
 	v.FldValidators["health_check"] = vFn
+	vrhJitterChoiceJitterPercent := v.JitterChoiceJitterPercentValidationRuleHandler
+	rulesJitterChoiceJitterPercent := map[string]string{
+		"ves.io.schema.rules.uint32.ranges": "0,10-50",
+	}
+	vFnMap["jitter_choice.jitter_percent"], err = vrhJitterChoiceJitterPercent(rulesJitterChoiceJitterPercent)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for oneof field GetSpecType.jitter_choice_jitter_percent: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["jitter_choice.jitter_percent"] = vFnMap["jitter_choice.jitter_percent"]
 
 	vrhTimeout := v.TimeoutValidationRuleHandler
 	rulesTimeout := map[string]string{
@@ -1149,17 +1196,6 @@ var DefaultGetSpecTypeValidator = func() *ValidateGetSpecType {
 		panic(errMsg)
 	}
 	v.FldValidators["healthy_threshold"] = vFn
-
-	vrhJitterPercent := v.JitterPercentValidationRuleHandler
-	rulesJitterPercent := map[string]string{
-		"ves.io.schema.rules.uint32.ranges": "0,10-50",
-	}
-	vFn, err = vrhJitterPercent(rulesJitterPercent)
-	if err != nil {
-		errMsg := fmt.Sprintf("ValidationRuleHandler for GetSpecType.jitter_percent: %s", err)
-		panic(errMsg)
-	}
-	v.FldValidators["jitter_percent"] = vFn
 	v.FldValidators["health_check.http_health_check"] = HttpHealthCheckValidator().Validate
 	v.FldValidators["health_check.tcp_health_check"] = TcpHealthCheckValidator().Validate
 	v.FldValidators["health_check.dns_proxy_tcp_health_check"] = DnsProxyTcpHealthCheckValidator().Validate
@@ -1221,6 +1257,14 @@ func (v *ValidateGlobalSpecType) HealthCheckValidationRuleHandler(rules map[stri
 	}
 	return validatorFn, nil
 }
+
+func (v *ValidateGlobalSpecType) JitterChoiceJitterPercentValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	oValidatorFn_JitterPercent, err := db.NewUint32ValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for jitter_percent")
+	}
+	return oValidatorFn_JitterPercent, nil
+}
 func (v *ValidateGlobalSpecType) TimeoutValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
 	validatorFn, err := db.NewUint32ValidationRuleHandler(rules)
 	if err != nil {
@@ -1257,14 +1301,6 @@ func (v *ValidateGlobalSpecType) HealthyThresholdValidationRuleHandler(rules map
 	validatorFn, err := db.NewUint32ValidationRuleHandler(rules)
 	if err != nil {
 		return nil, errors.Wrap(err, "ValidationRuleHandler for healthy_threshold")
-	}
-
-	return validatorFn, nil
-}
-func (v *ValidateGlobalSpecType) JitterPercentValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
-	validatorFn, err := db.NewUint32ValidationRuleHandler(rules)
-	if err != nil {
-		return nil, errors.Wrap(err, "ValidationRuleHandler for jitter_percent")
 	}
 
 	return validatorFn, nil
@@ -1391,10 +1427,29 @@ func (v *ValidateGlobalSpecType) Validate(ctx context.Context, pm interface{}, o
 			return err
 		}
 	}
-	if fv, exists := v.FldValidators["jitter_percent"]; exists {
-		vOpts := append(opts, db.WithValidateField("jitter_percent"))
-		if err := fv(ctx, m.GetJitterPercent(), vOpts...); err != nil {
-			return err
+
+	switch m.GetJitterChoice().(type) {
+	case *GlobalSpecType_JitterPercent:
+		if fv, exists := v.FldValidators["jitter_choice.jitter_percent"]; exists {
+			val := m.GetJitterChoice().(*GlobalSpecType_JitterPercent).JitterPercent
+			vOpts := append(opts,
+				db.WithValidateField("jitter_choice"),
+				db.WithValidateField("jitter_percent"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *GlobalSpecType_DefaultJitter:
+		if fv, exists := v.FldValidators["jitter_choice.default_jitter"]; exists {
+			val := m.GetJitterChoice().(*GlobalSpecType_DefaultJitter).DefaultJitter
+			vOpts := append(opts,
+				db.WithValidateField("jitter_choice"),
+				db.WithValidateField("default_jitter"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
 		}
 	}
 	if fv, exists := v.FldValidators["timeout"]; exists {
@@ -1432,6 +1487,16 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 		panic(errMsg)
 	}
 	v.FldValidators["health_check"] = vFn
+	vrhJitterChoiceJitterPercent := v.JitterChoiceJitterPercentValidationRuleHandler
+	rulesJitterChoiceJitterPercent := map[string]string{
+		"ves.io.schema.rules.uint32.ranges": "0,10-50",
+	}
+	vFnMap["jitter_choice.jitter_percent"], err = vrhJitterChoiceJitterPercent(rulesJitterChoiceJitterPercent)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for oneof field GlobalSpecType.jitter_choice_jitter_percent: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["jitter_choice.jitter_percent"] = vFnMap["jitter_choice.jitter_percent"]
 
 	vrhTimeout := v.TimeoutValidationRuleHandler
 	rulesTimeout := map[string]string{
@@ -1495,17 +1560,6 @@ var DefaultGlobalSpecTypeValidator = func() *ValidateGlobalSpecType {
 		panic(errMsg)
 	}
 	v.FldValidators["healthy_threshold"] = vFn
-
-	vrhJitterPercent := v.JitterPercentValidationRuleHandler
-	rulesJitterPercent := map[string]string{
-		"ves.io.schema.rules.uint32.ranges": "0,10-50",
-	}
-	vFn, err = vrhJitterPercent(rulesJitterPercent)
-	if err != nil {
-		errMsg := fmt.Sprintf("ValidationRuleHandler for GlobalSpecType.jitter_percent: %s", err)
-		panic(errMsg)
-	}
-	v.FldValidators["jitter_percent"] = vFn
 	v.FldValidators["health_check.http_health_check"] = HttpHealthCheckValidator().Validate
 	v.FldValidators["health_check.tcp_health_check"] = TcpHealthCheckValidator().Validate
 	v.FldValidators["health_check.dns_proxy_tcp_health_check"] = DnsProxyTcpHealthCheckValidator().Validate
@@ -1956,6 +2010,14 @@ func (v *ValidateReplaceSpecType) HealthCheckValidationRuleHandler(rules map[str
 	}
 	return validatorFn, nil
 }
+
+func (v *ValidateReplaceSpecType) JitterChoiceJitterPercentValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
+	oValidatorFn_JitterPercent, err := db.NewUint32ValidationRuleHandler(rules)
+	if err != nil {
+		return nil, errors.Wrap(err, "ValidationRuleHandler for jitter_percent")
+	}
+	return oValidatorFn_JitterPercent, nil
+}
 func (v *ValidateReplaceSpecType) TimeoutValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
 	validatorFn, err := db.NewUint32ValidationRuleHandler(rules)
 	if err != nil {
@@ -1984,14 +2046,6 @@ func (v *ValidateReplaceSpecType) HealthyThresholdValidationRuleHandler(rules ma
 	validatorFn, err := db.NewUint32ValidationRuleHandler(rules)
 	if err != nil {
 		return nil, errors.Wrap(err, "ValidationRuleHandler for healthy_threshold")
-	}
-
-	return validatorFn, nil
-}
-func (v *ValidateReplaceSpecType) JitterPercentValidationRuleHandler(rules map[string]string) (db.ValidatorFunc, error) {
-	validatorFn, err := db.NewUint32ValidationRuleHandler(rules)
-	if err != nil {
-		return nil, errors.Wrap(err, "ValidationRuleHandler for jitter_percent")
 	}
 
 	return validatorFn, nil
@@ -2112,10 +2166,29 @@ func (v *ValidateReplaceSpecType) Validate(ctx context.Context, pm interface{}, 
 			return err
 		}
 	}
-	if fv, exists := v.FldValidators["jitter_percent"]; exists {
-		vOpts := append(opts, db.WithValidateField("jitter_percent"))
-		if err := fv(ctx, m.GetJitterPercent(), vOpts...); err != nil {
-			return err
+
+	switch m.GetJitterChoice().(type) {
+	case *ReplaceSpecType_JitterPercent:
+		if fv, exists := v.FldValidators["jitter_choice.jitter_percent"]; exists {
+			val := m.GetJitterChoice().(*ReplaceSpecType_JitterPercent).JitterPercent
+			vOpts := append(opts,
+				db.WithValidateField("jitter_choice"),
+				db.WithValidateField("jitter_percent"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
+		}
+	case *ReplaceSpecType_DefaultJitter:
+		if fv, exists := v.FldValidators["jitter_choice.default_jitter"]; exists {
+			val := m.GetJitterChoice().(*ReplaceSpecType_DefaultJitter).DefaultJitter
+			vOpts := append(opts,
+				db.WithValidateField("jitter_choice"),
+				db.WithValidateField("default_jitter"),
+			)
+			if err := fv(ctx, val, vOpts...); err != nil {
+				return err
+			}
 		}
 	}
 	if fv, exists := v.FldValidators["timeout"]; exists {
@@ -2153,6 +2226,16 @@ var DefaultReplaceSpecTypeValidator = func() *ValidateReplaceSpecType {
 		panic(errMsg)
 	}
 	v.FldValidators["health_check"] = vFn
+	vrhJitterChoiceJitterPercent := v.JitterChoiceJitterPercentValidationRuleHandler
+	rulesJitterChoiceJitterPercent := map[string]string{
+		"ves.io.schema.rules.uint32.ranges": "0,10-50",
+	}
+	vFnMap["jitter_choice.jitter_percent"], err = vrhJitterChoiceJitterPercent(rulesJitterChoiceJitterPercent)
+	if err != nil {
+		errMsg := fmt.Sprintf("ValidationRuleHandler for oneof field ReplaceSpecType.jitter_choice_jitter_percent: %s", err)
+		panic(errMsg)
+	}
+	v.FldValidators["jitter_choice.jitter_percent"] = vFnMap["jitter_choice.jitter_percent"]
 
 	vrhTimeout := v.TimeoutValidationRuleHandler
 	rulesTimeout := map[string]string{
@@ -2205,17 +2288,6 @@ var DefaultReplaceSpecTypeValidator = func() *ValidateReplaceSpecType {
 		panic(errMsg)
 	}
 	v.FldValidators["healthy_threshold"] = vFn
-
-	vrhJitterPercent := v.JitterPercentValidationRuleHandler
-	rulesJitterPercent := map[string]string{
-		"ves.io.schema.rules.uint32.ranges": "0,10-50",
-	}
-	vFn, err = vrhJitterPercent(rulesJitterPercent)
-	if err != nil {
-		errMsg := fmt.Sprintf("ValidationRuleHandler for ReplaceSpecType.jitter_percent: %s", err)
-		panic(errMsg)
-	}
-	v.FldValidators["jitter_percent"] = vFn
 	v.FldValidators["health_check.http_health_check"] = HttpHealthCheckValidator().Validate
 	v.FldValidators["health_check.tcp_health_check"] = TcpHealthCheckValidator().Validate
 	v.FldValidators["health_check.dns_proxy_tcp_health_check"] = DnsProxyTcpHealthCheckValidator().Validate
@@ -2422,6 +2494,41 @@ func (r *CreateSpecType) GetHealthCheckFromGlobalSpecType(o *GlobalSpecType) err
 	return nil
 }
 
+// create setters in CreateSpecType from GlobalSpecType for oneof fields
+func (r *CreateSpecType) SetJitterChoiceToGlobalSpecType(o *GlobalSpecType) error {
+	switch of := r.JitterChoice.(type) {
+	case nil:
+		o.JitterChoice = nil
+
+	case *CreateSpecType_DefaultJitter:
+		o.JitterChoice = &GlobalSpecType_DefaultJitter{DefaultJitter: of.DefaultJitter}
+
+	case *CreateSpecType_JitterPercent:
+		o.JitterChoice = &GlobalSpecType_JitterPercent{JitterPercent: of.JitterPercent}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+func (r *CreateSpecType) GetJitterChoiceFromGlobalSpecType(o *GlobalSpecType) error {
+	switch of := o.JitterChoice.(type) {
+	case nil:
+		r.JitterChoice = nil
+
+	case *GlobalSpecType_DefaultJitter:
+		r.JitterChoice = &CreateSpecType_DefaultJitter{DefaultJitter: of.DefaultJitter}
+
+	case *GlobalSpecType_JitterPercent:
+		r.JitterChoice = &CreateSpecType_JitterPercent{JitterPercent: of.JitterPercent}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
 func (m *CreateSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	if f == nil {
 		return
@@ -2429,7 +2536,7 @@ func (m *CreateSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool
 	m.GetHealthCheckFromGlobalSpecType(f)
 	m.HealthyThreshold = f.GetHealthyThreshold()
 	m.Interval = f.GetInterval()
-	m.JitterPercent = f.GetJitterPercent()
+	m.GetJitterChoiceFromGlobalSpecType(f)
 	m.Timeout = f.GetTimeout()
 	m.UnhealthyThreshold = f.GetUnhealthyThreshold()
 }
@@ -2452,7 +2559,7 @@ func (m *CreateSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) 
 	m1.SetHealthCheckToGlobalSpecType(f)
 	f.HealthyThreshold = m1.HealthyThreshold
 	f.Interval = m1.Interval
-	f.JitterPercent = m1.JitterPercent
+	m1.SetJitterChoiceToGlobalSpecType(f)
 	f.Timeout = m1.Timeout
 	f.UnhealthyThreshold = m1.UnhealthyThreshold
 }
@@ -2530,6 +2637,41 @@ func (r *GetSpecType) GetHealthCheckFromGlobalSpecType(o *GlobalSpecType) error 
 	return nil
 }
 
+// create setters in GetSpecType from GlobalSpecType for oneof fields
+func (r *GetSpecType) SetJitterChoiceToGlobalSpecType(o *GlobalSpecType) error {
+	switch of := r.JitterChoice.(type) {
+	case nil:
+		o.JitterChoice = nil
+
+	case *GetSpecType_DefaultJitter:
+		o.JitterChoice = &GlobalSpecType_DefaultJitter{DefaultJitter: of.DefaultJitter}
+
+	case *GetSpecType_JitterPercent:
+		o.JitterChoice = &GlobalSpecType_JitterPercent{JitterPercent: of.JitterPercent}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+func (r *GetSpecType) GetJitterChoiceFromGlobalSpecType(o *GlobalSpecType) error {
+	switch of := o.JitterChoice.(type) {
+	case nil:
+		r.JitterChoice = nil
+
+	case *GlobalSpecType_DefaultJitter:
+		r.JitterChoice = &GetSpecType_DefaultJitter{DefaultJitter: of.DefaultJitter}
+
+	case *GlobalSpecType_JitterPercent:
+		r.JitterChoice = &GetSpecType_JitterPercent{JitterPercent: of.JitterPercent}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
 func (m *GetSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	if f == nil {
 		return
@@ -2538,7 +2680,7 @@ func (m *GetSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	m.HealthyThreshold = f.GetHealthyThreshold()
 	m.Interval = f.GetInterval()
 	m.Jitter = f.GetJitter()
-	m.JitterPercent = f.GetJitterPercent()
+	m.GetJitterChoiceFromGlobalSpecType(f)
 	m.Timeout = f.GetTimeout()
 	m.UnhealthyThreshold = f.GetUnhealthyThreshold()
 }
@@ -2562,7 +2704,7 @@ func (m *GetSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	f.HealthyThreshold = m1.HealthyThreshold
 	f.Interval = m1.Interval
 	f.Jitter = m1.Jitter
-	f.JitterPercent = m1.JitterPercent
+	m1.SetJitterChoiceToGlobalSpecType(f)
 	f.Timeout = m1.Timeout
 	f.UnhealthyThreshold = m1.UnhealthyThreshold
 }
@@ -2640,6 +2782,41 @@ func (r *ReplaceSpecType) GetHealthCheckFromGlobalSpecType(o *GlobalSpecType) er
 	return nil
 }
 
+// create setters in ReplaceSpecType from GlobalSpecType for oneof fields
+func (r *ReplaceSpecType) SetJitterChoiceToGlobalSpecType(o *GlobalSpecType) error {
+	switch of := r.JitterChoice.(type) {
+	case nil:
+		o.JitterChoice = nil
+
+	case *ReplaceSpecType_DefaultJitter:
+		o.JitterChoice = &GlobalSpecType_DefaultJitter{DefaultJitter: of.DefaultJitter}
+
+	case *ReplaceSpecType_JitterPercent:
+		o.JitterChoice = &GlobalSpecType_JitterPercent{JitterPercent: of.JitterPercent}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
+func (r *ReplaceSpecType) GetJitterChoiceFromGlobalSpecType(o *GlobalSpecType) error {
+	switch of := o.JitterChoice.(type) {
+	case nil:
+		r.JitterChoice = nil
+
+	case *GlobalSpecType_DefaultJitter:
+		r.JitterChoice = &ReplaceSpecType_DefaultJitter{DefaultJitter: of.DefaultJitter}
+
+	case *GlobalSpecType_JitterPercent:
+		r.JitterChoice = &ReplaceSpecType_JitterPercent{JitterPercent: of.JitterPercent}
+
+	default:
+		return fmt.Errorf("Unknown oneof field %T", of)
+	}
+	return nil
+}
+
 func (m *ReplaceSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy bool) {
 	if f == nil {
 		return
@@ -2647,7 +2824,7 @@ func (m *ReplaceSpecType) fromGlobalSpecType(f *GlobalSpecType, withDeepCopy boo
 	m.GetHealthCheckFromGlobalSpecType(f)
 	m.HealthyThreshold = f.GetHealthyThreshold()
 	m.Interval = f.GetInterval()
-	m.JitterPercent = f.GetJitterPercent()
+	m.GetJitterChoiceFromGlobalSpecType(f)
 	m.Timeout = f.GetTimeout()
 	m.UnhealthyThreshold = f.GetUnhealthyThreshold()
 }
@@ -2670,7 +2847,7 @@ func (m *ReplaceSpecType) toGlobalSpecType(f *GlobalSpecType, withDeepCopy bool)
 	m1.SetHealthCheckToGlobalSpecType(f)
 	f.HealthyThreshold = m1.HealthyThreshold
 	f.Interval = m1.Interval
-	f.JitterPercent = m1.JitterPercent
+	m1.SetJitterChoiceToGlobalSpecType(f)
 	f.Timeout = m1.Timeout
 	f.UnhealthyThreshold = m1.UnhealthyThreshold
 }

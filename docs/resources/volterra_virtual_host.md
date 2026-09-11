@@ -24,6 +24,7 @@ resource "volterra_virtual_host" "example" {
 
   no_challenge = true
 }
+
 ```
 
 Argument Reference
@@ -187,7 +188,7 @@ Argument Reference
 
 OpenAPI specification settings.
 
-`api_definition` - (Optional) API definition is set on this vhost for enforcing OpenAPI on requests. See [ref](#ref) below for details.(Deprecated)
+`api_definition` - (Required) API definition is set on this vhost for enforcing OpenAPI on requests. See [ref](#ref) below for details.(Deprecated)
 
 ###### One of the arguments from this list "disable_open_api_validation, enable_open_api_validation" must be set
 
@@ -1206,4 +1207,4 @@ Secret Value of the Cookie header.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured virtual_host.
+-	`id` - This is the id of the configured virtual_host.

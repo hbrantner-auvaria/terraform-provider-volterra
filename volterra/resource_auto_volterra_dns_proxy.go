@@ -612,7 +612,75 @@ func resourceVolterraDnsProxy() *schema.Resource {
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
 
+												"advertise_dualstack_on_public": {
+
+													Type:     schema.TypeList,
+													MaxItems: 1,
+													Optional: true,
+													Elem: &schema.Resource{
+														Schema: map[string]*schema.Schema{
+
+															"public_ip": {
+																Type:     schema.TypeList,
+																MaxItems: 1,
+																Required: true,
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"name": {
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+																		"namespace": {
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+																		"tenant": {
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+
 												"advertise_on_public": {
+
+													Type:     schema.TypeList,
+													MaxItems: 1,
+													Optional: true,
+													Elem: &schema.Resource{
+														Schema: map[string]*schema.Schema{
+
+															"public_ip": {
+																Type:     schema.TypeList,
+																MaxItems: 1,
+																Required: true,
+																Elem: &schema.Resource{
+																	Schema: map[string]*schema.Schema{
+
+																		"name": {
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+																		"namespace": {
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+																		"tenant": {
+																			Type:     schema.TypeString,
+																			Optional: true,
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+
+												"advertise_v6_on_public": {
 
 													Type:     schema.TypeList,
 													MaxItems: 1,
@@ -1169,6 +1237,40 @@ func resourceVolterraDnsProxy() *schema.Resource {
 							},
 						},
 
+						"advertise_dualstack_on_public": {
+
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"public_ip": {
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Required: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+
 						"advertise_on_public": {
 
 							Type:     schema.TypeList,
@@ -1203,10 +1305,56 @@ func resourceVolterraDnsProxy() *schema.Resource {
 							},
 						},
 
+						"advertise_on_public_default_dualstack_vip": {
+
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+
+						"advertise_on_public_default_ipv6_vip": {
+
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+
 						"advertise_on_public_default_vip": {
 
 							Type:     schema.TypeBool,
 							Optional: true,
+						},
+
+						"advertise_v6_on_public": {
+
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+
+									"public_ip": {
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Required: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+
+												"name": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"namespace": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"tenant": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+								},
+							},
 						},
 
 						"do_not_advertise": {
@@ -2085,6 +2233,47 @@ func resourceVolterraDnsProxyCreate(d *schema.ResourceData, meta interface{}) er
 
 										choiceTypeFound := false
 
+										if v, ok := advertiseWhereMapStrToI["advertise_dualstack_on_public"]; ok && !isIntfNil(v) && !choiceTypeFound {
+
+											choiceTypeFound = true
+											choiceInt := &ves_io_schema_views.WhereType_AdvertiseDualstackOnPublic{}
+											choiceInt.AdvertiseDualstackOnPublic = &ves_io_schema_views.AdvertisePublic{}
+											advertiseWhere[i].Choice = choiceInt
+
+											sl := v.([]interface{})
+											for _, set := range sl {
+												if set != nil {
+													cs := set.(map[string]interface{})
+
+													if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														publicIpInt := &ves_io_schema_views.ObjectRefType{}
+														choiceInt.AdvertiseDualstackOnPublic.PublicIp = publicIpInt
+
+														for _, set := range sl {
+															if set != nil {
+																piMapToStrVal := set.(map[string]interface{})
+																if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	publicIpInt.Name = val.(string)
+																}
+																if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	publicIpInt.Namespace = val.(string)
+																}
+
+																if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	publicIpInt.Tenant = val.(string)
+																}
+															}
+														}
+
+													}
+
+												}
+											}
+
+										}
+
 										if v, ok := advertiseWhereMapStrToI["advertise_on_public"]; ok && !isIntfNil(v) && !choiceTypeFound {
 
 											choiceTypeFound = true
@@ -2102,6 +2291,47 @@ func resourceVolterraDnsProxyCreate(d *schema.ResourceData, meta interface{}) er
 														sl := v.([]interface{})
 														publicIpInt := &ves_io_schema_views.ObjectRefType{}
 														choiceInt.AdvertiseOnPublic.PublicIp = publicIpInt
+
+														for _, set := range sl {
+															if set != nil {
+																piMapToStrVal := set.(map[string]interface{})
+																if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	publicIpInt.Name = val.(string)
+																}
+																if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	publicIpInt.Namespace = val.(string)
+																}
+
+																if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	publicIpInt.Tenant = val.(string)
+																}
+															}
+														}
+
+													}
+
+												}
+											}
+
+										}
+
+										if v, ok := advertiseWhereMapStrToI["advertise_v6_on_public"]; ok && !isIntfNil(v) && !choiceTypeFound {
+
+											choiceTypeFound = true
+											choiceInt := &ves_io_schema_views.WhereType_AdvertiseV6OnPublic{}
+											choiceInt.AdvertiseV6OnPublic = &ves_io_schema_views.AdvertisePublic{}
+											advertiseWhere[i].Choice = choiceInt
+
+											sl := v.([]interface{})
+											for _, set := range sl {
+												if set != nil {
+													cs := set.(map[string]interface{})
+
+													if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														publicIpInt := &ves_io_schema_views.ObjectRefType{}
+														choiceInt.AdvertiseV6OnPublic.PublicIp = publicIpInt
 
 														for _, set := range sl {
 															if set != nil {
@@ -2671,6 +2901,47 @@ func resourceVolterraDnsProxyCreate(d *schema.ResourceData, meta interface{}) er
 
 				}
 
+				if v, ok := proxyAdvertisementMapStrToI["advertise_dualstack_on_public"]; ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
+
+					advertiseChoiceTypeFound = true
+					advertiseChoiceInt := &ves_io_schema_dns_proxy.ProxyAdvertisementType_AdvertiseDualstackOnPublic{}
+					advertiseChoiceInt.AdvertiseDualstackOnPublic = &ves_io_schema_views.AdvertisePublic{}
+					proxyAdvertisement.AdvertiseChoice = advertiseChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								publicIpInt := &ves_io_schema_views.ObjectRefType{}
+								advertiseChoiceInt.AdvertiseDualstackOnPublic.PublicIp = publicIpInt
+
+								for _, set := range sl {
+									if set != nil {
+										piMapToStrVal := set.(map[string]interface{})
+										if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+											publicIpInt.Name = val.(string)
+										}
+										if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											publicIpInt.Namespace = val.(string)
+										}
+
+										if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											publicIpInt.Tenant = val.(string)
+										}
+									}
+								}
+
+							}
+
+						}
+					}
+
+				}
+
 				if v, ok := proxyAdvertisementMapStrToI["advertise_on_public"]; ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
 
 					advertiseChoiceTypeFound = true
@@ -2712,6 +2983,30 @@ func resourceVolterraDnsProxyCreate(d *schema.ResourceData, meta interface{}) er
 
 				}
 
+				if v, ok := proxyAdvertisementMapStrToI["advertise_on_public_default_dualstack_vip"]; ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
+
+					advertiseChoiceTypeFound = true
+
+					if v.(bool) {
+						advertiseChoiceInt := &ves_io_schema_dns_proxy.ProxyAdvertisementType_AdvertiseOnPublicDefaultDualstackVip{}
+						advertiseChoiceInt.AdvertiseOnPublicDefaultDualstackVip = &ves_io_schema.Empty{}
+						proxyAdvertisement.AdvertiseChoice = advertiseChoiceInt
+					}
+
+				}
+
+				if v, ok := proxyAdvertisementMapStrToI["advertise_on_public_default_ipv6_vip"]; ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
+
+					advertiseChoiceTypeFound = true
+
+					if v.(bool) {
+						advertiseChoiceInt := &ves_io_schema_dns_proxy.ProxyAdvertisementType_AdvertiseOnPublicDefaultIpv6Vip{}
+						advertiseChoiceInt.AdvertiseOnPublicDefaultIpv6Vip = &ves_io_schema.Empty{}
+						proxyAdvertisement.AdvertiseChoice = advertiseChoiceInt
+					}
+
+				}
+
 				if v, ok := proxyAdvertisementMapStrToI["advertise_on_public_default_vip"]; ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
 
 					advertiseChoiceTypeFound = true
@@ -2720,6 +3015,47 @@ func resourceVolterraDnsProxyCreate(d *schema.ResourceData, meta interface{}) er
 						advertiseChoiceInt := &ves_io_schema_dns_proxy.ProxyAdvertisementType_AdvertiseOnPublicDefaultVip{}
 						advertiseChoiceInt.AdvertiseOnPublicDefaultVip = &ves_io_schema.Empty{}
 						proxyAdvertisement.AdvertiseChoice = advertiseChoiceInt
+					}
+
+				}
+
+				if v, ok := proxyAdvertisementMapStrToI["advertise_v6_on_public"]; ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
+
+					advertiseChoiceTypeFound = true
+					advertiseChoiceInt := &ves_io_schema_dns_proxy.ProxyAdvertisementType_AdvertiseV6OnPublic{}
+					advertiseChoiceInt.AdvertiseV6OnPublic = &ves_io_schema_views.AdvertisePublic{}
+					proxyAdvertisement.AdvertiseChoice = advertiseChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								publicIpInt := &ves_io_schema_views.ObjectRefType{}
+								advertiseChoiceInt.AdvertiseV6OnPublic.PublicIp = publicIpInt
+
+								for _, set := range sl {
+									if set != nil {
+										piMapToStrVal := set.(map[string]interface{})
+										if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+											publicIpInt.Name = val.(string)
+										}
+										if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											publicIpInt.Namespace = val.(string)
+										}
+
+										if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											publicIpInt.Tenant = val.(string)
+										}
+									}
+								}
+
+							}
+
+						}
 					}
 
 				}
@@ -3647,6 +3983,47 @@ func resourceVolterraDnsProxyUpdate(d *schema.ResourceData, meta interface{}) er
 
 										choiceTypeFound := false
 
+										if v, ok := advertiseWhereMapStrToI["advertise_dualstack_on_public"]; ok && !isIntfNil(v) && !choiceTypeFound {
+
+											choiceTypeFound = true
+											choiceInt := &ves_io_schema_views.WhereType_AdvertiseDualstackOnPublic{}
+											choiceInt.AdvertiseDualstackOnPublic = &ves_io_schema_views.AdvertisePublic{}
+											advertiseWhere[i].Choice = choiceInt
+
+											sl := v.([]interface{})
+											for _, set := range sl {
+												if set != nil {
+													cs := set.(map[string]interface{})
+
+													if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														publicIpInt := &ves_io_schema_views.ObjectRefType{}
+														choiceInt.AdvertiseDualstackOnPublic.PublicIp = publicIpInt
+
+														for _, set := range sl {
+															if set != nil {
+																piMapToStrVal := set.(map[string]interface{})
+																if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	publicIpInt.Name = val.(string)
+																}
+																if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	publicIpInt.Namespace = val.(string)
+																}
+
+																if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	publicIpInt.Tenant = val.(string)
+																}
+															}
+														}
+
+													}
+
+												}
+											}
+
+										}
+
 										if v, ok := advertiseWhereMapStrToI["advertise_on_public"]; ok && !isIntfNil(v) && !choiceTypeFound {
 
 											choiceTypeFound = true
@@ -3664,6 +4041,47 @@ func resourceVolterraDnsProxyUpdate(d *schema.ResourceData, meta interface{}) er
 														sl := v.([]interface{})
 														publicIpInt := &ves_io_schema_views.ObjectRefType{}
 														choiceInt.AdvertiseOnPublic.PublicIp = publicIpInt
+
+														for _, set := range sl {
+															if set != nil {
+																piMapToStrVal := set.(map[string]interface{})
+																if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+																	publicIpInt.Name = val.(string)
+																}
+																if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+																	publicIpInt.Namespace = val.(string)
+																}
+
+																if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+																	publicIpInt.Tenant = val.(string)
+																}
+															}
+														}
+
+													}
+
+												}
+											}
+
+										}
+
+										if v, ok := advertiseWhereMapStrToI["advertise_v6_on_public"]; ok && !isIntfNil(v) && !choiceTypeFound {
+
+											choiceTypeFound = true
+											choiceInt := &ves_io_schema_views.WhereType_AdvertiseV6OnPublic{}
+											choiceInt.AdvertiseV6OnPublic = &ves_io_schema_views.AdvertisePublic{}
+											advertiseWhere[i].Choice = choiceInt
+
+											sl := v.([]interface{})
+											for _, set := range sl {
+												if set != nil {
+													cs := set.(map[string]interface{})
+
+													if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
+
+														sl := v.([]interface{})
+														publicIpInt := &ves_io_schema_views.ObjectRefType{}
+														choiceInt.AdvertiseV6OnPublic.PublicIp = publicIpInt
 
 														for _, set := range sl {
 															if set != nil {
@@ -4233,6 +4651,47 @@ func resourceVolterraDnsProxyUpdate(d *schema.ResourceData, meta interface{}) er
 
 				}
 
+				if v, ok := proxyAdvertisementMapStrToI["advertise_dualstack_on_public"]; ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
+
+					advertiseChoiceTypeFound = true
+					advertiseChoiceInt := &ves_io_schema_dns_proxy.ProxyAdvertisementType_AdvertiseDualstackOnPublic{}
+					advertiseChoiceInt.AdvertiseDualstackOnPublic = &ves_io_schema_views.AdvertisePublic{}
+					proxyAdvertisement.AdvertiseChoice = advertiseChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								publicIpInt := &ves_io_schema_views.ObjectRefType{}
+								advertiseChoiceInt.AdvertiseDualstackOnPublic.PublicIp = publicIpInt
+
+								for _, set := range sl {
+									if set != nil {
+										piMapToStrVal := set.(map[string]interface{})
+										if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+											publicIpInt.Name = val.(string)
+										}
+										if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											publicIpInt.Namespace = val.(string)
+										}
+
+										if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											publicIpInt.Tenant = val.(string)
+										}
+									}
+								}
+
+							}
+
+						}
+					}
+
+				}
+
 				if v, ok := proxyAdvertisementMapStrToI["advertise_on_public"]; ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
 
 					advertiseChoiceTypeFound = true
@@ -4274,6 +4733,30 @@ func resourceVolterraDnsProxyUpdate(d *schema.ResourceData, meta interface{}) er
 
 				}
 
+				if v, ok := proxyAdvertisementMapStrToI["advertise_on_public_default_dualstack_vip"]; ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
+
+					advertiseChoiceTypeFound = true
+
+					if v.(bool) {
+						advertiseChoiceInt := &ves_io_schema_dns_proxy.ProxyAdvertisementType_AdvertiseOnPublicDefaultDualstackVip{}
+						advertiseChoiceInt.AdvertiseOnPublicDefaultDualstackVip = &ves_io_schema.Empty{}
+						proxyAdvertisement.AdvertiseChoice = advertiseChoiceInt
+					}
+
+				}
+
+				if v, ok := proxyAdvertisementMapStrToI["advertise_on_public_default_ipv6_vip"]; ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
+
+					advertiseChoiceTypeFound = true
+
+					if v.(bool) {
+						advertiseChoiceInt := &ves_io_schema_dns_proxy.ProxyAdvertisementType_AdvertiseOnPublicDefaultIpv6Vip{}
+						advertiseChoiceInt.AdvertiseOnPublicDefaultIpv6Vip = &ves_io_schema.Empty{}
+						proxyAdvertisement.AdvertiseChoice = advertiseChoiceInt
+					}
+
+				}
+
 				if v, ok := proxyAdvertisementMapStrToI["advertise_on_public_default_vip"]; ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
 
 					advertiseChoiceTypeFound = true
@@ -4282,6 +4765,47 @@ func resourceVolterraDnsProxyUpdate(d *schema.ResourceData, meta interface{}) er
 						advertiseChoiceInt := &ves_io_schema_dns_proxy.ProxyAdvertisementType_AdvertiseOnPublicDefaultVip{}
 						advertiseChoiceInt.AdvertiseOnPublicDefaultVip = &ves_io_schema.Empty{}
 						proxyAdvertisement.AdvertiseChoice = advertiseChoiceInt
+					}
+
+				}
+
+				if v, ok := proxyAdvertisementMapStrToI["advertise_v6_on_public"]; ok && !isIntfNil(v) && !advertiseChoiceTypeFound {
+
+					advertiseChoiceTypeFound = true
+					advertiseChoiceInt := &ves_io_schema_dns_proxy.ProxyAdvertisementType_AdvertiseV6OnPublic{}
+					advertiseChoiceInt.AdvertiseV6OnPublic = &ves_io_schema_views.AdvertisePublic{}
+					proxyAdvertisement.AdvertiseChoice = advertiseChoiceInt
+
+					sl := v.([]interface{})
+					for _, set := range sl {
+						if set != nil {
+							cs := set.(map[string]interface{})
+
+							if v, ok := cs["public_ip"]; ok && !isIntfNil(v) {
+
+								sl := v.([]interface{})
+								publicIpInt := &ves_io_schema_views.ObjectRefType{}
+								advertiseChoiceInt.AdvertiseV6OnPublic.PublicIp = publicIpInt
+
+								for _, set := range sl {
+									if set != nil {
+										piMapToStrVal := set.(map[string]interface{})
+										if val, ok := piMapToStrVal["name"]; ok && !isIntfNil(v) {
+											publicIpInt.Name = val.(string)
+										}
+										if val, ok := piMapToStrVal["namespace"]; ok && !isIntfNil(v) {
+											publicIpInt.Namespace = val.(string)
+										}
+
+										if val, ok := piMapToStrVal["tenant"]; ok && !isIntfNil(v) {
+											publicIpInt.Tenant = val.(string)
+										}
+									}
+								}
+
+							}
+
+						}
 					}
 
 				}

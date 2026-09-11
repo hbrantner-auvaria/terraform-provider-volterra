@@ -2905,6 +2905,27 @@ var APISwaggerJSON string = `{
                 }
             }
         },
+        "schemaDualStackAddressType": {
+            "type": "object",
+            "description": "DualStackAddressType represents both IPv4 and IPv6 together.",
+            "title": "Dualstack IPv4 and IPv6 Address",
+            "x-displayname": "Dualstack Address",
+            "x-ves-proto-message": "ves.io.schema.DualStackAddressType",
+            "properties": {
+                "ipv4": {
+                    "description": " IPv4 Address",
+                    "title": "IPv4 Address",
+                    "$ref": "#/definitions/schemaIpv4AddressType",
+                    "x-displayname": "IPv4 Address"
+                },
+                "ipv6": {
+                    "description": " IPv6 Address",
+                    "title": "IPv6 Address",
+                    "$ref": "#/definitions/schemaIpv6AddressType",
+                    "x-displayname": "IPv6 Address"
+                }
+            }
+        },
         "schemaEmpty": {
             "type": "object",
             "description": "This can be used for messages where no values are needed",
@@ -2957,17 +2978,23 @@ var APISwaggerJSON string = `{
             "title": "IP Address",
             "x-displayname": "IP Address",
             "x-ves-displayorder": "3",
-            "x-ves-oneof-field-ver": "[\"ipv4\",\"ipv6\"]",
+            "x-ves-oneof-field-ver": "[\"dual_stack\",\"ipv4\",\"ipv6\"]",
             "x-ves-proto-message": "ves.io.schema.IpAddressType",
             "properties": {
+                "dual_stack": {
+                    "description": "Exclusive with [ipv4 ipv6]\n Both IPv4 and IPv6 addresses are specified together",
+                    "title": "Dual-stack Address (IPv4 + IPv6)",
+                    "$ref": "#/definitions/schemaDualStackAddressType",
+                    "x-displayname": "Dual-stack Address"
+                },
                 "ipv4": {
-                    "description": "Exclusive with [ipv6]\n IPv4 Address",
+                    "description": "Exclusive with [dual_stack ipv6]\n IPv4 Address",
                     "title": "IPv4 Address",
                     "$ref": "#/definitions/schemaIpv4AddressType",
                     "x-displayname": "IPv4 Address"
                 },
                 "ipv6": {
-                    "description": "Exclusive with [ipv4]\n IPv6 Address",
+                    "description": "Exclusive with [dual_stack ipv4]\n IPv6 Address",
                     "title": "IPv6 ADDRESS",
                     "$ref": "#/definitions/schemaIpv6AddressType",
                     "x-displayname": "IPv6 Address"
@@ -3711,18 +3738,30 @@ var APISwaggerJSON string = `{
             "title": "WhereType",
             "x-displayname": "Select Where to Advertise",
             "x-ves-displayorder": "4,5",
-            "x-ves-oneof-field-choice": "[\"advertise_on_public\",\"cloud_edge_segment\",\"segment\",\"site\",\"site_segment\",\"virtual_network\",\"virtual_site\",\"virtual_site_segment\",\"virtual_site_with_vip\",\"vk8s_service\"]",
+            "x-ves-oneof-field-choice": "[\"advertise_dualstack_on_public\",\"advertise_on_public\",\"advertise_v6_on_public\",\"cloud_edge_segment\",\"segment\",\"site\",\"site_segment\",\"virtual_network\",\"virtual_site\",\"virtual_site_segment\",\"virtual_site_with_vip\",\"vk8s_service\"]",
             "x-ves-oneof-field-port_choice": "[\"port\",\"port_ranges\",\"use_default_port\"]",
             "x-ves-proto-message": "ves.io.schema.views.WhereType",
             "properties": {
+                "advertise_dualstack_on_public": {
+                    "description": "Exclusive with [advertise_on_public advertise_v6_on_public cloud_edge_segment segment site site_segment virtual_network virtual_site virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise this load balancer with Dualstack VIP on public network",
+                    "title": "Advertise DualStack On Public",
+                    "$ref": "#/definitions/viewsAdvertisePublic",
+                    "x-displayname": "Internet (Specified Dualstack VIP)"
+                },
                 "advertise_on_public": {
-                    "description": "Exclusive with [cloud_edge_segment segment site site_segment virtual_network virtual_site virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise this load balancer on public network",
+                    "description": "Exclusive with [advertise_dualstack_on_public advertise_v6_on_public cloud_edge_segment segment site site_segment virtual_network virtual_site virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise this load balancer on public network",
                     "title": "Advertise On Public",
                     "$ref": "#/definitions/viewsAdvertisePublic",
                     "x-displayname": "Internet (Specified VIP)"
                 },
+                "advertise_v6_on_public": {
+                    "description": "Exclusive with [advertise_dualstack_on_public advertise_on_public cloud_edge_segment segment site site_segment virtual_network virtual_site virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise this load balancer with IPv6 VIP on public network",
+                    "title": "Advertise IPv6 On Public",
+                    "$ref": "#/definitions/viewsAdvertisePublic",
+                    "x-displayname": "Internet (Specified IPv6 VIP)"
+                },
                 "cloud_edge_segment": {
-                    "description": "Exclusive with [advertise_on_public segment site site_segment virtual_network virtual_site virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise on a segment on a Cloud Edge",
+                    "description": "Exclusive with [advertise_dualstack_on_public advertise_on_public advertise_v6_on_public segment site site_segment virtual_network virtual_site virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise on a segment on a Cloud Edge",
                     "title": "Segment on Cloud Edge",
                     "$ref": "#/definitions/viewsWhereCloudEdgeSegment",
                     "x-displayname": "Segment on Cloud Edge"
@@ -3754,19 +3793,19 @@ var APISwaggerJSON string = `{
                     }
                 },
                 "segment": {
-                    "description": "Exclusive with [advertise_on_public cloud_edge_segment site site_segment virtual_network virtual_site virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise on a segment",
+                    "description": "Exclusive with [advertise_dualstack_on_public advertise_on_public advertise_v6_on_public cloud_edge_segment site site_segment virtual_network virtual_site virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise on a segment",
                     "title": "Segment",
                     "$ref": "#/definitions/viewsWhereSegment",
                     "x-displayname": "Segment"
                 },
                 "site": {
-                    "description": "Exclusive with [advertise_on_public cloud_edge_segment segment site_segment virtual_network virtual_site virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise on a customer site and a given network.",
+                    "description": "Exclusive with [advertise_dualstack_on_public advertise_on_public advertise_v6_on_public cloud_edge_segment segment site_segment virtual_network virtual_site virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise on a customer site and a given network.",
                     "title": "Site",
                     "$ref": "#/definitions/viewsWhereSite",
                     "x-displayname": "Site"
                 },
                 "site_segment": {
-                    "description": "Exclusive with [advertise_on_public cloud_edge_segment segment site virtual_network virtual_site virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise on a segment on a site",
+                    "description": "Exclusive with [advertise_dualstack_on_public advertise_on_public advertise_v6_on_public cloud_edge_segment segment site virtual_network virtual_site virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise on a segment on a site",
                     "title": "Segment on Site",
                     "$ref": "#/definitions/viewsWhereSiteSegment",
                     "x-displayname": "Segment on Site"
@@ -3778,31 +3817,31 @@ var APISwaggerJSON string = `{
                     "x-displayname": "Use Default Listen Port"
                 },
                 "virtual_network": {
-                    "description": "Exclusive with [advertise_on_public cloud_edge_segment segment site site_segment virtual_site virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise on a virtual network",
+                    "description": "Exclusive with [advertise_dualstack_on_public advertise_on_public advertise_v6_on_public cloud_edge_segment segment site site_segment virtual_site virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise on a virtual network",
                     "title": "Virtual Network",
                     "$ref": "#/definitions/viewsWhereVirtualNetwork",
                     "x-displayname": "Virtual Network"
                 },
                 "virtual_site": {
-                    "description": "Exclusive with [advertise_on_public cloud_edge_segment segment site site_segment virtual_network virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise on a customer virtual site and a given network.",
+                    "description": "Exclusive with [advertise_dualstack_on_public advertise_on_public advertise_v6_on_public cloud_edge_segment segment site site_segment virtual_network virtual_site_segment virtual_site_with_vip vk8s_service]\n Advertise on a customer virtual site and a given network.",
                     "title": "Virtual Site",
                     "$ref": "#/definitions/viewsWhereVirtualSite",
                     "x-displayname": "Virtual Site"
                 },
                 "virtual_site_segment": {
-                    "description": "Exclusive with [advertise_on_public cloud_edge_segment segment site site_segment virtual_network virtual_site virtual_site_with_vip vk8s_service]\n Advertise on a segment on a virtual site",
+                    "description": "Exclusive with [advertise_dualstack_on_public advertise_on_public advertise_v6_on_public cloud_edge_segment segment site site_segment virtual_network virtual_site virtual_site_with_vip vk8s_service]\n Advertise on a segment on a virtual site",
                     "title": "Segment on Virtual Site",
                     "$ref": "#/definitions/viewsWhereVirtualSiteSegment",
                     "x-displayname": "Segment on Virtual Site"
                 },
                 "virtual_site_with_vip": {
-                    "description": "Exclusive with [advertise_on_public cloud_edge_segment segment site site_segment virtual_network virtual_site virtual_site_segment vk8s_service]\n Advertise on a customer virtual site and a given network and IP.",
+                    "description": "Exclusive with [advertise_dualstack_on_public advertise_on_public advertise_v6_on_public cloud_edge_segment segment site site_segment virtual_network virtual_site virtual_site_segment vk8s_service]\n Advertise on a customer virtual site and a given network and IP.",
                     "title": "Virtual Site With Specified VIP",
                     "$ref": "#/definitions/viewsWhereVirtualSiteSpecifiedVIP",
                     "x-displayname": "Virtual Site (Specified VIP)"
                 },
                 "vk8s_service": {
-                    "description": "Exclusive with [advertise_on_public cloud_edge_segment segment site site_segment virtual_network virtual_site virtual_site_segment virtual_site_with_vip]\n Advertise on vK8s Service Network on RE.",
+                    "description": "Exclusive with [advertise_dualstack_on_public advertise_on_public advertise_v6_on_public cloud_edge_segment segment site site_segment virtual_network virtual_site virtual_site_segment virtual_site_with_vip]\n Advertise on vK8s Service Network on RE.",
                     "title": "vK8s services network",
                     "$ref": "#/definitions/viewsWhereVK8SService",
                     "x-displayname": "vK8s Service Network on RE"

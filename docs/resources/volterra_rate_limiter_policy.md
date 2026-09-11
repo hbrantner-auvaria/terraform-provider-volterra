@@ -20,6 +20,7 @@ resource "volterra_rate_limiter_policy" "example" {
   name      = "acmecorp-web"
   namespace = "staging"
 }
+
 ```
 
 Argument Reference
@@ -312,4 +313,4 @@ Source traffic is matched against selected segments.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured rate_limiter_policy.
+-	`id` - This is the id of the configured rate_limiter_policy.

@@ -403,6 +403,14 @@ func (m *GetResponse) Validate(ctx context.Context, opts ...db.ValidateOpt) erro
 	return GetResponseValidator().Validate(ctx, m, opts...)
 }
 
+func (m *GetResponse) GetDRefInfo() ([]db.DRefInfo, error) {
+	if m == nil {
+		return nil, nil
+	}
+
+	return nil, nil
+}
+
 type ValidateGetResponse struct {
 	FldValidators map[string]db.ValidatorFunc
 }
@@ -477,6 +485,15 @@ func (v *ValidateGetResponse) Validate(ctx context.Context, pm interface{}, opts
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["status"]; exists {
+		vOpts := append(opts, db.WithValidateField("status"))
+		for idx, item := range m.GetStatus() {
+			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
+			if err := fv(ctx, item, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
 	if fv, exists := v.FldValidators["system_metadata"]; exists {
 		vOpts := append(opts, db.WithValidateField("system_metadata"))
 		if err := fv(ctx, m.GetSystemMetadata(), vOpts...); err != nil {
@@ -493,6 +510,7 @@ var DefaultGetResponseValidator = func() *ValidateGetResponse {
 	v.FldValidators["replace_form"] = ReplaceRequestValidator().Validate
 	v.FldValidators["metadata"] = ves_io_schema.ObjectGetMetaTypeValidator().Validate
 	v.FldValidators["spec"] = GetSpecTypeValidator().Validate
+	v.FldValidators["status"] = StatusObjectValidator().Validate
 
 	return v
 }()
@@ -636,6 +654,34 @@ func (m *ListResponse) Validate(ctx context.Context, opts ...db.ValidateOpt) err
 	return ListResponseValidator().Validate(ctx, m, opts...)
 }
 
+func (m *ListResponse) GetDRefInfo() ([]db.DRefInfo, error) {
+	if m == nil {
+		return nil, nil
+	}
+
+	return m.GetItemsDRefInfo()
+}
+
+// GetDRefInfo for the field's type
+func (m *ListResponse) GetItemsDRefInfo() ([]db.DRefInfo, error) {
+	if m.GetItems() == nil {
+		return nil, nil
+	}
+	var drInfos []db.DRefInfo
+	for idx, e := range m.GetItems() {
+		driSet, err := e.GetDRefInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "GetItems() GetDRefInfo() FAILED")
+		}
+		for i := range driSet {
+			dri := &driSet[i]
+			dri.DRField = fmt.Sprintf("items[%v].%s", idx, dri.DRField)
+		}
+		drInfos = append(drInfos, driSet...)
+	}
+	return drInfos, nil
+}
+
 type ValidateListResponse struct {
 	FldValidators map[string]db.ValidatorFunc
 }
@@ -723,6 +769,14 @@ func (m *ListResponseItem) Validate(ctx context.Context, opts ...db.ValidateOpt)
 	return ListResponseItemValidator().Validate(ctx, m, opts...)
 }
 
+func (m *ListResponseItem) GetDRefInfo() ([]db.DRefInfo, error) {
+	if m == nil {
+		return nil, nil
+	}
+
+	return nil, nil
+}
+
 type ValidateListResponseItem struct {
 	FldValidators map[string]db.ValidatorFunc
 }
@@ -800,6 +854,15 @@ func (v *ValidateListResponseItem) Validate(ctx context.Context, pm interface{},
 			return err
 		}
 	}
+	if fv, exists := v.FldValidators["status_set"]; exists {
+		vOpts := append(opts, db.WithValidateField("status_set"))
+		for idx, item := range m.GetStatusSet() {
+			vOpts := append(vOpts, db.WithValidateRepItem(idx), db.WithValidateIsRepItem(true))
+			if err := fv(ctx, item, vOpts...); err != nil {
+				return err
+			}
+		}
+	}
 	if fv, exists := v.FldValidators["system_metadata"]; exists {
 		vOpts := append(opts, db.WithValidateField("system_metadata"))
 		if err := fv(ctx, m.GetSystemMetadata(), vOpts...); err != nil {
@@ -825,6 +888,7 @@ func (v *ValidateListResponseItem) Validate(ctx context.Context, pm interface{},
 var DefaultListResponseItemValidator = func() *ValidateListResponseItem {
 	v := &ValidateListResponseItem{FldValidators: map[string]db.ValidatorFunc{}}
 	v.FldValidators["get_spec"] = GetSpecTypeValidator().Validate
+	v.FldValidators["status_set"] = StatusObjectValidator().Validate
 	v.FldValidators["metadata"] = ves_io_schema.ObjectGetMetaTypeValidator().Validate
 
 	return v

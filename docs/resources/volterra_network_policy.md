@@ -23,9 +23,12 @@ resource "volterra_network_policy" "example" {
   endpoint {
     // One of the arguments from this list "any inside_endpoints interface label_selector namespace outside_endpoints prefix_list" must be set
 
-    inside_endpoints = true
+    label_selector {
+      expressions = ["region in (us-west1, us-west2),tier in (staging)"]
+    }
   }
 }
+
 ```
 
 Argument Reference
@@ -312,4 +315,4 @@ Select specific protocol and port ranges traffic to match.
 Attribute Reference
 -------------------
 
-*   `id` - This is the id of the configured network_policy.
+-	`id` - This is the id of the configured network_policy.
