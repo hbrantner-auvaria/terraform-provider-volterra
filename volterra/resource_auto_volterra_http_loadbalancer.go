@@ -34593,7 +34593,21 @@ func resourceVolterraHttpLoadbalancerCreate(d *schema.ResourceData, meta interfa
 																	sl := v.([]interface{})
 																	for _, set := range sl {
 																		if set != nil {
-																			_ = set.(map[string]interface{})
+																			cs := set.(map[string]interface{})
+
+																			transactionResultChoiceTypeFound := false
+
+																			if v, ok := cs["disable_transaction_result"]; ok && !isIntfNil(v) && !transactionResultChoiceTypeFound {
+
+																				transactionResultChoiceTypeFound = true
+
+																				if v.(bool) {
+																					transactionResultChoiceInt := &ves_io_schema.BotDefenseTransactionResult_DisableTransactionResult{}
+																					transactionResultChoiceInt.DisableTransactionResult = &ves_io_schema.Empty{}
+																					labelChoiceInt.Login.TransactionResultChoice = transactionResultChoiceInt
+																				}
+
+																			}
 
 																		}
 																	}
@@ -69131,7 +69145,21 @@ func resourceVolterraHttpLoadbalancerUpdate(d *schema.ResourceData, meta interfa
 																	sl := v.([]interface{})
 																	for _, set := range sl {
 																		if set != nil {
-																			_ = set.(map[string]interface{})
+																			cs := set.(map[string]interface{})
+
+																			transactionResultChoiceTypeFound := false
+
+																			if v, ok := cs["disable_transaction_result"]; ok && !isIntfNil(v) && !transactionResultChoiceTypeFound {
+
+																				transactionResultChoiceTypeFound = true
+
+																				if v.(bool) {
+																					transactionResultChoiceInt := &ves_io_schema.BotDefenseTransactionResult_DisableTransactionResult{}
+																					transactionResultChoiceInt.DisableTransactionResult = &ves_io_schema.Empty{}
+																					labelChoiceInt.Login.TransactionResultChoice = transactionResultChoiceInt
+																				}
+
+																			}
 
 																		}
 																	}
