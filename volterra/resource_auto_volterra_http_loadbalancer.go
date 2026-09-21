@@ -21002,6 +21002,7 @@ func resourceVolterraHttpLoadbalancer() *schema.Resource {
 												"response_body": {
 													Type:       schema.TypeString,
 													Optional:   true,
+													Computed:   true,
 													Deprecated: "This field is deprecated and will be removed in future release.",
 												},
 
